@@ -31,48 +31,25 @@ class Controller
 
         $this->menu = [
             [
-                'href' => '/nuestro_menu',
-                'name' => 'MENU'
+                'href' => '/ofertas-imperdibles',
+                'name' => 'OFERTAS IMPERDIBLES'
             ],
             [
-                'href' => '/promociones',
-                'name' => 'PROMOS'
+                'href' => '/nosotros',
+                'name' => 'NOSOTROS'
             ],
             [
-                'href' => '/sucursales',
-                'name' => 'SUCURSALES'
+                'href' => '/gestiona-tu-alojamiento',
+                'name' => 'GESTIONA TU ALOJAMIENTO'
             ],
-            [
-                'href' => '/noticias',
-                'name' => 'NOTICIAS'
-            ],
-            [
-                'href' => '/pedir',
-                'name' => 'PEDIR'
-            ],
-            [
-                'href' => '/reservar_cliente',
-                'name' => 'RESERVAR'
-            ]
         ];
 
         $this->menuEmpleado = [
             [
                 'href' => '/gestion_lista_mesas',
-                'name' => 'GESTION MESAS'
+                'name' => 'GESTION ALQUILERES'
             ],
-            [
-                'href' => '/gestion_mesa',
-                'name' => 'GESTION MESA'
-            ],
-            [
-                'href' => '/pedidos_entrantes',
-                'name' => 'PEDIDOS ENTRANTES'
-            ],
-            [
-                'href' => '/plato/new',
-                'name' => 'NUEVO PLATO'
-            ]
+
         ];
 
         $this->menuPerfil = [

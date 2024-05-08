@@ -34,8 +34,8 @@ Luego ejecutar `phinx` desde `vendor/bin/phinx`
 
 ### 5) Instalacion y Ejecucion del Proyecto
 
-* Clonar el Proyecto: `git clone https://github.com/lucasrueda01/PAW-2024.git`.
-* `cd PAW-2024`.
+* Clonar el Proyecto: `git clone https://https://github.com/jnatmed/inmobiliaria-paw.git`.
+* `cd inmobiliaria-paw`.
 * `composer install`.
 * `cp .env.example .env` # Editar el .env con los valores deseados.
 * Ejecutar migrations: `phinx migrate -e development`.
