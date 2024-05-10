@@ -24,7 +24,7 @@ class PageController extends Controller
 
     public function index()
     {
-        $titulo = "PAW POWER | HOME";
+        $titulo = "INMOBILIARIA-PAW | HOME";
         require $this->viewsDir . 'index.view.php';
     }
 
