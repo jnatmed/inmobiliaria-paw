@@ -26,7 +26,7 @@
         </h4>
     <?php endif ?>
     
-    <?php require __DIR__.'/../parts/footer.view.php' ?>
+    
     
 </body>
 </html>
