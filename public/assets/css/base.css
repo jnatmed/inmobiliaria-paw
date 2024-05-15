@@ -1,20 +1,53 @@
 @import '../css/reset.css';
 
 :root {
-    --color-amarillo: #FFAF10;
-    --color-amarrillohover: #fad07c;
-    --color-rojo: #D82427;
-    --color-rojohover: #d57879;
-    --color-gris: #BDBDBD;
-    --color-grishover: #b3afaf;
-    --color-verde: #398643;
-    --color-verdehover: #7fcc8a;
-    --color-ligthgrishover: #c3c7cb;
-    --color-negroahover: #313131;
-    --color-celeste: #CBCBCB;
-    --color-fondo: #D9D9D9;
-    --tamanio-logo-empresa: 6px;
-    --color-fondo-menu-mobile: rgba(128, 128, 128, .8);
+    --color-verde-header: #7B8C56;
+    --color-negro-boton: #252026;
+}
+
+html {
+    font-size: 10px;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--color-verde-header);
+    height: 13.3rem;
+    align-items: center;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    font-size: 2rem;
 }
 
 
+.lista-nav-main li {
+    display: inline-block;
+}
+
+.lista-opciones-sesion li {
+    background-color: var(--color-negro-boton);
+    border-radius: 1rem;
+    height: 3.8rem; 
+    display: flex;
+    align-items: center;    
+    
+}
+
+.anchor-item-sesion, .anchor-item-main {
+    text-decoration: none;
+    font-weight: normal;    
+    color: white;
+    margin-right: .5rem;
+    margin-left: .5rem;
+}
+
+.anchor-item-sesion {
+
+}
+
+#mapid {
+    height: 500px; /* O cualquier altura que necesites */
+    width: 80%;
+}

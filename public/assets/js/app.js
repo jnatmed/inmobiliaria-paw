@@ -7,10 +7,15 @@ class appPAW {
              * para la carga del formulario
              *  */
       
-      if (['/'].includes(window.location.pathname))
+      if (['/buscar'].includes(window.location.pathname))
       {
         PAW.cargarScript('MapaLeaflet', '/assets/js/components/mapaLeaflet.js', () =>{
             const mapaLeaf = new MapaLeaflet()
+
+            let address = "Libertad 160, CABA";
+            
+            mapaLeaf.buscar(address);
+            
         })
       }        
           
