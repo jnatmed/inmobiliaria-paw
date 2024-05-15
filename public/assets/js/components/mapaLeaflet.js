@@ -45,7 +45,7 @@ class MapaLeaflet {
                         .bindPopup(address)
                         .openPopup();
                 } else {
-                    alert('No se encontraron resultados para la dirección especificada.');
+                    console.log('No se encontraron resultados para la dirección especificada.');
                 }
             } catch (error) {
                 console.error('Hubo un problema con la solicitud de fetch:', error);
