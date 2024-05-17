@@ -3,7 +3,7 @@
 * Descargar e Instalar MySQL del siguiente [link](https://dev.mysql.com/downloads/file/?id=526407). 
 * Copiar las variables de ambiente del archivo `.env.example` a un nuevo archivo llamado `.env`.
     - `.env`
-* Crear la base de datos `mvc-paw-power`.
+* Crear la base de datos `mvc-pawperties`.
 
 ### 2) INSTALACION DE PHINX 
 
