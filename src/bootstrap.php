@@ -57,6 +57,7 @@ $router->setLogger($log);
 // PageController
 $router->get('/', 'PageController@index');
 $router->get('/buscar', 'BuscarController@buscar');
+$router->get('/geocode', 'BuscarController@geocode');
 
 
 

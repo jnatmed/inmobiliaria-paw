@@ -11,14 +11,19 @@ class BuscarController extends Controller
 {
     public Uploader $uploader;
     public Verificador $verificador;
+    private $apiKey;
 
     public function __construct()
     {
+        global $config;
+
         parent::__construct();
 
         $this->uploader = new Uploader;
 
         $this->verificador = new Verificador;
+        // Cargar la API key desde una variable de entorno
+        $this->apiKey = $config->get('OPENCAGEDATA_API_KEY');
     }
     
     public function buscar()
@@ -39,4 +44,42 @@ class BuscarController extends Controller
             require $this->viewsDir . 'buscar-propiedad.view.php';
         }
     }
+
+    public function geocode()
+    {
+        global $request, $log;
+    
+        $location = $request->get('q');
+    
+        $apiKey = $this->apiKey;
+        $apiUrl = "https://api.opencagedata.com/geocode/v1/json?q=" . urlencode($location) . "&key=" . $apiKey;
+    
+        $log->info("url: ", [$apiUrl]);
+
+        $options = [
+            "http" => [
+                "header" => "Cache-Control: no-cache, no-store, must-revalidate\r\n" .
+                            "Pragma: no-cache\r\n" .
+                            "Expires: 0\r\n"
+            ]
+        ];
+        $context = stream_context_create($options);
+    
+        $response = file_get_contents($apiUrl, false, $context);
+    
+        if ($response === FALSE) {
+            $errorResponse = ['error' => 'Error fetching data from OpenCage'];
+            header("Content-Type: application/json");
+            echo json_encode($errorResponse);
+            return;
+        }
+    
+        $data = json_decode($response, true);
+    
+        // $log->info("data: ", [$data]);
+    
+        header("Content-Type: application/json");
+        echo json_encode($data);
+    }
+
 }
