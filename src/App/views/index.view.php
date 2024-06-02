@@ -12,20 +12,22 @@
     <?php require __DIR__.'/parts/header.view.php' ?>
 
 
-    <main>
+    <main class="main-home">
 
         <section class="seccion-portada">
+            <h1 class="h1-titulo-empresa">PAWPERTIES</h1>
             <h2 class="h2-titulo">
                 Encontra el lugar perfecto para tu proximo destino
             </h2>
+            <a href="#" class="enlace-publicar">Quiero Publicar Lugar</a>
             <form action="" class="form-busqueda-propiedad" method="GET">
-                <label for="input-zona" class="label-zona" id="input-zona">Zona</label>
-                <input type="text" class="input-zona">
-                <label for="input-tipo" class="label-tipo">Tipo</label>
-                <input type="text" class="input-tipo" id="input-tipo">
-                <label for="input-categoria" class="label-categoria">Categoria</label>
-                <input type="text" class="input-categoria" id="input-categoria">
-                <input type="submit" value="Buscar">
+                <label for="input-zona" class="label-form" id="input-zona">Zona</label>
+                <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona...">
+                <label for="input-tipo" class="label-form">Tipo</label>
+                <input type="text" class="input-form-busqueda" id="input-tipo" placeholder="Tipo">
+                <label for="input-categoria" class="label-form">Categoria</label>
+                <input type="text" class="input-form-busqueda" id="input-categoria" placeholder="Categoria">
+                <input type="submit" value="Buscar" class="btn-form-busqueda">
             </form>
         </section>
     

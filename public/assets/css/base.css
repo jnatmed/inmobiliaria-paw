@@ -7,6 +7,7 @@
 
 html {
     font-size: 10px;
+    margin: 0 3% 0 3%;
 }
 
 header {
@@ -43,11 +44,72 @@ header {
     margin-left: .5rem;
 }
 
-.anchor-item-sesion {
-
-}
-
 #mapid {
     height: 500px; /* O cualquier altura que necesites */
     width: 80%;
+}
+
+.form-busqueda-propiedad {
+    background-color: #D9D9D9;
+    display: flex;
+    flex-wrap: wrap;
+    width: 60%;
+    height: 15.8rem;
+    margin-left: 0;
+    padding: 2rem 2rem 0 2rem;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+
+}
+
+.h1-titulo-empresa{
+    color: var(--color-verde-header);
+    font-weight: 700;
+    font-size: 8rem;
+}
+
+.h2-titulo{
+    display: inline-block;
+    font-size: 7rem;
+    width: 50%;
+}
+
+.form-busqueda-propiedad input:nth-of-type(2) 
+{
+    margin: 0 1rem 0 1rem;
+}
+
+.enlace-publicar {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: var(--color-negro-boton);
+    font-size: 2rem;
+    padding: 6px 0 6px 0;   /* arriba, derecha, abajo, izquierda*/
+    width: 50%;
+    text-align: center;
+    margin: 2rem 0 2rem 0;
+}
+
+.main-home{
+    padding: 1% 0 0 3%;
+}
+
+.input-form-busqueda {
+    width: calc(93% / 3);
+    height: 4rem;
+    border: none;
+}
+
+
+.label-form {
+    display: none;
+}
+
+.btn-form-busqueda {
+    background-color: var(--color-negro-boton);
+    color: white;
+    display: block;
+    border:none;
+    width: 25rem;
+    height: 5.1rem;
 }
