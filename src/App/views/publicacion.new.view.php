@@ -36,10 +36,24 @@
             <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Direccion">
             <p>Move el mapa hasta posicionar el puntero en el lugar adecuado</p>
             <?php require __DIR__.'/parts/mapa.view.php' ?>
+            <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
+            <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento">
+            <input type="text" name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" placeholder="Tipo de Alojamiento">
+            <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Maxima">
+            <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños">
+            <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Capacidad de Dormitorios">
+            <h3 class="titulo-datos-propietario">Instalaciones</h3>
+            <label for="cochera" class="lbl-chekbox">Cochera<input type="checkbox" name="cochera" id="cochera" title="Cochera"></label>
+            <label for="pileta" class="lbl-chekbox">Pileta<input type="checkbox" name="pileta" id="pileta" title="Pileta"></label>
+            <h3 class="titulo-datos-propietario">Equipamiento</h3>
+            <label for="aire-acondicionado" class="lbl-chekbox">Aire Acondicionado<input type="checkbox" name="aire-acondicionado" id="aire-acondicionado" title="Aire Acondicionado"></label>
+            <label for="wifi" class="lbl-chekbox">Wi-Fi<input type="checkbox" name="wifi" id="wifi" title="Wi-Fi"></label>
         </fieldset>
         
 
         <input type="submit" value="Enviar Publicacion" class="btn-form-enviar-publicacion">
+
+
 
     </form>
 

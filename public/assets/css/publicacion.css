@@ -54,5 +54,17 @@
     height: 4rem;
     border-radius: 2%;
     color:white;
+}
 
+.lbl-chekbox{
+    display: block;
+    width: calc(100%/3);
+    border: none;
+    border-bottom: 2px solid gray;
+    color: black;
+    font-size: 1.6rem;
+}
+
+.lbl-chekbox input{
+    display: inline-block;
 }
