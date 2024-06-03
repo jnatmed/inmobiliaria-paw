@@ -50,6 +50,7 @@ header {
 #mapid {
     height: 500px; /* O cualquier altura que necesites */
     width: 80%;
+    margin: 0 auto;
 }
 
 .form-busqueda-propiedad {

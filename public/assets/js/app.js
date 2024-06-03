@@ -7,7 +7,7 @@ class appPAW {
              * para la carga del formulario
              *  */
       
-      if (['/buscar'].includes(window.location.pathname))
+      if (['/buscar', '/publicacion/new'].includes(window.location.pathname))
       {
 
         PAW.cargarScript('GestorInmobiliaria', '/assets/js/components/gestor-inmobiliaria.js')
@@ -42,12 +42,16 @@ class appPAW {
           //         .catch(error => console.error('Error:', error));
           // });
 
-  
+            document.querySelector('.form-publicacion-new').addEventListener('submit', (event) => {
+              event.preventDefault(); // Prevenir el envío predeterminado del formulario
+          });
+
           // Agregar un event listener al botón de búsqueda
-          document.querySelector('#buscarUbicacion').addEventListener('click', () => {
+          document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
             const address = document.querySelector('#ubicacion').value;
+            // console.log(address);
             mapaLeaf.buscar(address);
-          });            
+          });         
             
         })
       }        
