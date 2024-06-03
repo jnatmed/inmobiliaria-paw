@@ -147,7 +147,6 @@ header {
     border: none;
 }
 
-
 .label-form {
     display: none;
 }
@@ -175,6 +174,8 @@ header {
 .article-descripcion{
     width: 75%;
     font-size: initial;
+}
+
 table.greenTable {
     font-family: Georgia, serif;
     border: 6px solid var(--color-verde-header);
