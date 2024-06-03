@@ -3,11 +3,14 @@
 :root {
     --color-verde-header: #7B8C56;
     --color-negro-boton: #252026;
+    --color-gris: #F2F2F0;
+    --borde: 30px;
 }
 
 html {
     font-size: 10px;
     margin: 0 3% 0 3%;
+    background-color: var(--color-gris);
 }
 
 header {

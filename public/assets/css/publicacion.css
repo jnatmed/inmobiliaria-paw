@@ -1,0 +1,58 @@
+.form-publicacion-new{
+ background-color: var(--color-gris);   
+ border: 1px solid black;
+ padding: var(--borde) var(--borde) var(--borde) var(--borde); /**/
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+}
+
+.paso-1{
+    width: 100%;
+}
+
+.paso-1 p {
+    padding: 1rem 0 1rem 0;
+    margin-bottom: 1rem;
+    width: 100%;
+    font-size: 1.5rem;
+    color: gray;
+}
+
+
+.paso-1 p:first-of-type{
+    border-bottom: 1px solid black;
+}   
+
+.titulo-form-publicacion{
+    font-weight: 800;
+    font-size: 3rem;
+    color:var(--color-verde-header)
+}
+
+.titulo-datos-propietario{
+    font-weight: 800;
+    font-size: 2rem;
+    margin-top: 1rem;
+}
+
+.input-form-publicacion{
+    display: inline-block;
+    width: 100% ;
+    border: 0;
+    border-bottom: 2px solid gray;
+    padding: 1rem 0 1rem 0;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.btn-form-enviar-publicacion{
+    display: inline-block;
+    background-color: var(--color-negro-boton);
+    width: 90%;
+    height: 4rem;
+    border-radius: 2%;
+    color:white;
+
+}
