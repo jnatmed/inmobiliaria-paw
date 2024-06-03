@@ -19,7 +19,7 @@
             <h2 class="h2-titulo">
                 Encontra el lugar perfecto para tu proximo destino
             </h2>
-            <a href="#" class="enlace-publicar">Quiero Publicar Lugar</a>
+            <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
             <form action="" class="form-busqueda-propiedad" method="GET">
                 <label for="input-zona" class="label-form" id="input-zona">Zona</label>
                 <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona...">

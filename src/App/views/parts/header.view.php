@@ -1,6 +1,6 @@
 <header> <!--block-->
 
-    <h1 class="icono-header-pawperties">PawPerties</h1>
+<a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
     <nav class="nav-index">
         <ul class="lista-nav-main">
             <li>
