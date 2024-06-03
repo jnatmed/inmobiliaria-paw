@@ -35,7 +35,7 @@
             <h2 class="h2-que-es-pawperties">
                 ¿Que es Pawperties?
             </h2>
-            <article class="art-descripcion">
+            <article class="article-descripcion">
                 <h3 class="title-descripcion">
                     Bievenido/a
                 </h3>

@@ -157,3 +157,19 @@ header {
     width: 25rem;
     height: 5.1rem;
 }
+
+
+.seccion-que-es-pawperties {
+    display: flex;
+    margin: 2rem 1rem 2rem 1rem;
+}
+.h2-que-es-pawperties{
+    width: 40%;
+    font-size: 5rem;
+    font-weight: 800;
+}
+
+.article-descripcion{
+    width: 75%;
+    font-size: initial;
+}
