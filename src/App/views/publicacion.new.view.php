@@ -49,7 +49,27 @@
             <label for="aire-acondicionado" class="lbl-chekbox">Aire Acondicionado<input type="checkbox" name="aire-acondicionado" id="aire-acondicionado" title="Aire Acondicionado"></label>
             <label for="wifi" class="lbl-chekbox">Wi-Fi<input type="checkbox" name="wifi" id="wifi" title="Wi-Fi"></label>
         </fieldset>
-        
+        <fieldset class="paso-2">
+            <h2 class="titulo-form-publicacion">PASO 2 de 3.</h2>
+            <p>Agrega fotos de tu alojamiento</p>
+            <section class="file-input-container">
+                <label for="file-input" class="file-input-label">Agrega Fotos</label>
+                <input type="file" id="file-input" class="file-input">
+
+                <h3 class="titulo-datos-propietario">Foto Principal</h3>
+                <p>Agrega la foto principal de tu publicacion</p>
+
+                <label for="file-input" class="file-input-label">Foto Principal</label>
+                <input type="file" id="file-input" class="file-input">
+            </section>        </fieldset>
+        <fieldset class="paso-3">
+            <h2 class="titulo-form-publicacion">PASO 3 de 3.</h2>
+            <p>Especifica tus condiciones para el alquiler, recorda que mientras mas flexible seas mas oportunidades tendrás</p>
+            <h3 class="titulo-datos-propietario">Normas del Alojamiento</h3>
+            <h3 class="titulo-datos-propietario">Descripcion</h3>
+            <p>Escribi una descripcion de tu alojamiento</p>
+            <textarea name="descripcion-alojamiento" class="descripcion-alojamiento"></textarea>
+        </fieldset>
 
         <input type="submit" value="Enviar Publicacion" class="btn-form-enviar-publicacion">
 

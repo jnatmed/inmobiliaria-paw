@@ -8,7 +8,7 @@
  justify-content: center;
 }
 
-.paso-1{
+.paso-1, .paso-2, .paso-3{
     width: 100%;
 }
 
@@ -35,6 +35,7 @@
     font-weight: 800;
     font-size: 2rem;
     margin-top: 1rem;
+    align-self: flex-start;
 }
 
 .input-form-publicacion{
@@ -47,13 +48,53 @@
     background-color: transparent;
 }
 
+
 .btn-form-enviar-publicacion{
     display: inline-block;
     background-color: var(--color-negro-boton);
-    width: 90%;
+    width: 100%;
     height: 4rem;
     border-radius: 2%;
     color:white;
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.file-input-label::after{
+    content: "";
+    position: absolute;
+    bottom: 21%;
+    left: -50%;
+    width: 30rem;
+    height: 30rem;
+    background-image: url('../imgs/svg/imagen-upload.svg');
+    background-size: cover; 
+    background-position: center; 
+}
+
+.file-input-label {
+    padding: 10px 20px;
+    background-color:var(--color-verde-header);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 26rem 0 0 0;
+    font-size: 2rem;
+    position: relative;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-text {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
 }
 
 .lbl-chekbox{
@@ -67,4 +108,22 @@
 
 .lbl-chekbox input{
     display: inline-block;
+}
+
+.paso-2 p, .paso-3 p{
+    font-size: 2rem;
+    align-self: flex-start;
+}
+
+.paso-2 p:nth-child(2) {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding-bottom: 2rem;
+    width: 100%;
+}
+
+.descripcion-alojamiento{
+    border: .1rem solid var(--color-verde-header);
+    width: 100%;
+    height: 10%;
 }
