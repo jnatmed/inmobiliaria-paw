@@ -51,7 +51,35 @@ class appPAW {
             
         })
       }        
-          
+      
+      if (['/reservas'].includes(window.location.pathname)){
+
+
+        PAW.cargarScript('Calendario', '/assets/js/components/calendario.js', async () =>{
+
+          const calendario = new Calendario()
+
+          fetch('/reservas/intervalos')
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Error al obtener los intervalos de reserva');
+              }
+              return response.json();
+          })
+          .then(periodos => {
+              
+              console.log(periodos);
+              const calendar = new Calendario();
+              calendario.marcarIntervalos(periodos);              
+              // Aquí puedes utilizar los intervalos de reserva como desees
+          })
+          .catch(error => {
+              console.error('Error al cargar los intervalos de reserva:', error);
+          });
+
+
+        })         
+      }
 
     })
   }
