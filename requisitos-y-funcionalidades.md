@@ -1,6 +1,7 @@
-# Propuesta 1) Sistema para una Inmobiliaria.
+# Propuesta 1) Sistema para una Inmobiliaria
 
-## Funcionalidades:
+## Funcionalidades
+
 1. Gestión de propiedades:
    - Registro y almacenamiento de detalles de propiedades, como ubicación, tamaño, características, imágenes, precio, etc.
    - Categorización de propiedades por tipo (casa, apartamento, terreno, etc.) y ubicación.
@@ -9,7 +10,9 @@
 // Tenicas de SEO
 GEOIp
 Tema Cookies, ultima localizacion
-## Mapa del Sitio:
+
+## Mapa del Sitio
+
 1. Inicio
 2. Comprar
 3. Vender
