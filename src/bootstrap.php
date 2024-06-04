@@ -56,6 +56,8 @@ $router->setLogger($log);
 
 // PageController
 $router->get('/', 'PageController@index');
+$router->get('/iniciar-sesion', 'PageController@login');
+$router->get('/registrarse', 'PageController@register');
 $router->get('/buscar', 'BuscarController@buscar');
 $router->get('/geocode', 'BuscarController@geocode');
 $router->get('/publicacion/new', 'PublicacionController@new');

@@ -1,0 +1,80 @@
+.login_bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgb(38,32,37);
+}
+
+.login_form_container {
+    width: 500px;
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.login_form_header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 2.5em;
+    margin-bottom: 1em;
+}
+
+.login_form_header h1.icono-header-pawperties{
+   width: 180px;
+   height: 180px;
+   margin-bottom: 1em;
+}
+
+.login_form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login_form form label {
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.login_form form input,
+.login_form form input[type="submit"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid rgb(123,140,86);
+    border-radius: 4px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login_form form input[type="submit"] {
+    background-color: rgb(123,140,86);
+    margin-bottom: 10px;
+    color: aliceblue;
+    font-weight: 500;
+}
+
+.login_form form input[type="submit"]:hover {
+    background-color: rgb(77, 85, 60);
+    cursor: pointer;
+}
+
+.login_form form input[value="REGISTRARSE"] {
+    background-color: rgb(20, 20, 18); 
+}
+
+.login_form form input[type="submit"][value="REGISTRARSE"]:hover {
+    background-color: rgb(49, 49, 49);
+    cursor: pointer;
+}
+
+.login_form a {
+    color: rgb(123,140,86);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+    font-size: 1.1em;
+}
+

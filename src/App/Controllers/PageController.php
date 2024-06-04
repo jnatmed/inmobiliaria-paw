@@ -28,6 +28,18 @@ class PageController extends Controller
         require $this->viewsDir . 'index.view.php';
     }
 
+    public function login()
+    {
+        $titulo = "INMOBILIARIA-PAW | LOGIN";
+        require $this->viewsDir . 'login.view.php';
+    }
+
+    public function register()
+    {
+        $titulo = "INMOBILIARIA-PAW | REGISTRO";
+        require $this->viewsDir . 'register.view.php';
+    }
+
 
 }
 
