@@ -62,6 +62,7 @@ $router->get('/buscar', 'BuscarController@buscar');
 $router->get('/geocode', 'BuscarController@geocode');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
+$router->get('/publicaciones/list', 'PublicacionController@list');
 
 $router->get('/reservas', 'ReservasController@reservas');
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');

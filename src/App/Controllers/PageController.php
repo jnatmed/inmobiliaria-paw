@@ -28,6 +28,7 @@ class PageController extends Controller
         require $this->viewsDir . 'index.view.php';
     }
 
+    /**esto despues pasa a usuarioController */
     public function login()
     {
         $titulo = "INMOBILIARIA-PAW | LOGIN";

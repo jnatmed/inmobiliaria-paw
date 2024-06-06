@@ -10,7 +10,7 @@
     <main class="login_form_container">
 
         <section class="login_form_header">
-            <h1 class="icono-header-pawperties">PawPerties</h1>
+            <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
             <h1 class="login_title">REGISTRAR USUARIO</h1>
         </section>
 
@@ -30,7 +30,7 @@
                 <label for="contrasenia-check">Ingrese nuevamente su contraseña (*)</label>
                 <input required type="password" name="contrasenia-check" id="contrasenia-check" placeholder="Ingrese su contraseña">
 
-                <label for="telefono">Numero de telefono</label>
+                <label for="telefono">Numero de telefono (*)</label>
                 <input required type="tel" name="telefono" id="telefono" placeholder="Ingrese su numero de telefono">
 
                 <input type="submit" value="REGISTRARSE">

@@ -152,3 +152,38 @@
     padding-bottom: 2rem;
     width: 100%;
 }
+
+
+
+/* Estilos para la lista de publicaciones */
+.publicaciones-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilos para cada elemento de la lista de publicaciones */
+.publicacion-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Estilos para el título de la publicación */
+.publicacion-titulo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Estilos para los datos de la publicación */
+.publicacion-datos {
+    margin-bottom: 5px;
+}
+
+/* Estilos para las instalaciones */
+.instalacion {
+    background-color: #ffc107;
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
