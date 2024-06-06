@@ -10,10 +10,11 @@ use Paw\Core\Exceptions\InvalidValueFormatException;
 
 use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Verificador;
+use PDOException;
 
 class Publicacion extends Model 
 {
-    public $table = 'publicacion';
+    public $table = 'publicaciones';
 
     public $fields = [
         'id' => null,
@@ -47,4 +48,28 @@ class Publicacion extends Model
         }
 
     }
+
+
+    public function create($data)
+    {
+        try {
+            return $this->queryBuilder->insert($this->table, $data);
+        } catch (PDOException $e) {
+            global $log;
+            $log->error("Error al crear la publicación: " . $e->getMessage());
+            return false; // O lanzar una excepción personalizada si prefieres
+        }
+    }
+
+    public function getAll()
+    {
+        try {
+            return $this->queryBuilder->select($this->table);
+        } catch (PDOException $e) {
+            global $log;
+            $log->error("Error al obtener las publicaciones: " . $e->getMessage());
+            return false; // O lanzar una excepción personalizada si prefieres
+        }
+    }
+
 }

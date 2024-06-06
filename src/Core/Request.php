@@ -21,6 +21,10 @@ class Request
         return $_POST[$key] ?? $_GET[$key] ?? null;
     }
 
+    public function all()
+    {
+        return $_POST;
+    }
     public function getSegments($numeroSegmento)
     {
         $this->segments = explode('/', trim($_SERVER['REQUEST_URI'], '/'));

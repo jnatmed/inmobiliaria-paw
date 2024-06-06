@@ -10,7 +10,7 @@
     <main class="login_form_container">
 
         <section class="login_form_header">
-            <h1 class="icono-header-pawperties">PawPerties</h1>
+        <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
             <h1 class="login_title">INICIO SESIÓN</h1>
         </section>
 
@@ -25,7 +25,6 @@
                 
                 <input type="submit" value="INICIAR SESION">
             
-
             </form>
 
             <form action="/registrarse" method="get">

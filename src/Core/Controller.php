@@ -31,8 +31,12 @@ class Controller
 
         $this->menu = [
             [
-                'href' => '/ofertas-imperdibles',
-                'name' => 'OFERTAS IMPERDIBLES'
+                'href' => '/buscar',
+                'name' => 'BUSCAR'
+            ],
+            [
+                'href' => '/publicaciones/list',
+                'name' => 'PUBLICACIONES'
             ],
             [
                 'href' => '/nosotros',
@@ -54,8 +58,8 @@ class Controller
 
         $this->menuPerfil = [
             [
-                'href' => '/perfil_usuario',
-                'name' => 'Mi Perfil'
+                'href' => '/buscar',
+                'name' => 'Buscar'
             ],
             [
                 'href' => '/iniciar_sesion',

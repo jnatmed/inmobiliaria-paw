@@ -42,9 +42,9 @@ class appPAW {
           //         .catch(error => console.error('Error:', error));
           // });
 
-            document.querySelector('.form-publicacion-new').addEventListener('submit', (event) => {
-              event.preventDefault(); // Prevenir el envío predeterminado del formulario
-          });
+          // document.querySelector('.form-publicacion-new').addEventListener('submit', (event) => {
+          //     event.preventDefault(); // Prevenir el envío predeterminado del formulario
+          // });
 
           // Agregar un event listener al botón de búsqueda
           document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
