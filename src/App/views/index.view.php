@@ -102,4 +102,6 @@
 
 </body>
 
+<?php require __DIR__.'/parts/footer.view.php' ?>
+
 </html>

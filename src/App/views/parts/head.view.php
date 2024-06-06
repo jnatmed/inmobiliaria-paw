@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/publicacion.css">
 <link rel="stylesheet" href="/assets/css/login.css">
+<link rel="stylesheet" href="/assets/css/footer.css">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
