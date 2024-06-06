@@ -18,4 +18,5 @@
 
     </main>
     
+    <?php require __DIR__.'/parts/footer.view.php' ?>
 </body>
