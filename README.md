@@ -8,6 +8,6 @@
 
 ## [Wireframe del Sitio](https://www.figma.com/file/f7et6OtnD4UQtiVNiBge5e/wireframe-%2F-inmobiliaria-paw?type=design&node-id=0-1&mode=design&t=eMePNkVMlsDYcH7P-0)
 
-## [REQUISITOS FUNCIONAL DEL PROYECTO](requisitos-y-funcioanlidades.md)
+## [REQUISITOS FUNCIONAL DEL PROYECTO](requisitos-y-funcionalidades.md)
 
 ## [PASOS PARA SU INSTALACION](Instalacion.md)

@@ -25,7 +25,6 @@
                 
                 <input type="submit" value="INICIAR SESION">
             
-
             </form>
 
             <form action="/registrarse" method="get">
