@@ -258,3 +258,33 @@ table.greenTable {
     align-items: center;
     flex-direction: column;
 }
+
+
+/*NAV DESTACADOS*/
+
+.nav-destacados {
+    overflow: hidden;
+    width: 50%;
+    max-height: 20%;
+    margin: 0 auto;
+}
+
+.carousel {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.5s ease;
+    overflow-x: auto; /* Asegura que el carrusel se pueda desplazar horizontalmente */
+    background-color: #24943A;
+    
+}
+
+.carousel-item {
+    flex: 0 0 100vw; /* Cada imagen ocupa todo el ancho del dispositivo */
+}
+
+.carousel-img {
+    width: 50%;
+    height: auto;
+}

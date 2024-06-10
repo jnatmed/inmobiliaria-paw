@@ -33,7 +33,7 @@ class PublicacionController extends Controller
             // Manejar la excepción
             $error_message = "Error al obtener las publicaciones: " . $e->getMessage();
             $log->error("error message", [$error_message]);
-            require $this->viewsDir . 'error.view.php'; // Muestra una vista de error con el mensaje
+            require $this->viewsDir . 'errors/not-found.view.php'; // Muestra una vista de error con el mensaje
         }
     }
 
@@ -102,6 +102,8 @@ class PublicacionController extends Controller
             $log->error("Error al crear la publicación");
         }
     }
+
+    
 
 }
 

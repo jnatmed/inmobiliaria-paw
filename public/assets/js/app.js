@@ -17,34 +17,8 @@ class appPAW {
           let gestor = new GestorInmobiliaria()
 
           const mapaLeaf = new MapaLeaflet()
-
-          // const cookier = new Cookier()
           
           const locationDiv = document.querySelector('#location');
-
-          // const lastSearch = cookier.getCookie('location');
-
-          // if (lastSearch) {
-          //     locationDiv.textContent = `Última ubicación: ${lastSearch}`;
-          //     mapaLeaf.buscar(lastSearch);
-          //     console.log(lastSearch)
-          // }
-
-          // document.querySelector('#buscarUbicacion').addEventListener('click', () => {
-          //     const query = document.querySelector('#ubicacion').value;
-          //     fetch(`/buscar?ubicacion=${encodeURIComponent(query)}`) // promesa
-          //         .then(response => response.json()) // la promesa devuelta por fetch, pasa a este then, que la convierte en json y devuelve otra promesa
-          //         .then(data => { // la promesa del anterior then, pasa a data, que usa location
-          //             const location = data.location;
-          //             locationDiv.textContent = `Última ubicación: ${location}`;
-          //             // cookier.setCookie('location', location, 7);
-          //         })
-          //         .catch(error => console.error('Error:', error));
-          // });
-
-          // document.querySelector('.form-publicacion-new').addEventListener('submit', (event) => {
-          //     event.preventDefault(); // Prevenir el envío predeterminado del formulario
-          // });
 
           // Agregar un event listener al botón de búsqueda
           document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
@@ -84,6 +58,44 @@ class appPAW {
 
         })         
       }
+
+      if (['/'].includes(window.location.pathname)){
+        
+        const carousel = document.querySelector('.carousel');
+        let currentIndex = 0;
+    
+        function nextSlide() {
+            currentIndex++;
+            console.log(`currentIndex: ${currentIndex}`)
+            if (currentIndex >= carousel.children.length) {
+                currentIndex = 0;
+                console.log(`currentIndex(${currentIndex}) >= carousel.children.length(${carousel.children.length}) = ${currentIndex >= carousel.children.length}`)
+            }
+            showSlide(currentIndex);
+        }
+    
+        function prevSlide() {
+            currentIndex--;
+            console.log(`currentIndex(${currentIndex}) < 0 ? ${currentIndex < 0}`)
+            if (currentIndex < 0) {
+                currentIndex = carousel.children.length - 1;
+                console.log(`currentIndex: ${currentIndex}`)
+            }
+            showSlide(currentIndex);
+        }
+    
+        function showSlide(index) {
+            console.log(`carousel.clientWidth: ${carousel.clientWidth}`)
+            const offset = index * carousel.clientWidth;
+            carousel.scrollLeft = offset;
+            console.log(`carousel.scrollLeft: ${carousel.scrollLeft} // offset: ${offset}`)
+        }
+    
+        // Agregar listeners para los botones de navegación
+        document.getElementById('prevButton').addEventListener('click', prevSlide);
+        document.getElementById('nextButton').addEventListener('click', nextSlide);     
+      }
+
 
     })
   }
