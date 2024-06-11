@@ -154,7 +154,6 @@
 }
 
 
-
 /* Estilos para la lista de publicaciones */
 .publicaciones-list {
     list-style-type: none;
@@ -187,4 +186,81 @@
     padding: 3px 6px;
     border-radius: 3px;
     margin-right: 5px;
+}
+
+.filtro_publicaciones{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    
+    align-items: center;
+}
+
+.form_filtros_publicaciones {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-destacados{
+    position: relative;
+    display: flex;
+    gap: 20px
+}
+
+.prevButton, .nextButton {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.flechas{
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    position: absolute;
+    top: 45%;
+}
+
+.prevButton {
+    background-image: url('/../assets/imgs/svg/flecha-izquierda.svg');
+    /* Ajusta el tamaño y la posición de la imagen según sea necesario */
+    left: 0;
+}
+.nextButton {
+    background-image: url('/../assets/imgs/svg/flecha-derecha.svg');
+    /* Ajusta el tamaño y la posición de la imagen según sea necesario */
+    right: 64%;
+}
+
+.container_publicaciones {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Divide el contenedor en dos columnas */
+    gap: 20px; /* Espacio entre las columnas */
+}
+
+.info_publicacion {
+    width: 100%;
+    font-size: large;
+    padding: 1rem 0 0 1rem;    
+}
+
+@media (max-width: 682px) {
+    .nav-destacados {
+        flex-direction: column;
+    }
+
+    .container_publicaciones {
+        grid-template-columns: 1fr; /* Una sola columna para pantallas pequeñas */
+    }
+
+    .flechas {
+        top: 28%;
+    }
+    .nextButton{
+        right: 0;
+    }
+
+    .carousel{
+        width: 100%;
+    }
 }

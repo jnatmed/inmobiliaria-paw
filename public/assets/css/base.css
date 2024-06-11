@@ -264,7 +264,6 @@ table.greenTable {
 
 .nav-destacados {
     overflow: hidden;
-    width: 40%;
     max-height: 20%;
     margin: 0 auto;
 }
@@ -278,6 +277,7 @@ table.greenTable {
     overflow-y: hidden; 
     background-color: #24943A;
     scroll-snap-type: x mandatory; 
+    width: 60%;
 }
 
 .carousel-item {
