@@ -61,15 +61,68 @@ class Publicacion extends Model
         }
     }
 
+
+    public function getImg($idPublicacion, $idImagen) {
+        
+
+        try {
+            $pathImagen = $this->queryBuilder->getImagePath('imagenes_publicacion', $idPublicacion, $idImagen);
+            
+            // Si no se encuentra la imagen, devuelve false
+            if (!$pathImagen) {
+                return false;
+            }
+    
+            // Devuelve el path de la imagen encontrada
+            return $pathImagen;
+        } catch (Exception $e) {
+            // Manejo de la excepción
+            // Registra el error utilizando el logger
+            $this->logger->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
+            return false; // Devolver false en caso de error
+        }
+    }
+    
+    
+
     public function getAll()
     {
         try {
-            return $this->queryBuilder->select($this->table);
+            $result = $this->queryBuilder->getAllWithImages(
+                $this->table, // Nombre de la tabla principal (publicaciones)
+                'imagenes_publicacion', // Nombre de la tabla de imágenes
+                'id', // Nombre de la clave primaria en la tabla principal
+                'id_publicacion' // Nombre de la clave foránea que relaciona las dos tablas
+            );
+    
+            // Estructurar los resultados
+            $publicaciones = [];
+            foreach ($result as $row) {
+                $id = $row['id'];
+                if (!isset($publicaciones[$id])) {
+                    $publicaciones[$id] = [];
+                    foreach ($row as $key => $value) {
+                        $publicaciones[$id][$key] = $value;
+                    }
+                    $publicaciones[$id]['imagenes'] = [];
+                }
+                if (!is_null($row['id_imagen'])) {
+                    $publicaciones[$id]['imagenes'][] = [
+                        'id_imagen' => $row['id_imagen'],
+                        'path_imagen' => $row['path_imagen'],
+                        'nombre_imagen' => $row['nombre_imagen']
+                    ];
+                }
+            }
+    
+            return array_values($publicaciones);
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());
             return false; // O lanzar una excepción personalizada si prefieres
         }
     }
+    
+    
 
 }

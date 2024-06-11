@@ -8,6 +8,8 @@ use Paw\Core\Traits\Loggable;
 
 class Controller 
 {
+    use Loggable;
+    
     public string $viewsDir;
     public string $viewsDirCliente;
 
@@ -18,8 +20,8 @@ class Controller
     public array $menuPerfil;
     public ?string $modelName = null;   
     protected $model;
-    use Loggable;
     public $qb;
+    public $request;
 
     public function __construct(){
         
@@ -76,6 +78,7 @@ class Controller
         ];     
         
         $this->qb = new QueryBuilder($connection, $log);
+        $this->request = new Request();
 
         if(!is_null($this->modelName)){
             $model = new $this->modelName;

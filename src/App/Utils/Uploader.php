@@ -83,6 +83,22 @@ class Uploader
         }        
     }
 
+    public static function getMimeType($filename) {
+        // Obtener la extensión del archivo
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
+        // Determinar el tipo MIME según la extensión del archivo
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                return 'image/jpeg';
+            case 'png':
+                return 'image/png';
+            // Agrega más casos según sea necesario para otras extensiones de archivo
+            default:
+                // Tipo MIME predeterminado en caso de que la extensión del archivo no sea reconocida
+                return 'application/octet-stream';
+        }
+    }    
 
 }

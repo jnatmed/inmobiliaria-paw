@@ -3,10 +3,12 @@
 namespace Paw\App\Controllers;
 
 use Paw\Core\Controller;
-use Exception;
-use Paw\App\Utils\Verificador;
 use Paw\App\Utils\Uploader;
 use Paw\App\Models\Publicacion;
+
+use PDOException;
+use Throwable;
+use Exception;
 
 class PublicacionController extends Controller
 {
@@ -22,20 +24,57 @@ class PublicacionController extends Controller
 
     public function list()
     {
+        global $log;
         try {
-
-            global $log;
             $publicaciones = $this->model->getAll();
+
+            // var_dump($publicaciones);
+            $log->info("Publicaciones: ", [$publicaciones]);
             
             require $this->viewsDir . 'publicaciones.list.view.php';
 
-        } catch (Exception $e) {
-            // Manejar la excepción
-            $error_message = "Error al obtener las publicaciones: " . $e->getMessage();
-            $log->error("error message", [$error_message]);
-            require $this->viewsDir . 'errors/not-found.view.php'; // Muestra una vista de error con el mensaje
+        } catch (PDOException $e) {
+            $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
+            $log->error($error_message);
+            require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
+
+    public function getImgPublicacion()
+    {
+        global $log;
+    
+        $idPublicacion = $this->request->get('id_pub');
+        $idImagen = $this->request->get('id_img');
+    
+        try {
+            
+            // Obtener la imagen de la publicación
+            $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
+            
+            if ($imagenPublicacion === false) {
+                // Si no se encuentra la imagen, devolver un código de error 404
+                http_response_code(404);
+                // exit;
+            }
+    
+            $mime_type = Uploader::getMimeType($imagenPublicacion['path_imagen']);
+    
+            $log->info("imagenPublicacion: " , [$imagenPublicacion]);
+    
+            // Establecer el tipo MIME de la imagen y enviarla al cliente
+            header("Content-type: " . $mime_type);
+            echo file_get_contents( Uploader::UPLOADDIRECTORY.$imagenPublicacion['path_imagen']);
+        } catch (Exception $e) {
+            // Manejo de la excepción
+            // Registrar el error utilizando el logger
+            $log->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
+            
+            // Mostrar una vista de error
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
+    }
+    
 
     public function new()
     {

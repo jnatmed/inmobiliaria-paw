@@ -59,42 +59,41 @@ class appPAW {
         })         
       }
 
-      if (['/'].includes(window.location.pathname)){
+      if (['/', '/publicaciones/list'].includes(window.location.pathname)) {
+        // Seleccionar todos los elementos con la clase .carousel
+        const carousels = document.querySelectorAll('.carousel');
         
-        const carousel = document.querySelector('.carousel');
-        let currentIndex = 0;
+        // Iterar sobre cada elemento .carousel
+        carousels.forEach(carousel => {
+            let currentIndex = 0;
     
-        function nextSlide() {
-            currentIndex++;
-            console.log(`currentIndex: ${currentIndex}`)
-            if (currentIndex >= carousel.children.length) {
-                currentIndex = 0;
-                console.log(`currentIndex(${currentIndex}) >= carousel.children.length(${carousel.children.length}) = ${currentIndex >= carousel.children.length}`)
+            function nextSlide() {
+                currentIndex++;
+                if (currentIndex >= carousel.children.length) {
+                    currentIndex = 0;
+                }
+                showSlide(carousel, currentIndex);
             }
-            showSlide(currentIndex);
-        }
     
-        function prevSlide() {
-            currentIndex--;
-            console.log(`currentIndex(${currentIndex}) < 0 ? ${currentIndex < 0}`)
-            if (currentIndex < 0) {
-                currentIndex = carousel.children.length - 1;
-                console.log(`currentIndex: ${currentIndex}`)
+            function prevSlide() {
+                currentIndex--;
+                if (currentIndex < 0) {
+                    currentIndex = carousel.children.length - 1;
+                }
+                showSlide(carousel, currentIndex);
             }
-            showSlide(currentIndex);
-        }
     
-        function showSlide(index) {
-            console.log(`carousel.clientWidth: ${carousel.clientWidth}`)
-            const offset = index * carousel.clientWidth;
-            carousel.scrollLeft = offset;
-            console.log(`carousel.scrollLeft: ${carousel.scrollLeft} // offset: ${offset}`)
-        }
+            function showSlide(carousel, index) {
+                const offset = index * carousel.clientWidth;
+                carousel.scrollLeft = offset;
+            }
     
-        // Agregar listeners para los botones de navegación
-        document.getElementById('prevButton').addEventListener('click', prevSlide);
-        document.getElementById('nextButton').addEventListener('click', nextSlide);     
-      }
+            // Agregar listeners para los botones de navegación
+            carousel.parentElement.querySelector('.prevButton').addEventListener('click', prevSlide);
+            carousel.parentElement.querySelector('.nextButton').addEventListener('click', nextSlide);
+        });
+    }
+    
 
 
     })
