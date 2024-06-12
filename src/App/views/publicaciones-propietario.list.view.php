@@ -24,7 +24,7 @@
                 </form>
             </aside> -->
             <section class="publicaciones_list">
-                <h2 class="h2-titulo-publicaciones">Lista de Publicaciones</h2>
+                <h2 class="h2-titulo-publicaciones">Mis Publicaciones</h2>
                 <ul class="publicaciones-list">
                     <?php foreach ($publicaciones as $publicacion): ?>
                         <li class="publicacion-item">

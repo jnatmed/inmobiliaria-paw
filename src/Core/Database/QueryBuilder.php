@@ -20,42 +20,58 @@ class QueryBuilder
     }
 
     public function select($table, $params = []) {
-        $whereClauses = [];
-        $bindings = [];
-    
-        // Construir las cláusulas WHERE y los parámetros de enlace
-        if (isset($params['id'])) {
-            $whereClauses[] = "id = :id";
-            $bindings[':id'] = $params['id'];
+        try {
+            $whereClauses = [];
+            $bindings = [];
+        
+            // Construir las cláusulas WHERE y los parámetros de enlace
+            if (isset($params['id'])) {
+                $whereClauses[] = "id = :id";
+                $bindings[':id'] = $params['id'];
+            }
+
+            if (isset($params['email'])) {
+                $whereClauses[] = "email = :email";
+                $bindings[':email'] = $params['email'];
+            }        
+            
+            if (isset($params['id_publicacion'])) {
+                $whereClauses[] = "id_publicacion = :id_publicacion";
+                $bindings[':id_publicacion'] = $params['id_publicacion'];
+            }
+        
+            if (isset($params['id_imagen'])) {
+                $whereClauses[] = "id_imagen = :id_imagen";
+                $bindings[':id_imagen'] = $params['id_imagen'];
+            }
+        
+            // Unir las cláusulas WHERE con AND
+            $where = implode(' AND ', $whereClauses);
+            $query = "SELECT * FROM {$table} WHERE {$where}";
+        
+            // Preparar la sentencia
+            $sentencia = $this->pdo->prepare($query);
+        
+            // Enlazar los valores de los parámetros
+            foreach ($bindings as $key => $value) {
+                $sentencia->bindValue($key, $value);
+            }
+        
+            // Establecer el modo de obtención y ejecutar la consulta
+            $sentencia->setFetchMode(PDO::FETCH_ASSOC);
+            $sentencia->execute();
+            return $sentencia->fetchAll();
+        } catch (PDOException $e) {
+            // Manejar la excepción de la base de datos
+            $this->logger->error('Database error: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        } catch (Exception $e) {
+            // Manejar otras excepciones
+            $this->logger->error('General error: ' . $e->getMessage());
+            throw new Exception('Ocurrió un error inesperado');
         }
-    
-        if (isset($params['id_publicacion'])) {
-            $whereClauses[] = "id_publicacion = :id_publicacion";
-            $bindings[':id_publicacion'] = $params['id_publicacion'];
-        }
-    
-        if (isset($params['id_imagen'])) {
-            $whereClauses[] = "id_imagen = :id_imagen";
-            $bindings[':id_imagen'] = $params['id_imagen'];
-        }
-    
-        // Unir las cláusulas WHERE con AND
-        $where = implode(' AND ', $whereClauses);
-        $query = "SELECT * FROM {$table} WHERE {$where}";
-    
-        // Preparar la sentencia
-        $sentencia = $this->pdo->prepare($query);
-    
-        // Enlazar los valores de los parámetros
-        foreach ($bindings as $key => $value) {
-            $sentencia->bindValue($key, $value);
-        }
-    
-        // Establecer el modo de obtención y ejecutar la consulta
-        $sentencia->setFetchMode(PDO::FETCH_ASSOC);
-        $sentencia->execute();
-        return $sentencia->fetchAll();
     }
+    
 
     public function insert($table, $data)
     {
@@ -142,6 +158,37 @@ class QueryBuilder
         }
     }    
     
+
+    public function getAllWithImagesByUser($mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser) {
+        try {
+
+            $this->logger->info("parametors: ", [$mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser]);
+            $query = "
+                SELECT 
+                    main.*, 
+                    img.id_imagen, 
+                    img.path_imagen, 
+                    img.nombre_imagen 
+                FROM 
+                    {$mainTable} main
+                LEFT JOIN 
+                    {$imageTable} img
+                ON 
+                    main.{$mainTableKey} = img.{$foreignKey}
+                WHERE
+                    main.id_usuario = :id_usuario
+            ";
+    
+            $statement = $this->pdo->prepare($query);
+            $statement->bindParam(':id_usuario', $idUser, PDO::PARAM_INT);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Logging the error
+            $this->logger->error("Error in getAllWithImagesByUser: " . $e->getMessage());
+            return false;
+        }
+    }
 
     public function getLastQuery()
     {

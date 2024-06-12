@@ -41,13 +41,17 @@ class Controller
                 'name' => 'PUBLICACIONES'
             ],
             [
-                'href' => '/nosotros',
-                'name' => 'NOSOTROS'
-            ],
-            [
-                'href' => '/gestiona-tu-alojamiento',
-                'name' => 'GESTIONA TU ALOJAMIENTO'
-            ],
+                'href' => '/mis_publicaciones',
+                'name' => 'MIS PUBLICACIONES'   
+            ],            
+            // [
+            //     'href' => '/nosotros',
+            //     'name' => 'NOSOTROS'
+            // ],
+            // [
+            //     'href' => '/gestiona-tu-alojamiento',
+            //     'name' => 'GESTIONA TU ALOJAMIENTO'
+            // ],
         ];
 
         $this->menuEmpleado = [
