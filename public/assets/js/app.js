@@ -59,7 +59,7 @@ class appPAW {
         })         
       }
 
-      if (['/', '/publicaciones/list'].includes(window.location.pathname)) {
+      if (['/', '/publicaciones/list', '/mis_publicaciones'].includes(window.location.pathname)) {
         // Seleccionar todos los elementos con la clase .carousel
         const carousels = document.querySelectorAll('.carousel');
         

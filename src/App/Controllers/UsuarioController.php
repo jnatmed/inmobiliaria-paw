@@ -161,7 +161,7 @@ class UsuarioController extends Controller
         }
     }
 
-    public function cerrar_sesion() {
+    public function logout() {
         // Iniciar la sesión si no está iniciada
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

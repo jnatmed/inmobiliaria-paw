@@ -59,6 +59,7 @@ $router->get('/', 'PageController@index');
 
 $router->get('/iniciar-sesion', 'UsuarioController@login');
 $router->post('/iniciar-sesion', 'UsuarioController@login');
+$router->post('/cerrar-sesion', 'UsuarioController@logout');
 
 $router->get('/registrarse', 'PageController@register');
 $router->post('/registrarse', 'PageController@register');
