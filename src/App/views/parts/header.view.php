@@ -17,7 +17,7 @@
     <nav class="nav-sesion">
         <ul class="lista-opciones-sesion">
             <li class="item-opcion-sesion">
-                    <?php if($this->usuario->isUserLoggedIn()): ?>    
+                    <?php if($this->usuario->isUserLoggedIn()): ?>   
                         <a class="anchor-item-sesion" href="/cerrar-sesion">CERRAR SESION</a>
                     <?php else: ?>
                         <a class="anchor-item-sesion" href="/iniciar-sesion">INICIAR SESION</a>
