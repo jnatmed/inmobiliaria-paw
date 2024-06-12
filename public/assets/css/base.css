@@ -262,11 +262,7 @@ table.greenTable {
 
 /*NAV DESTACADOS*/
 
-.nav-destacados {
-    overflow: hidden;
-    max-height: 20%;
-    margin: 0 auto;
-}
+
 
 .carousel {
     display: flex;

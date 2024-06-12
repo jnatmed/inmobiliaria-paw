@@ -24,7 +24,7 @@
                 </form>
             </aside>
             <section class="publicaciones_list">
-                <h2>Lista de Publicaciones</h2>
+                <h2 class="h2-titulo-publicaciones">Lista de Publicaciones</h2>
                 <ul class="publicaciones-list">
                     <?php foreach ($publicaciones as $publicacion): ?>
                         <li class="publicacion-item">
@@ -41,8 +41,6 @@
                                 <section class="info_publicacion">
                                     <h3 class="publicacion-titulo"><?= htmlspecialchars($publicacion['nombre_alojamiento']) ?></h3>
                                     <p class="publicacion-datos">Dirección: <?= htmlspecialchars($publicacion['direccion']) ?>, <?= htmlspecialchars($publicacion['localidad']) ?>, <?= htmlspecialchars($publicacion['provincia']) ?></p>
-                                    <p class="publicacion-datos">Teléfono: <?= htmlspecialchars($publicacion['telefono']) ?></p>
-                                    <p class="publicacion-datos">Email: <?= htmlspecialchars($publicacion['email']) ?></p>
                                     <p class="publicacion-datos">Capacidad Máxima: <?= htmlspecialchars($publicacion['capacidad_maxima']) ?></p>
                                     <p class="publicacion-datos">Tipo de Alojamiento: <?= htmlspecialchars($publicacion['tipo_alojamiento']) ?></p>
                                     <p class="publicacion-datos">Cantidad de Baños: <?= htmlspecialchars($publicacion['cant_banios']) ?></p>
@@ -55,6 +53,12 @@
                                     </p>
                                     <p class="publicacion-datos">Normas: <?= nl2br(htmlspecialchars($publicacion['normas_alojamiento'])) ?></p>
                                     <p class="publicacion-datos">Descripción: <?= nl2br(htmlspecialchars($publicacion['descripcion_alojamiento'])) ?></p>
+                                    <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone=<?= htmlspecialchars($publicacion['telefono']) ?>" target="_blank">
+                                        <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
+                                    </a>
+                                    <a class="contact-link email-link" href="mailto:<?= htmlspecialchars($publicacion['email']) ?>" target="_blank">
+                                        <img src="/assets/imgs/svg/email_green.png" alt="Email">
+                                    </a>                                   
                                 </section>    
                             </nav>            
                         </li>
