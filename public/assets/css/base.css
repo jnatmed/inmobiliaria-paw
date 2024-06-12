@@ -259,6 +259,44 @@ table.greenTable {
     flex-direction: column;
 }
 
+/* input imagen publicaciones */
+
+.container-dad {
+    text-align: center;
+    width: 70%;
+}
+
+.input-dad {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.input-dad p {
+    text-align: center;
+    align-self: center;
+}
+
+.drag-over {
+    background-color: #313131;
+    color: white;
+}
+
+.output-dad {
+    max-width: 200px;   
+    margin: auto;
+}
+
+.image-dad img {
+    max-width: 100%;
+}
+
+
 
 /*NAV DESTACADOS*/
 

@@ -7,6 +7,14 @@ class appPAW {
              * para la carga del formulario
              *  */
       
+      if (['/publicacion/new'].includes(window.location.pathname))
+        {
+            PAW.cargarScript("Drag_Drop", "/assets/js/components/drag-drop.js", () => {
+                let dragAndDrop = new Drag_Drop()
+            })                   
+        }
+
+
       if (['/buscar', '/publicacion/new'].includes(window.location.pathname))
       {
 

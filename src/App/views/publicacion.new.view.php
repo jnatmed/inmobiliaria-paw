@@ -60,13 +60,14 @@
             <fieldset class="paso-2">
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
                 <p>Agrega fotos de tu alojamiento</p>
-                <section class="file-input-container">
-                    <label for="file-input" class="file-input-label">+ Fotos</label>
-                    <input type="file" id="file-input" class="file-input" required>
-
-                    <label for="file-input-principal" class="file-input-label">+ Foto principal</label>
-                    <input type="file" id="file-input-principal" class="file-input" required>
-                </section>
+                <label for="imagen_plato"> </label>
+                <input type="file" id="imagen_plato" name="imagen_plato" accept=".jpeg, .png" hidden>
+                <div class="container-dad">
+                    <div class="input-dad">
+                        <p>Cargue una imagen de ilustracion aqui</p>
+                    </div>
+                    <div class="output-dad"></div>
+                </div>
             </fieldset>
 
             <fieldset class="paso-3">
