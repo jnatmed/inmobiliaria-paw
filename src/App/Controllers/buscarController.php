@@ -12,10 +12,13 @@ class BuscarController extends Controller
     public Uploader $uploader;
     public Verificador $verificador;
     private $apiKey;
+    public $usuario;
 
     public function __construct()
     {
         global $config;
+
+        $this->usuario = new UsuarioController();
 
         parent::__construct();
 

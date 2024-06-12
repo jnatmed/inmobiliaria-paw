@@ -6,6 +6,7 @@ use Paw\App\Utils\Verificador;
 use Paw\App\Utils\Uploader;
 
 use Paw\Core\Controller;
+// use Paw\App\Controllers\UsuarioController;
 
 class PageController extends Controller
 {
@@ -15,11 +16,16 @@ class PageController extends Controller
 
     public function __construct()
     {
+        global $log;
         parent::__construct();
 
         $this->uploader = new Uploader;
 
         $this->verificador = new Verificador;
+        
+        $this->usuario = new UsuarioController();
+        $log->info("this->usuario->adjutstMenuForSession: ",[$this->usuario->adjustMenuForSession($this->menu)]); 
+
     }
 
     public function index()

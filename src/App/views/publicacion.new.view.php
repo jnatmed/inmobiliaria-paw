@@ -132,6 +132,11 @@
 
                 <h3 class="titulo-datos-propietario">Descripción</h3>
                 <textarea name="descripcion-alojamiento" class="descripcion-alojamiento" required></textarea>
+
+                <h3 class="titulo-datos-propietario">Precio</h3>
+                <input type="number" name="precio" id="precio" class="descripcion-alojamiento">
+
+
                 <button type="button" class="prev-btn">Anterior</button>
                 <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>

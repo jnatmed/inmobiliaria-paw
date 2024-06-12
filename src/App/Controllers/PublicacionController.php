@@ -19,8 +19,9 @@ class PublicacionController extends Controller
     {
         global $config;
 
-        parent::__construct();
         $this->usuario = new UsuarioController();
+        
+        parent::__construct();
 
     }
 
@@ -47,16 +48,16 @@ class PublicacionController extends Controller
         global $log;
 
         try {
-            // // Verificar si hay sesión iniciada
-            // if (!$this->usuario->isUserLoggedIn()) {
-            //     $resultado = [
-            //         "success" => false,
-            //         "message" => "Debe iniciar sesión para ver el pedido."
-            //     ];
-            //     $log->info("Intento de ver pedido sin sesión iniciada.");
-            //     require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-            //     return;
-            // }
+            // Verificar si hay sesión iniciada
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $log->info("Intento de ver pedido sin sesión iniciada.");
+                require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
+                return;
+            }
 
             // Obtener el ID del usuario desde la sesión
             $log->info("sesion: ",[$_SESSION]);
@@ -174,7 +175,7 @@ class PublicacionController extends Controller
             
             if ($publicaciones) {
                 // Redirigir a la vista de lista de publicaciones
-                $this->index();
+                
             } else {
                 // Manejar error
                 $log->error("Error al crear la publicación");

@@ -14,38 +14,39 @@ class UsuarioController extends Controller
     public Verificador $verificador;
     public ?string $modelName = Usuario::class;
     public $tipoUsuario;
+    public $usuario; 
 
     public function __construct()
     {
         parent::__construct();
+
         if (session_status() == PHP_SESSION_NONE) {
             session_start();  // Inicia la sesión si no está iniciada
         }
         $this->verificador = new Verificador;
-        list($this->menuPerfil, $this->menuEmpleado) = $this->adjustMenuForSession($this->menuPerfil, $this->menuEmpleado); 
+        $this->menu = $this->adjustMenuForSession($this->menu); 
     }
 
-    public function adjustMenuForSession($menuPerfil, $menuEmpleado) {
-        if (isset($_SESSION['usuario'])) {
-            // Si hay una sesión iniciada, quitar las opciones de iniciar y registrar
-            $menuPerfil = array_filter($menuPerfil, function ($item) {
-                return !in_array($item['href'], ['/iniciar_sesion', '/registrar_usuario']);
-            });
+    public function adjustMenuForSession($menu) {
+        global $log;
+        if (isset($_SESSION['email'])) {
             // Si el usuario es de tipo "cliente", eliminar el menú de empleado
-            if ($_SESSION['tipo'] === 'cliente') {
+            $log->info("hay sesion: ",[$_SESSION]);
+            if ($_SESSION['tipo'] === 'propietario') {
                 $menuEmpleado = [];
             }
             $this->tipoUsuario = $_SESSION['tipo'];
             setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
 
         }else{
-            $menuEmpleado = [];
-            $menuPerfil = array_filter($menuPerfil, function ($item) {
-                return !in_array($item['href'], ['/perfil_usuario', '/cerrar_sesion', '/ver_mi_pedido', '/ver_mi_reserva']);
+            $log->info("no existe sesion: ",[$_SESSION]);
+            $menu = array_filter($menu, function ($item) {
+                return !in_array($item['href'], ['/mis_publicaciones']);
             });            
+            $log->info("DATOS THIS->MENU: ",[$menu]);
         }
 
-        return [$menuPerfil, $menuEmpleado];
+        return [$menu];
     }
 
 
@@ -81,6 +82,7 @@ class UsuarioController extends Controller
                 if (session_status() == PHP_SESSION_NONE) {
                     session_start();  // Inicia la sesión si no está iniciada
                 }
+                $this->sesion_en_curso = true;
                 // Guardar los datos del usuario en la sesión
                 $_SESSION['email'] = $usuarioAutenticado['email'];
                 $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario'];

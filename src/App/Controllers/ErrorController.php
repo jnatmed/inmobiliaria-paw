@@ -7,10 +7,11 @@ use Paw\Core\Controller;
 
 class ErrorController extends Controller
 {
+    public $usuario;
 
     public function __construct(){
         parent::__construct();
-        
+        $this->usuario = new UsuarioController();
         $this->viewsDir = __DIR__ . '/../views/errors/';
     }
     

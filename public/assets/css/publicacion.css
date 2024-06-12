@@ -72,16 +72,10 @@
     justify-content: center;
 }
 
-/* .file-input-label::after {
-    content: "";
-    position: absolute;
-    bottom: 21%;
-    width: 30rem;
-    height: 30rem;
-    background-image: url("../imgs/svg/imagen-upload.svg");
-    background-size: cover;
-    background-position: center;
-} */
+.descripcion-alojamiento[type="number"]{
+    display: inline-block;
+    height: 2em;
+}
 
 .file-input-label {
     padding: 10px 20px;
@@ -391,14 +385,21 @@
     font-size: 2.5rem;
 }
 
-/* Media query for mobile devices */
+
+.video-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 38%;
+    height: 100%;
+    z-index: -1; /* Ensure video is behind content */
+    object-fit: cover; 
+}
+
 @media (max-width: 682px) {
     .container-dad {
         grid-template-columns: 1fr;
     }
-}
-
-@media (max-width: 682px) {
     .nav-destacados {
         flex-direction: column;
     }

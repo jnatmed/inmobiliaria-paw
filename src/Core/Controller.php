@@ -31,6 +31,8 @@ class Controller
         $this->viewsDirCliente = __DIR__ . '/../App/views/cliente/';
         $this->viewsDirEmpleado = __DIR__ . '/../App/views/empleado/';
 
+        $this->sesion_en_curso = false;
+
         $this->menu = [
             [
                 'href' => '/buscar',
@@ -43,15 +45,7 @@ class Controller
             [
                 'href' => '/mis_publicaciones',
                 'name' => 'MIS PUBLICACIONES'   
-            ],            
-            // [
-            //     'href' => '/nosotros',
-            //     'name' => 'NOSOTROS'
-            // ],
-            // [
-            //     'href' => '/gestiona-tu-alojamiento',
-            //     'name' => 'GESTIONA TU ALOJAMIENTO'
-            // ],
+            ]        
         ];
 
         $this->menuEmpleado = [
@@ -89,6 +83,8 @@ class Controller
             $model->setQueryBuilder($this->qb);
             $this->setModel($model);
         }
+
+        
     }
 
     public function setModel(Model $model)
