@@ -9,8 +9,20 @@ class appPAW {
       
       if (['/publicacion/new'].includes(window.location.pathname))
         {
+            PAW.cargarScript('FormularioMultiStep', '/assets/js/components/formularioMultiStep.js');
+
             PAW.cargarScript("Drag_Drop", "/assets/js/components/drag-drop.js", () => {
-                let dragAndDrop = new Drag_Drop()
+              
+              document.querySelectorAll('.input-dad').forEach(dropArea => {
+                const inputId = dropArea.dataset.input;
+                const inputFile = document.querySelector(`#${inputId}`);
+                const output = dropArea.nextElementSibling;
+                new Drag_Drop(dropArea, inputFile, output);
+
+              });
+
+              const formulario = new FormularioMultistep();
+              
             })                   
         }
 

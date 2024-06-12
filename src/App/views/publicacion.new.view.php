@@ -55,22 +55,75 @@
                 <label for="wifi" class="lbl-chekbox">Wi-Fi
                     <input type="checkbox" name="wifi" id="wifi" title="Wi-Fi">
                 </label>
+                <button type="button" class="next-btn">Siguiente</button>
             </fieldset>
 
-            <fieldset class="paso-2">
+            <fieldset class="paso-2 hidden">
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
                 <p>Agrega fotos de tu alojamiento</p>
-                <label for="imagen_plato"> </label>
-                <input type="file" id="imagen_plato" name="imagen_plato" accept=".jpeg, .png" hidden>
+
+                <!-- Container for all drop areas -->
                 <div class="container-dad">
-                    <div class="input-dad">
-                        <p>Cargue una imagen de ilustracion aqui</p>
+                    <!-- Main image input -->
+                    <div>
+                        <label for="imagen_principal_publicacion"> </label>
+                        <input type="file" id="imagen_principal_publicacion" name="imagen_principal_publicacion" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="imagen_principal_publicacion">
+                            <p>Cargue una imagen principal aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
                     </div>
-                    <div class="output-dad"></div>
+
+                    <!-- Secondary image inputs -->
+                    <div>
+                        <label for="img_secundaria_1"> </label>
+                        <input type="file" id="img_secundaria_1" name="img_secundaria_1" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="img_secundaria_1">
+                            <p>Cargue una imagen secundaria aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
+                    </div>
+
+                    <div>
+                        <label for="img_secundaria_2"> </label>
+                        <input type="file" id="img_secundaria_2" name="img_secundaria_2" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="img_secundaria_2">
+                            <p>Cargue una imagen secundaria aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
+                    </div>
+
+                    <div>
+                        <label for="img_secundaria_3"> </label>
+                        <input type="file" id="img_secundaria_3" name="img_secundaria_3" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="img_secundaria_3">
+                            <p>Cargue una imagen secundaria aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
+                    </div>
+                    <div>
+                        <label for="img_secundaria_4"> </label>
+                        <input type="file" id="img_secundaria_4" name="img_secundaria_4" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="img_secundaria_4">
+                            <p>Cargue una imagen secundaria aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
+                    </div>
+                    <div>
+                        <label for="img_secundaria_5"> </label>
+                        <input type="file" id="img_secundaria_5" name="img_secundaria_5" accept=".jpeg, .png" hidden>
+                        <div class="input-dad" data-input="img_secundaria_5">
+                            <p>Cargue una imagen secundaria aquí</p>
+                        </div>
+                        <div class="output-dad"></div>
+                    </div>
                 </div>
+                <button type="button" class="prev-btn">Anterior</button>
+                <button type="button" class="next-btn">Siguiente</button>
             </fieldset>
 
-            <fieldset class="paso-3">
+            <fieldset class="paso-3 hidden">
+
                 <h2 class="titulo-form-publicacion">PASO 3 de 3</h2>
                 <p>Especifica tus condiciones para el alquiler, recuerda que mientras más flexible seas más oportunidades tendrás</p>
 
@@ -79,9 +132,9 @@
 
                 <h3 class="titulo-datos-propietario">Descripción</h3>
                 <textarea name="descripcion-alojamiento" class="descripcion-alojamiento" required></textarea>
+                <button type="button" class="prev-btn">Anterior</button>
+                <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>
-
-            <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
         </form>
     </main>
 
