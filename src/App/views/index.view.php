@@ -56,23 +56,6 @@
             Descubre los alojamientos mejor calificados y altamente recomendados por  nuestro sitio por su excepcional servicio. Estas opciones han sido  elogiadas por su calidad, atención al detalle y la satisfacción de sus  huéspedes. Sumérgete en una experiencia inolvidable con nuestros  alojamientos destacados, donde la excelencia es una garantía.
             </p>
 
-            <nav class="nav-destacados">
-                <ul class="carousel">
-                    <li class="carousel-item">
-                        <img class="carousel-img" src="assets/imgs/home/casa-foto-1.png" alt="propiedad-1">
-                    </li>
-                    <li class="carousel-item">
-                        <img class="carousel-img" src="assets/imgs/home/casa-foto-4.png" alt="propiedad-2">
-                    </li>
-                    <li class="carousel-item">
-                        <img class="carousel-img" src="assets/imgs/home/casa-foto-3.png" alt="propiedad-3">
-                    </li>
-                </ul>
-                <button id="prevButton">prevSlide</button>
-                <button id="nextButton">nextSlide</button>
-            </nav>
-
-
         </section>
 
         <section class="seccion-contactanos">

@@ -78,33 +78,40 @@ class PublicacionController extends Controller
 
     public function new()
     {
-        global $request;
+        
         global $log;
     
-        $log->info("POST: ", [$request->all()]);
+        
+        if($this->request->method() == 'POST'){
+
+        }else{
+            require $this->viewsDir . 'publicacion.new.view.php';
+        }
+
+        $log->info("POST: ", [$this->request->all()]);
         $log->info("FILES: ", [$_FILES]);
     
         // Obtiene y verifica los valores del request
-        $nombre = htmlspecialchars($request->get('nombre') ?? '');
-        $apellido = htmlspecialchars($request->get('apellido') ?? '');
-        $dni = htmlspecialchars($request->get('dni') ?? '');
-        $telefono = htmlspecialchars($request->get('telefono') ?? '');
-        $email = htmlspecialchars($request->get('email') ?? '');
-        $provincia = htmlspecialchars($request->get('provincia') ?? '');
-        $localidad = htmlspecialchars($request->get('localidad') ?? '');
-        $direccion = htmlspecialchars($request->get('direccion') ?? '');
-        $nombreAlojamiento = htmlspecialchars($request->get('nombre-alojamiento') ?? '');
-        $tipoAlojamiento = htmlspecialchars($request->get('tipo-alojamiento') ?? '');
-        $capacidadMaxima = htmlspecialchars($request->get('capacidad-maxima') ?? '');
-        $cantBanios = htmlspecialchars($request->get('cant-banios') ?? '');
-        $cantidadDormitorios = htmlspecialchars($request->get('cantidad-dormitorios') ?? '');
-        $cochera = $request->get('cochera') ? 1 : 0;
-        $pileta = $request->get('pileta') ? 1 : 0;
-        $aireAcondicionado = $request->get('aire-acondicionado') ? 1 : 0;
+        $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
+        $apellido = htmlspecialchars($this->request->get('apellido') ?? '');
+        $dni = htmlspecialchars($this->request->get('dni') ?? '');
+        $telefono = htmlspecialchars($this->request->get('telefono') ?? '');
+        $email = htmlspecialchars($this->request->get('email') ?? '');
+        $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
+        $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
+        $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
+        $nombreAlojamiento = htmlspecialchars($this->request->get('nombre-alojamiento') ?? '');
+        $tipoAlojamiento = htmlspecialchars($this->request->get('tipo-alojamiento') ?? '');
+        $capacidadMaxima = htmlspecialchars($this->request->get('capacidad-maxima') ?? '');
+        $cantBanios = htmlspecialchars($this->request->get('cant-banios') ?? '');
+        $cantidadDormitorios = htmlspecialchars($this->request->get('cantidad-dormitorios') ?? '');
+        $cochera = $this->request->get('cochera') ? 1 : 0;
+        $pileta = $this->request->get('pileta') ? 1 : 0;
+        $aireAcondicionado = $this->request->get('aire-acondicionado') ? 1 : 0;
 
-        $wifi = $request->get('wifi') ? 1 : 0;
-        $normasAlojamiento = htmlspecialchars($request->get('normas-alojamiento') ?? '');
-        $descripcionAlojamiento = htmlspecialchars($request->get('descripcion-alojamiento') ?? '');
+        $wifi = $this->request->get('wifi') ? 1 : 0;
+        $normasAlojamiento = htmlspecialchars($this->request->get('normas-alojamiento') ?? '');
+        $descripcionAlojamiento = htmlspecialchars($this->request->get('descripcion-alojamiento') ?? '');
     
         // Preparar el array de datos para la inserción
         $data = [

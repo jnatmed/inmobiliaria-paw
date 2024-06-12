@@ -19,6 +19,17 @@ final class CreatePublicacionesYImagenes extends AbstractMigration
      */
     public function change(): void
     {
+        // Create 'usuarios' table
+        $table = $this->table('usuarios', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', ['signed' => false, 'identity' => true])
+            ->addColumn('nombre', 'string', ['limit' => 255, 'null' => true])
+            ->addColumn('apellido', 'string', ['limit' => 255, 'null' => true])
+            ->addColumn('contrasenia', 'string', ['limit' => 255])
+            ->addColumn('email', 'string', ['limit' => 255])
+            ->addColumn('telefono', 'string', ['limit' => 255, 'null' => true])
+            ->addColumn('tipo_usuario', 'enum', ['values' => ['propietario', 'empleado']])
+            ->create();      
+                    
         // Create 'publicaciones' table
         $table = $this->table('publicaciones', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id', 'integer', ['signed' => false, 'identity' => true])
@@ -30,6 +41,9 @@ final class CreatePublicacionesYImagenes extends AbstractMigration
               ->addColumn('provincia', 'string', ['limit' => 255, 'null' => true])
               ->addColumn('localidad', 'string', ['limit' => 255, 'null' => true])
               ->addColumn('direccion', 'string', ['limit' => 255, 'null' => true])
+              ->addColumn('latitud', 'decimal', ['precision' => 10, 'scale' => 8, 'null' => true])
+              ->addColumn('longitud', 'decimal', ['precision' => 11, 'scale' => 8, 'null' => true])
+              ->addColumn('precio', 'integer', ['null' => true])
               ->addColumn('nombre_alojamiento', 'string', ['limit' => 255, 'null' => true])
               ->addColumn('tipo_alojamiento', 'string', ['limit' => 255, 'null' => true])
               ->addColumn('capacidad_maxima', 'integer', ['null' => true])
@@ -41,6 +55,8 @@ final class CreatePublicacionesYImagenes extends AbstractMigration
               ->addColumn('wifi', 'boolean', ['null' => true])
               ->addColumn('normas_alojamiento', 'text', ['null' => true])
               ->addColumn('descripcion_alojamiento', 'text', ['null' => true])
+              ->addColumn('id_usuario', 'integer', ['signed' => false, 'null' => true])
+              ->addForeignKey('id_usuario', 'usuarios', 'id', ['delete' => 'SET_NULL', 'update' => 'CASCADE'])
               ->create();
 
         // Create 'imagenes_publicacion' table with composite primary key
@@ -49,8 +65,12 @@ final class CreatePublicacionesYImagenes extends AbstractMigration
             ->addColumn('id_publicacion', 'integer', ['signed' => false])
             ->addColumn('path_imagen', 'string', ['limit' => 255])
             ->addColumn('nombre_imagen', 'string', ['limit' => 255, 'null' => true])
+            ->addColumn('id_usuario', 'integer', ['signed' => false])
             ->addForeignKey('id_publicacion', 'publicaciones', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+            ->addForeignKey('id_usuario', 'usuarios', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
             ->addIndex(['id_imagen', 'id_publicacion'], ['unique' => true])
             ->create();
+
+      
     }
 }
