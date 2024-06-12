@@ -56,6 +56,7 @@ class Drag_Drop {
                 return;
             this.mostrar(imagen);
             this.eliminarDropArea();
+            this.inputFile.files = e.target.files;
         });
     }
 

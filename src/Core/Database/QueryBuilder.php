@@ -92,6 +92,40 @@ class QueryBuilder
         return [$idGenerado, $resultado];
     }
 
+    public function insertMany($table, $data)
+    {
+        try {
+            $this->logger->info("data en capa DB: ", [$data]);
+            
+            // Preparar las columnas
+            $columns = ['id_publicacion', 'path_imagen', 'nombre_imagen', 'id_usuario'];
+            $placeholders = rtrim(str_repeat('(?, ?, ?, ?), ', count($data)), ', '); // Genera los marcadores de posición
+    
+            // Preparar la consulta de inserción
+            $query = "INSERT INTO $table (" . implode(', ', $columns) . ") VALUES $placeholders";
+    
+            // Preparar los valores para la inserción
+            $values = [];
+            foreach ($data as $imagen) {
+                $values[] = $imagen['id_publicacion'];
+                $values[] = $imagen['path_imagen'];
+                $values[] = $imagen['nombre_imagen'];
+                $values[] = $imagen['id_usuario'];
+            }
+    
+            // Preparar la sentencia
+            $statement = $this->pdo->prepare($query);
+            
+            // Ejecutar la consulta con los valores preparados
+            $statement->execute($values);
+            
+            return true;
+        } catch (PDOException $e) {
+            // Manejo de la excepción
+            $this->logger->error("Error al insertar múltiples imágenes: " . $e->getMessage());
+            return false;
+        }
+    }  
 
     public function getImagePath($imagesTable, $id_publicacion, $id_imagen)
     {

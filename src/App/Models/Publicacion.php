@@ -50,6 +50,8 @@ class Publicacion extends Model
     }
 
 
+
+
     public function create($data)
     {
         try {
@@ -162,4 +164,25 @@ class Publicacion extends Model
         }
     } 
 
+
+    public function insertMany($table, $insertData)
+    {
+        try {
+            // Preparar los datos para la inserción
+
+            global $log;
+
+            $log->info("data en capa model: ",$insertData);
+
+            // Realizar la inserción utilizando el método de queryBuilder
+            $result = $this->queryBuilder->insertMany($table, $insertData);
+    
+            // Retornar el resultado de la operación de inserción
+            return $result;
+        } catch (PDOException $e) {
+            // Manejo de la excepción
+            $this->logger->error("Error al insertar múltiples imágenes: " . $e->getMessage());
+            return false;
+        }
+    }    
 }

@@ -25,7 +25,7 @@ class PageController extends Controller
         
         $this->usuario = new UsuarioController();
         $log->info("this->usuario->adjutstMenuForSession: ",[$this->usuario->adjustMenuForSession($this->menu)]); 
-
+        
     }
 
     public function index()

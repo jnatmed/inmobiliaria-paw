@@ -9,7 +9,7 @@
     <?php require __DIR__ . '/parts/header.view.php' ?>
 
     <main class="main-home">
-        <form action="/publicacion/new" method="post" class="form-publicacion-new">
+    <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p>Completá los datos del dueño del alojamiento y de la persona que va a administrar la propiedad.</p>

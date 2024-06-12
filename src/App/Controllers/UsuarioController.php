@@ -142,7 +142,10 @@ class UsuarioController extends Controller
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
                     $resultado['exito'] = "registro exitoso del usuario {$nombre}";
-                    require $this->viewsDir . 'register.view.php';
+
+                    header('Location: /mis_publicaciones');
+                    exit();                    
+
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
