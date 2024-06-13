@@ -22,6 +22,7 @@ class Controller
     protected $model;
     public $qb;
     public $request;
+    public $sesion_en_curso;
 
     public function __construct(){
         

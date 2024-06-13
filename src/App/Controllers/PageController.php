@@ -13,7 +13,8 @@ class PageController extends Controller
 
     public Uploader $uploader;
     public Verificador $verificador;
-
+    public $usuario;
+    
     public function __construct()
     {
         global $log;

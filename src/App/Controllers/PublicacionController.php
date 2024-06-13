@@ -19,7 +19,8 @@ class PublicacionController extends Controller
     public $usuario;
     public Verificador $verificador;
     public Uploader $uploader;
-
+    public $utils;
+    
     public function __construct()
     {
         global $config;
