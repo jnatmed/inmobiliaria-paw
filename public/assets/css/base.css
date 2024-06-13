@@ -1,17 +1,18 @@
 @import '../css/reset.css';
 
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 :root {
     --color-verde-header: #7B8C56;
     --color-negro-boton: #252026;
     --color-gris: #F2F2F0;
     --borde: 30px;
+    --font-principal: 'Raleway';
 }
 
 html {
-    font-size: 10px;
-    background-color: var(--color-gris);
-    /* font-family: Inter;  */
-    /* Fijense si les gusta esta fuente mejor  */
+    font-size: 12px;
 }
 
 header {
@@ -19,7 +20,7 @@ header {
     flex-direction: row;
     justify-content: space-between;
     background-color: var(--color-verde-header);
-    height: 13.3rem;
+    height: 5rem;
     align-items: center;
     padding-left: 3rem;
     padding-right: 3rem;
@@ -41,8 +42,8 @@ header {
 }
 
 .anchor-item-sesion, .anchor-item-main {
-    text-decoration: none;
-    font-weight: normal;    
+    text-decoration: none; 
+    font-size: 1rem;    
     color: white;
     margin-right: .5rem;
     margin-left: .5rem;
@@ -94,8 +95,8 @@ a.anchor-item-sesion:hover {
 } */
 
 .icono-header-pawperties{
-    width: 120px;
-    height: 106px;
+    width: 75px;
+    height: 63px;
     background-image: url('../imgs/header/Logo.svg');
     background-size: cover; /* Ajusta la imagen para cubrir todo el área */
     background-position: center; /* Centra la imagen */
@@ -106,9 +107,9 @@ a.anchor-item-sesion:hover {
 .h1-titulo-empresa{
     color: var(--color-verde-header);
     font-weight: 900;
-    font-size: 700%;
+    font-size: 6rem;
     position: relative;
-    padding-left: 20%;
+    padding-left: 17%;
     padding-top: 25px;
     margin-bottom: 5rem;
 }
@@ -128,8 +129,9 @@ a.anchor-item-sesion:hover {
 
 .h2-titulo{
     display: inline-block;
-    font-size: 7rem;
-    width: 50%;
+    font-size: 4rem;
+    width: 60%;
+    font-weight: 700;
 }
 
 .form-busqueda-propiedad input:nth-of-type(2) 
@@ -144,7 +146,7 @@ a.anchor-item-sesion:hover {
     background-color: var(--color-negro-boton);
     font-size: 2rem;
     padding: 6px 0 6px 0;   /* arriba, derecha, abajo, izquierda*/
-    width: 50%;
+    width: 60%;
     text-align: center;
     margin: 2rem 0 2rem 0;
 }
@@ -176,12 +178,18 @@ a.anchor-item-sesion:hover {
 
 .seccion-que-es-pawperties {
     display: flex;
-    margin: 2rem 1rem 2rem 1rem;
+    margin: 5rem 1rem 5rem 1rem;
+
 }
 .h2-que-es-pawperties{
     width: 40%;
     font-size: 5rem;
     font-weight: 800;
+}
+
+.title-descripcion,
+.descripcion-pawperties {
+    margin-bottom: 2rem;
 }
 
 .article-descripcion{
@@ -289,4 +297,143 @@ table.greenTable {
 .carousel-img {
     width: 100%;
     height: 100%;
+}
+
+.titulo-contactanos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+    margin: 2rem;
+    background-color: var(--color-negro-boton);
+    color: #ffffff;
+    padding: 3rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 40px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.titulo-contactanos h2 {
+    font-size: 2rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* FORMULARIO HOME */
+
+.seccion-contactanos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+
+.form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    text-align: left;
+}
+
+.form-group input {
+    width: (100% - 18px);
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid var(--color-verde-header);
+    font-size: 14px;
+}
+
+.form-contactanos {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.form_campos {
+    width: 70%;
+}
+
+.form_info {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-left: 25px;
+}
+
+.form_info h3 {
+    margin-top: 40px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.form_info p {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.form-contactanos label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-contactanos > input[type="text"],
+.form-contactanos input[type="tel"],
+.form-contactanos input[type="email"] {
+    width: calc(100% - 18px); /* 10px de padding del form + 8px del padding del input */
+    padding: 8px;
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 1px solid var(--color-verde-header);
+    font-size: 14px;
+}
+
+.form-contactanos textarea {
+    width: calc(100% - 6px);
+    margin-bottom: 8px;
+    resize: none;
+    border: 1px solid var(--color-verde-header);
+}
+
+.form-contactanos input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 35px 0 10px 0;
+    background-color: var(--color-negro-boton);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-contactanos input[type="submit"]:hover {
+    background-color: #333;
+}
+
+.form-contactanos input:focus {
+    border: none;
+    outline: none;
+    border-bottom: 2px var(--color-verde-header) solid;
+}
+
+.form-contactanos textarea:focus {
+    outline: none;
+    border: 2px var(--color-verde-header) solid;
 }
