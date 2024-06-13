@@ -13,6 +13,7 @@
 
 html {
     font-size: 12px;
+    font-family: var(--font-principal);
 }
 
 header {

@@ -1,8 +1,13 @@
+@import '../css/base.css';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
 footer {
     display: flex;
     margin-top: 2rem;
     height: 15rem;
-    background-color: #000000;
+    background-color:var(--color-negro-boton);
     flex-direction: column;
 
 }
@@ -21,7 +26,7 @@ footer {
     align-items: center;
     width: 100%;
     height: 15%;
-    background-color: #2b2b2b;
+    background-color: #525252;
 }
 
 .footer_secciones nav {
@@ -29,7 +34,6 @@ footer {
 }
 
 .footer_secciones nav li {
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 1.5rem;
     margin: 1rem;
     color: aliceblue;
@@ -60,7 +64,6 @@ footer {
 }
 
 .footer_redes p {
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;  
     font-size: 1.5rem;
     color: #FFFFFF;
 }
