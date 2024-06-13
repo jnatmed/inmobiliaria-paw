@@ -42,10 +42,11 @@ class appPAW {
 
           // Agregar un event listener al botón de búsqueda
           document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
+            event.preventDefault(); // Evitar comportamiento predeterminado del botón
             const address = document.querySelector('#ubicacion').value;
             // console.log(address);
             mapaLeaf.buscar(address);
-          });         
+        });
             
         })
       }        
