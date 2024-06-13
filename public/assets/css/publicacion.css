@@ -441,6 +441,10 @@
     object-fit: cover; 
 }
 
+#direccion{
+    display: none;
+}
+
 @media (max-width: 682px) {
     .container-dad {
         grid-template-columns: 1fr;

@@ -44,7 +44,13 @@ class MapaLeaflet {
                 const marker = L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
                     .bindPopup(address)
                     .openPopup();
-    
+                const position = marker.getLatLng(); // Obtener la nueva posición del marcador              
+                // Convertir las coordenadas a JSON
+                const coordenadasJSON = JSON.stringify(position);
+
+                // Colocar las coordenadas en el input #direccion en formato JSON
+                document.querySelector('#direccion').value = coordenadasJSON;
+                    
                 // Evento 'dragend' para actualizar las coordenadas después de arrastrar el marcador
                 marker.on('dragend', function(event) {
                     const marker = event.target; // Obtener el marcador que fue arrastrado
