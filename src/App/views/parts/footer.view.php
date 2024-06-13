@@ -17,21 +17,24 @@
     </section>
     <section class="footer_redes">
         <p>PAWPERTIES</p>
-        <nav> 
+        <nav>
             <ul class="pie_pagina link_externos">
                 <li>
-                    <ul class="redes_sociales facebook">
-                        <li class="red_social">
-                            <a href="https://www.facebook.com/" target="_blank" rel="noopener"><img
-                                    src="/assets/imgs/svg/icono-facebook.svg" alt="facebook"></a>
+                    <ul class="redes_sociales">
+                        <li class="red_social facebook">
+                            <a href="https://www.facebook.com/" target="_blank" rel="noopener">
+                                <img src="/assets/imgs/svg/icono-facebook.svg" alt="facebook">
+                            </a>
                         </li>
                         <li class="red_social instagram">
-                            <a href="https://www.instagram.com/" target="_blank" rel="noopener"><img
-                                    src="/assets/imgs/svg/icono-instagram.svg" alt="instagram"></a>
+                            <a href="https://www.instagram.com/" target="_blank" rel="noopener">
+                                <img src="/assets/imgs/svg/icono-instagram.svg" alt="instagram">
+                            </a>
                         </li>
                         <li class="red_social twitter">
-                            <a href="https://twitter.com/" target="_blank" rel="noopener"><img
-                                    src="/assets/imgs/svg/icono-x.svg" alt="twitter"></a>
+                            <a href="https://twitter.com/" target="_blank" rel="noopener">
+                                <img src="/assets/imgs/svg/icono-x.svg" alt="twitter">
+                            </a>
                         </li>
                     </ul>
                 </li>

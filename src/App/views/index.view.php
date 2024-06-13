@@ -58,7 +58,6 @@
             <p class="p-descripcion-alojamientos">
             Descubre los alojamientos mejor calificados y altamente recomendados por  nuestro sitio por su excepcional servicio. Estas opciones han sido  elogiadas por su calidad, atención al detalle y la satisfacción de sus  huéspedes. Sumérgete en una experiencia inolvidable con nuestros  alojamientos destacados, donde la excelencia es una garantía.
             </p>
-
         </section>
 
         <section class="seccion-contactanos">

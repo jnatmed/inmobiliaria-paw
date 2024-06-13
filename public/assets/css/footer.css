@@ -18,6 +18,8 @@ footer {
     width: 100%;
     justify-content: center;
     align-items: center;
+    padding-bottom: 15px;
+    padding-top: 15px;
 }
 
 .footer_redes {
@@ -25,8 +27,8 @@ footer {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 15%;
-    background-color: #525252;
+    height: 50%;
+    background-color: #2e2e2e;
 }
 
 .footer_secciones nav {
@@ -45,17 +47,20 @@ footer {
     text-decoration: none;
 }
 
+.footer_secciones a:hover {
+    text-decoration: underline;
+}
+
 .footer_secciones:first-child::before {
     position: absolute;
     left: 10%;
     content: "";
-    width: 16rem;
-    height: 12rem;
+    width: 12rem;
+    height: 9rem;
     background-image: url('../imgs/home/icono-pawperties.svg');
     background-size: cover; 
     background-position: center; 
     z-index: 100; 
-
 }
 
 .footer_redes ul {
@@ -66,4 +71,15 @@ footer {
 .footer_redes p {
     font-size: 1.5rem;
     color: #FFFFFF;
+}
+
+.redes_sociales img {
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.redes_sociales {
+    margin-right: 10px;
 }
