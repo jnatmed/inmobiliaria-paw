@@ -14,6 +14,7 @@
 html {
     font-size: 12px;
     font-family: var(--font-principal);
+    background-color: var(--color-gris);
 }
 
 header {
@@ -145,11 +146,13 @@ a.anchor-item-sesion:hover {
     text-decoration: none;
     color: white;
     background-color: var(--color-negro-boton);
-    font-size: 2rem;
+    font-size: 20px;
     padding: 6px 0 6px 0;   /* arriba, derecha, abajo, izquierda*/
     width: 60%;
     text-align: center;
     margin: 2rem 0 2rem 0;
+    font-weight: bold;
+    border-radius: 20px;
 }
 
 .main-home{
@@ -161,6 +164,7 @@ a.anchor-item-sesion:hover {
     width: calc(93% / 3);
     height: 4rem;
     border: none;
+    padding-left: 10px;
 }
 
 .label-form {
@@ -174,6 +178,14 @@ a.anchor-item-sesion:hover {
     border:none;
     width: 25rem;
     height: 5.1rem;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.btn-form-busqueda:hover, .enlace-publicar:hover {
+    text-decoration: underline;
 }
 
 
@@ -186,11 +198,13 @@ a.anchor-item-sesion:hover {
     width: 40%;
     font-size: 5rem;
     font-weight: 800;
+    margin-right: 5px;
 }
 
 .title-descripcion,
 .descripcion-pawperties {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    margin-left: 1em;
 }
 
 .article-descripcion{

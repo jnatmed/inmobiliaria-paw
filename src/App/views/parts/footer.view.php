@@ -2,7 +2,7 @@
     <section class="footer_secciones">
         <nav>
             <ul>
-                <li><a href="#Ofertas">Oferas Imperdibles</a></li>
+                <li><a href="#Ofertas">Ofertas Imperdibles</a></li>
                 <li><a href="#Ofertas">Destinos</a></li>
             </ul>
         </nav>

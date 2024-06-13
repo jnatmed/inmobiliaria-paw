@@ -45,7 +45,7 @@
                 <p class="descripcion-pawperties">
                     Descubre destinos inspiradores, reserva tu refugio ideal y prepárate  para desconectar del mundo y recargar energías en lugares que exudan  frescura y buena vibra. ¡Tu escapada perfecta comienza aquí!.
                 </p>
-                <p>
+                <p class="descripcion-pawperties">
                 Si eres propietario de un alojamiento único y deseas compartirlo con  viajeros en busca de experiencias auténticas, ¡estás en el lugar  adecuado! En nuestra plataforma, ofrecemos la oportunidad de dar a  conocer tu espacio y conectar con una audiencia global de personas que  valoran la originalidad y la hospitalidad 
                 </p>
             </article>
