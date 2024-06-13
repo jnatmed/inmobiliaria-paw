@@ -20,7 +20,7 @@ class PublicacionController extends Controller
     public Verificador $verificador;
     public Uploader $uploader;
     public $utils;
-    
+
     public function __construct()
     {
         global $config;
@@ -29,9 +29,8 @@ class PublicacionController extends Controller
         $this->verificador = new Verificador;
         $this->usuario = new UsuarioController();
         $this->utils = new  Utils();
-        
-        parent::__construct();
 
+        parent::__construct();
     }
 
     public function list()
@@ -42,9 +41,8 @@ class PublicacionController extends Controller
 
             // var_dump($publicaciones);
             $log->info("Publicaciones: ", [$publicaciones]);
-            
-            require $this->viewsDir . 'publicaciones.list.view.php';
 
+            require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $log->error($error_message);
@@ -69,36 +67,35 @@ class PublicacionController extends Controller
             }
 
             // Obtener el ID del usuario desde la sesión
-            $log->info("sesion: ",[$_SESSION]);
+            $log->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
-            
+
             $publicaciones = $this->model->getAllbyUser($idUser);
 
             // var_dump($publicaciones);
             $log->info("Publicaciones: ", [$publicaciones]);
-            
-            require $this->viewsDir . 'publicaciones.list.view.php';
 
+            require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $log->error($error_message);
             require $this->viewsDir . 'errors/not-found.view.php';
         }
-    }    
+    }
 
     public function getImgPublicacion()
     {
         global $log;
-    
+
         $idPublicacion = $this->request->get('id_pub');
         $idImagen = $this->request->get('id_img');
-    
+
         try {
-            
+
             // Obtener la imagen de la publicación
             $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
-            
+
             $log->info("(method- getImgPublicacion) - imagenPublicacion:", [$imagenPublicacion]);
 
             if ($imagenPublicacion === false) {
@@ -106,37 +103,37 @@ class PublicacionController extends Controller
                 http_response_code(404);
                 // exit;
             }
-    
+
 
             $mime_type = Uploader::getMimeType($imagenPublicacion['path_imagen']);
-    
-            $log->info("(method- getImgPublicacion) - mime_type: ",[$mime_type]);
 
-            $log->info("imagenPublicacion: " , [Uploader::UPLOADDIRECTORY.$imagenPublicacion['path_imagen']]);
-    
+            $log->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
+
+            $log->info("imagenPublicacion: ", [Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
+
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente
             header("Content-type: " . $mime_type);
-            echo file_get_contents( Uploader::UPLOADDIRECTORY.$imagenPublicacion['path_imagen']);
+            echo file_get_contents(Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
         } catch (Exception $e) {
             // Manejo de la excepción
             // Registrar el error utilizando el logger
             $log->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
-            
+
             $mime_type = Uploader::getMimeType('image-not-found.png');
             header("Content-type: " . $mime_type);
-            echo file_get_contents( Uploader::UPLOADDIRECTORY.'image-not-found.png');
+            echo file_get_contents(Uploader::UPLOADDIRECTORY . 'image-not-found.png');
         }
     }
-    
+
 
     public function new()
     {
-        
+
         global $log;
-    
-        
-        if($this->request->method() == 'POST'){
+
+
+        if ($this->request->method() == 'POST') {
 
             if (!$this->usuario->isUserLoggedIn()) {
                 $resultado = [
@@ -149,14 +146,14 @@ class PublicacionController extends Controller
             }
 
             // Obtener el ID del usuario desde la sesión
-            $log->info("sesion: ",[$_SESSION]);
+            $log->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
             $log->info("idUser: ", [$idUser]);
 
             $log->info("POST: ", [$this->request->all()]);
             $log->info("FILES: ", [$_FILES]);
-        
+
             // Obtiene y verifica los valores del request
             $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
             $apellido = htmlspecialchars($this->request->get('apellido') ?? '');
@@ -165,9 +162,9 @@ class PublicacionController extends Controller
             $email = htmlspecialchars($this->request->get('email') ?? '');
             $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
             $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
-          /**
-           * $direccion viene en formato json y tengo q descomponerlo en latitud y longitud 
-           * */ 
+            /**
+             * $direccion viene en formato json y tengo q descomponerlo en latitud y longitud 
+             * */
             $direccion = htmlspecialchars($this->request->get('direccion') ?? ''); // 
             $coordenadas = json_decode($direccion, true);
 
@@ -175,7 +172,7 @@ class PublicacionController extends Controller
             $latitud = $coordenadas['lat'];
             $longitud = $coordenadas['lng'];
             $precio = htmlspecialchars($this->request->get('precio'));
-            
+
             $nombreAlojamiento = htmlspecialchars($this->request->get('nombre-alojamiento') ?? '');
             $tipoAlojamiento = htmlspecialchars($this->request->get('tipo-alojamiento') ?? '');
             $capacidadMaxima = htmlspecialchars($this->request->get('capacidad-maxima') ?? '');
@@ -184,11 +181,11 @@ class PublicacionController extends Controller
             $cochera = $this->request->get('cochera') ? 1 : 0;
             $pileta = $this->request->get('pileta') ? 1 : 0;
             $aireAcondicionado = $this->request->get('aire-acondicionado') ? 1 : 0;
-    
+
             $wifi = $this->request->get('wifi') ? 1 : 0;
             $normasAlojamiento = htmlspecialchars($this->request->get('normas-alojamiento') ?? '');
             $descripcionAlojamiento = htmlspecialchars($this->request->get('descripcion-alojamiento') ?? '');
-        
+
             // Preparar el array de datos para la inserción
             $publicacion = [
                 'nombre' => $nombre,
@@ -215,7 +212,7 @@ class PublicacionController extends Controller
                 'descripcion_alojamiento' => $descripcionAlojamiento,
                 'id_usuario' => $idUser
             ];
-        
+
             // Manejar la inserción de datos
             list($idPublicacionGenerado, $resultado) = $this->model->create($publicacion);
 
@@ -232,45 +229,39 @@ class PublicacionController extends Controller
             if ($idPublicacionGenerado) {
                 $imagenesPublicacion = [];
 
-                
-
                 foreach ($_FILES as $file) {
-                    $result = $this->uploader->uploadFile($file);
+                    if ($file["name"] != "") {
 
-                    $log->info("resultado insercion capa CONTROLLER  ", [$result]);
-                    if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
-                        
-                        $imagenesPublicacion[] = [
-                            'id_publicacion' => $idPublicacionGenerado,
-                            'path_imagen' => $result['nombre_imagen'],
-                            'nombre_imagen' => $result['nombre_imagen'],
-                            'id_usuario' => $idUser
-                        ];
+                        $result = $this->uploader->uploadFile($file);
 
-                        // No es necesario hacer la inserción aquí, acumula los datos para luego realizar una inserción masiva
-                    } else {
-                        // Si ocurre un error al subir una imagen, lanza una excepción
-                        throw new Exception("Error al subir una imagen: " . $result['description']);
+                        $log->info("resultado insercion capa CONTROLLER  ", [$result]);
+                        if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
+
+                            $imagenesPublicacion[] = [
+                                'id_publicacion' => $idPublicacionGenerado,
+                                'path_imagen' => $result['nombre_imagen'],
+                                'nombre_imagen' => $result['nombre_imagen'],
+                                'id_usuario' => $idUser
+                            ];
+
+                            // No es necesario hacer la inserción aquí, acumula los datos para luego realizar una inserción masiva
+                        } else {
+                            // Si ocurre un error al subir una imagen, lanza una excepción
+                            throw new Exception("Error al subir una imagen: " . $result['description']);
+                        }
                     }
                 }
 
                 $log->info("imagenesPublicacion: ", [$imagenesPublicacion]);
                 // Inserta todas las imágenes en la base de datos en una única operación
-                $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);   
+                $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
                 header('Location: /mis_publicaciones');
-                exit();         
-            }else{
+                exit();
+            } else {
                 $log->error("Publicacion no generada: ", [$idPublicacionGenerado]);
             }
-        }else{
+        } else {
             require $this->viewsDir . 'publicacion.new.view.php';
         }
-
-
     }
-
-    
-
 }
-
-

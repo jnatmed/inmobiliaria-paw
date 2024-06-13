@@ -25,11 +25,13 @@ class Uploader
         $fileTmpName = $file['tmp_name'];
 
         // Verificar el tipo de archivo
+        
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        
         $fileMimeType = finfo_file($finfo, $fileTmpName);
         finfo_close($finfo);
 
-        if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
+        if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png' && $fileMimeType !== 'image/jpg' && $fileMimeType !== 'image/jfif') {
             return [
                 'exito' => self::ERROR_TIPO_NO_PERMITIDO,
                 'description' => "El tipo de archivo no está permitido."
