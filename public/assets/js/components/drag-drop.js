@@ -52,7 +52,7 @@ class Drag_Drop {
         // Handle change event for file input
         this.inputFile.addEventListener("change", (e) => {
             const imagen = e.target.files[0];
-            if (!imagen || !imagen.type.match("image")) 
+            if (!imagen || !imagen.type.match("image.*")) 
                 return;
             this.mostrar(imagen);
             this.eliminarDropArea();
