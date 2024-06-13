@@ -42,7 +42,7 @@
                                     <h3 class="publicacion-precio">$<?= htmlspecialchars($publicacion['precio']) ?></h3>
                                     <h3 class="publicacion-titulo"><?= htmlspecialchars($publicacion['nombre_alojamiento']) ?></h3>
                                     <p class="publicacion-datos"> <?= nl2br(htmlspecialchars($publicacion['descripcion_alojamiento'])) ?></p>
-                                    <p class="publicacion-datos"><?= htmlspecialchars($publicacion['direccion']) ?>, <?= htmlspecialchars($publicacion['localidad']) ?>, <?= htmlspecialchars($publicacion['provincia']) ?></p>
+                                    <p class="publicacion-datos"><?= htmlspecialchars($publicacion['localidad']) ?>, <?= htmlspecialchars($publicacion['provincia']) ?></p>
                                     <p class="publicacion-datos">Capacidad: <?= htmlspecialchars($publicacion['capacidad_maxima']) ?></p>
                                     <p class="publicacion-datos">Tipo: <?= htmlspecialchars($publicacion['tipo_alojamiento']) ?></p>
                                     <p class="publicacion-datos">Baños: <?= htmlspecialchars($publicacion['cant_banios']) ?></p>

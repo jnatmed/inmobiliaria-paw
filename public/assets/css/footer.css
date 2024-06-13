@@ -6,7 +6,7 @@
 footer {
     display: flex;
     margin-top: 2rem;
-    height: 15rem;
+    height: 18rem;
     background-color:var(--color-negro-boton);
     flex-direction: column;
 
@@ -71,6 +71,7 @@ footer {
 .footer_redes p {
     font-size: 1.5rem;
     color: #FFFFFF;
+    padding-left: 1em;
 }
 
 .redes_sociales img {
