@@ -442,12 +442,13 @@
     display: flex;
     flex-wrap: wrap;
     width: 60%;
-    height: 15.8rem;
+    height: 10rem;
     margin-left: 0;
     padding: 2rem 2rem 0 2rem;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
+
 
 .h1-titulo-empresa{
     color: var(--color-verde-header);

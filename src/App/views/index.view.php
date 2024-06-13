@@ -16,8 +16,8 @@
 
        <section class="seccion-portada">
 
-            <iframe class="video-background" src="https://www.youtube.com/embed/PETj3DEbkVs?start=0&end=10&autoplay=1&loop=1&playlist=PETj3DEbkVs&mute=1" title="Tour Mini departamento de 30m2 en Santiago de Chile 🇨🇱" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>    
-
+            <img class="video-background"  src="/assets/imgs/home/Carrouselimages.png" alt="imagen-principal">
+            
             <h1 class="h1-titulo-empresa">PAWPERTIES</h1>
             <h2 class="h2-titulo">
                 Encontra el lugar perfecto para tu proximo destino

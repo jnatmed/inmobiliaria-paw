@@ -107,14 +107,17 @@ a.anchor-item-sesion:hover {
     text-decoration: none;
     color: white;
     background-color: var(--color-negro-boton);
-    font-size: 20px;
+    font-size: 1rem;
     padding: 6px 0 6px 0;
     /* arriba, derecha, abajo, izquierda*/
     width: 60%;
     text-align: center;
     margin: 2rem 0 2rem 0;
-    font-weight: bold;
-    border-radius: 20px;
+}
+
+.enlace-publicar:hover {
+    text-decoration: none;
+    background-color: #333;
 }
 
 .main-home {
@@ -123,8 +126,8 @@ a.anchor-item-sesion:hover {
 }
 
 .input-form-busqueda {
-    width: calc(93% / 3);
-    height: 4rem;
+    width: 30%;
+    height: 3rem;
     border: none;
     padding-left: 10px;
 }
@@ -138,12 +141,12 @@ a.anchor-item-sesion:hover {
     color: white;
     display: block;
     border: none;
-    width: 25rem;
-    height: 5.1rem;
-    font-size: 20px;
+    width: 30%;
+    height: 3rem;
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 
 .btn-form-busqueda:hover,
