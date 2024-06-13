@@ -267,18 +267,7 @@ table.greenTable tfoot .links a {
     display: none;
 }
 
-.carousel {
-    display: flex;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    overflow-x: hidden;
-    /* Asegura que el carrusel se pueda desplazar horizontalmente */
-    overflow-y: hidden;
-    background-color: #24943A;
-    scroll-snap-type: x mandatory;
-    width: 60%;
-}
+
 
 .carousel-item {
     flex: 0 0 100%;

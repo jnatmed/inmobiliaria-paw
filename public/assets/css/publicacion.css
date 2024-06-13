@@ -258,7 +258,7 @@
 .nextButton {
     background-image: url('/../assets/imgs/svg/flecha-derecha.svg');
     /* Ajusta el tamaño y la posición de la imagen según sea necesario */
-    right: 64%;
+    right: 53%;
 }
 
 .container_publicaciones {
@@ -506,6 +506,20 @@
     margin-right: 5px;
 }
 
+
+.carousel {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    /* Asegura que el carrusel se pueda desplazar horizontalmente */
+    overflow-y: hidden;
+    background-color: #24943A;
+    scroll-snap-type: x mandatory;
+    width: 100%;
+}
+
 @media (max-width: 1200px) {
     .video-background {
         display: block;
@@ -515,6 +529,13 @@
     }
     .form-busqueda-propiedad input:nth-of-type(2) {
         margin: 0;
+    }
+    .carousel {
+        width: 100%;
+    }
+
+    .publicacion-item {
+        border-top-right-radius: 0px;
     }
 
     .h2-que-es-pawperties {
