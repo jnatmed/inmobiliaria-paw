@@ -441,3 +441,14 @@ table.greenTable tfoot .links a {
     outline: none;
     border: 2px var(--color-verde-header) solid;
 }
+
+.seccion-busqueda {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seccion-busqueda .form-busqueda-propiedad{
+    margin: 3rem;
+    
+}
