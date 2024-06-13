@@ -22,7 +22,12 @@
             <h2 class="h2-titulo">
                 Encontra el lugar perfecto para tu proximo destino
             </h2>
-            <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
+            <?php if($this->usuario->isUserLoggedIn()): ?>   
+                        <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
+                    <?php else: ?>
+                        <a href="/publicacion/new" class="enlace-publicar-disable">Quiero Publicar Lugar</a>
+                    <?php endif; ?>
+           
             <form action="" class="form-busqueda-propiedad" method="GET">
                 <label for="input-zona" class="label-form" id="input-zona">Zona</label>
                 <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona...">

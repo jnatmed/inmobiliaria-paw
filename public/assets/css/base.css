@@ -118,6 +118,21 @@ a.anchor-item-sesion:hover {
     border-radius: 20px;
 }
 
+.enlace-publicar-disable {
+    display: none;
+    text-decoration: none;
+    color: white;
+    background-color: var(--color-negro-boton);
+    font-size: 2rem;
+    padding: 6px 0 6px 0;
+    /* arriba, derecha, abajo, izquierda*/
+    width: 60%;
+    text-align: center;
+    margin: 2rem 0 2rem 0;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
 .enlace-publicar:hover, .btn-form-busqueda:hover {
     text-decoration: none;
     background-color: #333;
