@@ -62,12 +62,20 @@
         </section>
 
         <section class="seccion-contactanos">
-            <form action="/enviar-msj-contactanos" class="form-contactanos" method="post">
-                <label for="input-nombre">Nombre:</label>
-                <input type="text" id="input-nombre" name="nombre">
+            <section class="titulo-contactanos">
+                <h2>Contactanos</h2>
+                <p>¿Tenes alguna consulta para hacernos?</p>
+            </section>
 
-                <label for="input-apellido">Apellido:</label>
-                <input type="text" id="input-apellido" name="apellido">
+            <form action="/enviar-msj-contactanos" class="form-contactanos" method="post">
+            <section class="form_campos">
+                <fieldset class="form-group">
+                    <label for="input-nombre">Nombre:</label>
+                    <label for="input-apellido">Apellido:</label>
+                    <input type="text" id="input-nombre" name="nombre">
+                    <input type="text" id="input-apellido" name="apellido">
+                </fieldset>
+
 
                 <label for="input-telefono">Teléfono:</label>
                 <input type="tel" id="input-telefono" name="telefono">
@@ -76,15 +84,18 @@
                 <input type="email" id="input-email" name="email">
 
                 <label for="input-descripcion">Descripción:</label>
-                <input type="text" id="input-descripcion" name="descripcion">
+                <textarea type="text" id="input-descripcion" name="descripcion" rows="10"></textarea>
+            </section>
+            <section class="form_info">
+                <h3>Ubicacion</h3>
+                <p>[Domicilio]</p>
+                <p>Lujan - Buenos Aires</p>
+                <h3>telefono</h3>
+                <p>[Numero de telefono]</p>
+                <input type="submit" id="input-submit-enviar" value="Enviar">
+            </section>
 
-                <label for="input-ubicacion">Ubicación:</label>
-                <input type="text" id="input-ubicacion" name="ubicacion">
-
-                <label for="input-telefono2">Teléfono 2:</label>
-                <input type="tel" id="input-telefono2" name="telefono2">
-
-                <input type="submit" id="input-submit-enviar" value="Enviar">                
+                                
             </form>
         </section>
     </main>
