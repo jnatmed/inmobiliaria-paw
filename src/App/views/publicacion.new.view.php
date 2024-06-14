@@ -27,9 +27,9 @@
 
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
                 <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
-                <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia" required>
-                <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad" required>
-                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" required>
+                <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia" >
+                <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad" >
+                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" >
                 <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
                 <?php require __DIR__ . '/parts/mapa.view.php' ?>
 
