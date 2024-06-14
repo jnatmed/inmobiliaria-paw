@@ -131,6 +131,8 @@ class PublicacionController extends Controller
     {
         global $log;
     
+        $log->info("request:", [$_REQUEST]);
+        $log->info("server:", [$_SERVER]);
         try {
             if ($this->request->method() == 'POST') {
     
@@ -171,10 +173,15 @@ class PublicacionController extends Controller
                 $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
                 if (is_null($direccion) || $direccion === '') {
                     throw new Exception("Error: JSON proporcionado es nulo o vacío.");
-                }
-                $coordenadas = json_decode($direccion, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception("Error al decodificar JSON: " . json_last_error_msg());
+                } else {
+                    // Convertir entidades HTML a caracteres normales
+                    $direccion = html_entity_decode($direccion);
+    
+                    // Decodificar la cadena JSON
+                    $coordenadas = json_decode($direccion, true);
+                    if ($coordenadas === null) {
+                        throw new Exception("Error al decodificar la dirección: " . json_last_error_msg());
+                    }
                 }
     
                 $latitud = $coordenadas['lat'] ?? null;
