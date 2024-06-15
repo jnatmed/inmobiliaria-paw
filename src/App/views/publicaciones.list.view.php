@@ -28,6 +28,7 @@
                 <ul>
                     <?php foreach ($publicaciones as $publicacion) : ?>
                         <li class="publicacion-item">
+                            <a href="/publicacion/ver?id_pub=<?= $publicacion['id'] ?>">
                             <nav class="nav-destacados">
                                 <ul class="carousel">
                                     <?php foreach ($publicacion['imagenes'] as $imagen) : ?>
@@ -53,6 +54,7 @@
                                         <?= $publicacion['pileta'] ? '<span class="instalacion">Pileta</span> ' : '' ?>
                                         <?= $publicacion['aire_acondicionado'] ? '<span class="instalacion">Aire Acondicionado</span> ' : '' ?>
                                         <?= $publicacion['wifi'] ? '<span class="instalacion">Wi-Fi</span> ' : '' ?>
+                                        <?= $publicacion['estado_id'] ? "<span class='estado_publicacion estado_publicacion_{$publicacion['estado_id']}'>{$publicacion['estado_id']}</span>"  : '' ?>
                                     </p>
                                     <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone=<?= htmlspecialchars($publicacion['telefono']) ?>" target="_blank">
                                         <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
@@ -62,6 +64,7 @@
                                     </a>
                                 </section>
                             </nav>
+                            </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>

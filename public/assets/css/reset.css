@@ -50,3 +50,25 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+/* Restablece el estilo de todos los elementos <a> */
+a {
+    /* Eliminar decoraciones de texto */
+    text-decoration: none;
+    
+    /* Restablecer color de texto */
+    color: inherit;
+
+    /* Eliminar bordes y sombras */
+    box-shadow: none;
+
+    /* Restablecer el fondo */
+    background: none;
+    
+    /* Otras propiedades que podrías querer restablecer */
+    font-size: inherit;
+    font-weight: normal;
+    line-height: inherit;
+    display: inline;
+    cursor: pointer;
+}

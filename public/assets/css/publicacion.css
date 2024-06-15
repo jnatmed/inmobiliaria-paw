@@ -203,6 +203,25 @@
     color: #333; 
     margin-top: 1em;
 }
+/* Estilos para las instalaciones */
+.estado_publicacion {
+    display: inline-block;
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    font-weight: bold; 
+    margin-top: 1em;
+    color: white;
+}
+
+.estado_publicacion_1 {
+    background-color: green; 
+}
+.estado_publicacion_2 {
+    background-color: blue; 
+}
+.estado_publicacion_3 {
+    background-color: red; 
+}
 
 .filtro_publicaciones{
     display: flex;
@@ -216,14 +235,26 @@
     flex-direction: column;
 }
 
-.nav-destacados{
+/* .nav-destacados{
     position: relative;
     display: flex;
     gap: 20px;
     overflow: hidden;
     max-height: 20%;
     margin: 0 auto;
+} */
+
+
+.nav-destacados {
+    position: relative;
+    display: grid;
+    gap: 20px;
+    overflow: hidden;
+    max-height: 20%;
+    margin: 0 auto;
+    grid-template-columns: 1fr 2fr; /* 2/3 para info_publicacion y 1/3 para foto */
 }
+
 
 .prevButton, .nextButton {
     background: transparent;
@@ -589,7 +620,8 @@
         grid-template-columns: 1fr;
     }
     .nav-destacados {
-        flex-direction: column;
+        /* flex-direction: column; */
+        grid-template-columns: 1fr;
     }
 
     .container_publicaciones {
