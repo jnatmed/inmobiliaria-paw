@@ -9,6 +9,21 @@ class Calendario {
         this.addEventListeners();
     }
 
+    async init() {
+        try {
+            const response = await fetch('/reservas/intervalos');
+            if (!response.ok) {
+                throw new Error('Error al obtener los intervalos de reserva');
+            }
+            const periodos = await response.json();
+            console.log(periodos);
+            this.marcarIntervalos(periodos);
+            // Aquí puedes utilizar los intervalos de reserva como desees
+        } catch (error) {
+            console.error('Error al cargar los intervalos de reserva:', error);
+        }
+    }
+
     getMonthIndex(monthName) {
         return this.months.indexOf(monthName.toLowerCase());
     }
@@ -126,3 +141,10 @@ class Calendario {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const calendario = new Calendario()
+
+    calendario.init()
+
+})

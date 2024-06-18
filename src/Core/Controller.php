@@ -76,6 +76,7 @@ class Controller
             ]
         ];     
         
+        
         $this->qb = new QueryBuilder($connection, $log);
         $this->request = new Request();
 
