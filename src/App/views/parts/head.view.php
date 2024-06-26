@@ -17,6 +17,7 @@
 <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.4.2/uicons-solid-rounded/css/uicons-solid-rounded.css'>
 
 <script src="/assets/js/components/paw.js"></script>
+<script src="/assets/js/components/boton-salir.js"></script>
 <script src="/assets/js/app.js"></script>
 
 <title><?= $titulo ?? "Proyecto PawPerties" ?></title>
