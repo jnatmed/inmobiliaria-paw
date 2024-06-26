@@ -22,6 +22,8 @@
                         <!-- <a class="anchor-item-sesion" href="/cerrar-sesion">CERRAR SESION</a> -->
                     <?php else: ?>
                         <a class="anchor-item-sesion" href="/iniciar-sesion">INICIAR SESION</a>
+                        
+                        <img src="/assets/imgs/svg/alt-de-inicio-de-sesion.svg" alt="icono-salida" class="icono-salida">
                     <?php endif; ?>
                 </li>
             </ul>

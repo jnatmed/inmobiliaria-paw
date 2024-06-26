@@ -31,22 +31,27 @@ class UsuarioController extends Controller
         global $log;
         if (isset($_SESSION['email'])) {
             // Si el usuario es de tipo "cliente", eliminar el menú de empleado
-            $log->info("hay sesion: ",[$_SESSION]);
+            $log->info("hay sesion: ", [$_SESSION]);
             if ($_SESSION['tipo'] === 'propietario') {
-                $menuEmpleado = [];
+                // Filtra el menú para eliminar el menú de empleado si es necesario
+                $menu = array_filter($menu, function ($item) {
+                    return $item['href'] !== '/menu_empleado'; // Ajusta según sea necesario
+                });
             }
             $this->tipoUsuario = $_SESSION['tipo'];
             setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
-
-        }else{
-            $log->info("no existe sesion: ",[$_SESSION]);
+        } else {
+            $log->info("no existe sesion: ", [$_SESSION]);
             $menu = array_filter($menu, function ($item) {
-                return !in_array($item['href'], ['/mis_publicaciones']);
-            });            
-            $log->info("DATOS THIS->MENU: ",[$menu]);
+                return !in_array($item['href'], ['/mis_publicaciones', '/reservas']);
+            });
+            $log->info("DATOS THIS->MENU: ", [$menu]);
         }
-
-        return [$menu];
+    
+        // Reindexar el array para que no tenga índices numéricos adicionales
+        $menu = array_values($menu);
+    
+        return $menu;
     }
 
 

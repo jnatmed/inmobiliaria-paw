@@ -20,6 +20,10 @@ class ReservasController extends Controller
         $this->uploader = new Uploader;
         $this->usuario = new UsuarioController();
         $this->verificador = new Verificador;
+
+        $this->usuario = new UsuarioController();
+        $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
     }
 
     public function reservas(){

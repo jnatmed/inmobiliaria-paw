@@ -29,6 +29,11 @@ header {
     font-size: 2rem;
 }
 
+.icono-salida {
+    color: white;
+    width: 3rem;
+    height: 3rem;
+}
 
 .lista-nav-main li {
     display: inline-block;
@@ -40,7 +45,7 @@ header {
     height: 3.8rem;
     display: flex;
     align-items: center;
-
+    padding-right: 6px;
 }
 
 .anchor-item-sesion,
@@ -433,3 +438,5 @@ table.greenTable tfoot .links a {
     margin: 3rem;
     
 }
+
+

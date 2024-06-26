@@ -31,6 +31,10 @@ class PublicacionController extends Controller
         $this->utils = new  Utils();
 
         parent::__construct();
+
+        $this->usuario = new UsuarioController();
+        $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
     }
 
     public function list()
