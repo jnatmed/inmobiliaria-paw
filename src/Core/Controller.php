@@ -46,36 +46,41 @@ class Controller
             [
                 'href' => '/mis_publicaciones',
                 'name' => 'MIS PUBLICACIONES'   
+            ],        
+            [
+                'href' => '/reservas',
+                'name' => 'RESERVAS'   
             ]        
         ];
 
-        $this->menuEmpleado = [
-            [
-                'href' => '/gestion_lista_mesas',
-                'name' => 'GESTION ALQUILERES'
-            ],
+        // $this->menuEmpleado = [
+        //     [
+        //         'href' => '/gestion_lista_mesas',
+        //         'name' => 'GESTION ALQUILERES'
+        //     ],
 
-        ];
+        // ];
 
-        $this->menuPerfil = [
-            [
-                'href' => '/buscar',
-                'name' => 'Buscar'
-            ],
-            [
-                'href' => '/iniciar_sesion',
-                'name' => 'Iniciar Sesion'
-            ],
-            [
-                'href' => '/registrar_usuario',
-                'name' => 'Registrar Usuario Sesion'
-            ],
-            [
-                'href' => '/cerrar_sesion',
-                'name' => 'Cerrar Sesion'
-            ]
-        ];     
+        // $this->menuPerfil = [
+        //     [
+        //         'href' => '/buscar',
+        //         'name' => 'Buscar'
+        //     ],
+        //     [
+        //         'href' => '/iniciar_sesion',
+        //         'name' => 'Iniciar Sesion'
+        //     ],
+        //     [
+        //         'href' => '/registrar_usuario',
+        //         'name' => 'Registrar Usuario Sesion'
+        //     ],
+        //     [
+        //         'href' => '/cerrar_sesion',
+        //         'name' => 'Cerrar Sesion'
+        //     ]
+        // ];     
         
+
         $this->qb = new QueryBuilder($connection, $log);
         $this->request = new Request();
 

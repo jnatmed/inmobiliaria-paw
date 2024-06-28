@@ -39,7 +39,7 @@ class Uploader
         }
 
         // Verificar el tamaño del archivo
-        $maxFileSize = 1 * 1024 * 1024; // 1 MB en bytes
+        $maxFileSize = 5 * 1024 * 1024; // 5 MB en bytes
         if ($fileSize > $maxFileSize) {
             return [
                 'exito' => self::ERROR_TAMANIO_NO_PERMITIDO,

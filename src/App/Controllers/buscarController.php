@@ -27,6 +27,10 @@ class BuscarController extends Controller
         $this->verificador = new Verificador;
         // Cargar la API key desde una variable de entorno
         $this->apiKey = $config->get('OPENCAGEDATA_API_KEY');
+
+        $this->usuario = new UsuarioController();
+        $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
     }
     
     public function buscar()

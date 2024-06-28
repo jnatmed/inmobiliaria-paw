@@ -30,4 +30,29 @@ class PAW {
   
       return elemento;
    }
+
+   static cargarScriptPromise(nombre, url) {
+    return new Promise((resolve, reject) => {
+        let elemento = document.querySelector("script#" + nombre);
+        if (!elemento) {
+            // Creo el tag script
+            elemento = this.nuevoElemento("script", "", { src: url, id: nombre });
+            
+            // Evento de carga
+            elemento.addEventListener("load", () => {
+                resolve(elemento);
+            });
+
+            // Evento de error
+            elemento.addEventListener("error", () => {
+                reject(new Error(`Error loading script: ${url}`));
+            });
+
+            document.head.appendChild(elemento);
+        } else {
+            resolve(elemento);
+        }
+    });
+}
+
   }

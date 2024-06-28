@@ -25,8 +25,9 @@ class PageController extends Controller
         $this->verificador = new Verificador;
         
         $this->usuario = new UsuarioController();
-        $log->info("this->usuario->adjutstMenuForSession: ",[$this->usuario->adjustMenuForSession($this->menu)]); 
-        
+        $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+        // $log->info("this->usuario->adjutstMenuForSession: ",[$this->usuario->adjustMenuForSession($this->menu)]); 
+        // $log->info("this-menu: ", [$this->menu]);
     }
 
     public function index()
