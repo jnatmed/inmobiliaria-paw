@@ -28,17 +28,14 @@
                 <ul>
                     <?php foreach ($publicaciones as $publicacion) : ?>
                         <li class="publicacion-item">
-                            <a href="/publicacion/ver?id_pub=<?= $publicacion['id'] ?>">
                             <nav class="nav-destacados">
-                                <ul class="carousel">
-                                    <?php foreach ($publicacion['imagenes'] as $imagen) : ?>
-                                        <li class="carousel-item">
-                                            <img class="carousel-img" src="/publicacion?id_pub=<?= $publicacion['id'] ?>&id_img=<?= $imagen['id_imagen'] ?>" alt="<?= $imagen['nombre_imagen'] ?>">
+                                <ul class="destacados">
+                                    <?php foreach ($publicacion['imagenes'] as $imagen) :?>
+                                        <li class="destacado-item">
+                                            <img class="destacado-img" src="/publicacion?id_pub=<?= $publicacion['id'] ?>&id_img=<?= $imagen['id_imagen'] ?>" alt="<?= $imagen['nombre_imagen'] ?>">
                                         </li>
                                     <?php endforeach; ?>
                                 </ul>
-                                <button class="flechas prevButton"></button>
-                                <button class="flechas nextButton"></button>
                                 <section class="info_publicacion">
                                     <h3 class="publicacion-precio">$<?= htmlspecialchars($publicacion['precio']) ?></h3>
                                     <h3 class="publicacion-titulo"><?= htmlspecialchars($publicacion['nombre_alojamiento']) ?></h3>
@@ -56,6 +53,7 @@
                                         <?= $publicacion['wifi'] ? '<span class="instalacion">Wi-Fi</span> ' : '' ?>
                                         <?= $publicacion['estado_id'] ? "<span class='estado_publicacion estado_publicacion_{$publicacion['estado_id']}'>{$publicacion['estado_id']}</span>"  : '' ?>
                                     </p>
+                                    <a href="/publicacion/ver?id_pub=<?= $publicacion['id'] ?>" class="ver-mas">Ver más ></a>
                                     <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone=<?= htmlspecialchars($publicacion['telefono']) ?>" target="_blank">
                                         <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                                     </a>

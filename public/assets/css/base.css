@@ -274,14 +274,14 @@ table.greenTable tfoot .links a {
 
 
 
-.carousel-item {
+.destacado-item {
     flex: 0 0 100%;
     width: 100%;
     object-fit: cover;
     scroll-snap-align: center;
 }
 
-.carousel-img {
+.destacado-img {
     width: 100%;
     height: 100%;
 }
