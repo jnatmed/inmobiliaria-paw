@@ -49,7 +49,48 @@ class Publicacion extends Model
 
     }
 
-
+    
+    public function getOne($id_publicacion)
+    {
+        try {
+            $result = $this->queryBuilder->getOneWithImages(
+                $this->table, // Nombre de la tabla principal (publicaciones)
+                'imagenes_publicacion', // Nombre de la tabla de imágenes
+                'id', // Nombre de la clave primaria en la tabla principal
+                'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
+                $id_publicacion // El identificador de la publicación que queremos obtener
+            );
+    
+            // Verificar si se encontraron resultados
+            if (empty($result)) {
+                return null; // O lanzar una excepción personalizada si prefieres
+            }
+    
+            // Estructurar el resultado
+            $publicacion = [];
+            foreach ($result as $row) {
+                if (empty($publicacion)) {
+                    foreach ($row as $key => $value) {
+                        $publicacion[$key] = $value;
+                    }
+                    $publicacion['imagenes'] = [];
+                }
+                if (!is_null($row['id_imagen'])) {
+                    $publicacion['imagenes'][] = [
+                        'id_imagen' => $row['id_imagen'],
+                        'path_imagen' => $row['path_imagen'],
+                        'nombre_imagen' => $row['nombre_imagen']
+                    ];
+                }
+            }
+    
+            return $publicacion;
+        } catch (PDOException $e) {
+            global $log;
+            $log->error("Error al obtener la publicación: " . $e->getMessage());
+            return false; // O lanzar una excepción personalizada si prefieres
+        }
+    }
 
 
     public function create($data)

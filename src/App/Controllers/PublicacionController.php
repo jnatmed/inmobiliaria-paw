@@ -39,24 +39,57 @@ class PublicacionController extends Controller
 
     public function list()
     {
-        global $log;
         try {
             $publicaciones = $this->model->getAll();
 
             // var_dump($publicaciones);
-            $log->info("Publicaciones: ", [$publicaciones]);
+            $this->logger->info("Publicaciones: ", [$publicaciones]);
 
             require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
-            $log->error($error_message);
+            $this->logger->error($error_message);
             require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
 
+    public function verPublicacion()
+    {
+        // Verificar si hay sesión iniciada
+        if (!$this->usuario->isUserLoggedIn()) {
+            $resultado = [
+                "success" => false,
+                "message" => "Debe iniciar sesión para ver el pedido."
+            ];
+            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+            require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
+            return;
+        }
+    
+        // Obtener el ID de la publicación de la solicitud
+        $idPub = htmlspecialchars($this->request->get('id_pub'));
+    
+        // Obtener los datos de la publicación y sus imágenes
+        $publicacion = $this->model->getOne($idPub);
+    
+        // Verificar si se encontró la publicación
+        if (!$publicacion) {
+            $resultado = [
+                "success" => false,
+                "message" => "Publicación no encontrada."
+            ];
+            $this->logger->info("Publicación no encontrada: ID $idPub.");
+            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
+            return;
+        }
+    
+        // Mostrar la vista de detalles de la publicación
+        require $this->viewsDir . 'publicacion.details.view.php';
+    }
+
     public function listaPublicacionesPropietarrio()
     {
-        global $log;
+        
 
         try {
             // Verificar si hay sesión iniciada
@@ -65,32 +98,32 @@ class PublicacionController extends Controller
                     "success" => false,
                     "message" => "Debe iniciar sesión para ver el pedido."
                 ];
-                $log->info("Intento de ver pedido sin sesión iniciada.");
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
                 require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
                 return;
             }
 
             // Obtener el ID del usuario desde la sesión
-            $log->info("sesion: ", [$_SESSION]);
+            $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
 
             $publicaciones = $this->model->getAllbyUser($idUser);
 
             // var_dump($publicaciones);
-            $log->info("Publicaciones: ", [$publicaciones]);
+            $this->logger->info("Publicaciones: ", [$publicaciones]);
 
             require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
-            $log->error($error_message);
+            $this->logger->error($error_message);
             require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
 
     public function getImgPublicacion()
     {
-        global $log;
+        
 
         $idPublicacion = $this->request->get('id_pub');
         $idImagen = $this->request->get('id_img');
@@ -100,7 +133,7 @@ class PublicacionController extends Controller
             // Obtener la imagen de la publicación
             $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
 
-            $log->info("(method- getImgPublicacion) - imagenPublicacion:", [$imagenPublicacion]);
+            $this->logger->info("(method- getImgPublicacion) - imagenPublicacion:", [$imagenPublicacion]);
 
             if ($imagenPublicacion === false) {
                 // Si no se encuentra la imagen, devolver un código de error 404
@@ -111,9 +144,9 @@ class PublicacionController extends Controller
 
             $mime_type = Uploader::getMimeType($imagenPublicacion['path_imagen']);
 
-            $log->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
+            $this->logger->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
 
-            $log->info("imagenPublicacion: ", [Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
+            $this->logger->info("imagenPublicacion: ", [Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
 
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente
@@ -122,7 +155,7 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             // Manejo de la excepción
             // Registrar el error utilizando el logger
-            $log->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
+            $this->logger->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
 
             $mime_type = Uploader::getMimeType('image-not-found.png');
             header("Content-type: " . $mime_type);
@@ -133,10 +166,10 @@ class PublicacionController extends Controller
 
     public function new()
     {
-        global $log;
+        
     
-        $log->info("request:", [$_REQUEST]);
-        $log->info("server:", [$_SERVER]);
+        $this->logger->info("request:", [$_REQUEST]);
+        $this->logger->info("server:", [$_SERVER]);
         try {
             if ($this->request->method() == 'POST') {
     
@@ -145,7 +178,7 @@ class PublicacionController extends Controller
                         "success" => false,
                         "message" => "Debe iniciar sesión para ver el pedido."
                     ];
-                    $log->info("Intento de ver pedido sin sesión iniciada.");
+                    $this->logger->info("Intento de ver pedido sin sesión iniciada.");
                     header('Location: /iniciar_sesion');
                     exit();
                 }
@@ -156,13 +189,13 @@ class PublicacionController extends Controller
                 }
     
                 // Obtener el ID del usuario desde la sesión
-                $log->info("sesion: ", [$_SESSION]);
+                $this->logger->info("sesion: ", [$_SESSION]);
     
                 $idUser = $this->usuario->getUserId();
-                $log->info("idUser: ", [$idUser]);
+                $this->logger->info("idUser: ", [$idUser]);
     
-                $log->info("POST: ", [$this->request->all()]);
-                $log->info("FILES: ", [$_FILES]);
+                $this->logger->info("POST: ", [$this->request->all()]);
+                $this->logger->info("FILES: ", [$_FILES]);
     
                 // Obtiene y verifica los valores del request
                 $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
@@ -247,7 +280,7 @@ class PublicacionController extends Controller
                         if ($file["name"] != "") {
                             $result = $this->uploader->uploadFile($file);
     
-                            $log->info("resultado insercion capa CONTROLLER  ", [$result]);
+                            $this->logger->info("resultado insercion capa CONTROLLER  ", [$result]);
                             if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
                                 $imagenesPublicacion[] = [
                                     'id_publicacion' => $idPublicacionGenerado,
@@ -261,20 +294,20 @@ class PublicacionController extends Controller
                         }
                     }
     
-                    $log->info("imagenesPublicacion: ", [$imagenesPublicacion]);
+                    $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
                     // Inserta todas las imágenes en la base de datos en una única operación
                     $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
                     header('Location: /mis_publicaciones');
                     exit();
                 } else {
-                    $log->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                    $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
                 }
             } else {
                 require $this->viewsDir . 'publicacion.new.view.php';
             }
         } catch (Exception $e) {
             // Manejar la excepción
-            $log->error("Error en el proceso: " . $e->getMessage());
+            $this->logger->error("Error en el proceso: " . $e->getMessage());
             echo "Ocurrió un error: " . $e->getMessage();
         }
     }

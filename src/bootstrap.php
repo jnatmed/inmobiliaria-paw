@@ -69,6 +69,7 @@ $router->get('/geocode', 'BuscarController@geocode');
 
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
+$router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
 $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietarrio');
 
 $router->get('/publicaciones/list', 'PublicacionController@list');

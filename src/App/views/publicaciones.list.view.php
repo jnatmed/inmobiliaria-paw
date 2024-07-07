@@ -10,19 +10,7 @@
 
     <main class="main-home">
         <section class="container_publicaciones">
-            <!--            <aside class="filtro_publicaciones">
-                <h3>Filtrar por:</h3>
-                <form action="" method="get" class="form_filtros_publicaciones">
-                    <label for="ordenar">Ordenar por:</label>
-                    <select name="ordenar" id="ordenar">
-                        <option value="precio_asc">Precio más bajo</option>
-                        <option value="ubicacion">Ubicación</option>
-                    </select>
-                    <label for="ubicacion">Ubicación:</label>
-                    <input type="text" name="ubicacion" id="ubicacion" value="Capital Federal, Argentina">
-                    <button type="submit">Aplicar filtros</button>
-                </form>
-            </aside> -->    
+
             <section class="publicaciones-list">
                 <h2 class="h2-titulo-publicaciones">Lista de Publicaciones</h2>
                 <ul>
