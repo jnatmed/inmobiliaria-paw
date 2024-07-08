@@ -83,6 +83,8 @@ class PublicacionController extends Controller
             return;
         }
     
+
+        $fullUrl = $this->request->fullUrl();
         // Mostrar la vista de detalles de la publicación
         require $this->viewsDir . 'publicacion.details.view.php';
     }

@@ -1,0 +1,146 @@
+/* Estilos para la sección de imágenes */
+.container-imagenes-publicacion {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.titulo-imagenes-detail {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.ul-imagenes-publicacion {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.li-imagen-publicacion {
+    flex: 0 0 auto;
+}
+
+.carousel-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* Estilos para los detalles de la publicación */
+.details-depto {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.titulo-details {
+    font-size: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.precio-publicacion {
+    font-size: 20px;
+    color: #e74c3c;
+    margin-left: 10px;
+}
+
+.article-details-texto {
+    margin-top: 20px;
+}
+
+.titulo-details-texto {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.p-details-texto {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Estilos para el formulario de contacto */
+.form-contacto-publicaciom {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.h4-titulo-form {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.input-form, input[type="phone"], textarea {
+    width: 97%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-contactar {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-contactar:hover {
+    background-color: #2980b9;
+}
+
+.whatsapp-link img {
+    width: 30px;
+    height: 30px;
+}
+
+.publicaciones-duenio {
+    margin-top: 20px;
+}
+
+.h5-nombre-duenia {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.link-avisos-duenio {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #3498db;
+}
+
+/* Estilos para la ubicación */
+.ubicacion-publicacion {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.titulo-ubicacion {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.mapid {
+    width: 100%;
+    height: 300px;
+    background-color: #e1e1e1;
+    border-radius: 5px;
+}
