@@ -5,7 +5,7 @@ namespace Paw\App\Controllers;
 use Paw\Core\Controller;
 use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Utils;
-use Paw\App\Models\Publicacion;
+use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
 
 
@@ -15,7 +15,7 @@ use Exception;
 
 class PublicacionController extends Controller
 {
-    public ?string $modelName = Publicacion::class;
+    public ?string $modelName = PublicacionCollection::class;
     public $usuario;
     public Verificador $verificador;
     public Uploader $uploader;

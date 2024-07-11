@@ -3,6 +3,8 @@
 
 <head>
     <?php require __DIR__ . '/parts/head.view.php' ?>
+    <script src="/assets/js/publicaciones-list.js"></script>
+
 </head>
 
 <body class="home">

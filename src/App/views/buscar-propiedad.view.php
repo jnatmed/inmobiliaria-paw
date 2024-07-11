@@ -4,6 +4,8 @@
 <head>
 
     <?php require __DIR__.'/parts/head.view.php' ?>
+    <script src="/assets/js/components/mapaLeaflet.js"></script>
+    <script src="/assets/js/components/buscar-inmueble.js"></script>
 
 </head>
 

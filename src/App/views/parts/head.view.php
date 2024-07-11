@@ -19,6 +19,5 @@
 
 <script src="/assets/js/components/paw.js"></script>
 <script src="/assets/js/components/boton-salir.js"></script>
-<script src="/assets/js/app.js"></script>
 
 <title><?= $titulo ?? "Proyecto PawPerties" ?></title>
