@@ -46,14 +46,14 @@ class ReservasController extends Controller
     }
 
     public function obtenerIntervalosReserva()
-{
-    // Obtener los intervalos de reserva (simulado)
-    $periodos = [
-        ["17/05/2024", "27/05/2024"],
-        ["17/06/2024", "27/06/2024"]
-    ];
+    {
+        // Obtener los intervalos de reserva (simulado)
+        $periodos = [
+            ["17/05/2024", "27/05/2024"],
+            ["17/06/2024", "27/06/2024"]
+        ];
 
-    // Devolver los intervalos de reserva como JSON
-    echo json_encode($periodos);
-}
+        // Devolver los intervalos de reserva como JSON
+        echo json_encode($periodos);
+    }
 }

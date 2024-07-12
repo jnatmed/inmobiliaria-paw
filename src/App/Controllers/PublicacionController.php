@@ -36,6 +36,25 @@ class PublicacionController extends Controller
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
     }
+    
+    public function buscar()
+    {
+        // Verificar si se recibe una consulta de búsqueda
+        if (isset($_GET['ubicacion'])) {
+            $location = $_GET['ubicacion'];
+
+            // Devolver el resultado como JSON
+            header('Content-Type: application/json');
+            echo json_encode(['location' => $location]);
+        } else {
+            // Establecer la cookie para la vista inicial, si no está presente
+            if (!isset($_COOKIE['location'])) {
+                setcookie('location', 'No hay búsquedas previas', time() + (7 * 24 * 60 * 60), "/");
+            }            
+            // Si no hay búsqueda, cargar la vista.
+            require $this->viewsDir . 'buscar-propiedad.view.php';
+        }
+    }
 
     public function list()
     {

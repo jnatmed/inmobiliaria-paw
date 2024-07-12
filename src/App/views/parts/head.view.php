@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="/assets/css/login.css">
 <link rel="stylesheet" href="/assets/css/footer.css">
 <link rel="stylesheet" href="/assets/css/logout.css">
+<link rel="stylesheet" href="/assets/css/not-found.css">
 
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
