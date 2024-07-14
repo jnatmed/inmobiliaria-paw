@@ -71,4 +71,10 @@ class ReservasController extends Controller
             echo json_encode(['error' => 'Ocurrió un error al obtener los intervalos de reserva.']);
         }
     }
+
+    public function reservarAlojamiento()
+    {
+        
+    }
+
 }
