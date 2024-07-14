@@ -4,7 +4,8 @@ namespace Paw\App\Controllers;
 
 use PDOException;
 
-use Paw\App\Models\Usuario;
+use Paw\App\Models\UserCollection;
+use Paw\App\Models\User;
 use Paw\App\Utils\Verificador;
 use Paw\Core\Controller;
 
@@ -12,7 +13,7 @@ class UsuarioController extends Controller
 {
 
     public Verificador $verificador;
-    public ?string $modelName = Usuario::class;
+    public ?string $modelName = UserCollection::class;
     public $tipoUsuario;
     public $usuario; 
 
@@ -75,11 +76,15 @@ class UsuarioController extends Controller
         
         global $log;
 
+        
+
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
             $contrasenia = $this->request->get('contrasenia');
             
-            $usuarioAutenticado = $this->model->findByUsernameAndPassword($email, $contrasenia);
+            $user = new User($email, $contrasenia);
+
+            $usuarioAutenticado = $this->model->findByEmailAndPassword($user->getEmail(), $user->getContrasenia());
             
             $log->info("usuarioAutenticado: ", [$usuarioAutenticado]);
 

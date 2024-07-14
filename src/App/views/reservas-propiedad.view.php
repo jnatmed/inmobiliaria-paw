@@ -3,8 +3,10 @@
 
 <head>
 
-    <?php require __DIR__.'/parts/head.view.php' ?>
-    <script src="/assets/js/components/calendario.js"></script>
+<?php require __DIR__.'/parts/head.view.php' ?>
+
+<link rel="stylesheet" href="/assets/css/reservas-calendario.css">    
+<script src="/assets/js/reservas-calendario.js"></script>
 
 </head>
 

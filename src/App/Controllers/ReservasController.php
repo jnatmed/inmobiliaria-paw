@@ -32,8 +32,8 @@ class ReservasController extends Controller
          * envio los periodos que van a estar reservados y los muestro en el front y manipulo javascript
          */
         $periodos = [
-            ["17/05/2024", "27/05/2024"],
-            ["17/06/2024", "27/06/2024"]
+            ["17/07/2024", "27/07/2024"],
+            ["17/08/2024", "27/08/2024"]
         ];        
 
         $periodos_json = json_encode($periodos, JSON_UNESCAPED_SLASHES);
@@ -49,8 +49,8 @@ class ReservasController extends Controller
     {
         // Obtener los intervalos de reserva (simulado)
         $periodos = [
-            ["17/05/2024", "27/05/2024"],
-            ["17/06/2024", "27/06/2024"]
+            ["17/07/2024", "27/07/2024"],
+            ["17/09/2024", "27/09/2024"]
         ];
 
         // Devolver los intervalos de reserva como JSON

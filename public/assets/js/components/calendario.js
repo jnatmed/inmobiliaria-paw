@@ -61,6 +61,8 @@ class Calendario {
                     cell.innerText = '';
                 } else if (day <= daysInMonth) {
                     cell.innerText = day;
+                    cell.classList.add('disabled-highlight');
+                    console.log(cell.classList)
                     day++;
                 }
                 row.appendChild(cell);
@@ -106,22 +108,41 @@ class Calendario {
         document.getElementById('nextMonthButton').disabled = false;
     }
 
+
     marcarIntervalos(intervalos) {
         this.markedIntervals = intervalos;
         this.applyMarkedIntervals();
     }
 
     applyMarkedIntervals() {
+        // tomo todas las celdas de la tabla calendario
         const cells = document.querySelectorAll('#calendarContainer td');
+
+        // a cada celda les  remuevo las clases highlight y disabled-highlight
         cells.forEach(cell => {
             cell.classList.remove('highlight', 'disabled-highlight');
         });
+
+        var unIntervaloFueMarcado = false
 
         this.markedIntervals.forEach(interval => {
             const [fromDay, fromMonth, fromYear] = interval[0].split('/').map(Number);
             const [toDay, toMonth, toYear] = interval[1].split('/').map(Number);
 
-            if (fromYear === this.currentYear && fromMonth === this.currentMonth + 1) {
+            console.log(fromDay, fromMonth, fromYear)
+            console.log(toDay, toMonth, toYear)
+            console.log("Marcando Intervalos..")
+
+            console.log(`fromYear === this.currentYear // ${fromYear} === ${this.currentYear} // ${fromYear === this.currentYear}`)
+            console.log(`fromMonth === this.currentMonth + 1 // ${fromMonth} === ${this.currentMonth + 1} // ${fromMonth === this.currentMonth + 1}`)
+
+            if (fromYear === this.currentYear && Number(fromMonth) === Number(this.currentMonth + 1)) {
+
+                unIntervaloFueMarcado = true
+
+                console.log("Las fechas coinciden")
+
+
                 const startDate = new Date(fromYear, fromMonth - 1, fromDay);
                 const endDate = new Date(toYear, toMonth - 1, toDay);
 
@@ -138,13 +159,15 @@ class Calendario {
                 });
             }
         });
+
+        if(!unIntervaloFueMarcado){
+                cells.forEach(cell => {
+                    const cellDay = Number(cell.innerText);
+                    if (cellDay) {
+                            cell.classList.add('disabled-highlight');
+                    }
+                });
+        }
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    const calendario = new Calendario()
-
-    calendario.init()
-
-})
