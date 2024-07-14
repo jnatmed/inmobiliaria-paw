@@ -46,11 +46,7 @@ class Controller
             [
                 'href' => '/mis_publicaciones',
                 'name' => 'MIS PUBLICACIONES'   
-            ],        
-            [
-                'href' => '/reservas',
-                'name' => 'RESERVAS'   
-            ]        
+            ]       
         ];        
 
         $this->qb = new QueryBuilder($connection, $log);

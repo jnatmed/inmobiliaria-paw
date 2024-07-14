@@ -55,7 +55,7 @@
                                 echo "<td></td>";
                             } else if ($day <= $daysInMonth) {
                                 $highlight = "";
-                                foreach ($periodos as $intervalo) {
+                                foreach ($reservas as $intervalo) {
                                     $start = DateTime::createFromFormat('d/m/Y', $intervalo[0]);
                                     $end = DateTime::createFromFormat('d/m/Y', $intervalo[1]);
                                     $current = new DateTime("$currentYear-$currentMonth-$day");

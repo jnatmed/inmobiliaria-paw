@@ -11,7 +11,16 @@ class Calendario {
 
     async init() {
         try {
-            const response = await fetch('/reservas/intervalos');
+            // Obtener el parámetro id_pub de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const id_pub = urlParams.get('id_pub');
+            
+            if (!id_pub) {
+                throw new Error('El parámetro id_pub no está presente en la URL');
+            }
+    
+            // Hacer la solicitud fetch con el id_pub
+            const response = await fetch(`/reservas/intervalos?id_pub=${id_pub}`);
             if (!response.ok) {
                 throw new Error('Error al obtener los intervalos de reserva');
             }
@@ -23,7 +32,6 @@ class Calendario {
             console.error('Error al cargar los intervalos de reserva:', error);
         }
     }
-
     getMonthIndex(monthName) {
         return this.months.indexOf(monthName.toLowerCase());
     }
@@ -61,8 +69,7 @@ class Calendario {
                     cell.innerText = '';
                 } else if (day <= daysInMonth) {
                     cell.innerText = day;
-                    cell.classList.add('disabled-highlight');
-                    console.log(cell.classList)
+                    // cell.classList.add('disabled-highlight');
                     day++;
                 }
                 row.appendChild(cell);
@@ -129,19 +136,10 @@ class Calendario {
             const [fromDay, fromMonth, fromYear] = interval[0].split('/').map(Number);
             const [toDay, toMonth, toYear] = interval[1].split('/').map(Number);
 
-            console.log(fromDay, fromMonth, fromYear)
-            console.log(toDay, toMonth, toYear)
-            console.log("Marcando Intervalos..")
-
-            console.log(`fromYear === this.currentYear // ${fromYear} === ${this.currentYear} // ${fromYear === this.currentYear}`)
-            console.log(`fromMonth === this.currentMonth + 1 // ${fromMonth} === ${this.currentMonth + 1} // ${fromMonth === this.currentMonth + 1}`)
 
             if (fromYear === this.currentYear && Number(fromMonth) === Number(this.currentMonth + 1)) {
 
                 unIntervaloFueMarcado = true
-
-                console.log("Las fechas coinciden")
-
 
                 const startDate = new Date(fromYear, fromMonth - 1, fromDay);
                 const endDate = new Date(toYear, toMonth - 1, toDay);
