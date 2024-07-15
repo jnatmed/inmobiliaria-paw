@@ -64,7 +64,7 @@ $router->get('/cerrar-sesion', 'UsuarioController@logout');
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
 
-$router->get('/publicacion/buscar', 'PublicacionController@buscar');
+// $router->get('/publicacion/buscar', 'PublicacionController@buscar');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');

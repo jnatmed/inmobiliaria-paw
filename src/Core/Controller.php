@@ -36,10 +36,6 @@ class Controller
 
         $this->menu = [
             [
-                'href' => '/publicacion/buscar',
-                'name' => 'BUSCAR'
-            ],
-            [
                 'href' => '/publicaciones/list',
                 'name' => 'PUBLICACIONES'
             ],
