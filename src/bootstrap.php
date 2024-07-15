@@ -72,6 +72,7 @@ $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesProp
 
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
+$router->get('/publicaciones/list/filter', 'PublicacionController@listFilter');
 
 
 $router->get('/reservas', 'ReservasController@reservas');

@@ -336,4 +336,7 @@ class PublicacionController extends Controller
 
     
 
+    public function listFilter() {
+        
+    }
 }

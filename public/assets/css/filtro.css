@@ -1,0 +1,111 @@
+.filtro-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid rgb(123, 140, 86);
+}
+
+.filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.filtro-group {
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+}
+
+.filtro-group label {
+    margin-bottom: 5px;
+}
+
+.filtro-group input[type="range"] {
+    width: 90%;
+    margin: 15px;
+    margin-bottom: 5px;
+}
+
+#precio-valor {
+    font-size: 20px;
+    margin: 0 auto;
+    font-weight: bold;
+    display: inline-block;
+}
+
+#precio-valor::before {
+    content: "$";
+    margin-right: 5px
+}
+
+.form-filtros button {
+    width: 100px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.filtro-container h2 {
+    font-size: 35px;
+    border-bottom: 2px;
+    border-style: solid;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+}
+
+.form-filtros p {
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px;
+    border-style: solid;
+    margin-bottom: 8px;
+}
+
+.filtro-group label {
+    font-size: 14px;
+}
+
+/* Slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    /* removing default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+    /* creating a custom design */
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid rgb(37, 32, 38);
+    box-shadow: -407px 0 0 400px rgb(37, 32, 38);
+}
+
+input[type="range"] {
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.botones-conteiner {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+button {
+    border-radius: 10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+button[type="reset"] {
+    background-color: black;
+    color: white;
+}

@@ -193,6 +193,7 @@
     font-size: 15px;
 }
 
+
 /* Estilos para las instalaciones */
 .instalacion {
     display: inline-block;
@@ -277,25 +278,15 @@
     opacity: 0.9;
 }
 
+
 .flechas:hover {
     transform: scale(1.1); /* Escala el botón al pasar el mouse */
-}
-
-.prevButton {
-    background-image: url('/../assets/imgs/svg/flecha-izquierda.svg');
-    /* Ajusta el tamaño y la posición de la imagen según sea necesario */
-    left: 0.5em;
-}
-.nextButton {
-    background-image: url('/../assets/imgs/svg/flecha-derecha.svg');
-    /* Ajusta el tamaño y la posición de la imagen según sea necesario */
-    right: 53%;
 }
 
 .container_publicaciones {
     display: grid;
     grid-template-columns: 1fr; /* Divide el contenedor en dos columnas */
-    /* grid-template-columns: 1fr 3fr;   sera habilitado cuando tenga la funcionalidad de filtro */ 
+    grid-template-columns: 1fr 3fr;  
     gap: 20px; /* Espacio entre las columnas */
 }
 
@@ -538,18 +529,38 @@
 }
 
 
-.carousel {
+.destacados {
     display: flex;
     list-style-type: none;
     padding: 0;
     margin: 0;
     overflow-x: hidden;
-    /* Asegura que el carrusel se pueda desplazar horizontalmente */
     overflow-y: hidden;
-    background-color: #24943A;
-    scroll-snap-type: x mandatory;
-    width: 100%;
 }
+
+.ver-mas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 10px;
+    margin-top: 3em;
+    width: 10%;
+}
+
+.ver-mas:hover {
+    background-color: #0056b3;
+}
+
 
 @media (max-width: 1200px) {
     .video-background {
