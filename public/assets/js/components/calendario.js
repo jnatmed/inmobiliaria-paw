@@ -158,6 +158,8 @@ class Calendario {
             }
         });
 
+        // Si ningun periodo corresponde al mes en curso,
+        // entonces entra en este bucle y marca todo con blanco
         if(!unIntervaloFueMarcado){
                 cells.forEach(cell => {
                     const cellDay = Number(cell.innerText);
@@ -166,6 +168,18 @@ class Calendario {
                     }
                 });
         }
+
+        // Marca los días pasados
+        const today = new Date();
+        cells.forEach(cell => {
+            const cellDay = Number(cell.innerText);
+            if (cellDay) {
+                const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
+                if (cellDate < today) {
+                    cell.classList.add('past-date');
+                }
+            }
+        });
     }
 }
 

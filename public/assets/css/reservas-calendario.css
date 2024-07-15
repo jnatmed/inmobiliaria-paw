@@ -137,3 +137,19 @@ table.greenTable tfoot .links a {
     justify-content: center;
 }
 
+
+.past-date {
+    background-color: grey;
+    color: white;
+    position: relative;
+}
+.past-date::before {
+    content: '';
+    color: red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 1.5em;
+}
