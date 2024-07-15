@@ -4,6 +4,7 @@
     padding: 20px;
     border-radius: 8px;
     border: 2px solid rgb(123, 140, 86);
+    height: fit-content;
 }
 
 .filtro {
