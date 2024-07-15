@@ -3,6 +3,7 @@
 
 <head>
     <?php require __DIR__ . '/parts/head.view.php' ?>
+    <script src="/assets/js/components/sliderPrecio.js" defer></script>
 </head>
 
 <body class="home">
@@ -10,19 +11,41 @@
 
     <main class="main-home">
         <section class="container_publicaciones">
-            <!--            <aside class="filtro_publicaciones">
-                <h3>Filtrar por:</h3>
-                <form action="" method="get" class="form_filtros_publicaciones">
-                    <label for="ordenar">Ordenar por:</label>
-                    <select name="ordenar" id="ordenar">
-                        <option value="precio_asc">Precio más bajo</option>
-                        <option value="ubicacion">Ubicación</option>
-                    </select>
-                    <label for="ubicacion">Ubicación:</label>
-                    <input type="text" name="ubicacion" id="ubicacion" value="Capital Federal, Argentina">
-                    <button type="submit">Aplicar filtros</button>
+
+            <!-- FILTROS -->
+            <aside class="filtro-container">
+                <h2>Filtros</h2>
+                <form method="GET" action="#" class="form-filtros">
+                    <section class="filtro-group">
+                        <p for="precio">Precio</p>
+                        <input type="range" id="precio" name="precio" min="0" max="1000000" step="10000" value="1000000" oninput="actualizarPrecio(this.value)">
+                        <h3 id="precio-valor">1000000</h3>
+                    </section>
+
+                    <section class="filtro-group">
+                        <p>Tipo</p>
+                        <label><input type="radio" name="tipo" value="casa"> Casa</label>
+                        <label><input type="radio" name="tipo" value="departamento"> Departamento</label>
+                        <label><input type="radio" name="tipo" value="quinta"> Quinta</label>
+                    </section>
+
+
+                    <section class="filtro-group">
+                        <p>Instalaciones</p>
+                        <label><input type="checkbox" name="instalaciones[]" value="cochera"> Cochera</label>
+                        <label><input type="checkbox" name="instalaciones[]" value="pileta"> Pileta</label>
+                        <label><input type="checkbox" name="instalaciones[]" value="aire_acondicionado"> Aire Acondicionado</label>
+                        <label><input type="checkbox" name="instalaciones[]" value="wifi"> Wi-Fi</label>
+                    </section>
+
+                    <section class="botones-conteiner">
+                        <button type="submit">Aplicar</button>
+                        <button type="reset">Limpiar</button>
+                    </section>
                 </form>
-            </aside> -->    
+            </aside>
+
+            <!-- PUBLICACIONES -->
             <section class="publicaciones-list">
                 <h2 class="h2-titulo-publicaciones">Lista de Publicaciones</h2>
                 <ul>
@@ -30,7 +53,7 @@
                         <li class="publicacion-item">
                             <nav class="nav-destacados">
                                 <ul class="destacados">
-                                    <?php foreach ($publicacion['imagenes'] as $imagen) :?>
+                                    <?php foreach ($publicacion['imagenes'] as $imagen) : ?>
                                         <li class="destacado-item">
                                             <img class="destacado-img" src="/publicacion?id_pub=<?= $publicacion['id'] ?>&id_img=<?= $imagen['id_imagen'] ?>" alt="<?= $imagen['nombre_imagen'] ?>">
                                         </li>
