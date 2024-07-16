@@ -127,8 +127,9 @@ class Calendario {
         const firstDayCurrentMonth = new Date(this.currentYear, this.currentMonth, 1);
         const lastDayCurrentMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
 
-        let unIntervaloFueMarcado = false;
-
+        // Unir todos los intervalos en un solo conjunto de fechas ocupadas
+        const occupiedDates = new Set();
+        
         this.markedIntervals.forEach(interval => {
             const [fromDay, fromMonth, fromYear] = interval[0].split('/').map(Number);
             const [toDay, toMonth, toYear] = interval[1].split('/').map(Number);
@@ -140,28 +141,15 @@ class Calendario {
                 (toYear === this.currentYear && toMonth - 1 === this.currentMonth) ||
                 (startDate < firstDayCurrentMonth && endDate > lastDayCurrentMonth)) {
 
-                unIntervaloFueMarcado = true;
-
-                cells.forEach(cell => {
-                    const cellDay = Number(cell.innerText);
-                    if (cellDay) {
-                        const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
-                        if (cellDate >= startDate && cellDate <= endDate) {
-                            cell.classList.add('ocupado');
-                        }
+                let currentDate = startDate;
+                while (currentDate <= endDate) {
+                    if (currentDate.getFullYear() === this.currentYear && currentDate.getMonth() === this.currentMonth) {
+                        occupiedDates.add(currentDate.getDate());
                     }
-                });
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
             }
         });
-
-        if (!unIntervaloFueMarcado) {
-            cells.forEach(cell => {
-                const cellDay = Number(cell.innerText);
-                if (cellDay) {  
-                    cell.classList.add('libre');
-                }
-            });
-        }
 
         cells.forEach(cell => {
             const cellDay = Number(cell.innerText);
@@ -169,8 +157,13 @@ class Calendario {
                 const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
                 if (cellDate < today) {
                     cell.classList.add('past-date');
+                } else if (occupiedDates.has(cellDay)) {
+                    cell.classList.add('ocupado');
+                } else {
+                    cell.classList.add('libre');
                 }
             }
         });
     }
+    
 }
