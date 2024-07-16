@@ -154,6 +154,13 @@ table.greenTable tfoot .links a {
     font-size: 1.5em;
 }
 
+
+.selected {
+    background-color: #007bff; /* Color de fondo azul */
+    color: white; /* Texto blanco */
+    font-weight: bold; /* Texto en negrita */
+}
+
 .msj_reserva {
     height: 1rem;
     width: 100%;
