@@ -11,7 +11,6 @@ class Calendario {
 
     async init() {
         try {
-            // Obtener el parámetro id_pub de la URL
             const urlParams = new URLSearchParams(window.location.search);
             const id_pub = urlParams.get('id_pub');
             
@@ -19,7 +18,6 @@ class Calendario {
                 throw new Error('El parámetro id_pub no está presente en la URL');
             }
     
-            // Hacer la solicitud fetch con el id_pub
             const response = await fetch(`/reservas/intervalos?id_pub=${id_pub}`);
             if (!response.ok) {
                 throw new Error('Error al obtener los intervalos de reserva');
@@ -27,11 +25,11 @@ class Calendario {
             const periodos = await response.json();
             console.log(periodos);
             this.marcarIntervalos(periodos);
-            // Aquí puedes utilizar los intervalos de reserva como desees
         } catch (error) {
             console.error('Error al cargar los intervalos de reserva:', error);
         }
     }
+
     getMonthIndex(monthName) {
         return this.months.indexOf(monthName.toLowerCase());
     }
@@ -59,7 +57,7 @@ class Calendario {
         title.innerText = `${monthName} ${year}`;
 
         let day = 1;
-        const startDay = (firstDay === 0) ? 6 : firstDay - 1; // Adjust for starting day (Monday as first day of week)
+        const startDay = (firstDay === 0) ? 6 : firstDay - 1;
         
         for (let i = 0; i < 6; i++) {
             const row = document.createElement('tr');
@@ -69,7 +67,6 @@ class Calendario {
                     cell.innerText = '';
                 } else if (day <= daysInMonth) {
                     cell.innerText = day;
-                    // cell.classList.add('disabled-highlight');
                     day++;
                 }
                 row.appendChild(cell);
@@ -115,39 +112,35 @@ class Calendario {
         document.getElementById('nextMonthButton').disabled = false;
     }
 
-
     marcarIntervalos(intervalos) {
         this.markedIntervals = intervalos;
         this.applyMarkedIntervals();
     }
 
     applyMarkedIntervals() {
-        // tomo todas las celdas de la tabla calendario
         const cells = document.querySelectorAll('#calendarContainer td');
-
-        // a cada celda les  remuevo las clases highlight y disabled-highlight
         cells.forEach(cell => {
             cell.classList.remove('ocupado', 'libre');
         });
 
-                
-        var unIntervaloFueMarcado = false
+        const today = new Date();
+        const firstDayCurrentMonth = new Date(this.currentYear, this.currentMonth, 1);
+        const lastDayCurrentMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
+
+        let unIntervaloFueMarcado = false;
 
         this.markedIntervals.forEach(interval => {
             const [fromDay, fromMonth, fromYear] = interval[0].split('/').map(Number);
             const [toDay, toMonth, toYear] = interval[1].split('/').map(Number);
 
-            console.log(fromDay, fromMonth, fromYear)
-            console.log(toDay, toMonth, toYear)
+            const startDate = new Date(fromYear, fromMonth - 1, fromDay);
+            const endDate = new Date(toYear, toMonth - 1, toDay);
 
-            if (fromYear === this.currentYear && Number(fromMonth) === Number(this.currentMonth + 1)) {
+            if ((fromYear === this.currentYear && fromMonth - 1 === this.currentMonth) ||
+                (toYear === this.currentYear && toMonth - 1 === this.currentMonth) ||
+                (startDate < firstDayCurrentMonth && endDate > lastDayCurrentMonth)) {
 
-                unIntervaloFueMarcado = true
-
-                console.log(`1) unIntervaloFueMarcado: ${unIntervaloFueMarcado}`)
-
-                const startDate = new Date(fromYear, fromMonth - 1, fromDay);
-                const endDate = new Date(toYear, toMonth - 1, toDay);
+                unIntervaloFueMarcado = true;
 
                 cells.forEach(cell => {
                     const cellDay = Number(cell.innerText);
@@ -161,20 +154,15 @@ class Calendario {
             }
         });
 
-        // Si ningun periodo corresponde al mes en curso,
-        // entonces entra en este bucle y marca todo con blanco
-        if(!unIntervaloFueMarcado){
-                console.log(`2) unIntervaloFueMarcado: ${unIntervaloFueMarcado}`)
-                cells.forEach(cell => {
-                    const cellDay = Number(cell.innerText);
-                    if (cellDay) {  
-                            cell.classList.add('libre');
-                    }
-                });
+        if (!unIntervaloFueMarcado) {
+            cells.forEach(cell => {
+                const cellDay = Number(cell.innerText);
+                if (cellDay) {  
+                    cell.classList.add('libre');
+                }
+            });
         }
 
-        // Marca los días pasados
-        const today = new Date();
         cells.forEach(cell => {
             const cellDay = Number(cell.innerText);
             if (cellDay) {
@@ -186,4 +174,3 @@ class Calendario {
         });
     }
 }
-
