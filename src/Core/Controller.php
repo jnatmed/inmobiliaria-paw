@@ -35,10 +35,10 @@ class Controller
         $this->sesion_en_curso = false;
 
         $this->menu = [
-            [
-                'href' => '/publicacion/buscar',
-                'name' => 'BUSCAR'
-            ],
+            // [
+            //     'href' => '/publicacion/buscar',
+            //     'name' => 'BUSCAR'
+            // ],
             [
                 'href' => '/publicaciones/list',
                 'name' => 'PUBLICACIONES'

@@ -17,10 +17,23 @@
 
     <main>
 
+    <?php if(isset($resultadoReserva['exito'])) : ?>
+        <?php if($resultadoReserva['exito']) : ?>
+            <p class="msj_reserva msj_exito">
+                <?= $resultadoReserva['mensaje']?>
+            </p>
+        <?php else: ?>
+            <p class="msj_reserva msj_error">
+                <?= $resultadoReserva['mensaje']?>
+            </p>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <section class="container-reserva">
         <article class="container-form">
             <img src="/imgs/image.png" alt="img-destacada" class="img-destacada">
-            <form action="/publicacion/reservar" class="form-reserva">
+            <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+                <input type="text" name="id_publicacion" value="<?= $id_publicacion ?>" hidden>
                 <label for="input-desde" class="lbl-desde">Desde</label>
                 <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
                 <label for="input-hasta" class="lbl-hasta">Hasta</label>

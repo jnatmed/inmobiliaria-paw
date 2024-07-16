@@ -127,19 +127,24 @@ class Calendario {
 
         // a cada celda les  remuevo las clases highlight y disabled-highlight
         cells.forEach(cell => {
-            cell.classList.remove('highlight', 'disabled-highlight');
+            cell.classList.remove('ocupado', 'libre');
         });
 
+                
         var unIntervaloFueMarcado = false
 
         this.markedIntervals.forEach(interval => {
             const [fromDay, fromMonth, fromYear] = interval[0].split('/').map(Number);
             const [toDay, toMonth, toYear] = interval[1].split('/').map(Number);
 
+            console.log(fromDay, fromMonth, fromYear)
+            console.log(toDay, toMonth, toYear)
 
             if (fromYear === this.currentYear && Number(fromMonth) === Number(this.currentMonth + 1)) {
 
                 unIntervaloFueMarcado = true
+
+                console.log(`1) unIntervaloFueMarcado: ${unIntervaloFueMarcado}`)
 
                 const startDate = new Date(fromYear, fromMonth - 1, fromDay);
                 const endDate = new Date(toYear, toMonth - 1, toDay);
@@ -149,9 +154,7 @@ class Calendario {
                     if (cellDay) {
                         const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
                         if (cellDate >= startDate && cellDate <= endDate) {
-                            cell.classList.add('highlight');
-                        } else {
-                            cell.classList.add('disabled-highlight');
+                            cell.classList.add('ocupado');
                         }
                     }
                 });
@@ -161,10 +164,11 @@ class Calendario {
         // Si ningun periodo corresponde al mes en curso,
         // entonces entra en este bucle y marca todo con blanco
         if(!unIntervaloFueMarcado){
+                console.log(`2) unIntervaloFueMarcado: ${unIntervaloFueMarcado}`)
                 cells.forEach(cell => {
                     const cellDay = Number(cell.innerText);
-                    if (cellDay) {
-                            cell.classList.add('disabled-highlight');
+                    if (cellDay) {  
+                            cell.classList.add('libre');
                     }
                 });
         }

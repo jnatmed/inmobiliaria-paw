@@ -64,7 +64,7 @@ $router->get('/cerrar-sesion', 'UsuarioController@logout');
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
 
-$router->get('/publicacion/buscar', 'PublicacionController@buscar');
+// $router->get('/publicacion/buscar', 'PublicacionController@buscar');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
@@ -74,5 +74,8 @@ $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 
 
-$router->get('/reservas', 'ReservasController@reservas');
+$router->get('/reserva', 'ReservasController@reservas');
+$router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
+
+
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');

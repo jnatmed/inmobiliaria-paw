@@ -74,7 +74,25 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento()
     {
+
+        $id_publicacion = $this->request->get('id_publicacion');
+        $desde = $this->request->get('input-desde');
+        $hasta = $this->request->get('input-hasta');
+        $precio_x_noche = 800;
+        $estado_reserva = 'pendiente';
+        $notas = 'ninguna';
         
+        $alojamientoReservado = $this->model->reservarAlojamiento($id_publicacion, 
+                                                                  $desde, 
+                                                                  $hasta, 
+                                                                  $precio_x_noche, 
+                                                                  $estado_reserva,
+                                                                  $notas);
+
+        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
+
+        header('Location: /reserva?id_pub='.$id_publicacion);
+        exit();
     }
 
 }

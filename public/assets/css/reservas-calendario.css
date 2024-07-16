@@ -64,11 +64,11 @@ table.greenTable tfoot .links a {
     color: gray;
 }
 
-.highlight {
+.ocupado {
     background-color: red;
 }
 
-.disabled-highlight {
+.libre {
     background-color: white;
 }
 
@@ -152,4 +152,19 @@ table.greenTable tfoot .links a {
     transform: translate(-50%, -50%);
     font-weight: bold;
     font-size: 1.5em;
+}
+
+.msj_reserva {
+    height: 1rem;
+    width: 100%;
+    color: white;
+    font-weight: bold;
+}
+
+.msj_exito {
+    background-color: green;
+}
+
+.msj_error {
+    background-color: red;
 }
