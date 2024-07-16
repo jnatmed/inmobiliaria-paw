@@ -98,8 +98,8 @@ class PublicacionController extends Controller
                 "message" => "Publicación no encontrada."
             ];
             $this->logger->info("Publicación no encontrada: ID $idPub.");
-            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
-            return;
+            header('Location: /not_found');
+            exit();
         }
     
 
@@ -334,6 +334,11 @@ class PublicacionController extends Controller
     }
     
 
-    
+    public function misReservas()
+    {
+        $this->request->get('id_usuario');
+
+
+    }
 
 }

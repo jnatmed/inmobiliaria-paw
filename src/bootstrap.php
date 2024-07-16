@@ -76,6 +76,7 @@ $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 
 $router->get('/reserva', 'ReservasController@reservas');
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
+$router->post('/publicacion/mis_reservas', 'ReservasController@misReservas');
 
 
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
