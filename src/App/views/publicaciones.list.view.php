@@ -17,10 +17,10 @@
             <!-- FILTROS -->
             <aside class="filtro-container">
                 <h2>Filtros</h2>
-                <form method="GET" action="#" class="form-filtros">
+                <form method="GET" action="/publicaciones/list" class="form-filtros">
                     <section class="filtro-group">
                         <p for="precio">Precio</p>
-                        <input type="range" id="precio" name="precio" min="0" max="1000000" step="10000" value="1000000" oninput="actualizarPrecio(this.value)">
+                        <input type="range" id="precio" name="precio" min="0" max="1000000" step="1000" value="1000000" oninput="actualizarPrecio(this.value)">
                         <h3 id="precio-valor">1000000</h3>
                     </section>
 
