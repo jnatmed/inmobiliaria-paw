@@ -54,6 +54,11 @@ Class Router
     public function call($controller, $method){
         $controller = "Paw\\App\\Controllers\\{$controller}";
         $objController =  new $controller;
+        // seteo el logger si tiene el metodo de seteo
+        if(method_exists($objController,'setLogger'))
+        {   
+            $objController->setLogger($this->logger);
+        }
         $objController->$method();
     }
 

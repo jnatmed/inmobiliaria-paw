@@ -5,7 +5,7 @@ namespace Paw\App\Models;
 use Paw\Core\Model;
 use PDOException;
 
-class Usuario extends Model
+class UserCollection extends Model
 {
     /**
      * metodos que deberian estar para
@@ -14,7 +14,7 @@ class Usuario extends Model
      * usuario queryBuilder
      */
 
-     public function findByUsernameAndPassword($email, $password)
+     public function findByEmailAndPassword($email, $password)
      {
          $result = $this->queryBuilder->select('usuarios', ['email' => $email]);
         

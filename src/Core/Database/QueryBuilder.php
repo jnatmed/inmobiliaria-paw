@@ -192,6 +192,35 @@ class QueryBuilder
         }
     }    
     
+    public function getOneWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $id)
+    {
+        try {
+            $query = "
+                SELECT 
+                    main.*, 
+                    img.id_imagen, 
+                    img.path_imagen, 
+                    img.nombre_imagen 
+                FROM 
+                    {$mainTable} main
+                LEFT JOIN 
+                    {$imageTable} img
+                ON 
+                    main.{$mainTableKey} = img.{$foreignKey}
+                WHERE 
+                    main.{$mainTableKey} = :id
+            ";
+    
+            $statement = $this->pdo->prepare($query);
+            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Logging the error
+            $this->logger->error("Error in getOneWithImages: " . $e->getMessage());
+            return false;
+        }
+    }   
 
     public function getAllWithImagesByUser($mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser) {
         try {

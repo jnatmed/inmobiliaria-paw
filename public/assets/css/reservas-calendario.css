@@ -1,0 +1,84 @@
+table.greenTable {
+    font-family: Georgia, serif;
+    border: 6px solid var(--color-verde-header);
+    background-color: var(--color-verde-header);
+    width: 80%;
+    /* height: 60%; */
+    text-align: center;
+}
+
+table.greenTable td,
+table.greenTable th {
+    border: 1px solid var(--color-verde-header);
+    padding: 3px 2px;
+}
+
+table.greenTable tbody td {
+    font-size: 13px;
+    height: 15rem;
+    /* background-color: white; */
+}
+
+table.greenTable thead {
+    background: var(--color-verde-header);
+    border-bottom: 0px solid #444444;
+}
+
+table.greenTable thead th {
+    font-size: 19px;
+    font-weight: bold;
+    color: #F0F0F0;
+    text-align: left;
+    border-left: 2px solid var(--color-verde-header);
+}
+
+table.greenTable thead th:first-child {
+    border-left: none;
+}
+
+table.greenTable tfoot {
+    font-size: 13px;
+    font-weight: bold;
+    color: #F0F0F0;
+    background: var(--color-verde-header);
+    border-top: 1px solid var(--color-verde-header);
+}
+
+table.greenTable tfoot td {
+    font-size: 13px;
+}
+
+table.greenTable tfoot .links {
+    text-align: right;
+}
+
+table.greenTable tfoot .links a {
+    display: inline-block;
+    background: #FFFFFF;
+    color: #24943A;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+.disabled {
+    color: gray;
+}
+
+.highlight {
+    background-color: red;
+}
+
+.disabled-highlight {
+    background-color: white;
+}
+
+.calendarTitle {
+    font-size: 5rem;
+}
+
+.calendarContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

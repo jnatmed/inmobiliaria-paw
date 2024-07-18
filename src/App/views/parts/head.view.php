@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/publicacion.css">
+<link rel="stylesheet" href="/assets/css/detalle-publicacion.css">
 <link rel="stylesheet" href="/assets/css/login.css">
 <link rel="stylesheet" href="/assets/css/footer.css">
 <link rel="stylesheet" href="/assets/css/logout.css">
@@ -19,6 +20,5 @@
 
 <script src="/assets/js/components/paw.js"></script>
 <script src="/assets/js/components/boton-salir.js"></script>
-<script src="/assets/js/app.js"></script>
 
 <title><?= $titulo ?? "Proyecto PawPerties" ?></title>

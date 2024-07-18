@@ -3,6 +3,8 @@
 
 <head>
     <?php require __DIR__ . '/parts/head.view.php' ?>
+    <script src="/assets/js/publicaciones-list.js"></script>
+
     <script src="/assets/js/components/sliderPrecio.js" defer></script>
 </head>
 

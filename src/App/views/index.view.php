@@ -4,6 +4,7 @@
 <head>
 
     <?php require __DIR__.'/parts/head.view.php' ?>
+    <script src="/assets/js/index.js"></script>
 
 </head>
 

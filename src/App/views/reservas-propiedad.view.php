@@ -3,8 +3,10 @@
 
 <head>
 
-    <?php require __DIR__.'/parts/head.view.php' ?>
-    <script src="/assets/js/components/calendario.js"></script>
+<?php require __DIR__.'/parts/head.view.php' ?>
+
+<link rel="stylesheet" href="/assets/css/reservas-calendario.css">    
+<script src="/assets/js/reservas-calendario.js"></script>
 
 </head>
 
@@ -53,7 +55,7 @@
                                 echo "<td></td>";
                             } else if ($day <= $daysInMonth) {
                                 $highlight = "";
-                                foreach ($periodos as $intervalo) {
+                                foreach ($reservas as $intervalo) {
                                     $start = DateTime::createFromFormat('d/m/Y', $intervalo[0]);
                                     $end = DateTime::createFromFormat('d/m/Y', $intervalo[1]);
                                     $current = new DateTime("$currentYear-$currentMonth-$day");

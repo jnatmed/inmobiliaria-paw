@@ -13,10 +13,15 @@
    
 <main>
         
-        <section class="titulo titulo_portada">
-            <h2>NOT FOUND</h2>
-            <p>No pudimos encontrar la pagina que buscas</p>
-        </section>
+        <div class="error-container">
+            <div class="error-404-bg"></div>
+            <p class="h1">404</p>
+            <p class="error-lead">Oops!, algo salio mal.</p>
+            <p>No pudimos encontrar lo que buscabas.</p>
+            <div class="center">
+                <a href="/" class="btn btn-primary">Volver</a>
+            </div>  
+        </div>
         
 </main>
 

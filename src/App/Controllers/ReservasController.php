@@ -6,9 +6,12 @@ use Paw\App\Utils\Verificador;
 use Paw\App\Utils\Uploader;
 
 use Paw\Core\Controller;
+use Paw\App\Models\PublicacionCollection;
+use Exception;
 
 class ReservasController extends Controller
 {
+    public ?string $modelName = PublicacionCollection::class;
     public Uploader $uploader;
     public Verificador $verificador;
     public $usuario;
@@ -26,34 +29,46 @@ class ReservasController extends Controller
 
     }
 
-    public function reservas(){
+    public function reservas()
+    {
+        try {
+            /**
+             * envio los periodos que van a estar reservados y los muestro en el front y manipulo javascript
+             */
+            $id_publicacion = $this->request->get('id_pub');
+            $this->logger->info("id_publicacion: $id_publicacion");
 
-        /**
-         * envio los periodos que van a estar reservados y los muestro en el front y manipulo javascript
-         */
-        $periodos = [
-            ["17/05/2024", "27/05/2024"],
-            ["17/06/2024", "27/06/2024"]
-        ];        
+            // Obtén las reservas usando el modelo
+            $reservas = $this->model->getReservas($id_publicacion);
 
-        $periodos_json = json_encode($periodos, JSON_UNESCAPED_SLASHES);
+            // Codifica las reservas a JSON para su uso en JavaScript
+            $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
-        // echo $periodos_json;
-        // exit;
+            $this->logger->info("periodos_json: $periodos_json");
 
-        require $this->viewsDir . 'reservas-propiedad.view.php';
-
+            require $this->viewsDir . 'reservas-propiedad.view.php';
+        } catch (Exception $e) {
+            $this->logger->error('Error al obtener las reservas: ' . $e->getMessage());
+            // Puedes redirigir a una página de error o mostrar un mensaje de error
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
     }
 
     public function obtenerIntervalosReserva()
-{
-    // Obtener los intervalos de reserva (simulado)
-    $periodos = [
-        ["17/05/2024", "27/05/2024"],
-        ["17/06/2024", "27/06/2024"]
-    ];
+    {
+        try {
+            $id_publicacion = $this->request->get('id_pub');
+            $this->logger->info("id_publicacion: $id_publicacion");
 
-    // Devolver los intervalos de reserva como JSON
-    echo json_encode($periodos);
-}
+            // Obtén las reservas usando el modelo
+            $periodos = $this->model->getReservas($id_publicacion);
+
+            // Devolver los intervalos de reserva como JSON
+            echo json_encode($periodos);
+        } catch (Exception $e) {
+            $this->logger->error('Error al obtener los intervalos de reserva: ' . $e->getMessage());
+            // Devolver un mensaje de error como JSON
+            echo json_encode(['error' => 'Ocurrió un error al obtener los intervalos de reserva.']);
+        }
+    }
 }

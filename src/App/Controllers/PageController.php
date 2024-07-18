@@ -26,8 +26,7 @@ class PageController extends Controller
         
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
-        // $log->info("this->usuario->adjutstMenuForSession: ",[$this->usuario->adjustMenuForSession($this->menu)]); 
-        // $log->info("this-menu: ", [$this->menu]);
+
     }
 
     public function index()
@@ -36,18 +35,6 @@ class PageController extends Controller
         require $this->viewsDir . 'index.view.php';
     }
 
-    /**esto despues pasa a usuarioController */
-    public function login()
-    {
-        $titulo = "INMOBILIARIA-PAW | LOGIN";
-        require $this->viewsDir . 'login.view.php';
-    }
-
-    public function register()
-    {
-        $titulo = "INMOBILIARIA-PAW | REGISTRO";
-        require $this->viewsDir . 'register.view.php';
-    }
 
 
 }
