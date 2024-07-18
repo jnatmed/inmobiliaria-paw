@@ -63,8 +63,10 @@ $router->get('/cerrar-sesion', 'UsuarioController@logout');
 
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
+$router->get('/usuario/mi_perfil', 'UsuarioController@perfil');
 
-// $router->get('/publicacion/buscar', 'PublicacionController@buscar');
+
+//usuario/mi_perfil $router->get('/publicacion/buscar', 'PublicacionController@perfil');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');

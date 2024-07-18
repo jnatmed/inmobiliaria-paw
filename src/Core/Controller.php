@@ -50,6 +50,10 @@ class Controller
             [
                 'href' => '/publicacion/mis_reservas',
                 'name' => 'MIS RESERVAS'   
+            ],                      
+            [
+                'href' => '/usuario/mi_perfil',
+                'name' => 'MI PERFIL'   
             ]                      
         ];        
 
