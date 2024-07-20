@@ -19,6 +19,7 @@
             <thead>
                 <tr>
                     <th>ID Reserva</th>
+                    <th>ID Publicacion</th>
                     <th>Desde</th>
                     <th>Hasta</th>
                     <th>Estado</th>
@@ -30,6 +31,7 @@
                 <?php foreach ($reservas as $reserva): ?>
                     <tr>
                         <td><?= htmlspecialchars($reserva['id_reserva']); ?></td>
+                        <td><?= htmlspecialchars($reserva['id_pub']); ?></td>
                         <td><?= htmlspecialchars($reserva['desde']); ?></td>
                         <td><?= htmlspecialchars($reserva['hasta']); ?></td>
                         <td><?= htmlspecialchars($reserva['estado_reserva']); ?></td>
