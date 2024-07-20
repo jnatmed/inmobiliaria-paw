@@ -277,4 +277,7 @@ class PublicacionCollection extends Model
         return $reservas;
     }
 
+    public function obtenerReservasPendientesYConfirmadas($id_usuario) {
+        return $this->queryBuilder->getReservasByUsuario($id_usuario);
+    }
 }
