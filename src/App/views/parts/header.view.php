@@ -17,7 +17,10 @@
     <nav class="nav-sesion">
         <ul class="lista-opciones-sesion">
             <li class="item-opcion-sesion">
-                    <?php if($this->usuario->isUserLoggedIn()): ?>   
+                    <?php 
+                        $isUserLoggedIn = isset($this->usuario) ? $this->usuario->isUserLoggedIn() : $this->isUserLoggedIn();                    
+                    ?>
+                    <?php if($isUserLoggedIn): ?>   
                         <?php require __DIR__.'/button-logout.php' ?>                           
                         <!-- <a class="anchor-item-sesion" href="/cerrar-sesion">CERRAR SESION</a> -->
                     <?php else: ?>

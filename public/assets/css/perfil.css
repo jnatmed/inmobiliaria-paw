@@ -1,0 +1,58 @@
+.profile-main {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.profile-aside {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.profile-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-type {
+    font-size: 18px;
+    color: #666;
+}
+
+.profile-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 300px); /* Ajusta el tamaño del section para que no se solape con el aside */
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    text-align: center;
+}
+
+.profile-section h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.profile-section p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.profile-section p strong {
+    color: #333;
+}
