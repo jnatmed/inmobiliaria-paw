@@ -1,7 +1,9 @@
 class appPAW {
   constructor() {
     document.addEventListener('DOMContentLoaded', () => {
+
       PAW.cargarScriptPromise("Carrousel", "/assets/js/components/carrousel.js")
+      
         .then(() => {
           let carrousel = new Carrousel();
         })

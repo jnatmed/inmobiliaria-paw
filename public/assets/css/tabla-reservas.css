@@ -1,0 +1,51 @@
+.reservas-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.reservas-titulo {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.reservas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.reservas-tabla th,
+.reservas-tabla td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.reservas-tabla th {
+    background-color: #f9f9f9;
+    color: #333;
+    font-weight: bold;
+}
+
+.reservas-tabla tr:hover {
+    background-color: #f1f1f1;
+}
+
+.reservas-accion {
+    color: #007bff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.reservas-accion:hover {
+    background-color: #007bff;
+    color: #fff;
+}

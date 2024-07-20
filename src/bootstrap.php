@@ -63,8 +63,10 @@ $router->get('/cerrar-sesion', 'UsuarioController@logout');
 
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
+$router->get('/usuario/mi_perfil', 'UsuarioController@perfil');
 
-// $router->get('/publicacion/buscar', 'PublicacionController@buscar');
+
+//usuario/mi_perfil $router->get('/publicacion/buscar', 'PublicacionController@perfil');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
@@ -75,5 +77,13 @@ $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 $router->get('/publicaciones/list/filter', 'PublicacionController@listFilter');
 
 
-$router->get('/reservas', 'ReservasController@reservas');
+$router->get('/reserva', 'ReservasController@reservas');
+$router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
+
+$router->get('/mis_publicaciones/lista', 'PublicacionController@verReservas'); // hecha
+$router->get('/mis_publicaciones/aceptar', 'PublicacionController@aceptarReserva'); // falta
+$router->get('/mis_publicaciones/cancelar', 'PublicacionController@cancelarReserva'); // falta
+$router->get('/mis_publicaciones/rechazar', 'PublicacionController@rechazarReserva'); // falta
+
+
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');

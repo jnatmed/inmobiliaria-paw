@@ -78,7 +78,7 @@
                 <article class="mapid"></article>
             </article>
         </section>
-         <a href="/reservas?id_pub=<?= $publicacion['id'] ?>">Ver las reservas Disponibles</a>           
+         <a href="/reserva?id_pub=<?= $publicacion['id'] ?>">Ver las reservas Disponibles</a>           
     </main>
 
     <?php require __DIR__ . '/parts/footer.view.php' ?>

@@ -35,6 +35,10 @@ class Controller
         $this->sesion_en_curso = false;
 
         $this->menu = [
+            // [
+            //     'href' => '/publicacion/buscar',
+            //     'name' => 'BUSCAR'
+            // ],
             [
                 'href' => '/publicaciones/list',
                 'name' => 'PUBLICACIONES'
@@ -42,7 +46,15 @@ class Controller
             [
                 'href' => '/mis_publicaciones',
                 'name' => 'MIS PUBLICACIONES'   
-            ]       
+            ],
+            [
+                'href' => '/mis_publicaciones/lista',
+                'name' => 'MIS RESERVAS'   
+            ],                      
+            [
+                'href' => '/usuario/mi_perfil',
+                'name' => 'MI PERFIL'   
+            ]                      
         ];        
 
         $this->qb = new QueryBuilder($connection, $log);

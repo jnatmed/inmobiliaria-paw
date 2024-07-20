@@ -20,6 +20,7 @@ class PublicacionController extends Controller
     public Verificador $verificador;
     public Uploader $uploader;
     public $utils;
+    // use Loggable;
 
     public function __construct()
     {
@@ -98,8 +99,8 @@ class PublicacionController extends Controller
                 "message" => "Publicación no encontrada."
             ];
             $this->logger->info("Publicación no encontrada: ID $idPub.");
-            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
-            return;
+            header('Location: /not_found');
+            exit();
         }
     
 
@@ -334,7 +335,44 @@ class PublicacionController extends Controller
     }
     
 
+    public function verReservas() {
+        try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+            
+            $id_usuario = $this->usuario->getUserId();
     
+            // Obtener las reservas pendientes y confirmadas
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($id_usuario);
+    
+            require $this->viewsDir . 'publicaciones.reservas.view.php';
+
+
+        } catch (Exception $e) {
+            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
+            // Manejo de errores apropiado, como redirigir a una página de error
+        }
+    }
+
+    public function aceptarReserva() {
+        // Lógica para aceptar la reserva
+    }
+    
+    public function cancelarReserva() {
+        // Lógica para cancelar la reserva
+    }
+    
+    public function rechazarReserva() {
+        // Lógica para rechazar la reserva
+    }    
 
     public function listFilter() {
         
