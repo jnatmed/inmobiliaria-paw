@@ -45,7 +45,7 @@ class UsuarioController extends Controller
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
             $menu = array_filter($menu, function ($item) {
-                return !in_array($item['href'], ['/mis_publicaciones', '/usuario/mi_perfil']);
+                return !in_array($item['href'], ['/mis_publicaciones', '/usuario/mi_perfil', '/mis_publicaciones/reservas']);
             });
             $log->info("DATOS THIS->MENU: ", [$menu]);
         }
