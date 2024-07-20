@@ -365,15 +365,28 @@ class PublicacionController extends Controller
             require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
-
-    public function aceptarReserva()
-    {
+    
+    public function actualizarEstadoReserva() {
         try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+                        
+            $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
+            $accion = $this->request->getSegments(2);
             $idPublicacion = $this->request->get('id_pub');
             $idReserva = $this->request->get('id_reserva');
 
             if ($idPublicacion && $idReserva) {
-                $this->model->aceptarReserva($idReserva);
+
+                $this->model->actualizarEstadoReserva($idReserva, $accion);
 
                 header('Location: /mis_publicaciones/reservas');
                 exit();
@@ -381,17 +394,9 @@ class PublicacionController extends Controller
                 throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
             }
         } catch (Exception $e) {
-            $this->logger->error("Error General al aceptar la reserva: " . $e->getMessage());
+            $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
             require $this->viewsDir . 'errors/not-found.view.php';
         }
-    }
-    
-    public function cancelarReserva() {
-        // Lógica para cancelar la reserva
-    }
-    
-    public function rechazarReserva() {
-        // Lógica para rechazar la reserva
     }    
 
 }

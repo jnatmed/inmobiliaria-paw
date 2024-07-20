@@ -79,9 +79,9 @@ $router->get('/reserva', 'ReservasController@reservas');
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 
 $router->get('/mis_publicaciones/reservas', 'PublicacionController@verReservas'); // hecha
-$router->get('/mis_publicaciones/aceptar', 'PublicacionController@aceptarReserva'); // falta
-$router->get('/mis_publicaciones/cancelar', 'PublicacionController@cancelarReserva'); // falta
-$router->get('/mis_publicaciones/rechazar', 'PublicacionController@rechazarReserva'); // falta
+$router->get('/mis_publicaciones/reserva/aceptar', 'PublicacionController@actualizarEstadoReserva'); // hecha
+$router->get('/mis_publicaciones/reserva/cancelar', 'PublicacionController@actualizarEstadoReserva'); // hecha
+$router->get('/mis_publicaciones/reserva/rechazar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 
 
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');

@@ -281,12 +281,23 @@ class PublicacionCollection extends Model
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
 
-    public function aceptarReserva($idReserva)
+    public function actualizarEstadoReserva($idReserva, $accion)
     {
         try {
+
+            if($accion === 'aceptar'){
+                $nuevoEstado = 'confirmada';
+            }
+            if($accion === 'cancelar'){
+                $nuevoEstado = 'cancelada';
+            }
+            if($accion === 'rechazar'){
+                $nuevoEstado = 'rechazada';
+            }
+
             $this->queryBuilder->update(
                 'reservas_publicacion',
-                ['estado_reserva' => 'confirmada'],
+                ['estado_reserva' => $nuevoEstado],
                 ['id' => $idReserva]
             );
         } catch (Exception $e) {
