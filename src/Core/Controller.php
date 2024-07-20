@@ -48,7 +48,7 @@ class Controller
                 'name' => 'MIS PUBLICACIONES'   
             ],
             [
-                'href' => '/mis_publicaciones/lista',
+                'href' => '/mis_publicaciones/reservas',
                 'name' => 'MIS RESERVAS'   
             ],                      
             [

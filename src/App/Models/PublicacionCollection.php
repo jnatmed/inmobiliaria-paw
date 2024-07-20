@@ -280,4 +280,17 @@ class PublicacionCollection extends Model
     public function obtenerReservasPendientesYConfirmadas($id_usuario) {
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
+
+    public function aceptarReserva($idReserva)
+    {
+        try {
+            $this->queryBuilder->update(
+                'reservas_publicacion',
+                ['estado_reserva' => 'confirmada'],
+                ['id' => $idReserva]
+            );
+        } catch (Exception $e) {
+            throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
+        }
+    }    
 }

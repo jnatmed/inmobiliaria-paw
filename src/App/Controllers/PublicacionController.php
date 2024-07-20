@@ -187,11 +187,9 @@ class PublicacionController extends Controller
 
 
     public function new()
-    {
-        
-    
-        $this->logger->info("request:", [$_REQUEST]);
-        $this->logger->info("server:", [$_SERVER]);
+    {    
+        // $this->logger->info("request:", [$_REQUEST]);
+        // $this->logger->info("server:", [$_SERVER]);
         try {
             if ($this->request->method() == 'POST') {
     
@@ -321,16 +319,22 @@ class PublicacionController extends Controller
                     $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
                     header('Location: /mis_publicaciones');
                     exit();
+                    
                 } else {
+
                     $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                    throw new Exception("Publicacion no generada: $idPublicacionGenerado");
+
                 }
             } else {
                 require $this->viewsDir . 'publicacion.new.view.php';
             }
+
         } catch (Exception $e) {
+
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
-            echo "Ocurrió un error: " . $e->getMessage();
+            require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
     
@@ -358,12 +362,28 @@ class PublicacionController extends Controller
 
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
-            // Manejo de errores apropiado, como redirigir a una página de error
+            require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
 
-    public function aceptarReserva() {
-        // Lógica para aceptar la reserva
+    public function aceptarReserva()
+    {
+        try {
+            $idPublicacion = $this->request->get('id_pub');
+            $idReserva = $this->request->get('id_reserva');
+
+            if ($idPublicacion && $idReserva) {
+                $this->model->aceptarReserva($idReserva);
+
+                header('Location: /mis_publicaciones/reservas');
+                exit();
+            } else {
+                throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error General al aceptar la reserva: " . $e->getMessage());
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
     }
     
     public function cancelarReserva() {
@@ -374,7 +394,4 @@ class PublicacionController extends Controller
         // Lógica para rechazar la reserva
     }    
 
-    public function listFilter() {
-        
-    }
 }

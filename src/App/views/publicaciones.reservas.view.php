@@ -35,9 +35,9 @@
                         <td><?= htmlspecialchars($reserva['estado_reserva']); ?></td>
                         <td><?= htmlspecialchars($reserva['nota']); ?></td>
                         <td>
-                            <a class="reservas-accion" href="mis_publicaciones/aceptar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Aceptar</a> |
-                            <a class="reservas-accion" href="mis_publicaciones/cancelar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Cancelar</a> |
-                            <a class="reservas-accion" href="mis_publicaciones/rechazar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Rechazar</a>
+                            <a class="reservas-accion" href="/mis_publicaciones/aceptar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Aceptar</a> |
+                            <a class="reservas-accion" href="/mis_publicaciones/cancelar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Cancelar</a> |
+                            <a class="reservas-accion" href="/mis_publicaciones/rechazar?id_pub=<?= $reserva['id_pub']; ?>&id_reserva=<?= $reserva['id_reserva']; ?>">Rechazar</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

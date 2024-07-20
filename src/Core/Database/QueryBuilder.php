@@ -287,9 +287,33 @@ class QueryBuilder
         }
     }    
 
-    public function update()
+    public function update($table, $data, $where)
     {
+        $set = [];
+        $bindings = [];
 
+        foreach ($data as $column => $value) {
+            $set[] = "$column = :$column";
+            $bindings[":$column"] = $value;
+        }
+
+        $whereClauses = [];
+        foreach ($where as $column => $value) {
+            $whereClauses[] = "$column = :where_$column";
+            $bindings[":where_$column"] = $value;
+        }
+
+        $setString = implode(', ', $set);
+        $whereString = implode(' AND ', $whereClauses);
+
+        $query = "UPDATE $table SET $setString WHERE $whereString";
+
+        $statement = $this->pdo->prepare($query);
+        foreach ($bindings as $param => $value) {
+            $statement->bindValue($param, $value);
+        }
+
+        $statement->execute();
     }
 
     public function delete()
