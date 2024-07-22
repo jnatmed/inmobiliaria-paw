@@ -311,9 +311,62 @@ class QueryBuilder
         return $this->lastQuery;
     }
 
+    public function getReservasByUsuario($id_usuario) {
+        try {
+            $query = "
+                SELECT
+                    reservas_publicacion.id AS id_reserva,
+                    reservas_publicacion.fecha_inicio AS desde,
+                    reservas_publicacion.fecha_fin AS hasta,
+                    reservas_publicacion.notas AS nota,
+                    reservas_publicacion.id_publicacion AS id_pub,
+                    reservas_publicacion.estado_reserva
+                FROM
+                    reservas_publicacion
+                INNER JOIN
+                    publicaciones ON publicaciones.id = reservas_publicacion.id_publicacion
+                WHERE
+                    publicaciones.id_usuario = :id_usuario
+                    AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
+            ";
+    
+            $statement = $this->pdo->prepare($query);
+            $statement->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error("Error en getReservasByUsuario: " . $e->getMessage());
+            return false;
+        }
+    }    
 
-    public function update()
+    public function update($table, $data, $where)
     {
+        $set = [];
+        $bindings = [];
+
+        foreach ($data as $column => $value) {
+            $set[] = "$column = :$column";
+            $bindings[":$column"] = $value;
+        }
+
+        $whereClauses = [];
+        foreach ($where as $column => $value) {
+            $whereClauses[] = "$column = :where_$column";
+            $bindings[":where_$column"] = $value;
+        }
+
+        $setString = implode(', ', $set);
+        $whereString = implode(' AND ', $whereClauses);
+
+        $query = "UPDATE $table SET $setString WHERE $whereString";
+
+        $statement = $this->pdo->prepare($query);
+        foreach ($bindings as $param => $value) {
+            $statement->bindValue($param, $value);
+        }
+
+        $statement->execute();
     }
 
     public function delete()

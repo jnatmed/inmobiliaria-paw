@@ -20,6 +20,7 @@ class PublicacionController extends Controller
     public Verificador $verificador;
     public Uploader $uploader;
     public $utils;
+    // use Loggable;
 
     public function __construct()
     {
@@ -108,8 +109,8 @@ class PublicacionController extends Controller
                 "message" => "Publicación no encontrada."
             ];
             $this->logger->info("Publicación no encontrada: ID $idPub.");
-            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
-            return;
+            header('Location: /not_found');
+            exit();
         }
     
 
@@ -196,11 +197,9 @@ class PublicacionController extends Controller
 
 
     public function new()
-    {
-        
-    
-        $this->logger->info("request:", [$_REQUEST]);
-        $this->logger->info("server:", [$_SERVER]);
+    {    
+        // $this->logger->info("request:", [$_REQUEST]);
+        // $this->logger->info("server:", [$_SERVER]);
         try {
             if ($this->request->method() == 'POST') {
     
@@ -330,17 +329,83 @@ class PublicacionController extends Controller
                     $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
                     header('Location: /mis_publicaciones');
                     exit();
+                    
                 } else {
+
                     $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                    throw new Exception("Publicacion no generada: $idPublicacionGenerado");
+
                 }
             } else {
                 require $this->viewsDir . 'publicacion.new.view.php';
             }
+
         } catch (Exception $e) {
+
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
-            echo "Ocurrió un error: " . $e->getMessage();
+            require $this->viewsDir . 'errors/not-found.view.php';
         }
     }
     
+
+    public function verReservas() {
+        try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+            
+            $id_usuario = $this->usuario->getUserId();
+    
+            // Obtener las reservas pendientes y confirmadas
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($id_usuario);
+    
+            require $this->viewsDir . 'publicaciones.reservas.view.php';
+
+
+        } catch (Exception $e) {
+            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
+    }
+    
+    public function actualizarEstadoReserva() {
+        try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+                        
+            $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
+            $accion = $this->request->getSegments(2);
+            $idPublicacion = $this->request->get('id_pub');
+            $idReserva = $this->request->get('id_reserva');
+
+            if ($idPublicacion && $idReserva) {
+
+                $this->model->actualizarEstadoReserva($idReserva, $accion);
+
+                header('Location: /mis_publicaciones/reservas');
+                exit();
+            } else {
+                throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
+    }    
 }

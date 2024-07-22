@@ -126,7 +126,41 @@ class PublicacionCollection extends Model
         }
     }
     
-    
+
+    public function reservarAlojamiento($id_publicacion, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
+    {
+        $data = [
+            'id_publicacion' => $id_publicacion,
+            'fecha_inicio' => $desde,
+            'fecha_fin' => $hasta,
+            'precio_por_noche' => $precio_x_noche,
+            'estado_reserva' => $estado_reserva,
+            'notas' => $notas
+        ];
+
+        try {
+            $result = $this->queryBuilder->insert('reservas_publicacion', $data);
+            if ($result[1]) {
+                return [
+                    "exito" => true,
+                    "mensaje" => "Reserva realizada con éxito."
+                ];
+            } else {
+                return [
+                    "exito" => false,
+                    "mensaje" => "No se pudo realizar la reserva."
+                ];
+            }
+        } catch (PDOException $e) {
+            global $log;
+            $log->error("Error al reservar el alojamiento: " . $e->getMessage());
+            return [
+                "exito" => false,
+                "mensaje" => "Error al reservar el alojamiento: " . $e->getMessage()
+            ];
+        }
+    }
+
 
     public function getAll()
     {
@@ -282,4 +316,31 @@ class PublicacionCollection extends Model
         return $reservas;
     }
 
+    public function obtenerReservasPendientesYConfirmadas($id_usuario) {
+        return $this->queryBuilder->getReservasByUsuario($id_usuario);
+    }
+
+    public function actualizarEstadoReserva($idReserva, $accion)
+    {
+        try {
+
+            if($accion === 'aceptar'){
+                $nuevoEstado = 'confirmada';
+            }
+            if($accion === 'cancelar'){
+                $nuevoEstado = 'cancelada';
+            }
+            if($accion === 'rechazar'){
+                $nuevoEstado = 'rechazada';
+            }
+
+            $this->queryBuilder->update(
+                'reservas_publicacion',
+                ['estado_reserva' => $nuevoEstado],
+                ['id' => $idReserva]
+            );
+        } catch (Exception $e) {
+            throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
+        }
+    }    
 }

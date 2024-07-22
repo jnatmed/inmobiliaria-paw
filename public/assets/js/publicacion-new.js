@@ -16,12 +16,10 @@ class publicacionNew {
             Promise.all([promiseFormularioMultiStep, promiseDrag_Drop, promiseMapaLeafLet]).then(function() {
                 // Una vez que todos los scripts se han cargado, ejecutar el código que depende de esos scripts
 
-
                 const mapaLeaf = new MapaLeaflet()
 
                 const locationDiv = document.querySelector('#location');
-                
-                
+                                
                 // Agregar un event listener al botón de búsqueda
                 document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
                   event.preventDefault(); // Evitar comportamiento predeterminado del botón

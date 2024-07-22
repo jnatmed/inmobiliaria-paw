@@ -24,6 +24,7 @@ class UsuarioController extends Controller
         if (session_status() == PHP_SESSION_NONE) {
             session_start();  // Inicia la sesión si no está iniciada
         }
+
         $this->verificador = new Verificador;
         $this->menu = $this->adjustMenuForSession($this->menu); 
     }
@@ -44,7 +45,7 @@ class UsuarioController extends Controller
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
             $menu = array_filter($menu, function ($item) {
-                return !in_array($item['href'], ['/mis_publicaciones']);
+                return !in_array($item['href'], ['/mis_publicaciones', '/usuario/mi_perfil', '/mis_publicaciones/reservas']);
             });
             $log->info("DATOS THIS->MENU: ", [$menu]);
         }
@@ -54,6 +55,7 @@ class UsuarioController extends Controller
     
         return $menu;
     }
+
 
 
     public function isUserLoggedIn()
@@ -206,13 +208,24 @@ class UsuarioController extends Controller
 
         $titulo = 'PAW PROPERTIES | PERFIL';
 
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();  // Inicia la sesión si no está iniciada
+        }
+
         $userId = $this->getUserId(); // Ajusta esto según cómo manejes la sesión
 
-        // Obtener los datos del usuario
-        $usuario = $this->model->findById($userId);
-
-        // Pasar los datos del usuario a la vista
-        require $this->viewsDir . 'mi_perfil.view.php';
+        if($userId !== null){
+            // Obtener los datos del usuario
+            $usuario = $this->model->findById($userId);
+    
+            $this->logger->info("datos de usuario: ", [$usuario]);
+            // Pasar los datos del usuario a la vista
+            require $this->viewsDir . 'mi_perfil.view.php';
+        }else{
+            // Redirigir a la página de inicio si no está logueado
+            header('Location: /');
+            exit();
+        }
     }
 
 

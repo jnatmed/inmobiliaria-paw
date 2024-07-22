@@ -53,6 +53,7 @@ class PAW {
             resolve(elemento);
         }
     });
-}
+    }
+
 
   }

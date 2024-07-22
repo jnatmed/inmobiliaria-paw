@@ -27,8 +27,14 @@ class Request
     }
     public function getSegments($numeroSegmento)
     {
-        $this->segments = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-        return $this->segments[$numeroSegmento];
+        // Obtener la URL sin los parámetros de consulta
+        $urlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    
+        // Dividir la URL en segmentos
+        $this->segments = explode('/', trim($urlPath, '/'));
+    
+        // Devolver el segmento solicitado
+        return isset($this->segments[$numeroSegmento]) ? $this->segments[$numeroSegmento] : null;
     }
         
     public function route()
