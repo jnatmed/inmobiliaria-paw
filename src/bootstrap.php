@@ -84,4 +84,5 @@ $router->get('/mis_publicaciones/reserva/cancelar', 'PublicacionController@actua
 $router->get('/mis_publicaciones/reserva/rechazar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 
 
+
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
