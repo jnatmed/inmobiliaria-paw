@@ -29,13 +29,16 @@
                         <a href="/publicacion/new" class="enlace-publicar-disable">Quiero Publicar Lugar</a>
                     <?php endif; ?>
            
-            <form action="" class="form-busqueda-propiedad" method="GET">
-                <label for="input-zona" class="label-form" id="input-zona">Zona</label>
-                <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona...">
-                <label for="input-tipo" class="label-form">Tipo</label>
-                <input type="text" class="input-form-busqueda" id="input-tipo" placeholder="Tipo">
-                <label for="input-categoria" class="label-form">Categoria</label>
-                <input type="text" class="input-form-busqueda" id="input-categoria" placeholder="Categoria">
+            <form method="GET" action="/publicaciones/list" class="form-busqueda-propiedad">
+                <label for="zona" class="label-form">Zona</label>
+                <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona..." id="zona" name="zona">
+                <label for="tipo" class="label-form">Tipo</label>
+                <select type="text" class="input-form-busqueda" id="tipo" placeholder="Tipo" name="tipo">
+                    <option selected value="">Elija una opción...</option>
+                    <option value="casa">Casa</option>
+                    <option value="departamento">Departamento</option>
+                    <option value="quinta">Quinta</option>
+                </select>
                 <input type="submit" value="Buscar" class="btn-form-busqueda">
             </form>
         </section>

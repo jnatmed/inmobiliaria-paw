@@ -195,7 +195,7 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $tipo, $precio, $instalaciones)
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones)
     {
         try {
             $sql = "
@@ -228,6 +228,11 @@ class QueryBuilder
                     }
                 }
             }
+
+            if ($zona) {
+                $sql .= " AND (main.provincia LIKE :zona OR main.localidad LIKE :zona)";
+                $params[':zona'] = '%' . $zona . '%';
+            }            
 
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {

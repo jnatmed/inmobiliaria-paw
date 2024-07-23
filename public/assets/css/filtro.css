@@ -11,23 +11,22 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-bottom: 20px;
 }
 
 .filtro-group {
     display: flex;
     flex-direction: column;
-    margin: 1em;
+    margin-bottom: 1.5em;
+    margin-top: 1.5em;
 }
 
 .filtro-group label {
-    margin-bottom: 5px;
+    margin-bottom: .5em;
 }
 
 .filtro-group input[type="range"] {
     width: 90%;
     margin: 15px;
-    margin-bottom: 5px;
 }
 
 #precio-valor {
@@ -45,7 +44,6 @@
 .form-filtros button {
     width: 100px;
     padding: 10px;
-    margin-top: 10px;
 }
 
 .filtro-container h2 {
@@ -56,7 +54,6 @@
     text-align: center;
     font-weight: bold;
     letter-spacing: 1px;
-    margin-bottom: 40px;
 }
 
 .form-filtros p {
@@ -95,6 +92,26 @@ input[type="range"] {
     border-radius: 16px;
 }
 
+input[type="text"] {
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292e;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    outline: none;
+    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;
+}
+
+input[type="text"]:focus {
+    border-color: #0366d6;
+    outline: none;
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+}
+
 .botones-conteiner {
     display: flex;
     justify-content: center;
@@ -106,7 +123,24 @@ button {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
 
-button[type="reset"] {
+button[type="submit"] {
     background-color: black;
     color: white;
+}
+
+button[type="reset"] {
+    background-color: white;
+    color: black;
+}
+
+button[type="submit"]:hover {
+    background-color: rgb(48, 48, 48);
+    color: white;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button[type="reset"]:hover {
+    background-color: rgb(207, 207, 207);
+    color: black;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }

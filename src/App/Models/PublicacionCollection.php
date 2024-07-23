@@ -239,7 +239,7 @@ class PublicacionCollection extends Model
         }
     } 
 
-    public function getAllFilter($tipo, $precio, $instalaciones)
+    public function getAllFilter($zona, $tipo, $precio, $instalaciones)
     {
         try {
 
@@ -248,30 +248,35 @@ class PublicacionCollection extends Model
                 'imagenes_publicacion', // Nombre de la tabla de imágenes
                 'id', // Nombre de la clave primaria en la tabla principal
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
-                $tipo, $precio, $instalaciones // Filtros
+                $zona, $tipo, $precio, $instalaciones // Filtros
             );
     
             // Estructurar los resultados
             $publicaciones = [];
-            foreach ($result as $row) {
-                $id = $row['id'];
-                if (!isset($publicaciones[$id])) {
-                    $publicaciones[$id] = [];
-                    foreach ($row as $key => $value) {
-                        $publicaciones[$id][$key] = $value;
+            if (!empty($result)) {
+                foreach ($result as $row) {
+                    $id = $row['id'];
+                    if (!isset($publicaciones[$id])) {
+                        $publicaciones[$id] = [];
+                        foreach ($row as $key => $value) {
+                            $publicaciones[$id][$key] = $value;
+                        }
+                        $publicaciones[$id]['imagenes'] = [];
                     }
-                    $publicaciones[$id]['imagenes'] = [];
+                    if (!is_null($row['id_imagen'])) {
+                        $publicaciones[$id]['imagenes'][] = [
+                            'id_imagen' => $row['id_imagen'],
+                            'path_imagen' => $row['path_imagen'],
+                            'nombre_imagen' => $row['nombre_imagen']
+                        ];
+                    }
                 }
-                if (!is_null($row['id_imagen'])) {
-                    $publicaciones[$id]['imagenes'][] = [
-                        'id_imagen' => $row['id_imagen'],
-                        'path_imagen' => $row['path_imagen'],
-                        'nombre_imagen' => $row['nombre_imagen']
-                    ];
-                }
+                return array_values($publicaciones);
+            } else {
+                return [];
             }
     
-            return array_values($publicaciones);
+            
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());

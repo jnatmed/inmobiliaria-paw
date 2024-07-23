@@ -59,14 +59,16 @@ class PublicacionController extends Controller
 
     public function list()
     {
+        $MAX_PRECIO = 1000000;
         try {
+            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
 
             if ($tipo || $precio || $instalaciones) {
-                $precio = $precio ?? 1000000;
-                $publicaciones = $this->model->getAllFilter($tipo, $precio, $instalaciones);
+                $precio = $precio ?? $MAX_PRECIO;
+                $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones);
             } else {
                 $publicaciones = $this->model->getAll();
             }
