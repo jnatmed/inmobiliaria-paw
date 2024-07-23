@@ -239,7 +239,7 @@ class PublicacionCollection extends Model
         }
     } 
 
-    public function getAllFilter($zona, $tipo, $precio, $instalaciones)
+    public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {
 
@@ -248,7 +248,8 @@ class PublicacionCollection extends Model
                 'imagenes_publicacion', // Nombre de la tabla de imágenes
                 'id', // Nombre de la clave primaria en la tabla principal
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
-                $zona, $tipo, $precio, $instalaciones // Filtros
+                $zona, $tipo, $precio, $instalaciones, // Filtros
+                $idUser
             );
     
             // Estructurar los resultados
@@ -283,6 +284,8 @@ class PublicacionCollection extends Model
             return false; // O lanzar una excepción personalizada si prefieres
         }
     }
+
+    
 
     public function insertMany($table, $insertData)
     {

@@ -74,7 +74,7 @@ class UsuarioController extends Controller
     }
 
     public function login() {
-        $titulo = 'PAW PROPERTIES | SESION';
+        $titulo = 'PAWPERTIES | SESION';
         
         global $log;
 
@@ -119,7 +119,7 @@ class UsuarioController extends Controller
 
 
     public function register() {
-        $titulo = 'PAW PROPERTIES | REGISTRO';
+        $titulo = 'PAWPERTIES | REGISTRO';
     
         global $log;
     
@@ -206,7 +206,7 @@ class UsuarioController extends Controller
 
     public function perfil() {
 
-        $titulo = 'PAW PROPERTIES | PERFIL';
+        $titulo = 'PAWPERTIES | PERFIL';
 
         if (session_status() == PHP_SESSION_NONE) {
             session_start();  // Inicia la sesión si no está iniciada

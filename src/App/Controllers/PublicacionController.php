@@ -59,22 +59,16 @@ class PublicacionController extends Controller
 
     public function list()
     {
-        $MAX_PRECIO = 1000000;
         try {
             $zona = ucwords(strtolower(trim($this->request->get('zona'))));
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
-
-            if ($tipo || $precio || $instalaciones) {
-                $precio = $precio ?? $MAX_PRECIO;
-                $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones);
-            } else {
-                $publicaciones = $this->model->getAll();
-            }
-
+            // var_dump($zona, $tipo, $precio, $instalaciones);
+            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
+            
             // var_dump($publicaciones);
-            $this->logger->info("Publicaciones: ", [$publicaciones]);
+            // $this->logger->info("Publicaciones: ", [$publicaciones]);
 
             require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
@@ -121,10 +115,9 @@ class PublicacionController extends Controller
         require $this->viewsDir . 'publicacion.details.view.php';
     }
 
-    public function listaPublicacionesPropietarrio()
+    public function listaPublicacionesPropietario()
     {
         
-
         try {
             // Verificar si hay sesión iniciada
             if (!$this->usuario->isUserLoggedIn()) {
@@ -141,13 +134,17 @@ class PublicacionController extends Controller
             $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
+            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
+            $tipo = $this->request->get('tipo');
+            $precio = $this->request->get('precio');
+            $instalaciones = $this->request->get('instalaciones') ?? [];
 
-            $publicaciones = $this->model->getAllbyUser($idUser);
+            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
             // var_dump($publicaciones);
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
-            require $this->viewsDir . 'publicaciones.list.view.php';
+            require $this->viewsDir . 'publicaciones-propietario.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);

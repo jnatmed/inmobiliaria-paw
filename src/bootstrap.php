@@ -70,7 +70,7 @@ $router->get('/usuario/mi_perfil', 'UsuarioController@perfil');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
-$router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietarrio');
+$router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietario');
 
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
