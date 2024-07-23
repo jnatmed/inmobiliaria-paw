@@ -8,10 +8,11 @@ use Paw\App\Models\UserCollection;
 use Paw\App\Models\User;
 use Paw\App\Utils\Verificador;
 use Paw\Core\Controller;
+use Paw\Core\Traits\Loggable;
 
 class UsuarioController extends Controller
 {
-
+    use Loggable;
     public Verificador $verificador;
     public ?string $modelName = UserCollection::class;
     public $tipoUsuario;
@@ -31,30 +32,57 @@ class UsuarioController extends Controller
 
     public function adjustMenuForSession($menu) {
         global $log;
+    
+        // Define los menús para cada tipo de usuario
+        $menusPorTipo = [
+            'inquilino' => [
+                ['href' => '/publicaciones/list', 'name' => 'PUBLICACIONES'],
+                ['href' => '/usuario/mi_perfil', 'name' => 'MI PERFIL']
+            ],
+            'propietario' => [
+                ['href' => '/publicaciones/list', 'name' => 'PUBLICACIONES'],
+                ['href' => '/mis_publicaciones', 'name' => 'MIS PUBLICACIONES'],
+                ['href' => '/mis_publicaciones/reservas', 'name' => 'MIS RESERVAS'],
+                ['href' => '/usuario/mi_perfil', 'name' => 'MI PERFIL']
+            ],
+            'empleado' => [
+                ['href' => '/publicaciones/list', 'name' => 'PUBLICACIONES'],
+                ['href' => '/publicaciones/gestion', 'name' => 'GESTIONAR PUBLICACIONES'],
+                ['href' => '/usuario/mi_perfil', 'name' => 'MI PERFIL']
+            ]
+        ];
+    
         if (isset($_SESSION['email'])) {
-            // Si el usuario es de tipo "cliente", eliminar el menú de empleado
             $log->info("hay sesion: ", [$_SESSION]);
-            if ($_SESSION['tipo'] === 'propietario') {
-                // Filtra el menú para eliminar el menú de empleado si es necesario
-                $menu = array_filter($menu, function ($item) {
-                    return $item['href'] !== '/menu_empleado'; // Ajusta según sea necesario
-                });
+    
+            // Obtiene el tipo de usuario de la sesión
+            $tipoUsuario = $_SESSION['tipo'];
+            $this->tipoUsuario = $tipoUsuario;
+    
+            // Ajusta el menú según el tipo de usuario
+            if (isset($menusPorTipo[$tipoUsuario])) {
+                $menu = $menusPorTipo[$tipoUsuario];
+            } else {
+                // Si el tipo de usuario no es válido, usar un menú vacío o algún valor predeterminado
+                $menu = [];
             }
-            $this->tipoUsuario = $_SESSION['tipo'];
+    
+            // Establece una cookie para el tipo de usuario
             setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
-            $menu = array_filter($menu, function ($item) {
-                return !in_array($item['href'], ['/mis_publicaciones', '/usuario/mi_perfil', '/mis_publicaciones/reservas']);
-            });
+    
+            // Si no hay sesión, establece un menú predeterminado o vacío
+            $menu = [];
             $log->info("DATOS THIS->MENU: ", [$menu]);
         }
     
-        // Reindexar el array para que no tenga índices numéricos adicionales
+        // Reindexa el array para que no tenga índices numéricos adicionales
         $menu = array_values($menu);
     
         return $menu;
     }
+    
 
 
 

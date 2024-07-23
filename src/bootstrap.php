@@ -72,13 +72,18 @@ $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
 $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietarrio');
 
+$router->get('/publicaciones/gestion', 'PublicacionController@gestionarPublicaciones'); // GESTION PUBLICACIONES
+$router->get('/publicacion/aceptar', 'PublicacionController@actualizarEstadoPublicacion');
+$router->get('/publicacion/cancelar', 'PublicacionController@actualizarEstadoPublicacion');
+$router->get('/publicacion/rechazar', 'PublicacionController@actualizarEstadoPublicacion');
+
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 
 $router->get('/reserva', 'ReservasController@reservas');
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 
-$router->get('/mis_publicaciones/reservas', 'PublicacionController@verReservas'); // hecha
+$router->get('/mis_publicaciones/reservas', 'PublicacionController@verReservas'); // GESTION RESERVAS
 $router->get('/mis_publicaciones/reserva/aceptar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/cancelar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/rechazar', 'PublicacionController@actualizarEstadoReserva'); // hecha

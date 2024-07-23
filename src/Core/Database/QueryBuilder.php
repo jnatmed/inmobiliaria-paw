@@ -369,7 +369,28 @@ class QueryBuilder
         $statement->execute();
     }
 
-    public function delete()
+    public function obtenerPublicacionesConEstado()
     {
+        try {
+            $query = "
+                SELECT 
+                    p.*, 
+                    ep.estado AS estado_descripcion 
+                FROM 
+                    publicaciones p
+                LEFT JOIN 
+                    estado_publicaciones ep ON p.id = ep.id
+            ";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error('Database error: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        } catch (Exception $e) {
+            $this->logger->error('General error: ' . $e->getMessage());
+            throw new Exception('Ocurrió un error inesperado');
+        }
     }
 }

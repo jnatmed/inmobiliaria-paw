@@ -351,7 +351,6 @@ class PublicacionController extends Controller
 
     public function verReservas() {
         try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
             if (!$this->usuario->isUserLoggedIn()) {
                 $resultado = [
                     "success" => false,
@@ -376,6 +375,31 @@ class PublicacionController extends Controller
         }
     }
     
+    public function gestionarPublicaciones()
+    {
+        try {
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+            
+            $publicaciones = $this->model->obtenerEstadoPublicaciones();
+
+            $this->logger->info("Estado publicaciones: " , [$publicaciones]);
+    
+            require $this->viewsDir . 'publicaciones.gestionar.view.php';
+
+        } catch (Exception $e) {
+            $this->logger->error("[Controller] Error al obtener la lista de publicaciones: " . $e->getMessage());
+            require $this->viewsDir . 'errors/not-found.view.php';            
+        }
+    }
+
     public function actualizarEstadoReserva() {
         try {
             // Asumiendo que tienes una forma de obtener el id del usuario
@@ -408,4 +432,40 @@ class PublicacionController extends Controller
             require $this->viewsDir . 'errors/not-found.view.php';
         }
     }    
+
+    public function actualizarEstadoPublicacion() 
+    {
+        try {
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+                header('Location: /iniciar_sesion');
+                exit();
+            }
+                        
+            $this->logger->info("Segmento 1 - : ".$this->request->getSegments(1));
+            $accion = $this->request->getSegments(1);
+            $idPublicacion = $this->request->get('id_pub');
+
+            if ($idPublicacion) {
+
+                $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
+
+                header('Location: /publicaciones/gestion');
+                exit();
+            } else {
+                throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
+            }            
+
+
+        } catch (Exception $e) {
+            $this->logger->error("Error General al cancelar la publicacion: " . $e->getMessage());
+            require $this->viewsDir . 'errors/not-found.view.php';
+        }
+
+    }    
+
 }

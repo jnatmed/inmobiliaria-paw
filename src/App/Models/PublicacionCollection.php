@@ -343,4 +343,16 @@ class PublicacionCollection extends Model
             throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
         }
     }    
+
+    
+    public function obtenerEstadoPublicaciones()
+    {
+        try {
+            return $this->queryBuilder->obtenerPublicacionesConEstado();
+        } catch (Exception $e) {
+            $this->logger->error('[Model] Error al obtener el estado de las publicaciones: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
 }
