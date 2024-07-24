@@ -161,6 +161,23 @@ class PublicacionCollection extends Model
         }
     }
 
+    public function getEstadoById($id_estado)
+    {
+        try {
+            $params = ['id' => $id_estado];
+            $result = $this->queryBuilder->select('estado_publicaciones', $params);
+
+            if (!empty($result)) {
+                return $result[0]['estado'];
+            } else {
+                return null; // O puedes lanzar una excepción si prefieres
+            }
+        } catch (Exception $e) {
+            // Manejo de errores
+            // Puedes registrar el error utilizando un logger
+            return false;
+        }
+    }    
 
     public function getAll()
     {
@@ -263,6 +280,8 @@ class PublicacionCollection extends Model
                             $publicaciones[$id][$key] = $value;
                         }
                         $publicaciones[$id]['imagenes'] = [];
+                        $estadoPublicacion = $this->getEstadoById($publicaciones[$id]['estado_id']);
+                        $publicaciones[$id]['estado_publicacion'] = $estadoPublicacion;
                     }
                     if (!is_null($row['id_imagen'])) {
                         $publicaciones[$id]['imagenes'][] = [
