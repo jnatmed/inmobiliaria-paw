@@ -23,7 +23,7 @@
 
             <!-- PUBLICACIONES -->
             <section class="publicaciones-list">
-                <h2 class="h2-titulo-publicaciones">Lista de Publicaciones</h2>
+                <h2 class="h2-titulo-publicaciones">Propiedades</h2>
                 <?php require __DIR__ . '/parts/lista-publicaciones.view.php' ?>
             </section>
         </section>

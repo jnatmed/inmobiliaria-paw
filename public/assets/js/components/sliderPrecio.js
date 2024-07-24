@@ -5,7 +5,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Actualizar el valor del span cuando cambia el valor del slider
     precioSlider.addEventListener('input', function () {
-        precioValor.innerText = this.value;
+        if (this.value == 0) {
+            precioValor.innerText = "-"
+        } else {
+            precioValor.innerText = this.value;
+        }
     });
 
     // Restablecer el valor del span cuando se hace clic en el botón de limpiar

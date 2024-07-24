@@ -16,13 +16,13 @@
             <!-- FILTROS -->
             <aside class="filtro-container">
                 <h2>Filtros</h2>
-                <form method="GET" action="/publicaciones/list" class="form-filtros">
+                <form method="GET" action="/mis_publicaciones" class="form-filtros">
                     <?php require __DIR__ . '/parts/search-filters.view.php' ?>
                 </form>
             </aside>
             
             <section class="publicaciones_list">
-                <h2 class="h2-titulo-publicaciones">Mis Publicaciones</h2>
+                <h2 class="h2-titulo-publicaciones">Mis Propiedades</h2>
                 <?php require __DIR__ . '/parts/lista-publicaciones.view.php' ?>
             </section>
         </section>

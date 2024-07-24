@@ -5,8 +5,8 @@
 
 <section class="filtro-group">
     <p for="precio">Precio</p>
-    <input type="range" id="precio" name="precio" min="0" max="1000000" step="1000" value="1000000" oninput="actualizarPrecio(this.value)">
-    <h3 id="precio-valor">1000000</h3>
+    <input type="range" id="precio" name="precio" min="0" max="1000000" step="5000" value="0" oninput="actualizarPrecio(this.value)">
+    <h3 id="precio-valor">-</h3>
 </section>
 
 <section class="filtro-group">

@@ -195,7 +195,7 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones)
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {
             $sql = "
@@ -210,10 +210,20 @@ class QueryBuilder
                 {$imageTable} img
             ON 
                 main.{$mainTableKey} = img.{$foreignKey}
-            WHERE main.precio <= :precio
+            WHERE 1=1
         ";
+            $params = [];
 
-            $params = [':precio' => $precio];
+            if ($precio) {
+                $sql .= " AND main.precio <= :precio";
+                $params[':precio'] = $precio;
+
+            }
+
+            if ($idUser) {
+                $sql .= " AND main.id = :idUser";
+                $params[':idUser'] = $idUser;
+            }
 
             if ($tipo) {
                 $sql .= " AND main.tipo_alojamiento = :tipo";

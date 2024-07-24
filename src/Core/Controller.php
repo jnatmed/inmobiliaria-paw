@@ -37,11 +37,11 @@ class Controller
         $this->menu = [
             [
                 'href' => '/publicaciones/list',
-                'name' => 'PUBLICACIONES'
+                'name' => 'PROPIEDADES'
             ],
             [
                 'href' => '/mis_publicaciones',
-                'name' => 'MIS PUBLICACIONES'   
+                'name' => 'MIS PROPIEDADES'   
             ],
             [
                 'href' => '/mis_publicaciones/reservas',

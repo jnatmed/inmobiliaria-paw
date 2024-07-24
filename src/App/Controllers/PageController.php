@@ -31,7 +31,7 @@ class PageController extends Controller
 
     public function index()
     {
-        $titulo = "INMOBILIARIA-PAW | HOME";
+        $titulo = "PAWPERTIES | HOME";
         require $this->viewsDir . 'index.view.php';
     }
 
