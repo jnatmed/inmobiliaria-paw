@@ -78,8 +78,6 @@ class UsuarioController extends Controller
         
         global $log;
 
-        
-
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
             $contrasenia = $this->request->get('contrasenia');
@@ -127,37 +125,37 @@ class UsuarioController extends Controller
             // Obtener los datos del formulario
             $email = $this->request->get('email');
             $nombre = $this->request->get('nombre');
-            $contrasenia = $this->request->get('password');
-            $contrasenia_repetida = $this->request->get('password_repetida');
+            $apellido = $this->request->get('apellido');
+            $contrasenia = $this->request->get('contrasenia');
+            $contrasenia_repetida = $this->request->get('contrasenia_check');
             $telefono = $this->request->get('telefono');
             
             // Verificar si las contraseñas coinciden
             if ($contrasenia !== $contrasenia_repetida) {
                 $resultado['error'] = 'Las contraseñas no coinciden';
                 require $this->viewsDir . 'register.view.php';
+                exit();
             }
     
             try {
                 // Crear un nuevo usuario
                 $nuevoUsuario = [
+                    'nombre' => $nombre,
+                    'apellido' => $apellido,
                     'email' => $email,
-                    'username' => $nombre,
-                    'password' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
+                    'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
                     'telefono' => $telefono,
                     'tipo_usuario' => 'propietario'
                 ];   
                 
                 // Insertar el nuevo usuario en la base de datos
-                list($idUsuario, $resultado) = $this->model->insert('users', $nuevoUsuario);
+                list($idUsuario, $resultado) = $this->model->insert('usuarios', $nuevoUsuario);
                 
                 if ($resultado) {
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
-                    $resultado['exito'] = "registro exitoso del usuario {$nombre}";
-
-                    header('Location: /mis_publicaciones');
-                    exit();                    
-
+                    $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
+                    require $this->viewsDir . 'register-exito.view.php';             
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);

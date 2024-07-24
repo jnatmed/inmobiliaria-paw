@@ -32,6 +32,9 @@
             </form>
 
             <a href="/recuperar-contrasenia">¿Olvidaste tu contraseña?</a>
+            <?php if (!empty($resultado['error'])) : ?>
+                    <p class="error-registro"><?php echo htmlspecialchars($resultado['error']); ?></p>
+            <?php endif; ?>
         </section>
 
     </main>
