@@ -60,7 +60,8 @@ class PublicacionController extends Controller
     public function list()
     {
         try {
-            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
+            $zona = $this->request->get('zona');
+            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
@@ -68,7 +69,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
             
             // var_dump($publicaciones);
-            // $this->logger->info("Publicaciones: ", [$publicaciones]);
+            $this->logger->info("Publicaciones: ", [$publicaciones]);
 
             require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {

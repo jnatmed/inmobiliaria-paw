@@ -6,6 +6,7 @@
 <!-- Muestra la lista de publicaciones -->
 <ul>
     <?php foreach ($publicaciones as $publicacion) : ?>
+        <?php if ($publicacion !== null) : ?>
         <li class="publicacion-item">
             <nav class="nav-destacados">
                 <ul class="destacados">
@@ -43,5 +44,6 @@
             </nav>
             </a>
         </li>
+        <?php endif; ?>
     <?php endforeach; ?>
 </ul>
