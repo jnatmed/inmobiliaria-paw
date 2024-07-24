@@ -12,7 +12,7 @@
 
 <section class="container-reserva">
     <article class="container-form">
-        <img src="/imgs/image.png" alt="img-destacada" class="img-destacada">
+        
         <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
             <input type="text" name="id_publicacion" value="<?= $id_publicacion ?>" hidden>
             <label for="input-desde" class="lbl-desde">Desde</label>
