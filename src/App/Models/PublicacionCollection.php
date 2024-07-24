@@ -127,10 +127,11 @@ class PublicacionCollection extends Model
     }
     
 
-    public function reservarAlojamiento($id_publicacion, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
+    public function reservarAlojamiento($id_publicacion, $id_usuario_reserva, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
     {
         $data = [
             'id_publicacion' => $id_publicacion,
+            'id_usuario_reserva' => $id_usuario_reserva,
             'fecha_inicio' => $desde,
             'fecha_fin' => $hasta,
             'precio_por_noche' => $precio_x_noche,

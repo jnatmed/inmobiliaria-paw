@@ -17,7 +17,7 @@
                     <?php endforeach; ?>
                 </ul>
                 <section class="info_publicacion">
-                    <h3 class="publicacion-precio">$<?= htmlspecialchars($publicacion['precio']) ?></h3>
+                    <h3 class="publicacion-precio">$<?= number_format($publicacion['precio'], 0, ',', '.') ?></h3>
                     <h3 class="publicacion-titulo"><?= htmlspecialchars($publicacion['nombre_alojamiento']) ?></h3>
                     <p class="publicacion-datos"> <?= nl2br(htmlspecialchars($publicacion['descripcion_alojamiento'])) ?></p>
                     <p class="publicacion-datos"><?= htmlspecialchars($publicacion['localidad']) ?>, <?= htmlspecialchars($publicacion['provincia']) ?></p>

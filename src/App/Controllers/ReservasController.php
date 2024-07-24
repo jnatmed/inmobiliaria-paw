@@ -75,6 +75,17 @@ class ReservasController extends Controller
     public function reservarAlojamiento()
     {
 
+        // Verificar si hay sesión iniciada
+        if (!$this->usuario->isUserLoggedIn()) {
+            $resultado = [
+                "success" => false,
+                "message" => "Debe iniciar sesión para ver el pedido."
+            ];
+            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+            require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
+            return;
+        }
+        
         $id_publicacion = $this->request->get('id_publicacion');
         $desde = $this->request->get('input-desde');
         $hasta = $this->request->get('input-hasta');
@@ -83,11 +94,13 @@ class ReservasController extends Controller
         $notas = 'ninguna';
         
         $alojamientoReservado = $this->model->reservarAlojamiento($id_publicacion, 
+                                                                  $this->usuario->getUserId(),
                                                                   $desde, 
                                                                   $hasta, 
                                                                   $precio_x_noche, 
                                                                   $estado_reserva,
-                                                                  $notas);
+                                                                  $notas
+                                                                );
 
         $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
