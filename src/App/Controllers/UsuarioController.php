@@ -78,8 +78,6 @@ class UsuarioController extends Controller
         
         global $log;
 
-        
-
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
             $contrasenia = $this->request->get('contrasenia');
