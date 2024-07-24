@@ -134,7 +134,8 @@ class PublicacionController extends Controller
             $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
-            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
+            $zona = $this->request->get('zona');
+            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
