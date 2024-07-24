@@ -84,7 +84,9 @@
 
         </section>
     
-        <?php require __DIR__ . '/parts/reservas-propiedad.view.php' ?>        
+        <?php if($this->usuario->isUserLoggedIn()): ?>
+            <?php require __DIR__ . '/parts/reservas-propiedad.view.php' ?>        
+        <?php endif; ?>
 
 </main>
 
