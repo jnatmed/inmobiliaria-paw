@@ -31,7 +31,7 @@
                         <?= $publicacion['pileta'] ? '<span class="instalacion">Pileta</span> ' : '' ?>
                         <?= $publicacion['aire_acondicionado'] ? '<span class="instalacion">Aire Acondicionado</span> ' : '' ?>
                         <?= $publicacion['wifi'] ? '<span class="instalacion">Wi-Fi</span> ' : '' ?>
-                        <?= $publicacion['estado_id'] ? "<span class='estado_publicacion estado_publicacion_{$publicacion['estado_id']}'>{$publicacion['estado_id']}</span>"  : '' ?>
+                        <?= $publicacion['estado_id'] ? "<span class='estado_publicacion estado_publicacion_{$publicacion['estado_id']}'>" . ucwords(str_replace('-', ' ', strtolower($publicacion['estado_publicacion']))) . "</span>" : '' ?>
                     </p>
                     <a href="/publicacion/ver?id_pub=<?= $publicacion['id'] ?>" class="ver-mas">Ver más ></a>
                     <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone=<?= htmlspecialchars($publicacion['telefono']) ?>" target="_blank">
