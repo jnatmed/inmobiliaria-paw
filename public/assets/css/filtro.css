@@ -103,7 +103,18 @@ input[type="text"], select[type="text"] {
     border: 1px solid #e1e4e8;
     border-radius: 6px;
     outline: none;
-    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;
+    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;;
+    width: 30%;
+}
+
+select[type="text"] {
+    height: 3.4em;
+    margin-left: 1em;
+    margin-right: 1em;
+    color: #24292ee5;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 input[type="text"]:focus {
