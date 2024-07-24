@@ -144,7 +144,8 @@ class PublicacionCollection extends Model
             if ($result[1]) {
                 return [
                     "exito" => true,
-                    "mensaje" => "Reserva realizada con éxito."
+                    "mensaje" => "Reserva realizada con éxito.",
+                    "nro_reserva" =>$result[0] // es el id_generado
                 ];
             } else {
                 return [
