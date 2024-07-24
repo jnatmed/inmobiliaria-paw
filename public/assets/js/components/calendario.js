@@ -5,6 +5,7 @@ class Calendario {
         this.currentYear = this.currentDate.getFullYear();
         this.months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
         this.markedIntervals = [];
+        this.startDate = null; // Variable para guardar la fecha de inicio
         this.renderCalendar();
         this.addEventListeners();
     }
@@ -91,6 +92,12 @@ class Calendario {
         document.getElementById('nextMonthButton').addEventListener('click', () => {
             this.changeMonth(1);
         });
+
+        document.getElementById('calendarTable').addEventListener('click', (event) => {
+            if (event.target.tagName === 'TD' && event.target.classList.contains('libre')) {
+                this.handleDayClick(event.target);
+            }
+        });
     }
 
     changeMonth(change) {
@@ -127,7 +134,6 @@ class Calendario {
         const firstDayCurrentMonth = new Date(this.currentYear, this.currentMonth, 1);
         const lastDayCurrentMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
 
-        // Unir todos los intervalos en un solo conjunto de fechas ocupadas
         const occupiedDates = new Set();
         
         this.markedIntervals.forEach(interval => {
@@ -165,5 +171,78 @@ class Calendario {
             }
         });
     }
+
+    handleDayClick(cell) {
+        const cellDay = Number(cell.innerText);
+        const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
+    
+        // Función para agregar la clase 'selected' a la celda y todas las celdas del intervalo
+        const markInterval = (startDate, endDate) => {
+            const startDay = startDate.getDate();
+            const endDay = endDate.getDate();
+            const cells = document.querySelectorAll('#calendarContainer td');
+    
+            cells.forEach(cell => {
+                const cellDay = Number(cell.innerText);
+                if (cellDay >= startDay && cellDay <= endDay) {
+                    cell.classList.add('selected');
+                }
+            });
+        };
+    
+        const clearSelections = () => {
+            const cells = document.querySelectorAll('#calendarContainer td');
+            cells.forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            this.startDate = null;
+            document.getElementById('input-desde').value = '';
+            document.getElementById('input-hasta').value = '';
+        };
+    
+        if (!this.startDate) {
+            // Primer clic: marcar la fecha de inicio
+            this.startDate = cellDate;
+            cell.classList.add('selected');
+            document.getElementById('input-desde').value = this.formatDate(cellDate);
+        } else {
+            // Segundo clic: marcar la fecha final y el intervalo completo
+            const endDate = cellDate;
+            if (endDate > this.startDate) {
+                // Verificar que todos los días entre this.startDate y endDate estén disponibles
+                let intervaloValido = true;
+                const daysInInterval = Math.round((endDate - this.startDate) / (1000 * 60 * 60 * 24)) + 1;
+                for (let i = 0; i < daysInInterval; i++) {
+                    const checkDate = new Date(this.startDate);
+                    checkDate.setDate(this.startDate.getDate() + i);
+                    const checkCell = document.querySelector(`#calendarContainer td:nth-child(${checkDate.getDay()})`);
+                    if (checkCell && checkCell.classList.contains('ocupado')) { // Reemplaza 'ocupado' con la clase que indica no disponibilidad
+                        intervaloValido = false;
+                        break;
+                    }
+                }
+    
+                if (intervaloValido) {
+                    document.getElementById('input-hasta').value = this.formatDate(endDate);
+                    markInterval(this.startDate, endDate);
+                    this.startDate = null; // Reiniciar startDate para la próxima selección
+                } else {
+                    alert("No se puede seleccionar este período. Por favor, elige días disponibles continuos.");
+                    clearSelections(); // Limpiar selecciones y restablecer inputs
+                }
+            } else {
+                alert("La fecha final debe ser mayor que la fecha inicial.");
+            }
+        }
+    }    
+    
+
+    formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`; // Formato "yyyy-MM-dd"
+    }
     
 }
+

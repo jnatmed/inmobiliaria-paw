@@ -74,32 +74,25 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento()
     {
-        try {
-            $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));
-            $desde = htmlspecialchars($this->request->get('input-desde'));
-            $hasta = htmlspecialchars($this->request->get('input-hasta'));
-            $precio_x_noche = 800;
-            $estado_reserva = 'pendiente';
-            $notas = 'ninguna';
-            
-            $alojamientoReservado = $this->model->reservarAlojamiento($id_publicacion, 
-                                                                      $desde, 
-                                                                      $hasta, 
-                                                                      $precio_x_noche, 
-                                                                      $estado_reserva,
-                                                                      $notas);
-    
-            $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);
-    
-            header('Location: /reserva?id_pub='.$id_publicacion);
-            exit();
-        } catch (Exception $e) {
-            // Manejar la excepción según sea necesario
-            $this->logger->error('Error al reservar alojamiento: ' . $e->getMessage());
-            // Redirigir a una página de error u otra acción
-            header('Location: /not_found');
-            exit();
-        }
+
+        $id_publicacion = $this->request->get('id_publicacion');
+        $desde = $this->request->get('input-desde');
+        $hasta = $this->request->get('input-hasta');
+        $precio_x_noche = 800;
+        $estado_reserva = 'pendiente';
+        $notas = 'ninguna';
+        
+        $alojamientoReservado = $this->model->reservarAlojamiento($id_publicacion, 
+                                                                  $desde, 
+                                                                  $hasta, 
+                                                                  $precio_x_noche, 
+                                                                  $estado_reserva,
+                                                                  $notas);
+
+        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
+
+        header('Location: /publicacion/ver?id_pub='.$id_publicacion);
+        exit();
     }
     
 
