@@ -91,7 +91,7 @@ class ReservasController extends Controller
 
         $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
-        header('Location: /reserva?id_pub='.$id_publicacion);
+        header('Location: /publicacion/ver?id_pub='.$id_publicacion);
         exit();
     }
 

@@ -86,10 +86,10 @@ class PublicacionController extends Controller
         }
     
         // Obtener el ID de la publicación de la solicitud
-        $idPub = htmlspecialchars($this->request->get('id_pub'));
+        $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
     
         // Obtener los datos de la publicación y sus imágenes
-        $publicacion = $this->model->getOne($idPub);
+        $publicacion = $this->model->getOne($id_publicacion);
     
         // Verificar si se encontró la publicación
         if (!$publicacion) {
@@ -97,13 +97,20 @@ class PublicacionController extends Controller
                 "success" => false,
                 "message" => "Publicación no encontrada."
             ];
-            $this->logger->info("Publicación no encontrada: ID $idPub.");
+            $this->logger->info("Publicación no encontrada: ID $id_publicacion.");
             require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
             return;
         }
     
 
         $fullUrl = $this->request->fullUrl();
+        
+        // Obtén las reservas usando el modelo
+        $reservas = $this->model->getReservas($id_publicacion);
+
+        // Codifica las reservas a JSON para su uso en JavaScript
+        $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
+
         // Mostrar la vista de detalles de la publicación
         require $this->viewsDir . 'publicacion.details.view.php';
     }
