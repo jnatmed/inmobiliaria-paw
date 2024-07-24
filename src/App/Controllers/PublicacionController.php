@@ -83,15 +83,15 @@ class PublicacionController extends Controller
     public function verPublicacion()
     {
         // Verificar si hay sesión iniciada
-        if (!$this->usuario->isUserLoggedIn()) {
-            $resultado = [
-                "success" => false,
-                "message" => "Debe iniciar sesión para ver el pedido."
-            ];
-            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-            require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-            return;
-        }
+        // if (!$this->usuario->isUserLoggedIn()) {
+        //     $resultado = [
+        //         "success" => false,
+        //         "message" => "Debe iniciar sesión para ver el pedido."
+        //     ];
+        //     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+        //     require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
+        //     return;
+        // }
     
         // Obtener el ID de la publicación de la solicitud
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
