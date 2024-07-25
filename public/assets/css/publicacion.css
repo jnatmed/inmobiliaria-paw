@@ -18,7 +18,7 @@
 
 .paso-1 p {
     padding: 1rem 0 1rem 0;
-    margin-bottom: 1rem;
+    margin-top: 1em;
     width: 100%;
     font-size: 1.9rem;
     color: gray;
@@ -40,7 +40,7 @@
     font-weight: 800;
     font-size: 2rem;
     margin-top: 1em;
-    margin-bottom: 1em;
+    margin-bottom: .5em;
     align-self: flex-start;
 }
 
@@ -48,11 +48,34 @@
     display: inline-block;
     width: 50%;
     border: 0;
-    border-bottom: 2px solid gray;
+    border-bottom: 1px solid gray;
     background-color: transparent;
     padding: 0.5em;
-    margin: 0.5em;
+    margin: 0.3em;
     margin-left: 0;
+}
+
+.input-form-publicacion:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px transparent;
+}
+
+#buscarUbicacion {
+    border-radius: 5px;
+    border-style: solid;
+    background-color: var(--color-verde-header);
+    color: white;
+    border-color: var(--color-verde-header);
+    font-size: 1.3em;
+    padding: .2em;
+    margin: 5px auto;
+}
+
+#buscarUbicacion:hover  {
+    background-color: rgb(139, 150, 117);
+    color: white;
+    border-color: rgb(139, 150, 117);
+    
 }
 
 .btn-form-enviar-publicacion {
@@ -99,19 +122,20 @@
 }
 
 .lbl-chekbox {
-    display: block;
-    width: calc(100% / 3);
-    border: none;
-    border-bottom: 2px solid gray;
+    width: 30%;
+    border-bottom: 1px solid gray;
     color: black;
-    font-size: 1.6rem;
+    font-size: 1.2em;
     margin-top: 1em;
     margin-bottom: 1em;
-    padding: 0.5em;
+    padding: 0.3em;
+    display: flex;
+    align-items: center;
 }
 
 .lbl-chekbox input {
-    display: inline-block;
+    margin-right: 10px; /* Espacio entre el checkbox y el texto del label */
+    order: -1;
 }
 
 .paso-2 p,
@@ -443,8 +467,14 @@
     padding: .5rem;
     font-size: 2.5rem;
     cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.prev-btn:hover, .next-btn:hover {
+    color: #fff;
+    transform: scale(1.05); 
+}
 
 .video-background {
     position: absolute;

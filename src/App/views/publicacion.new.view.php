@@ -10,7 +10,7 @@
     <?php require __DIR__ . '/parts/header.view.php' ?>
 
     <main class="main-home">
-    <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
+        <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p>Completá los datos del dueño del alojamiento y de la persona que va a administrar la propiedad.</p>
@@ -26,20 +26,20 @@
                 <input type="tel" name="telefono" id="telefono" class="input-form-publicacion" placeholder="Número de Teléfono" required>
                 <input type="email" name="email" id="email" class="input-form-publicacion" placeholder="Correo Electrónico" required>
 
-                <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
-                <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
-                <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia" >
-                <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad" >
-                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" >
-                <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
-                <?php require __DIR__ . '/parts/mapa.view.php' ?>
-
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
                 <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
                 <input type="text" name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" placeholder="Tipo de Alojamiento" required>
                 <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Máxima" required>
                 <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños" required>
                 <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Cantidad de Dormitorios" required>
+
+                <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
+                <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
+                <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia">
+                <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad">
+                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección">
+                <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
+                <?php require __DIR__ . '/parts/mapa.view.php' ?>
 
                 <h3 class="titulo-datos-propietario">Instalaciones</h3>
                 <label for="cochera" class="lbl-chekbox">Cochera
@@ -146,4 +146,5 @@
 
     <?php require __DIR__ . '/parts/footer.view.php' ?>
 </body>
+
 </html>

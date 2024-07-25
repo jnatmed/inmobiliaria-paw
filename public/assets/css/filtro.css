@@ -133,29 +133,31 @@ input[type="range"] {
 
 .botones-conteiner button {
     border-radius: 10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-style: solid;
 }
 
 .botones-conteiner button[type="submit"] {
-    background-color: black;
+    background-color: var(--color-verde-header);
     color: white;
+    border-color: var(--color-verde-header);
 }
 
 .botones-conteiner button[type="reset"] {
     background-color: white;
-    color: black;
+    color: var(--color-verde-header);
+    border-color: var(--color-verde-header);
 }
 
 .botones-conteiner button[type="submit"]:hover {
     background-color: rgb(48, 48, 48);
     color: white;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    border-color: black
 }
 
 .botones-conteiner button[type="reset"]:hover {
-    background-color: rgb(207, 207, 207);
+    background-color: rgb(235, 235, 235);
     color: black;
-    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .error-registro {

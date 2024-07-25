@@ -71,8 +71,11 @@ a.anchor-item-sesion:hover {
 #mapid {
     height: 500px;
     /* O cualquier altura que necesites */
-    width: 80%;
-    margin: 0 auto;
+    width: 95%;
+    margin: 2em auto;
+    border: 2px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 
