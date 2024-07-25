@@ -5,17 +5,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Actualizar el valor del span cuando cambia el valor del slider
     precioSlider.addEventListener('input', function () {
-        if (this.value == 0) {
+        if (this.value == 0)
             precioValor.innerText = "-"
-        } else {
+        else
             precioValor.innerText = this.value;
-        }
     });
 
-    // Restablecer el valor del span cuando se hace clic en el botón de limpiar
+    // Restablecer el valor cuando se hace clic en el botón de limpiar
     form.addEventListener('reset', function () {
         setTimeout(() => {
-            precioValor.innerText = precioSlider.value;
+            if (precioSlider.value == 0)
+                precioValor.innerText = "-"
+            else
+                precioValor.innerText = precioSlider.value;
         }, 0);
     });
 });

@@ -52,6 +52,7 @@
     background-color: transparent;
     padding: 0.5em;
     margin: 0.5em;
+    margin-left: 0;
 }
 
 .btn-form-enviar-publicacion {
@@ -155,7 +156,6 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
-
 }
 
 /* Estilos para cada elemento de la lista de publicaciones */
@@ -185,6 +185,7 @@
     font-weight: bold;
     margin-top: .5em;
     margin-bottom: .5em;
+    font-family: var(--font-precio);
 }
 
 /* Estilos para los datos de la publicación */
@@ -501,13 +502,6 @@
     font-size: initial;
 }
 
-.input-form-busqueda {
-    width: 30%;
-    height: 3rem;
-    border: none;
-    padding-left: 10px;
-}
-
 .form-busqueda-propiedad input:nth-of-type(2) {
     margin: 0 1rem 0 1rem;
 }
@@ -559,6 +553,28 @@
 
 .ver-mas:hover {
     background-color: #0056b3;
+}
+
+.no-resultados {
+    border: 2px solid #ff0000;
+    background-color: #ffe6e6;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.no-resultados h2 {
+    color: #ff0000;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 3em;
+}
+
+.no-resultados p {
+    color: #333;
+    text-align: center;
+    font-size: 2em;
 }
 
 
