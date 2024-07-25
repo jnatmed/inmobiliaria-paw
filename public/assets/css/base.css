@@ -99,10 +99,9 @@ a.anchor-item-sesion:hover {
     /* Elimina cualquier borde por defecto */
 }
 
-
-
-
-
+textarea {
+    resize: none;
+}
 
 .enlace-publicar {
     display: inline-block;
