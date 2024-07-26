@@ -2,14 +2,14 @@
 
 namespace Paw\Core;
 
-use Paw\Core\Model; 
+use Paw\Core\Model;
 use Paw\Core\Database\QueryBuilder;
 use Paw\Core\Traits\Loggable;
 
-class Controller 
+class Controller
 {
     use Loggable;
-    
+
     public string $viewsDir;
     public string $viewsDirCliente;
 
@@ -18,15 +18,16 @@ class Controller
     public array $menu;
     public array $menuEmpleado;
     public array $menuPerfil;
-    public ?string $modelName = null;   
+    public ?string $modelName = null;
     protected $model;
     public $qb;
     public $request;
     public $sesion_en_curso;
 
-    public function __construct(){
-        
-        global $connection, $log;        
+    public function __construct()
+    {
+
+        global $connection, $log;
 
         $this->viewsDir = __DIR__ . '/../App/views/';
         $this->viewsDirCliente = __DIR__ . '/../App/views/cliente/';
@@ -40,29 +41,32 @@ class Controller
                 'name' => 'PROPIEDADES'
             ],
             [
+                'href' => '/publicacion/new',
+                'name' => 'PUBLICAR'
+            ],
+            [
                 'href' => '/mis_publicaciones',
-                'name' => 'MIS PROPIEDADES'   
+                'name' => 'MIS PROPIEDADES'
             ],
             [
                 'href' => '/mis_publicaciones/reservas',
-                'name' => 'MIS RESERVAS'   
-            ],                      
+                'name' => 'MIS RESERVAS'
+            ],
             [
                 'href' => '/usuario/mi_perfil',
-                'name' => 'MI PERFIL'   
-            ]                      
-        ];        
+                'name' => 'MI PERFIL'
+            ]
+
+        ];
 
         $this->qb = new QueryBuilder($connection, $log);
         $this->request = new Request();
 
-        if(!is_null($this->modelName)){
+        if (!is_null($this->modelName)) {
             $model = new $this->modelName;
             $model->setQueryBuilder($this->qb);
             $this->setModel($model);
         }
-
-        
     }
 
     public function setModel(Model $model)
@@ -70,8 +74,8 @@ class Controller
         $this->model = $model;
     }
 
-    public function getQb(){
+    public function getQb()
+    {
         return $this->qb;
     }
-
 }

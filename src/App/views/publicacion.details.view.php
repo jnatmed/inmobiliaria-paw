@@ -3,6 +3,9 @@
 
 <head>
     <?php require __DIR__ . '/parts/head.view.php' ?>
+<link rel="stylesheet" href="/assets/css/reservas-calendario.css">    
+<script src="/assets/js/reservas-calendario.js"></script>
+
 </head>
 
 <body class="home">
@@ -52,8 +55,9 @@
                      <input type="submit" value="Contactar" class="btn-contactar">
                  </form>
                  <a class="whatsapp-link" href="https://wa.me/<?= htmlspecialchars($publicacion['telefono']) ?>/?text=Hola, vi esta propiedad en Pawproperties y quiero más información por WhatsApp. <?= urlencode($fullUrl) ?>" target="_blank">
-    <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
-</a>
+        
+                     <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
+                 </a>
                 <a class="whatsapp-link" href="https://api.whatsapp.com/send/?phone=<?= htmlspecialchars($publicacion['telefono']) ?>&text=Hola%2C+vi+esta+propiedad+en+Pawproperties+y+quiero+m%C3%A1s+informaci%C3%B3n+por+WhatsApp.+<?= urlencode($fullUrl) ?>&type=phone_number&app_absent=0" target="_blank">
                     <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                 </a>
@@ -77,11 +81,17 @@
                 </p>    
                 <article class="mapid"></article>
             </article>
+
         </section>
-         <a href="/reserva?id_pub=<?= $publicacion['id'] ?>">Ver las reservas Disponibles</a>           
-    </main>
+    
+        <?php if($this->usuario->isUserLoggedIn()): ?>
+            <?php require __DIR__ . '/parts/reservas-propiedad.view.php' ?>        
+        <?php endif; ?>
+
+</main>
 
     <?php require __DIR__ . '/parts/footer.view.php' ?>
+
 </body>
 
 </html>

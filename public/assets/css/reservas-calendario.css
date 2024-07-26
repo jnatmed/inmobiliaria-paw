@@ -5,6 +5,7 @@ table.greenTable {
     width: 80%;
     /* height: 60%; */
     text-align: center;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 table.greenTable td,
@@ -15,7 +16,7 @@ table.greenTable th {
 
 table.greenTable tbody td {
     font-size: 13px;
-    height: 15rem;
+    height: 6rem;
     /* background-color: white; */
 }
 
@@ -152,6 +153,13 @@ table.greenTable tfoot .links a {
     transform: translate(-50%, -50%);
     font-weight: bold;
     font-size: 1.5em;
+}
+
+
+.selected {
+    background-color: #007bff; /* Color de fondo azul */
+    color: white; /* Texto blanco */
+    font-weight: bold; /* Texto en negrita */
 }
 
 .msj_reserva {

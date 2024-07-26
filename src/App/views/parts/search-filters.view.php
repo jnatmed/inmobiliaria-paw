@@ -18,7 +18,7 @@
 
 
 <section class="filtro-group">
-    <p>Instalaciones</p>
+    <p>Instalaciones & Equipamiento</p>
     <label><input type="checkbox" name="instalaciones[]" value="cochera"> Cochera</label>
     <label><input type="checkbox" name="instalaciones[]" value="pileta"> Pileta</label>
     <label><input type="checkbox" name="instalaciones[]" value="aire_acondicionado"> Aire Acondicionado</label>

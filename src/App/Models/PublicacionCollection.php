@@ -127,10 +127,11 @@ class PublicacionCollection extends Model
     }
     
 
-    public function reservarAlojamiento($id_publicacion, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
+    public function reservarAlojamiento($id_publicacion, $id_usuario_reserva, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
     {
         $data = [
             'id_publicacion' => $id_publicacion,
+            'id_usuario_reserva' => $id_usuario_reserva,
             'fecha_inicio' => $desde,
             'fecha_fin' => $hasta,
             'precio_por_noche' => $precio_x_noche,
@@ -143,7 +144,8 @@ class PublicacionCollection extends Model
             if ($result[1]) {
                 return [
                     "exito" => true,
-                    "mensaje" => "Reserva realizada con éxito."
+                    "mensaje" => "Reserva realizada con éxito.",
+                    "nro_reserva" =>$result[0] // es el id_generado
                 ];
             } else {
                 return [
@@ -161,6 +163,23 @@ class PublicacionCollection extends Model
         }
     }
 
+    public function getEstadoById($id_estado)
+    {
+        try {
+            $params = ['id' => $id_estado];
+            $result = $this->queryBuilder->select('estado_publicaciones', $params);
+
+            if (!empty($result)) {
+                return $result[0]['estado'];
+            } else {
+                return null; // O puedes lanzar una excepción si prefieres
+            }
+        } catch (Exception $e) {
+            // Manejo de errores
+            // Puedes registrar el error utilizando un logger
+            return false;
+        }
+    }    
 
     public function getAll()
     {
@@ -263,6 +282,8 @@ class PublicacionCollection extends Model
                             $publicaciones[$id][$key] = $value;
                         }
                         $publicaciones[$id]['imagenes'] = [];
+                        $estadoPublicacion = $this->getEstadoById($publicaciones[$id]['estado_id']);
+                        $publicaciones[$id]['estado_publicacion'] = $estadoPublicacion;
                     }
                     if (!is_null($row['id_imagen'])) {
                         $publicaciones[$id]['imagenes'][] = [

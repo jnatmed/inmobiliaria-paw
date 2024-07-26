@@ -60,7 +60,8 @@ class PublicacionController extends Controller
     public function list()
     {
         try {
-            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
+            $zona = $this->request->get('zona');
+            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
@@ -68,7 +69,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
             
             // var_dump($publicaciones);
-            // $this->logger->info("Publicaciones: ", [$publicaciones]);
+            $this->logger->info("Publicaciones: ", [$publicaciones]);
 
             require $this->viewsDir . 'publicaciones.list.view.php';
         } catch (PDOException $e) {
@@ -82,21 +83,21 @@ class PublicacionController extends Controller
     public function verPublicacion()
     {
         // Verificar si hay sesión iniciada
-        if (!$this->usuario->isUserLoggedIn()) {
-            $resultado = [
-                "success" => false,
-                "message" => "Debe iniciar sesión para ver el pedido."
-            ];
-            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-            require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-            return;
-        }
+        // if (!$this->usuario->isUserLoggedIn()) {
+        //     $resultado = [
+        //         "success" => false,
+        //         "message" => "Debe iniciar sesión para ver el pedido."
+        //     ];
+        //     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+        //     require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
+        //     return;
+        // }
     
         // Obtener el ID de la publicación de la solicitud
-        $idPub = htmlspecialchars($this->request->get('id_pub'));
+        $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
     
         // Obtener los datos de la publicación y sus imágenes
-        $publicacion = $this->model->getOne($idPub);
+        $publicacion = $this->model->getOne($id_publicacion);
     
         // Verificar si se encontró la publicación
         if (!$publicacion) {
@@ -104,13 +105,20 @@ class PublicacionController extends Controller
                 "success" => false,
                 "message" => "Publicación no encontrada."
             ];
-            $this->logger->info("Publicación no encontrada: ID $idPub.");
-            header('Location: /not_found');
-            exit();
+            $this->logger->info("Publicación no encontrada: ID $id_publicacion.");
+            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
+            return;
         }
     
 
         $fullUrl = $this->request->fullUrl();
+        
+        // Obtén las reservas usando el modelo
+        $reservas = $this->model->getReservas($id_publicacion);
+
+        // Codifica las reservas a JSON para su uso en JavaScript
+        $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
+
         // Mostrar la vista de detalles de la publicación
         require $this->viewsDir . 'publicacion.details.view.php';
     }
@@ -134,7 +142,8 @@ class PublicacionController extends Controller
             $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
-            $zona = ucwords(strtolower(trim($this->request->get('zona'))));
+            $zona = $this->request->get('zona');
+            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];

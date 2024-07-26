@@ -34,6 +34,7 @@
     margin: 0 auto;
     font-weight: bold;
     display: inline-block;
+    font-family: var(--font-precio);
 }
 
 #precio-valor::before {
@@ -62,6 +63,7 @@
     border-bottom: 1px;
     border-style: solid;
     margin-bottom: 8px;
+    padding-bottom: 2px;
 }
 
 .filtro-group label {
@@ -74,7 +76,7 @@ input[type="range"] {
     appearance: none;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+.filtro-group input[type="range"]::-webkit-slider-thumb {
     /* removing default appearance */
     -webkit-appearance: none;
     appearance: none;
@@ -87,12 +89,12 @@ input[type="range"]::-webkit-slider-thumb {
     box-shadow: -407px 0 0 400px rgb(37, 32, 38);
 }
 
-input[type="range"] {
+.filtro-group input[type="range"] {
     overflow: hidden;
     border-radius: 16px;
 }
 
-input[type="text"] {
+.filtro-group input[type="text"], .filtro-group select[type="text"] {
     padding: 5px 12px;
     font-size: 14px;
     line-height: 20px;
@@ -103,14 +105,25 @@ input[type="text"] {
     border: 1px solid #e1e4e8;
     border-radius: 6px;
     outline: none;
-    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;
+    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;;
 }
 
-input[type="text"]:focus {
+.filtro-group select[type="text"] {
+    height: 3.4em;
+    margin-left: 1em;
+    margin-right: 1em;
+    color: #24292ee5;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.filtro-group input[type="text"]:focus {
     border-color: #0366d6;
     outline: none;
     box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
 }
+
 
 .botones-conteiner {
     display: flex;
@@ -118,33 +131,59 @@ input[type="text"]:focus {
     gap: 10px;
 }
 
-button {
+.botones-conteiner button {
     border-radius: 10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-style: solid;
 }
 
-button[type="submit"] {
-    background-color: black;
+.botones-conteiner button[type="submit"] {
+    background-color: var(--color-verde-header);
     color: white;
+    border-color: var(--color-verde-header);
 }
 
-button[type="reset"] {
+.botones-conteiner button[type="reset"] {
     background-color: white;
-    color: black;
+    color: var(--color-verde-header);
+    border-color: var(--color-verde-header);
 }
 
-button[type="submit"]:hover {
+.botones-conteiner button[type="submit"]:hover {
     background-color: rgb(48, 48, 48);
     color: white;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    border-color: black
 }
 
-button[type="reset"]:hover {
-    background-color: rgb(207, 207, 207);
+.botones-conteiner button[type="reset"]:hover {
+    background-color: rgb(235, 235, 235);
     color: black;
-    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .error-registro {
     color: red;
+}
+
+.input-form-busqueda {
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292e;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    outline: none;
+    box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;;
+    width: 30%;
+    height: 3rem;
+    margin-right: 1em;
+}
+
+select.input-form-busqueda[type="text"]{
+    height: 3.4em;
+    appearance: none; /* Eliminar la apariencia por defecto */
+    -webkit-appearance: none; /* Eliminar la apariencia por defecto en WebKit */
+    -moz-appearance: none;
 }

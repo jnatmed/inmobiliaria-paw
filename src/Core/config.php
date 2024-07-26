@@ -20,6 +20,11 @@ class Config
         $this->configs['DB_PORT'] = getenv('DB_PORT') ?? '3306';
         $this->configs['DB_CHARSET'] = getenv('DB_CHARSET') ?? 'utf8';      
         $this->configs['OPENCAGEDATA_API_KEY'] = getenv('OPENCAGEDATA_API_KEY') ?? '';
+
+        $this->configs['MAIL_FROM']= getenv('MAIL_FROM');
+        $this->configs['MAIL_NAME']= getenv('MAIL_NAME');
+        $this->configs['MAIL_PASS']= getenv('MAIL_PASS');
+        $this->configs['MAIL_HOST']= getenv('MAIL_HOST');
     }
 
     public function joinPaths()

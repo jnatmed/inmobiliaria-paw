@@ -63,6 +63,16 @@ class UsuarioController extends Controller
         return isset($_SESSION['email']);
     }
 
+    public function getUserName()
+    {
+        return $_SESSION['nombre'];
+    }
+
+    public function getEmailAddress()
+    {
+        return $_SESSION['email'];
+    }
+
     public function getUserId()
     {
         return $_SESSION['usuario_id'] ?? null;
@@ -96,6 +106,7 @@ class UsuarioController extends Controller
                 // Guardar los datos del usuario en la sesión
                 $_SESSION['email'] = $usuarioAutenticado['email'];
                 $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario'];
+                $_SESSION['nombre'] = $usuarioAutenticado['nombre'];
                 $this->tipoUsuario = $_SESSION['tipo'];
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
                 // Redirigir al usuario a la página principal
