@@ -7,7 +7,7 @@ use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Utils;
 use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
-
+use Paw\App\Models\Mailer;
 
 use PDOException;
 use Throwable;
@@ -20,6 +20,7 @@ class PublicacionController extends Controller
     public Verificador $verificador;
     public Uploader $uploader;
     public $utils;
+    public $mailer;
     // use Loggable;
 
     public function __construct()
@@ -30,6 +31,7 @@ class PublicacionController extends Controller
         $this->verificador = new Verificador;
         $this->usuario = new UsuarioController();
         $this->utils = new  Utils();
+        $this->mailer = new Mailer();
 
         parent::__construct();
 
@@ -121,6 +123,92 @@ class PublicacionController extends Controller
 
         // Mostrar la vista de detalles de la publicación
         require $this->viewsDir . 'publicacion.details.view.php';
+    }
+
+    public function contactarAlDuenio()
+    {
+        
+        $emailInteresado = htmlspecialchars($this->request->get('email-interesado'));
+        $telefonoDelInteresado = htmlspecialchars($this->request->get('telefono-interesado'));
+        $textoConsultaDelInteresado = htmlspecialchars($this->request->get('texto-consulta'));
+        $emailDuenio = htmlspecialchars($this->request->get('emailDuenio'));
+        $fullUrl = htmlspecialchars($this->request->get('urlPublicacion'));
+        $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
+
+        $this->logger->info("datos entrada ContactarAlDuenio: ", [
+            $emailInteresado,
+            $telefonoDelInteresado
+        ]);
+
+        $mensajeCorreo = '
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                }
+                .header {
+                    background-color: #f4f4f4;
+                    padding: 10px 0;
+                    text-align: center;
+                    border-bottom: 1px solid #ddd;
+                }
+                .content {
+                    padding: 20px;
+                }
+                h4 {
+                    color: #333;
+                }
+                p {
+                    color: #555;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h4>Consulta sobre Publicacion</h4>
+                </div>
+                <div class="content">
+                    <h5>Datos del Interesado</h5>
+                    <p>
+                        Email: ' . $emailInteresado . '<br>
+                        Telefono: ' . $telefonoDelInteresado . '<br>
+                        Consulta Realizada: ' . $textoConsultaDelInteresado . '<br>
+                        Publicacion sobre la cual consulta: 
+                        <a href="'. $fullUrl .'">Click Aqui</a>
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ';
+
+        // aca deberia enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->mailer->send($emailDuenio,
+                            "Consulta sobre publicacion: ",
+                            $mensajeCorreo,
+                            );
+                      
+        if($resultadoSend){
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
+        }else{
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
+        }                
+
+        header('Location: /publicacion/ver?id_pub='.$id_publicacion);
+        exit();
     }
 
     public function listaPublicacionesPropietario()

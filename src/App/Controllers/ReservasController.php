@@ -164,12 +164,17 @@ class ReservasController extends Controller
         ';
 
         // aca deberia enviar un correo al usuario que esta logueado       
-        $this->mailer->send($emailAddress,
+        $resultadoSend = $this->mailer->send($emailAddress,
                             "Reserva Exitosa para el usuario: $userName ",
                             $mensajeCorreo,
                             );
-                                                                
-        $this->logger->info("Resultado Envio Correo: ", [$this->usuario] );
+                      
+        if($resultadoSend){
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
+        }else{
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
+        }                
+        
         $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
         header('Location: /publicacion/ver?id_pub='.$id_publicacion);
