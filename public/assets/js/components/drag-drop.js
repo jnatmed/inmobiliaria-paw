@@ -1,93 +1,94 @@
-class Drag_Drop {
-    constructor(dropArea, inputFile, output) {
-        this.dropArea = dropArea;
-        this.output = output;
-        this.inputFile = inputFile;
-        this.dropAreaText = this.dropArea.querySelector('p');
-
+class DragDrop {
+    constructor() {
+        this.dropArea = document.querySelector("#drop-area");
+        this.previewContainer = document.querySelector(".preview-container");
+        this.error = document.querySelector(".error-drop");
+        this.allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+        this.inputFile = document.querySelector("#drop-input"); 
         this.inicializar();
     }
 
     inicializar() {
-        // Handle drag over event
-        this.dropArea.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.dropArea.classList.add("drag-over");
-        });
-
-        // Handle drop event
-        this.dropArea.addEventListener("drop", (e) => {
-            e.preventDefault();
-            this.dropArea.classList.remove("drag-over");
-            const imagen = e.dataTransfer.files[0];
-            if (!imagen || !imagen.type.match("image")) 
-                return;
-            this.mostrar(imagen);
-            this.eliminarDropArea();
-            this.inputFile.files = e.dataTransfer.files; // Set the file to the input
-        });
-
-        // Handle drag enter event
-        this.dropArea.addEventListener("dragenter", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log("El archivo está sobre la zona de drop");
-            this.dropArea.classList.add("drag-over");
-        });
-
-        // Handle drag leave event
-        this.dropArea.addEventListener("dragleave", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log("El archivo ha salido de la zona de drop");
-            this.dropArea.classList.remove("drag-over");
-        });
-
-        // Handle click event to open file dialog
-        this.dropArea.addEventListener("click", () => {
-            this.inputFile.click();
-        });
-
-        // Handle change event for file input
-        this.inputFile.addEventListener("change", (e) => {
-            const imagen = e.target.files[0];
-            if (!imagen || !imagen.type.match("image.*")) 
-                return;
-            this.mostrar(imagen);
-            this.eliminarDropArea();
-            this.inputFile.files = e.target.files;
-        });
+        this.setupEventListeners();
     }
 
-    mostrar(imagen) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const imagenHTML = `<div class="image-dad">
-                                    <img src="${e.target.result}" alt="image">
-                                    <button class="remove-icon">&times;</button>
-                               </div>`;
-            this.output.innerHTML = imagenHTML;
-
-            const removeButton = this.output.querySelector('.remove-icon');
-            removeButton.addEventListener('click', () => {
-                this.removeImage();
-            });
-        };
-        reader.readAsDataURL(imagen);
+    setupEventListeners() {
+        this.dropArea.addEventListener('dragenter', this.highlightDropArea.bind(this));
+        this.dropArea.addEventListener('dragover', this.highlightDropArea.bind(this));
+        this.dropArea.addEventListener('dragleave', this.unhighlightDropArea.bind(this));
+        this.dropArea.addEventListener('drop', this.handleDrop.bind(this));
+        this.inputFile.addEventListener('change', this.handleFileSelect.bind(this)); 
     }
 
-    eliminarDropArea() {
-        if (this.dropArea) {
-            this.dropArea.style.display = 'none';
+    handleFileSelect(e) {
+        this.previewFiles(e.target.files);
+    }
+
+    highlightDropArea(e) {
+        this.dropArea.classList.add("highlight");
+        e.preventDefault();
+    }
+
+    unhighlightDropArea(e) {
+        this.dropArea.classList.remove("highlight");
+        e.preventDefault();
+    }                                                                      
+
+    handleDrop(e) {
+        this.dropArea.classList.remove("highlight");
+        e.preventDefault();
+
+        if (e.dataTransfer.files) {
+            this.previewFiles(e.dataTransfer.files);
         }
     }
 
-    removeImage() {
-        this.output.innerHTML = '';
-        this.inputFile.value = ''; // Clear the input value
-        if (this.dropArea) {
-            this.dropArea.style.display = 'flex'; // Show the drop area again
+    previewFiles(files) {
+        this.error.style.display = "none";
+        for (let file of files) {
+            if (!this.allowedImageTypes.includes(file.type)) {
+                this.mostrarError("Solo se permiten archivos .jpg, .png, .jpeg");
+                return;
+            }
         }
+        for (let file of files) {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.createImagePreview(file, reader.result);
+            };
+        }
+    }
+
+    mostrarError(message) {
+        this.error.style.display = "block";
+        this.error.innerHTML = message;
+    }
+
+    createImagePreview(file, src) {
+        let image = new Image();
+        image.src = src;
+
+        let contenedorImagen = document.createElement("div");
+        contenedorImagen.setAttribute('class', 'image-container');
+        contenedorImagen.appendChild(image);
+        this.previewContainer.appendChild(contenedorImagen);
+
+        let nombreImagen = document.createElement("p");
+        nombreImagen.setAttribute('class', 'info');
+        nombreImagen.innerHTML = file.name;
+        contenedorImagen.appendChild(nombreImagen);
+
+        let botonEliminar = document.createElement("button");
+        botonEliminar.setAttribute('class', 'remove-button');
+        botonEliminar.innerText = "Eliminar imagen";
+        botonEliminar.addEventListener('click', () => {
+            this.removeImage(contenedorImagen);
+        });
+        contenedorImagen.appendChild(botonEliminar);
+    }
+
+    removeImage(element) {
+        element.remove();
     }
 }

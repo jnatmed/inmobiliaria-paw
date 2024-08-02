@@ -1,0 +1,74 @@
+#drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    min-height: 200px;
+    margin: 10px;
+    box-sizing: border-box;
+}
+
+.instructions {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+#drop-input {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+#drop-area.highlight{
+	border-color: green;
+}
+
+.preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    grid-column-gap: 30px;
+    grid-row-gap: 50px;
+    margin-top: 50px;
+}
+
+.image-container {
+    padding: 5px;
+    background-color: #3c4d68;
+    color: white;
+}
+
+.preview-container img {
+    display: inline-block;
+    width: 100%;
+}
+
+.preview-container .info {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.preview-container .remove-button {
+    display: inline-block;
+    margin-top: 30px;
+    border: none;
+    padding: 8px 20px;
+    font-size: 16px;
+    background-color: #d9687c;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.preview-container .remove-button:hover {
+    filter: brightness(1.2);
+}
+
+.error-drop {
+    color: #712c2c;
+    background: pink;
+    padding: 10px;
+    margin-top: 30px;
+    display: none;
+}

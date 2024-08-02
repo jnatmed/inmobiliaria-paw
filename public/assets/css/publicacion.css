@@ -18,15 +18,17 @@
 
 .paso-1 p {
     padding: 1rem 0 1rem 0;
-    margin-top: 1em;
+    margin-top: .5em;
     width: 100%;
-    font-size: 1.9rem;
+    font-size: 1.5rem;
     color: gray;
 }
 
-.paso-1 p:first-of-type {
-    font-size: 3rem;
+p.paso-titulo {
+    font-size: 2.5em;
     text-align: center;
+    color: gray;
+    padding: 1rem 0 1rem 0;
 }
 
 .titulo-form-publicacion {
@@ -98,7 +100,9 @@
 
 .descripcion-alojamiento[type="number"] {
     display: inline-block;
-    height: 2em;
+    width: 30vw;
+    padding: 10px;
+    font-family: var(--font-precio);
 }
 
 .file-input-label {
@@ -139,27 +143,29 @@
     order: -1;
 }
 
-.paso-2 p,
-.paso-3 p {
+/* .paso-2 p, */
+/* .paso-3 p {
     padding: 1rem 0 1rem 0;
     margin-bottom: 1rem;
     width: 100%;
     font-size: 1.5rem;
     color: gray;
-}
+} */
 
-.paso-2 p:nth-child(2) {
+/* .paso-2 p:nth-child(2) {
     border: none;
     border-bottom: 2px solid gray;
     padding-bottom: 2rem;
     width: 100%;
-}
+} */
 
 .descripcion-alojamiento {
     border: 0.1rem solid var(--color-verde-header);
-    width: 100%;
+    width: 60%;
     height: 10%;
-    font-size: large;
+    font-size: 1.5em;
+    font-family: var(--font-principal);
+    margin: 0 auto;
 }
 
 #mapid {
@@ -167,13 +173,13 @@
     justify-content: center;
     align-items: center;
 }
-
+/* 
 .paso-3 p:nth-child(2) {
     border: none;
     border-bottom: 2px solid gray;
     padding-bottom: 2rem;
     width: 100%;
-}
+} */
 
 
 /* Estilos para la lista de publicaciones */
@@ -395,76 +401,6 @@
     font-weight: bold;
     letter-spacing: 2px;
     border-radius: 20px;
-}
-
-
-/* input imagen publicaciones */
-
-.container-dad {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 10%;
-    width: 45%;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.drop-area-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.input-dad {
-    border: 2px dashed #ccc;
-    padding: 20px;
-    height: 5rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.input-dad p {
-    text-align: center;
-    align-self: center;
-}
-
-.drag-over {
-    background-color: #313131;
-    color: white;
-}
-
-.output-dad {
-    max-width: 200px;
-    margin-top: 10px;
-    position: relative;
-}
-
-.image-dad {
-    position: relative;
-}
-
-.image-dad img {
-    max-width: 100%;
-}
-
-.image-dad .remove-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .hidden {

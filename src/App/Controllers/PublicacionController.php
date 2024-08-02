@@ -396,29 +396,63 @@ class PublicacionController extends Controller
                 // Si la inserción fue exitosa, procede con el manejo de las imágenes
                 if ($idPublicacionGenerado) {
                     // Verificar si $_FILES está vacío
-                    if (empty($_FILES)) {
+                    if (empty($_FILES['imagenes'])) {
                         throw new Exception("Error: No se han subido archivos.");
                     }
     
                     $imagenesPublicacion = [];
+                    $files = $_FILES['imagenes'];
     
-                    foreach ($_FILES as $file) {
-                        if ($file["name"] != "") {
-                            $result = $this->uploader->uploadFile($file);
-    
-                            $this->logger->info("resultado insercion capa CONTROLLER  ", [$result]);
-                            if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
-                                $imagenesPublicacion[] = [
-                                    'id_publicacion' => $idPublicacionGenerado,
-                                    'path_imagen' => $result['nombre_imagen'],
-                                    'nombre_imagen' => $result['nombre_imagen'],
-                                    'id_usuario' => $idUser
-                                ];
-                            } else {
-                                throw new Exception("Error al subir una imagen: " . $result['description']);
-                            }
+                    for ($i=0; $i < count($files['name']); $i++){
+                        if($files['name'][$i] != ""){
+                            $file = [
+                                'name' => $files['name'][$i],
+                                'type' => $files['type'][$i],
+                                'tmp_name' => $files['tmp_name'][$i],
+                                'error' => $files['error'][$i],
+                                'size' => $files['size'][$i],
+                            ];
+                        }
+                        
+                        if ($file['error'] != UPLOAD_ERR_OK){
+                            throw new Exception("Error al subir una imagen: ".$file['error']);
+                        }
+
+                        // Subiendo el archivo usando el metodo uploadFile de Uploader
+                        $resultUpload = $this->uploader->uploadFile($file);
+
+                        $this->logger->info("resultado insercion capa CONTROLLER", [$resultUpload]);
+
+                        if ($resultUpload['exito'] == Uploader::UPLOAD_COMPLETED) {
+                            $imagenesPublicacion[] = [
+                                'id_publicacion' => $idPublicacionGenerado,
+                                'path_imagen' => $resultUpload['nombre_imagen'],
+                                'nombre_imagen' => $resultUpload['nombre_imagen'],
+                                'id_usuario' => $idUser
+                            ];
+                        }else{
+                            throw new Exception("Error al subir una imagen: " . $resultUpload['description']);
                         }
                     }
+
+
+                    // foreach ($_FILES as $file) {
+                    //     if ($file["name"] != "") {
+                    //         $result = $this->uploader->uploadFile($file);
+    
+                    //         $this->logger->info("resultado insercion capa CONTROLLER  ", [$result]);
+                    //         if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
+                    //             $imagenesPublicacion[] = [
+                    //                 'id_publicacion' => $idPublicacionGenerado,
+                    //                 'path_imagen' => $result['nombre_imagen'],
+                    //                 'nombre_imagen' => $result['nombre_imagen'],
+                    //                 'id_usuario' => $idUser
+                    //             ];
+                    //         } else {
+                    //             throw new Exception("Error al subir una imagen: " . $result['description']);
+                    //         }
+                    //     }
+                    // }
     
                     $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
                     // Inserta todas las imágenes en la base de datos en una única operación
