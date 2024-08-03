@@ -85,16 +85,6 @@ class PublicacionController extends Controller
 
     public function verPublicacion()
     {
-        // Verificar si hay sesión iniciada
-        // if (!$this->usuario->isUserLoggedIn()) {
-        //     $resultado = [
-        //         "success" => false,
-        //         "message" => "Debe iniciar sesión para ver el pedido."
-        //     ];
-        //     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-        //     require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-        //     return;
-        // }
     
         // Obtener el ID de la publicación de la solicitud
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
@@ -122,9 +112,29 @@ class PublicacionController extends Controller
         // Codifica las reservas a JSON para su uso en JavaScript
         $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
+        // Preparar los datos para la vista
+        $datos = [
+            'publicacion' => $publicacion,
+            'fullUrl' => $fullUrl,
+            'periodos_json' => $periodos_json,
+            'reservas' => $reservas
+        ];
+
+        $usuario = [
+            'isUserLoggedIn' => $this->usuario->isUserLoggedIn(),
+        ];
+
+        // Preparar el menú
+        $menu = $this->menu;
+
         // Mostrar la vista de detalles de la publicación
-        require $this->viewsDir . 'publicacion.details.view.php';
+        view('publicacion.details.view', array_merge(
+            $datos,
+            $usuario,
+            ['menu' => $menu]  // Asegúrate de que 'menu' sea una clave única
+        ));
     }
+   
 
     public function contactarAlDuenio()
     {
