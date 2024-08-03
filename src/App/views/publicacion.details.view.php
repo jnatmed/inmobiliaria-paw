@@ -5,6 +5,7 @@
     <?php require __DIR__ . '/parts/head.view.php' ?>
 <link rel="stylesheet" href="/assets/css/reservas-calendario.css">    
 <script src="/assets/js/reservas-calendario.js"></script>
+<script src="/assets/js/publicacion.details.js"></script>
 
 </head>
 
@@ -81,7 +82,9 @@
                 <p>Bernardo de Irigoyen 700, Piso 18
                     San Telmo, Capital Federal
                 </p>    
-                <article class="mapid"></article>
+                <input type="text" id="latitud" value="<?= $publicacion['latitud'] ?>" hidden>
+                <input type="text" id="longitud" value="<?= $publicacion['longitud'] ?>" hidden>
+                <div id="mapid"></div>
             </article>
 
         </section>
