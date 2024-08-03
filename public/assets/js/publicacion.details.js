@@ -7,12 +7,17 @@ class publicacionDetails {
 
         Promise.all([promiseMapaLeafLet]).then(function() {
 
-            const latitud = document.querySelector('#latitud');
-            const longitud = document.querySelector('#longitud');
-            
+            const latitudElement = document.querySelector('#latitud');
+            const longitudElement = document.querySelector('#longitud');
 
+            const latitud = latitudElement.value;
+            const longitud = longitudElement.value;
+        
             if(latitud && longitud) {
-                promiseMapaLeafLet.buscarPorLatitudyLongitud(latitud, longitud);
+
+                let mapaLeaft = new MapaLeaflet()
+                mapaLeaft.buscarPorLatitudyLongitud(latitud, longitud);
+
             }else{
                 console.error('Valores de latitud o longitud en nulo')
             }

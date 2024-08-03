@@ -128,7 +128,8 @@ class PublicacionController extends Controller
 
     public function contactarAlDuenio()
     {
-        
+        global $config;
+
         $emailInteresado = htmlspecialchars($this->request->get('email-interesado'));
         $telefonoDelInteresado = htmlspecialchars($this->request->get('telefono-interesado'));
         $textoConsultaDelInteresado = htmlspecialchars($this->request->get('texto-consulta'));
@@ -138,7 +139,11 @@ class PublicacionController extends Controller
 
         $this->logger->info("datos entrada ContactarAlDuenio: ", [
             $emailInteresado,
-            $telefonoDelInteresado
+            $telefonoDelInteresado,
+            $textoConsultaDelInteresado,
+            $emailDuenio,
+            $fullUrl,
+            $id_publicacion
         ]);
 
         $mensajeCorreo = '

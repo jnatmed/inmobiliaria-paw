@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     PAW.cargarScriptPromise("Calendario", "/assets/js/components/calendario.js")
     .then(() => {
+      
         const calendario = new Calendario()
 
         calendario.init()

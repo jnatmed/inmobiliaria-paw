@@ -97,12 +97,16 @@ class MapaLeaflet {
     async buscarPorLatitudyLongitud(lat, lon){
     
         try {
-                // Si no se proporciona una dirección, obtenerla usando una función de geocodificación inversa
+                // Verificar si lat y lon son válidos
+                if (lat == null || lon == null) {
+                    throw new Error('Latitud o longitud no válidas');
+                }
 
-                address = await this.obtenerDireccion(lat, lon);
+                // Si no se proporciona una dirección, obtenerla usando una función de geocodificación inversa
+                let address = await this.obtenerDireccion(lat, lon);
 
                 // Centrar el mapa en las coordenadas encontradas
-                this.mapa.setView([lat, lon], 13);
+                this.mapa.setView([lat, lon], 18);
     
                 // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
                 L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
