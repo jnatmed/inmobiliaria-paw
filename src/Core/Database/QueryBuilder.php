@@ -74,6 +74,23 @@ class QueryBuilder
     }
 
 
+    public function countRows($table)
+    {
+        try {
+            $query = "SELECT COUNT(*) as total FROM {$table}";
+            $statement = $this->pdo->prepare($query);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+            return $result['total'];
+        } catch (PDOException $e) {
+            $this->logger->error('Database error: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        } catch (Exception $e) {
+            $this->logger->error('General error: ' . $e->getMessage());
+            throw new Exception('Ocurrió un error inesperado');
+        }
+    }
+
     public function insert($table, $data)
     {
         $columnas = implode(', ', array_keys($data));

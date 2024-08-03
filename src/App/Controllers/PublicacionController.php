@@ -70,6 +70,7 @@ class PublicacionController extends Controller
             // var_dump($zona, $tipo, $precio, $instalaciones);
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
             
+            $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             // var_dump($publicaciones);
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
