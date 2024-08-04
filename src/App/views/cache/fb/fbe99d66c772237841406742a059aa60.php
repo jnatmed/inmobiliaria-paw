@@ -69,7 +69,7 @@ class __TwigTemplate_83df287f7d59dd06bd0d2b4a326342df extends Template
         if (($context["isUserLoggedIn"] ?? null)) {
             // line 16
             yield "                    ";
-            yield from             $this->loadTemplate("button-logout.twig", "parts/header.view.html", 16)->unwrap()->yield($context);
+            yield from             $this->loadTemplate("parts/button-logout.html", "parts/header.view.html", 16)->unwrap()->yield($context);
             // line 17
             yield "                ";
         } else {
@@ -128,7 +128,7 @@ class __TwigTemplate_83df287f7d59dd06bd0d2b4a326342df extends Template
         <ul class=\"lista-opciones-sesion\">
             <li class=\"item-opcion-sesion\">
                 {% if isUserLoggedIn %}
-                    {% include 'button-logout.twig' %}
+                    {% include 'parts/button-logout.html' %}
                 {% else %}
                     <a class=\"anchor-item-sesion\" href=\"/iniciar-sesion\">INICIAR SESION</a>
                     <img src=\"/assets/imgs/svg/alt-de-inicio-de-sesion.svg\" alt=\"icono-salida\" class=\"icono-salida\">

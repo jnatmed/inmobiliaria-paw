@@ -13,7 +13,7 @@
 <section class="container-reserva">
     <article class="container-form">
         <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
-            <input type="text" name="id_publicacion" value="{{ id_publicacion }}" hidden>
+            <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
             <label for="input-desde" class="lbl-desde">Desde</label>
             <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
             <label for="input-hasta" class="lbl-hasta">Hasta</label>
@@ -46,7 +46,9 @@
             <tbody>
                 {% set currentYear = "now"|date("Y") %}
                 {% set currentMonth = "now"|date("m")|int - 1 %}
-                {% set firstDay = currentYear ~ '-' ~ (currentMonth + 1) ~ '-01'|date_create %}
+                
+                {# Crear el primer día del mes para el cálculo #}
+                {% set firstDay = (currentYear ~ '-' ~ (currentMonth + 1)|format('%02d') ~ '-01')|date_create %}
                 {% set firstDayOfWeek = firstDay|date("N")|int - 1 %}
                 {% set daysInMonth = firstDay|date("t") %}
 

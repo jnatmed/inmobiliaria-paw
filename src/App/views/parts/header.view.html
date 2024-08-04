@@ -13,7 +13,7 @@
         <ul class="lista-opciones-sesion">
             <li class="item-opcion-sesion">
                 {% if isUserLoggedIn %}
-                    {% include 'button-logout.twig' %}
+                    {% include 'parts/button-logout.html' %}
                 {% else %}
                     <a class="anchor-item-sesion" href="/iniciar-sesion">INICIAR SESION</a>
                     <img src="/assets/imgs/svg/alt-de-inicio-de-sesion.svg" alt="icono-salida" class="icono-salida">

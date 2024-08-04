@@ -46,17 +46,7 @@ class ReservasPublicacionSeeder extends AbstractSeed
                 'fecha_creacion' => date('Y-m-d H:i:s'),
                 'fecha_actualizacion' => date('Y-m-d H:i:s'),
                 'notas' => 'Tercera reserva.'
-            ],
-            [
-                'id_publicacion' => 4,
-                'fecha_inicio' => '2024-10-05',
-                'fecha_fin' => '2024-10-10',
-                'precio_por_noche' => 200.00,
-                'estado_reserva' => 'pendiente',
-                'fecha_creacion' => date('Y-m-d H:i:s'),
-                'fecha_actualizacion' => date('Y-m-d H:i:s'),
-                'notas' => 'Cuarta reserva.'
-            ],
+            ]
         ];
 
         $this->table('reservas_publicacion')->insert($data)->saveData();

@@ -85,8 +85,6 @@ class UsuarioController extends Controller
 
     public function login() {
         $titulo = 'PAWPERTIES | SESION';
-        
-        global $log;
 
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
@@ -96,7 +94,7 @@ class UsuarioController extends Controller
 
             $usuarioAutenticado = $this->model->findByEmailAndPassword($user->getEmail(), $user->getContrasenia());
             
-            $log->info("usuarioAutenticado: ", [$usuarioAutenticado]);
+            $this->logger->info("usuarioAutenticado: ", [$usuarioAutenticado]);
 
             if ($usuarioAutenticado) {
                 if (session_status() == PHP_SESSION_NONE) {
@@ -111,17 +109,21 @@ class UsuarioController extends Controller
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
                 // Redirigir al usuario a la página principal
 
-                $log->info("sesion: ",[$_SESSION]);
+                $this->logger->info("sesion: ",[$_SESSION]);
 
-                header('Location: /');
-                exit();
+                redirect('');
             } else {
                 $this->tipoUsuario = 'anonimo';
-                $resultado['error'] = 'Usuario o contraseña incorrectos';
-                require $this->viewsDir . 'login.view.php';
+                $resultado = [
+                    'resultado' => [
+                        'error' => 'Usuario o contraseña incorrectos'
+                    ],
+                    'tipoUsuario' => $this->tipoUsuario
+                ];
+                view('login.view', $resultado);
             }
         }else{
-            require $this->viewsDir . 'login.view.php';
+            view('login.view', ['titulo' => $titulo]);
         }
     
     }

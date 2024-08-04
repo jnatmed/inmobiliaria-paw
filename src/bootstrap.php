@@ -96,33 +96,13 @@ try {
     exit;
 }
 
-try {
-    $twig->addFilter(new \Twig\TwigFilter('format_estado', function ($estado) {
-        // Reemplaza guiones bajos por espacios
-        $estado = str_replace('_', ' ', $estado);
+/**
+ * 7.1 TwigFilter: 
+ * Aca agregamos unos filtros de twig
+ */
 
-        // Lista de palabras que no se deben capitalizar
-        $no_capitalize_words = ['de', 'ante', 'con', 'por', 'en', 'a', 'el', 'la', 'los', 'las', 'desde', 'hasta', 'para', 'entre', 'sobre'];
+ require __DIR__.'/Core/TwigFilters.php';
 
-        // Capitaliza cada palabra importante
-        $words = explode(' ', $estado);
-        $formatted_words = [];
-
-        foreach ($words as $index => $word) {
-            $lowercase_word = strtolower($word);
-            if ($index == 0 || $index == count($words) - 1 || !in_array($lowercase_word, $no_capitalize_words)) {
-                $formatted_words[] = ucfirst($lowercase_word);
-            } else {
-                $formatted_words[] = $lowercase_word;
-            }
-        }
-
-        return implode(' ', $formatted_words);
-    }));
-} catch (Exception $e) {
-    $log->error('Error al agregar el filtro de Twig: ' . $e->getMessage());
-    exit;
-}
 
 /**
  * 8) ROUTER
