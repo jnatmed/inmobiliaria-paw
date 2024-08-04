@@ -485,9 +485,10 @@ class PublicacionController extends Controller
                 redirect('iniciar-sesion');
 
             }
-                
+            
+
             // Obtener las reservas pendientes y confirmadas
-            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($id_usuario);
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
     
             $datos = [
                 'reservas' => $reservas

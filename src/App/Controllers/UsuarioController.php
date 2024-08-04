@@ -187,7 +187,7 @@ class UsuarioController extends Controller
                     $log->error("error: ", [$error]);
                     $resultado['error'] = $error;
 
-                    view('register-exito.view', array_merge(
+                    view('register.view', array_merge(
                         ['error' => $resultado['error']],
                         $this->menuAndSession
                     ));
@@ -199,11 +199,17 @@ class UsuarioController extends Controller
                 // Mostrar un mensaje de error genérico al usuario
                 $error = 'Error al registrar el usuario';
                 $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
-                require $this->viewsDir . 'register.view.php';
+
+                view('register.view', array_merge(
+                    ['error' => $resultado['error']],
+                    $this->menuAndSession
+                ));
             }
         }else{
-            require $this->viewsDir . 'register.view.php';
-        }
+            view('register.view', array_merge(
+                $this->menuAndSession
+            ));
+    }
     }
 
     public function logout() {
@@ -228,8 +234,7 @@ class UsuarioController extends Controller
         session_destroy();
 
         // Redirigir al usuario a la página principal
-        header('Location: /');
-        exit();
+        redirect('');
     }
 
     public function perfil() {
@@ -248,11 +253,16 @@ class UsuarioController extends Controller
     
             $this->logger->info("datos de usuario: ", [$usuario]);
             // Pasar los datos del usuario a la vista
-            require $this->viewsDir . 'mi_perfil.view.php';
+            view('mi_perfil.view', array_merge(
+                [
+                    'usuario' => $usuario,
+                ],
+                $this->menuAndSession
+            ));
         }else{
             // Redirigir a la página de inicio si no está logueado
-            header('Location: /');
-            exit();
+
+            redirect('iniciar-sesion');
         }
     }
 
@@ -266,8 +276,7 @@ class UsuarioController extends Controller
                 "message" => "Debe iniciar sesión para realizar una reserva o pedido."
             ];
             $log->info("Intento de reserva sin sesión iniciada.");
-            require $this->viewsDir . 'login.view.php';
-            return;
+            redirect('iniciar-sesion');
         }          
     }
 
