@@ -2,12 +2,12 @@
 <html lang="es">
 
 <head>
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicacion-new.js"></script>
 </head>
 
 <body class="home">
-    <?php require __DIR__ . '/parts/header.view.php' ?>
+    {% include 'parts/header.view.html' %}
 
     <main class="main-home">
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
@@ -39,7 +39,7 @@
                 <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad">
                 <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección">
                 <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
-                <?php require __DIR__ . '/parts/mapa.view.php' ?>
+                {% include 'parts/mapa.view.html' %}
 
                 <h3 class="titulo-datos-propietario">Instalaciones</h3>
                 <label for="cochera" class="lbl-chekbox">Cochera
@@ -89,14 +89,13 @@
                 <h3 class="titulo-datos-propietario">Precio/Noche ($)</h3>
                 <input type="number" name="precio" id="precio" class="descripcion-alojamiento" required min="0" value="0">
 
-
                 <button type="button" class="prev-btn">Anterior</button>
                 <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>
         </form>
     </main>
 
-    <?php require __DIR__ . '/parts/footer.view.php' ?>
+    {% include 'parts/footer.view.html' %}
 </body>
 
 </html>

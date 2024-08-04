@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'parts/headReserva.view.html' %}
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h4>Reserva Realizada con Éxito</h4>
+        </div>
+        <div class="content">
+            <p>
+                Reserva Nro: {{ nroReserva }}<br>
+                Reserva para el usuario: {{ userName }}<br>
+                Desde: {{ desde }}<br>
+                Hasta: {{ $hasta }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>

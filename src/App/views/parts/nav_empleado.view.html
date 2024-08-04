@@ -1,0 +1,7 @@
+{% for item in menuEmpleado %}
+    <li class="opciones_nav">
+        <a href="{{ item.href|escape }}">{{ item.name|escape }}</a>
+    </li>
+{% endfor %}
+
+

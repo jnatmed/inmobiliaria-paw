@@ -118,7 +118,6 @@ $router->setLogger($log);
  */
 $router->get('/', 'PageController@index');
 
-//usuario/mi_perfil $router->get('/publicacion/buscar', 'PublicacionController@perfil');
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');

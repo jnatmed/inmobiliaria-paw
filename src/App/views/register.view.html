@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
 </head>
 
 <body class="login_bg">
@@ -17,16 +17,15 @@
         </section>
 
         <section class="login_form">
-
             <form action="/registrarse" method="post">
 
                 <label for="email">Email (*)</label>
                 <input required type="email" name="email" id="email" placeholder="Ingrese su correo electrónico">
 
-                <label for="username">Nombre (*)</label>
+                <label for="nombre">Nombre (*)</label>
                 <input required type="text" name="nombre" id="nombre" placeholder="Ingrese su nombre">
 
-                <label for="username">Apellido (*)</label>
+                <label for="apellido">Apellido (*)</label>
                 <input required type="text" name="apellido" id="apellido" placeholder="Ingrese su apellido">
 
                 <label for="contrasenia">Contraseña (*)</label>
@@ -35,14 +34,14 @@
                 <label for="contrasenia-check">Ingrese nuevamente su contraseña (*)</label>
                 <input required type="password" name="contrasenia-check" id="contrasenia-check" placeholder="Ingrese su contraseña">
 
-                <label for="telefono">Numero de telefono (*)</label>
-                <input required type="tel" name="telefono" id="telefono" placeholder="Ingrese su numero de telefono">
+                <label for="telefono">Número de teléfono (*)</label>
+                <input required type="tel" name="telefono" id="telefono" placeholder="Ingrese su número de teléfono">
 
                 <input type="submit" value="REGISTRARSE">
 
-                <?php if (!empty($resultado['error'])) : ?>
-                    <p class="error-registro"><?php echo htmlspecialchars($resultado['error']); ?></p>
-                <?php endif; ?>
+                {% if error is defined %}
+                    <p class="error-registro">{{ error|escape }}</p>
+                {% endif %}
             </form>
         </section>
 

@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-
-<?php require __DIR__.'/../parts/head.view.php' ?>
-
+    <meta charset="UTF-8">
+    {% include 'parts/head.view.html' %}
 </head>
 
 <body>
-    
-    <?php require __DIR__.'/../parts/header.view.php' ?>
 
-   
-<main>
-        
+    {% include 'parts/header.view.html' %}
+
+    <main>
         <div class="error-container">
             <div class="error-404-bg"></div>
             <p class="h1">404</p>
@@ -22,16 +20,10 @@
                 <a href="/" class="btn btn-primary">Volver</a>
             </div>  
         </div>
-        
-</main>
+    </main>
 
-    <?php if(isset($error)) : ?>
-        <h4 class="msj msj_error">
-        <?= $error; ?>
-        </h4>
-    <?php endif ?>
-    
-    
-    
+
+    {% include 'parts/footer.view.html' %}
+
 </body>
 </html>

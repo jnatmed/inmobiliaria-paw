@@ -15,7 +15,7 @@ class UsuarioController extends Controller
     public Verificador $verificador;
     public ?string $modelName = UserCollection::class;
     public $tipoUsuario;
-    public $usuario; 
+    public $menuAndSession;
 
     public function __construct()
     {
@@ -27,6 +27,14 @@ class UsuarioController extends Controller
 
         $this->verificador = new Verificador;
         $this->menu = $this->adjustMenuForSession($this->menu); 
+
+        $this->menuAndSession = [
+            'isUserLoggedIn' => $this->isUserLoggedIn(),
+            'menu' => $this->menu,
+            'urlPublicacion' => $this->request->fullUrl(),
+            'id_usuario' => $this->getUserId()
+        ];
+
     }
 
     public function adjustMenuForSession($menu) {
@@ -146,8 +154,8 @@ class UsuarioController extends Controller
             // Verificar si las contraseñas coinciden
             if ($contrasenia !== $contrasenia_repetida) {
                 $resultado['error'] = 'Las contraseñas no coinciden';
-                require $this->viewsDir . 'register.view.php';
-                exit();
+
+                redirect('registrarse');
             }
     
             try {
@@ -168,12 +176,21 @@ class UsuarioController extends Controller
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
                     $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
-                    require $this->viewsDir . 'register-exito.view.php';             
+
+                    view('register-exito.view', array_merge(
+                        ['exito' => $resultado['exito']],
+                        $this->menuAndSession
+                    ));
+
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
                     $resultado['error'] = $error;
-                    require $this->viewsDir . 'register.view.php';
+
+                    view('register-exito.view', array_merge(
+                        ['error' => $resultado['error']],
+                        $this->menuAndSession
+                    ));
                 }
             } catch (PDOException $e) {
 

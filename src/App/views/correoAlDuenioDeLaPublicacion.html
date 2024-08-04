@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    {% include 'parts/headCorreo.view.html' %}
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h4>Consulta sobre Publicacion</h4>
+        </div>
+        <div class="content">
+            <h5>Datos del Interesado</h5>
+            <p>
+                Email: {{ emailInteresado }}<br>
+                Telefono: {{ telefonoDelInteresado }} <br>
+                Consulta Realizada: {{ textoConsultaDelInteresado }} <br>
+                Publicacion sobre la cual consulta: 
+                <a href="{{ fullUrl }}">Click Aqui</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

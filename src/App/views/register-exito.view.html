@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
 </head>
 
 <body class="login_bg">
@@ -13,15 +13,13 @@
             <a href="/">
                 <h1 class="icono-header-pawperties">PawPerties</h1>
             </a>
-            <h1 class="login_title">EXITO!</h1>
+            <h1 class="login_title">¡ÉXITO!</h1>
         </section>
 
         <section class="login_form">
-
             <form action="/iniciar-sesion" method="post">
-                <label><?= $resultado["exito"] ?></label>
-                <input type="submit" value="INICIAR SESION">
-
+                <label>{{ exito }}</label>
+                <input type="submit" value="INICIAR SESIÓN">
             </form>
         </section>
 
