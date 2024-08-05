@@ -280,4 +280,27 @@ class UsuarioController extends Controller
         }          
     }
 
+    public function resetPassword()
+    {
+        if ($this->request->method() == 'POST'){
+            $email = htmlspecialchars($this->request->get('email'));
+            /**
+             * 1) buscar email en la tabla usuarios
+             */
+            /**
+             * 2) si exite creo un token
+             * e inserto en la tabla password_resets
+             * (id_user, token_password)
+             */
+            /**
+             * 3) envio un correo con este token al 
+             * email enviado
+             */
+        }else{
+            view('password_reset_request.view', array_merge(
+                $this->menuAndSession
+            ));
+        }
+    }
+
 }

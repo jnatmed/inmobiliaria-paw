@@ -144,6 +144,8 @@ $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserv
 $router->get('/iniciar-sesion', 'UsuarioController@login');
 $router->post('/iniciar-sesion', 'UsuarioController@login');
 $router->get('/cerrar-sesion', 'UsuarioController@logout');
+$router->get('/resetear-contrasenia', 'UsuarioController@resetPassword');
+$router->post('/resetear-contrasenia', 'UsuarioController@resetPassword');
 
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
