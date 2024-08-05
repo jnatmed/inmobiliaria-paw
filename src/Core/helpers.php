@@ -1,59 +1,28 @@
 <?php
 
-
 /**
  * Require a view.
  *
  * @param  string $name
  * @param  array  $data
  */
-function view_error($name, $data = [])
+function view($name, $data = [], $returnView = false)
 {
     global $log, $twig;
 
     try {
-        // $log->debug('Datos en la vista', [$name, $data, $twig]);
-        echo $twig->render("errors/{$name}.html", $data);
-    } catch (\Twig\Error\Error $e) {
-        $log->error('Error al renderizar la plantilla', ['exception' => $e]);
-        echo 'Error al renderizar la plantilla: ' . $e->getMessage();
-    }
-
-}
-
-
-/**
- * Render a view and return the output as a string.
- *
- * @param  string $name
- * @param  array  $data
- * @return string
- */
-function render_view($name, $data = [])
-{
-    global $log, $twig;
-
-    try {
-        return $twig->render("{$name}.html", $data);
-    } catch (\Twig\Error\Error $e) {
-        $log->error('Error al renderizar la plantilla', ['exception' => $e]);
-        return 'Error al renderizar la plantilla: ' . $e->getMessage();
-    }
-}
-
-/**
- * Require a view.
- *
- * @param  string $name
- * @param  array  $data
- */
-function view($name, $data = [])
-{
-    global $log, $twig;
-
-    try {
-        // $log->debug('Datos en la vista', [$name, $data, $twig]);
-        echo $twig->render("{$name}.html", $data);
+        /**
+         * si returnView esta en verdadero 
+         * se devuelve la vista en vez de mostrarla
+         * Esta funcionalidad permite usar la funcion view 
+         * para cuando se envian los correos
+         */
+        if ( $returnView ) {
+            return $twig->render("{$name}.html", $data);
+        }else{
+            // $log->debug('Datos en la vista', [$name, $data, $twig]);
+            echo $twig->render("{$name}.html", $data);
+        }
     } catch (\Twig\Error\Error $e) {
         $log->error('Error al renderizar la plantilla', ['exception' => $e]);
         echo 'Error al renderizar la plantilla: ' . $e->getMessage();

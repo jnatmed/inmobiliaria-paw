@@ -170,12 +170,12 @@ class PublicacionController extends Controller
          * aqui evitamos mezclar html con php y combinamos 
          * el poder del motor de plantillas con php
          *  */ 
-        $body = render_view('correoAlDuenioDeLaPublicacion', [
+        $body = view('correoAlDuenioDeLaPublicacion', [
             'emailInteresado' => $emailInteresado,
             'telefonoDelInteresado' => $telefonoDelInteresado,
             'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
             'fullUrl' => $fullUrl
-        ]);
+        ], true);
 
         // Aca enviar un correo al usuario que esta logueado       
         $resultadoSend = $this->mailer->send($emailDuenio,

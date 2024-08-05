@@ -123,12 +123,12 @@ class ReservasController extends Controller
         $emailAddress = $this->usuario->getEmailAddress();
 
         // Mensaje de correo con estilos en línea
-        $body = render_view('solicitudDeReservaAlojamiento', [
+        $body = view('solicitudDeReservaAlojamiento', [
             'nroReserva' => $nroReserva,
             'userName' => $userName,
             'desde' => $desde,
             'hasta' => $hasta
-        ]);
+        ], true);
 
         // aca deberia enviar un correo al usuario que esta logueado       
         $resultadoSend = $this->mailer->send($emailAddress,
