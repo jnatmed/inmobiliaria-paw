@@ -5,6 +5,7 @@
 
 <!-- Muestra la lista de publicaciones -->
 <ul>
+    <p><?= count($publicaciones) ?> de <?= $cantidadTotalPublicaciones ?></p>
     <?php foreach ($publicaciones as $publicacion) : ?>
         <?php if ($publicacion !== null) : ?>
             <li class="publicacion-item">

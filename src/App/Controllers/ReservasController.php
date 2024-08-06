@@ -164,6 +164,7 @@ class ReservasController extends Controller
         ';
 
         // aca deberia enviar un correo al usuario que esta logueado       
+
         $resultadoSend = $this->mailer->send(
             $emailAddress,
             "Reserva Exitosa para el usuario: $userName ",
@@ -179,6 +180,7 @@ class ReservasController extends Controller
         $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);
 
         header('Location: /publicacion/ver?id_pub=' . $id_publicacion);
+
         exit();
     }
 }

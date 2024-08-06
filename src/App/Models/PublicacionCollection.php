@@ -258,6 +258,11 @@ class PublicacionCollection extends Model
         }
     } 
 
+    public function getPublicacionesTotales() 
+    {
+        return $this->queryBuilder->countRows('publicaciones');
+    }
+
     public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {

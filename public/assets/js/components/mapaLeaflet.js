@@ -75,6 +75,48 @@ class MapaLeaflet {
             console.error('Hubo un problema con la solicitud de fetch:', error);
         }
     }
+
+
+    async obtenerDireccion(lat, lon) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simula un retraso en la solicitud
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data.display_name; // Esto te da una dirección legible
+        } catch (error) {
+            console.error('Hubo un problema al obtener la dirección: ', error);
+            return 'Dirección no disponible'; // Valor por defecto en caso de error
+        }
+    }
+    
+
+    async buscarPorLatitudyLongitud(lat, lon){
+    
+        try {
+                // Verificar si lat y lon son válidos
+                if (lat == null || lon == null) {
+                    throw new Error('Latitud o longitud no válidas');
+                }
+
+                // Si no se proporciona una dirección, obtenerla usando una función de geocodificación inversa
+                let address = await this.obtenerDireccion(lat, lon);
+
+                // Centrar el mapa en las coordenadas encontradas
+                this.mapa.setView([lat, lon], 18);
+    
+                // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
+                L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
+                    .bindPopup(address)
+                    .openPopup();
+
+        } catch (error) {
+            console.error('Hubo un problema al mostrar la direccion: ', error);
+        }
+    }
     
 
     

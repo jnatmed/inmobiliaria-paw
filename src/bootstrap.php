@@ -74,6 +74,7 @@ $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesProp
 
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
+$router->post('/publicacion/contactar-al-duenio-form', 'PublicacionController@contactarAlDuenio');
 
 $router->get('/reserva', 'ReservasController@reservas');
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');

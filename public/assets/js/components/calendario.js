@@ -6,8 +6,12 @@ class Calendario {
         this.months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
         this.markedIntervals = [];
         this.startDate = null; // Variable para guardar la fecha de inicio
-        this.renderCalendar();
-        this.addEventListeners();
+        if(document.getElementById("calendarTitle")){
+            this.renderCalendar();
+            this.addEventListeners();
+        }else{
+            console.debug('%cEl calendario no está disponible para su visualización - Posiblemente necesite iniciar sesion', 'color: blue; font-size: 16px;')
+        }
     }
 
     async init() {
