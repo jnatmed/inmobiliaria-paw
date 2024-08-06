@@ -31,12 +31,14 @@ class Uploader
         $fileMimeType = finfo_file($finfo, $fileTmpName);
         finfo_close($finfo);
 
-        if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png' && $fileMimeType !== 'image/jpg' && $fileMimeType !== 'image/jfif') {
+        $log->info("TIPO ARCHIVO ", [$fileMimeType]);
+        if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
             return [
                 'exito' => self::ERROR_TIPO_NO_PERMITIDO,
                 'description' => "El tipo de archivo no está permitido."
             ];
         }
+
 
         // Verificar el tamaño del archivo
         $maxFileSize = 5 * 1024 * 1024; // 5 MB en bytes
