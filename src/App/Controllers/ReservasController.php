@@ -29,7 +29,6 @@ class ReservasController extends Controller
 
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
-
     }
 
     public function reservas()
@@ -88,22 +87,23 @@ class ReservasController extends Controller
             require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
             return;
         }
-        
+
         $id_publicacion = $this->request->get('id_publicacion');
         $desde = $this->request->get('input-desde');
         $hasta = $this->request->get('input-hasta');
         $precio_x_noche = 800;
         $estado_reserva = 'pendiente';
         $notas = 'ninguna';
-        
-        $alojamientoReservado = $this->model->reservarAlojamiento($id_publicacion, 
-                                                                  $this->usuario->getUserId(),
-                                                                  $desde, 
-                                                                  $hasta, 
-                                                                  $precio_x_noche, 
-                                                                  $estado_reserva,
-                                                                  $notas
-                                                                );
+
+        $alojamientoReservado = $this->model->reservarAlojamiento(
+            $id_publicacion,
+            $this->usuario->getUserId(),
+            $desde,
+            $hasta,
+            $precio_x_noche,
+            $estado_reserva,
+            $notas
+        );
 
         // Datos dinámicos
         $nroReserva = $alojamientoReservado['nro_reserva'];
@@ -164,22 +164,23 @@ class ReservasController extends Controller
         ';
 
         // aca deberia enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send($emailAddress,
-                            "Reserva Exitosa para el usuario: $userName ",
-                            $mensajeCorreo,
-                            );
-                      
-        if($resultadoSend){
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
-        }else{
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
-        }                
-        
-        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
-        header('Location: /publicacion/ver?id_pub='.$id_publicacion);
+        $resultadoSend = $this->mailer->send(
+            $emailAddress,
+            "Reserva Exitosa para el usuario: $userName ",
+            $mensajeCorreo,
+        );
+
+        if ($resultadoSend) {
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+        } else {
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+        }
+        $this->logger->info("Resultado Envio Correo: ", [$this->usuario]);
+        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);
+
+        header('Location: /publicacion/ver?id_pub=' . $id_publicacion);
+
         exit();
     }
-    
-
 }
