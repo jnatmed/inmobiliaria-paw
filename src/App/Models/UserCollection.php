@@ -4,6 +4,7 @@ namespace Paw\App\Models;
 
 use Paw\Core\Model;
 use PDOException;
+use Exception;
 
 class UserCollection extends Model
 {
@@ -28,6 +29,95 @@ class UserCollection extends Model
              }
          }
          return null;
+     }
+
+     public function buscarToken($token)
+     {
+        try {
+            // Utiliza el método select del QueryBuilder para buscar por email
+            $result = $this->queryBuilder->select('password_resets', ['token' => $token]);
+
+            // Verifica si se encontró algún resultado
+            if (empty($result)) {
+                return [
+                   'exito' => false,
+                   'message' => 'No se encontró el token'
+                ]; // No se encontró ningún usuario con ese email
+            }
+
+            return [
+               'exito' => true,
+               'usuario' => $result[0]
+             ]; 
+
+        } catch (PDOException $e) {
+            // Manejar la excepción de la base de datos
+            throw new Exception('Error al buscar el token en la base de datos: ' . $e->getMessage());
+        } catch (Exception $e) {
+            // Manejar otras excepciones
+            throw new Exception('[BuscarToken] Ocurrió un error inesperado: ' . $e->getMessage());
+        }        
+     }
+
+     public function buscarCorreoEnUsuarios($email)
+     {
+         try {
+             // Utiliza el método select del QueryBuilder para buscar por email
+             $result = $this->queryBuilder->select('usuarios', ['email' => $email]);
+ 
+             // Verifica si se encontró algún resultado
+             if (empty($result)) {
+                 return [
+                    'exito' => false,
+                    'message' => 'No se encontró el correo'
+                 ]; // No se encontró ningún usuario con ese email
+             }
+ 
+             return [
+                'exito' => true,
+                'usuario' => $result[0]
+              ]; 
+
+         } catch (PDOException $e) {
+             // Manejar la excepción de la base de datos
+             throw new Exception('Error al buscar el correo en la base de datos: ' . $e->getMessage());
+         } catch (Exception $e) {
+             // Manejar otras excepciones
+             throw new Exception('Ocurrió un error inesperado: ' . $e->getMessage());
+         }
+     }
+
+     public function actualizarContrasenia($userId, $password)
+     {
+         try {
+             $data = [
+                 'contrasenia' => password_hash($password, PASSWORD_BCRYPT)
+             ];
+             $where = [
+                 'id' => $userId
+             ];
+             $this->queryBuilder->update('usuarios', $data, $where);
+             return ['exito' => true];
+         } catch (\Exception $e) {
+             $this->logger->error('Error al actualizar la contraseña: ' . $e->getMessage());
+             return ['exito' => false, 'message' => $e->getMessage()];
+         }
+     }
+
+     public function insertResetToken($userId, $token)
+     {
+         try {
+             $data = [
+                 'user_id' => $userId,
+                 'token' => $token,
+                 'created_at' => date('Y-m-d H:i:s')
+             ];
+             $result = $this->queryBuilder->insert('password_resets', $data);
+             return $result;
+         } catch (\Exception $e) {
+             $this->logger->error('Error al insertar el token de restablecimiento de contraseña: ' . $e->getMessage());
+             return false;
+         }
      }
 
      public function insert($table, $data)
