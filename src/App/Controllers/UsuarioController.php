@@ -301,18 +301,21 @@ class UsuarioController extends Controller
 
                         if($resultado_insert['exito']){
                             view('login.view', [
-                                ['exito' => true, "mensaje" => 'Contraseña reseteada. Ya puede iniciar sesion con la nueva contraseña.'],
+                                'exito' => true, 
+                                "mensaje" => 'Contraseña reseteada. Ya puede iniciar sesion con la nueva contraseña.',
                             ]);
                         }else{
                             view('login.view', [
-                                ['exito' => false, "mensaje" => 'Error al resetear la Contraseña.'],
+                                'exito' => false, 
+                                "mensaje" => 'Error al resetear la Contraseña.',
                             ]);
                         }
                     }
                 }else{
                     $this->logger->error('Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo');
                     view('login.view', [
-                        ['exito' => false, "mensaje" => 'Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo'],
+                        'exito' => false, 
+                        "mensaje" => 'Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo',
                     ]);
                 }
             }else{
