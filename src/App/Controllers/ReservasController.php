@@ -17,6 +17,7 @@ class ReservasController extends Controller
     public Verificador $verificador;
     public $usuario;
     public $mailer;
+    public $menuAndSession;
 
     public function __construct()
     {
@@ -29,6 +30,14 @@ class ReservasController extends Controller
 
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
+        $this->menuAndSession = [
+            'isUserLoggedIn' => $this->usuario->isUserLoggedIn(),
+            'menu' => $this->menu,
+            'urlPublicacion' => $this->request->fullUrl()
+        ];
+
+
     }
 
     public function reservas()
@@ -48,11 +57,15 @@ class ReservasController extends Controller
 
             $this->logger->info("periodos_json: $periodos_json");
 
-            require $this->viewsDir . 'reservas-propiedad.view.php';
+            view('publicaciones.reservas.view');
+            // require $this->viewsDir . 'reservas-propiedad.view.php';
         } catch (Exception $e) {
             $this->logger->error('Error al obtener las reservas: ' . $e->getMessage());
             // Puedes redirigir a una página de error o mostrar un mensaje de error
-            require $this->viewsDir . 'errors/not-found.view.php';
+            view('not_found', [
+                'error_message' => 'Error al obtener las reservas: ' . $e->getMessage()
+            ]);
+            
         }
     }
 
@@ -84,8 +97,8 @@ class ReservasController extends Controller
                 "message" => "Debe iniciar sesión para ver el pedido."
             ];
             $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-            require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-            return;
+
+            redirect('iniciar-sesion');
         }
 
         $id_publicacion = $this->request->get('id_publicacion');
@@ -109,78 +122,29 @@ class ReservasController extends Controller
         $nroReserva = $alojamientoReservado['nro_reserva'];
         $userName = $this->usuario->getUserName();
         $emailAddress = $this->usuario->getEmailAddress();
+
         // Mensaje de correo con estilos en línea
-        $mensajeCorreo = '
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    border: 1px solid #ddd;
-                    border-radius: 10px;
-                }
-                .header {
-                    background-color: #f4f4f4;
-                    padding: 10px 0;
-                    text-align: center;
-                    border-bottom: 1px solid #ddd;
-                }
-                .content {
-                    padding: 20px;
-                }
-                h4 {
-                    color: #333;
-                }
-                p {
-                    color: #555;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h4>Reserva Realizada con Éxito</h4>
-                </div>
-                <div class="content">
-                    <p>
-                        Reserva Nro: ' . $nroReserva . '<br>
-                        Reserva para el usuario: ' . $userName . '<br>
-                        Desde: ' . $desde . '<br>
-                        Hasta: ' . $hasta . '
-                    </p>
-                </div>
-            </div>
-        </body>
-        </html>
-        ';
+        $body = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $desde,
+            'hasta' => $hasta
+        ], true);
 
         // aca deberia enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->mailer->send($emailAddress,
+                            "Reserva Exitosa para el usuario: $userName ",
+                            $body,
+                            );
+                      
+        if($resultadoSend){
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
+        }else{
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
+        }                
+        
+        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
-        $resultadoSend = $this->mailer->send(
-            $emailAddress,
-            "Reserva Exitosa para el usuario: $userName ",
-            $mensajeCorreo,
-        );
-
-        if ($resultadoSend) {
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
-        } else {
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
-        }
-        $this->logger->info("Resultado Envio Correo: ", [$this->usuario]);
-        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);
-
-        header('Location: /publicacion/ver?id_pub=' . $id_publicacion);
-
-        exit();
+        redirect('publicacion/ver?id_pub='.$id_publicacion);
     }
 }

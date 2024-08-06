@@ -11,15 +11,23 @@ class ErrorController extends Controller
 
     public function __construct(){
         parent::__construct();
+
         $this->usuario = new UsuarioController();
-        $this->viewsDir = __DIR__ . '/../views/errors/';
+        $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
     }
     
     public function notFound() {
         http_response_code(404);
         $titulo = 'Page Not Found';
         $main = 'Page Not Found';
-        require $this->viewsDir. 'not-found.view.php';
+
+        view('errors/not-found.view', [
+            'titulo' => $titulo,
+            'main' => $main,
+            'menu' => $this->menu
+        ]);
+
     }
     
     public function internalError() {

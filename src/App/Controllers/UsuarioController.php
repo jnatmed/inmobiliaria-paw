@@ -15,7 +15,7 @@ class UsuarioController extends Controller
     public Verificador $verificador;
     public ?string $modelName = UserCollection::class;
     public $tipoUsuario;
-    public $usuario; 
+    public $menuAndSession;
 
     public function __construct()
     {
@@ -27,6 +27,14 @@ class UsuarioController extends Controller
 
         $this->verificador = new Verificador;
         $this->menu = $this->adjustMenuForSession($this->menu); 
+
+        $this->menuAndSession = [
+            'isUserLoggedIn' => $this->isUserLoggedIn(),
+            'menu' => $this->menu,
+            'urlPublicacion' => $this->request->fullUrl(),
+            'id_usuario' => $this->getUserId()
+        ];
+
     }
 
     public function adjustMenuForSession($menu) {
@@ -85,8 +93,6 @@ class UsuarioController extends Controller
 
     public function login() {
         $titulo = 'PAWPERTIES | SESION';
-        
-        global $log;
 
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
@@ -96,7 +102,7 @@ class UsuarioController extends Controller
 
             $usuarioAutenticado = $this->model->findByEmailAndPassword($user->getEmail(), $user->getContrasenia());
             
-            $log->info("usuarioAutenticado: ", [$usuarioAutenticado]);
+            $this->logger->info("usuarioAutenticado: ", [$usuarioAutenticado]);
 
             if ($usuarioAutenticado) {
                 if (session_status() == PHP_SESSION_NONE) {
@@ -111,17 +117,21 @@ class UsuarioController extends Controller
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
                 // Redirigir al usuario a la página principal
 
-                $log->info("sesion: ",[$_SESSION]);
+                $this->logger->info("sesion: ",[$_SESSION]);
 
-                header('Location: /');
-                exit();
+                redirect('');
             } else {
                 $this->tipoUsuario = 'anonimo';
-                $resultado['error'] = 'Usuario o contraseña incorrectos';
-                require $this->viewsDir . 'login.view.php';
+                $resultado = [
+                    'resultado' => [
+                        'error' => 'Usuario o contraseña incorrectos'
+                    ],
+                    'tipoUsuario' => $this->tipoUsuario
+                ];
+                view('login.view', $resultado);
             }
         }else{
-            require $this->viewsDir . 'login.view.php';
+            view('login.view', ['titulo' => $titulo]);
         }
     
     }
@@ -144,8 +154,8 @@ class UsuarioController extends Controller
             // Verificar si las contraseñas coinciden
             if ($contrasenia !== $contrasenia_repetida) {
                 $resultado['error'] = 'Las contraseñas no coinciden';
-                require $this->viewsDir . 'register.view.php';
-                exit();
+
+                redirect('registrarse');
             }
     
             try {
@@ -166,12 +176,21 @@ class UsuarioController extends Controller
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
                     $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
-                    require $this->viewsDir . 'register-exito.view.php';             
+
+                    view('register-exito.view', array_merge(
+                        ['exito' => $resultado['exito']],
+                        $this->menuAndSession
+                    ));
+
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
                     $resultado['error'] = $error;
-                    require $this->viewsDir . 'register.view.php';
+
+                    view('register.view', array_merge(
+                        ['error' => $resultado['error']],
+                        $this->menuAndSession
+                    ));
                 }
             } catch (PDOException $e) {
 
@@ -180,11 +199,17 @@ class UsuarioController extends Controller
                 // Mostrar un mensaje de error genérico al usuario
                 $error = 'Error al registrar el usuario';
                 $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
-                require $this->viewsDir . 'register.view.php';
+
+                view('register.view', array_merge(
+                    ['error' => $resultado['error']],
+                    $this->menuAndSession
+                ));
             }
         }else{
-            require $this->viewsDir . 'register.view.php';
-        }
+            view('register.view', array_merge(
+                $this->menuAndSession
+            ));
+    }
     }
 
     public function logout() {
@@ -209,8 +234,7 @@ class UsuarioController extends Controller
         session_destroy();
 
         // Redirigir al usuario a la página principal
-        header('Location: /');
-        exit();
+        redirect('');
     }
 
     public function perfil() {
@@ -229,11 +253,16 @@ class UsuarioController extends Controller
     
             $this->logger->info("datos de usuario: ", [$usuario]);
             // Pasar los datos del usuario a la vista
-            require $this->viewsDir . 'mi_perfil.view.php';
+            view('mi_perfil.view', array_merge(
+                [
+                    'usuario' => $usuario,
+                ],
+                $this->menuAndSession
+            ));
         }else{
             // Redirigir a la página de inicio si no está logueado
-            header('Location: /');
-            exit();
+
+            redirect('iniciar-sesion');
         }
     }
 
@@ -247,9 +276,31 @@ class UsuarioController extends Controller
                 "message" => "Debe iniciar sesión para realizar una reserva o pedido."
             ];
             $log->info("Intento de reserva sin sesión iniciada.");
-            require $this->viewsDir . 'login.view.php';
-            return;
+            redirect('iniciar-sesion');
         }          
+    }
+
+    public function resetPassword()
+    {
+        if ($this->request->method() == 'POST'){
+            $email = htmlspecialchars($this->request->get('email'));
+            /**
+             * 1) buscar email en la tabla usuarios
+             */
+            /**
+             * 2) si exite creo un token
+             * e inserto en la tabla password_resets
+             * (id_user, token_password)
+             */
+            /**
+             * 3) envio un correo con este token al 
+             * email enviado
+             */
+        }else{
+            view('password_reset_request.view', array_merge(
+                $this->menuAndSession
+            ));
+        }
     }
 
 }

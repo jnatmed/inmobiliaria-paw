@@ -93,21 +93,27 @@ class QueryBuilder
 
     public function insert($table, $data)
     {
-        $columnas = implode(', ', array_keys($data));
-        $valores = ':' . implode(', :', array_keys($data));
-        $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
-        $sentencia = $this->pdo->prepare($query);
-
-        // Asignar valores a los parámetros
-        foreach ($data as $clave => $valor) {
-            $sentencia->bindValue(":$clave", $valor);
+        try {
+            $columnas = implode(', ', array_keys($data));
+            $valores = ':' . implode(', :', array_keys($data));
+            $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
+            $sentencia = $this->pdo->prepare($query);
+    
+            // Asignar valores a los parámetros
+            foreach ($data as $clave => $valor) {
+                $sentencia->bindValue(":$clave", $valor);
+            }
+    
+            $resultado = $sentencia->execute();
+    
+            $idGenerado = $this->pdo->lastInsertId();
+    
+            return [$idGenerado, $resultado];
+        } catch (PDOException $e) {
+            // Manejo de errores y excepciones
+            $this->logger->error('Error en la inserción: ' . $e->getMessage());
+            return [null, false];
         }
-
-        $resultado = $sentencia->execute();
-
-        $idGenerado = $this->pdo->lastInsertId();
-
-        return [$idGenerado, $resultado];
     }
 
     public function insertMany($table, $data)

@@ -22,6 +22,7 @@ class PublicacionController extends Controller
     public $utils;
     public $mailer;
     // use Loggable;
+    public $menuAndSession;
 
     public function __construct()
     {
@@ -29,7 +30,6 @@ class PublicacionController extends Controller
 
         $this->uploader = new Uploader;
         $this->verificador = new Verificador;
-        $this->usuario = new UsuarioController();
         $this->utils = new  Utils();
         $this->mailer = new Mailer();
 
@@ -37,6 +37,13 @@ class PublicacionController extends Controller
 
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
+        $this->menuAndSession = [
+            'isUserLoggedIn' => $this->usuario->isUserLoggedIn(),
+            'menu' => $this->menu,
+            'urlPublicacion' => $this->request->fullUrl(),
+            'id_usuario' => $this->usuario->getUserId()
+        ];
 
     }
     
@@ -67,14 +74,27 @@ class PublicacionController extends Controller
             $tipo = $this->request->get('tipo');
             $precio = $this->request->get('precio');
             $instalaciones = $this->request->get('instalaciones') ?? [];
-            // var_dump($zona, $tipo, $precio, $instalaciones);
+
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
             
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
-            // var_dump($publicaciones);
+
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
-            require $this->viewsDir . 'publicaciones.list.view.php';
+            $datos = [
+                'zona' => $zona,
+                'tipo' => $tipo,
+                'precio' => $precio,
+                'instalaciones' => $instalaciones, 
+                'publicaciones' => $publicaciones,
+                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones
+            ];
+
+            view('publicaciones.list.view', array_merge(
+                $datos,
+                $this->menuAndSession
+            ));
+
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -85,16 +105,6 @@ class PublicacionController extends Controller
 
     public function verPublicacion()
     {
-        // Verificar si hay sesión iniciada
-        // if (!$this->usuario->isUserLoggedIn()) {
-        //     $resultado = [
-        //         "success" => false,
-        //         "message" => "Debe iniciar sesión para ver el pedido."
-        //     ];
-        //     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-        //     require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-        //     return;
-        // }
     
         // Obtener el ID de la publicación de la solicitud
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
@@ -112,19 +122,27 @@ class PublicacionController extends Controller
             require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
             return;
         }
-    
-
-        $fullUrl = $this->request->fullUrl();
         
-        // Obtén las reservas usando el modelo
+        // Aca se obtienen las reservas usando el modelo
         $reservas = $this->model->getReservas($id_publicacion);
 
-        // Codifica las reservas a JSON para su uso en JavaScript
+        // se codifican las reservas a JSON para su uso en JavaScript
         $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
+        // Preparar los datos para la vista
+        $datos = [
+            'publicacion' => $publicacion,
+            'periodos_json' => $periodos_json,
+            'reservas' => $reservas
+        ];
+
         // Mostrar la vista de detalles de la publicación
-        require $this->viewsDir . 'publicacion.details.view.php';
+        view('publicacion.details.view', array_merge(
+            $datos,
+            $this->menuAndSession,
+        ));
     }
+   
 
     public function contactarAlDuenio()
     {
@@ -132,12 +150,12 @@ class PublicacionController extends Controller
 
         $emailInteresado = htmlspecialchars($this->request->get('email-interesado'));
         $telefonoDelInteresado = htmlspecialchars($this->request->get('telefono-interesado'));
-        $textoConsultaDelInteresado = htmlspecialchars($this->request->get('texto-consulta'));
+        $textoConsultaDelInteresado = limpiarEntrada($this->request->get('texto-consulta'), true);
         $emailDuenio = htmlspecialchars($this->request->get('emailDuenio'));
         $fullUrl = htmlspecialchars($this->request->get('urlPublicacion'));
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
 
-        $this->logger->info("datos entrada ContactarAlDuenio: ", [
+        $this->logger->debug("datos entrada ContactarAlDuenio: ", [
             $emailInteresado,
             $telefonoDelInteresado,
             $textoConsultaDelInteresado,
@@ -146,65 +164,23 @@ class PublicacionController extends Controller
             $id_publicacion
         ]);
 
-        $mensajeCorreo = '
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    border: 1px solid #ddd;
-                    border-radius: 10px;
-                }
-                .header {
-                    background-color: #f4f4f4;
-                    padding: 10px 0;
-                    text-align: center;
-                    border-bottom: 1px solid #ddd;
-                }
-                .content {
-                    padding: 20px;
-                }
-                h4 {
-                    color: #333;
-                }
-                p {
-                    color: #555;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h4>Consulta sobre Publicacion</h4>
-                </div>
-                <div class="content">
-                    <h5>Datos del Interesado</h5>
-                    <p>
-                        Email: ' . $emailInteresado . '<br>
-                        Telefono: ' . $telefonoDelInteresado . '<br>
-                        Consulta Realizada: ' . $textoConsultaDelInteresado . '<br>
-                        Publicacion sobre la cual consulta: 
-                        <a href="'. $fullUrl .'">Click Aqui</a>
-                    </p>
-                </div>
-            </div>
-        </body>
-        </html>
-        ';
+        /**
+         * aca lo que se busca es usar las plantilla para redactar un
+         * correo con estilos en linea guardarlos en el body y enviarlo
+         * aqui evitamos mezclar html con php y combinamos 
+         * el poder del motor de plantillas con php
+         *  */ 
+        $body = view('correoAlDuenioDeLaPublicacion', [
+            'emailInteresado' => $emailInteresado,
+            'telefonoDelInteresado' => $telefonoDelInteresado,
+            'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
+            'fullUrl' => $fullUrl
+        ], true);
 
-        // aca deberia enviar un correo al usuario que esta logueado       
+        // Aca enviar un correo al usuario que esta logueado       
         $resultadoSend = $this->mailer->send($emailDuenio,
                             "Consulta sobre publicacion: ",
-                            $mensajeCorreo,
+                            $body
                             );
                       
         if($resultadoSend){
@@ -213,8 +189,7 @@ class PublicacionController extends Controller
             $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
         }                
 
-        header('Location: /publicacion/ver?id_pub='.$id_publicacion);
-        exit();
+        redirect('publicacion/ver?id_pub='.$id_publicacion);
     }
 
     public function listaPublicacionesPropietario()
@@ -228,8 +203,9 @@ class PublicacionController extends Controller
                     "message" => "Debe iniciar sesión para ver el pedido."
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-                require $this->viewsDir . 'login.view.php'; // Redirigir a la página de inicio de sesión
-                return;
+
+                redirect('iniciar-sesion');
+
             }
 
             // Obtener el ID del usuario desde la sesión
@@ -243,15 +219,36 @@ class PublicacionController extends Controller
             $instalaciones = $this->request->get('instalaciones') ?? [];
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
-
+            
+            $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             // var_dump($publicaciones);
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
-            require $this->viewsDir . 'publicaciones-propietario.list.view.php';
+            $datos = [
+                'idUser' => $idUser,
+                'zona' => $zona,
+                'tipo' => $tipo,
+                'precio' => $precio,
+                'instalaciones' => $instalaciones, 
+                'publicaciones' => $publicaciones,
+                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones
+            ];
+
+            view('publicaciones-propietario.list.view', 
+                    array_merge(
+                        $datos,
+                        $this->menuAndSession
+                    )
+                );
+            // require $this->viewsDir . 'publicaciones-propietario.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
-            require $this->viewsDir . 'errors/not-found.view.php';
+
+            view('not_found', [
+                'error_message' => $error_message
+            ]);
+            
         }
     }
 
@@ -311,8 +308,9 @@ class PublicacionController extends Controller
                         "message" => "Debe iniciar sesión para ver el pedido."
                     ];
                     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-                    header('Location: /iniciar_sesion');
-                    exit();
+
+                    redirect('iniciar-sesion');
+
                 }
                 
                 // Verificar si $_POST está vacío
@@ -440,31 +438,12 @@ class PublicacionController extends Controller
                             throw new Exception("Error al subir una imagen: " . $resultUpload['description']);
                         }
                     }
-
-
-                    // foreach ($_FILES as $file) {
-                    //     if ($file["name"] != "") {
-                    //         $result = $this->uploader->uploadFile($file);
-    
-                    //         $this->logger->info("resultado insercion capa CONTROLLER  ", [$result]);
-                    //         if ($result['exito'] === Uploader::UPLOAD_COMPLETED) {
-                    //             $imagenesPublicacion[] = [
-                    //                 'id_publicacion' => $idPublicacionGenerado,
-                    //                 'path_imagen' => $result['nombre_imagen'],
-                    //                 'nombre_imagen' => $result['nombre_imagen'],
-                    //                 'id_usuario' => $idUser
-                    //             ];
-                    //         } else {
-                    //             throw new Exception("Error al subir una imagen: " . $result['description']);
-                    //         }
-                    //     }
-                    // }
     
                     $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
                     // Inserta todas las imágenes en la base de datos en una única operación
                     $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
-                    header('Location: /mis_publicaciones');
-                    exit();
+
+                    redirect('mis_publicaciones');
                     
                 } else {
 
@@ -473,42 +452,57 @@ class PublicacionController extends Controller
 
                 }
             } else {
-                require $this->viewsDir . 'publicacion.new.view.php';
+
+                view('publicacion.new.view', array_merge(
+                    $this->menuAndSession
+                ));
+
             }
 
         } catch (Exception $e) {
 
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
-            require $this->viewsDir . 'errors/not-found.view.php';
+            
+            view('not_found', [
+                'error_message' => "Error en el proceso: " . $e->getMessage()
+            ]);
         }
     }
     
 
     public function verReservas() {
+
         try {
             // Asumiendo que tienes una forma de obtener el id del usuario
             if (!$this->usuario->isUserLoggedIn()) {
                 $resultado = [
                     "success" => false,
-                    "message" => "Debe iniciar sesión para ver el pedido."
+                    "message" => "Debe iniciar sesión para ver las reservas."
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-                header('Location: /iniciar_sesion');
-                exit();
+
+                redirect('iniciar-sesion');
+
             }
             
-            $id_usuario = $this->usuario->getUserId();
-    
-            // Obtener las reservas pendientes y confirmadas
-            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($id_usuario);
-    
-            require $this->viewsDir . 'publicaciones.reservas.view.php';
 
+            // Obtener las reservas pendientes y confirmadas
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
+    
+            $datos = [
+                'reservas' => $reservas
+            ];
+
+            view('publicaciones.reservas.view', array_merge(
+                $datos,
+                $this->menuAndSession
+            ));
 
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
-            require $this->viewsDir . 'errors/not-found.view.php';
+
+            redirect('not_found');
         }
     }
     
@@ -521,8 +515,9 @@ class PublicacionController extends Controller
                     "message" => "Debe iniciar sesión para ver el pedido."
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-                header('Location: /iniciar_sesion');
-                exit();
+
+                redirect('iniciar-sesion');
+
             }
                         
             $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
@@ -534,14 +529,15 @@ class PublicacionController extends Controller
 
                 $this->model->actualizarEstadoReserva($idReserva, $accion);
 
-                header('Location: /mis_publicaciones/reservas');
-                exit();
+                redirect('mis_publicaciones/reservas');
+
             } else {
                 throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
             }
         } catch (Exception $e) {
             $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
-            require $this->viewsDir . 'errors/not-found.view.php';
+            
+            redirect('not_found');
         }
     }    
 }

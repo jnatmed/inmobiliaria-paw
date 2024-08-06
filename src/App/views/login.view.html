@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
 </head>
 
 <body class="login_bg">
@@ -10,13 +10,12 @@
     <main class="login_form_container">
 
         <section class="login_form_header">
-        <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
+            <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
             <h1 class="login_title">INICIO SESIÓN</h1>
         </section>
 
         <section class="login_form">
             <form action="/iniciar-sesion" method="post">
-
                 <label for="email">Email</label>
                 <input required type="email" name="email" id="email" placeholder="Ingrese su correo electrónico">
                 
@@ -24,7 +23,6 @@
                 <input required type="password" name="contrasenia" id="contrasenia" placeholder="Ingrese su contraseña">
                 
                 <input type="submit" value="INICIAR SESION">
-            
             </form>
 
             <form action="/registrarse" method="get">
@@ -32,9 +30,11 @@
             </form>
 
             <a href="/recuperar-contrasenia">¿Olvidaste tu contraseña?</a>
-            <?php if (!empty($resultado['error'])) : ?>
-                    <p class="error-registro"><?php echo htmlspecialchars($resultado['error']); ?></p>
-            <?php endif; ?>
+
+            {% if resultado is defined and resultado.error is not empty %}
+                <p class="error-registro">{{ resultado.error|e }}</p>
+            {% endif %}
+
         </section>
 
     </main>

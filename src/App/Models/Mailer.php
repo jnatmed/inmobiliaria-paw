@@ -46,6 +46,7 @@ class Mailer extends Model
             return true;
         } catch (Exception $e) {
             // Puedes agregar un log o manejar el error de otra manera aquí
+            
             return false;
         }
     }

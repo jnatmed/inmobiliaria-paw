@@ -2,13 +2,13 @@
 <html lang="es">
 
 <head>
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicaciones-list.js"></script>
     <script src="/assets/js/components/sliderPrecio.js" defer></script>
 </head>
 
 <body class="home">
-    <?php require __DIR__ . '/parts/header.view.php' ?>
+    {% include 'parts/header.view.html' %}
 
     <main class="main-home">
         <section class="container_publicaciones">
@@ -17,19 +17,19 @@
             <aside class="filtro-container">
                 <h2>Filtros</h2>
                 <form method="GET" action="/publicaciones/list" class="form-filtros">
-                    <?php require __DIR__ . '/parts/search-filters.view.php' ?>
+                    {% include 'parts/search-filters.view.html' %}
                 </form>
             </aside>
 
             <!-- PUBLICACIONES -->
             <section class="publicaciones-list">
                 <h2 class="h2-titulo-publicaciones">Propiedades</h2>
-                <?php require __DIR__ . '/parts/lista-publicaciones.view.php' ?>
+                {% include 'parts/lista-publicaciones.view.html' %}
             </section>
         </section>
     </main>
 
-    <?php require __DIR__ . '/parts/footer.view.php' ?>
+    {% include 'parts/footer.view.html' %}
 </body>
 
 </html>

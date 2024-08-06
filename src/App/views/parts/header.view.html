@@ -1,0 +1,24 @@
+<header> <!--block-->
+    <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
+    <nav class="nav-index">
+        <ul class="lista-nav-main">
+            {% for item in menu %}
+            <li>
+                <a class="anchor-item-main" href="{{ item.href }}">{{ item.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    <nav class="nav-sesion">
+        <ul class="lista-opciones-sesion">
+            <li class="item-opcion-sesion">
+                {% if isUserLoggedIn %}
+                    {% include 'parts/button-logout.html' %}
+                {% else %}
+                    <a class="anchor-item-sesion" href="/iniciar-sesion">INICIAR SESION</a>
+                    <img src="/assets/imgs/svg/alt-de-inicio-de-sesion.svg" alt="icono-salida" class="icono-salida">
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</header>

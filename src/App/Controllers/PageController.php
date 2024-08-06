@@ -14,7 +14,8 @@ class PageController extends Controller
     public Uploader $uploader;
     public Verificador $verificador;
     public $usuario;
-    
+    public $menuAndSession;
+
     public function __construct()
     {
         global $log;
@@ -26,13 +27,20 @@ class PageController extends Controller
         
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+        $this->menuAndSession = [
+            'isUserLoggedIn' => $this->usuario->isUserLoggedIn(),
+            'menu' => $this->menu,
+            'urlPublicacion' => $this->request->fullUrl(),
+            'id_usuario' => $this->usuario->getUserId()
+        ];
 
     }
 
     public function index()
     {
         $titulo = "PAWPERTIES | HOME";
-        require $this->viewsDir . 'index.view.php';
+        
+        view('home.view', array_merge($this->menuAndSession));
     }
 
 

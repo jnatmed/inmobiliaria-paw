@@ -1,0 +1,57 @@
+<!-- Muestra los filtros que se aplican en la búsqueda -->
+{% if zona or tipo or precio or instalaciones %}
+    <p class="applied-filters">Filtros: {{ zona }} {{ tipo }} {{ precio }} {{ instalaciones|join(' ') }}</p>
+{% endif %}
+
+<!-- Muestra la lista de publicaciones -->
+<ul>
+    <p>{{ publicaciones|length }} de {{ cantidadTotalPublicaciones }}</p>
+    {% for publicacion in publicaciones %}
+        {% if publicacion is not null %}
+            <li class="publicacion-item">
+                <nav class="nav-destacados">
+                    <ul class="destacados">
+                        {% for imagen in publicacion.imagenes %}
+                            <li class="destacado-item">
+                                <img class="destacado-img" src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" alt="{{ imagen.nombre_imagen }}">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <section class="info_publicacion">
+                        <h3 class="publicacion-precio">${{ publicacion.precio|number_format(0, ',', '.') }}</h3>
+                        <h3 class="publicacion-titulo">{{ publicacion.nombre_alojamiento|e }}</h3>
+                        <p class="publicacion-datos">{{ publicacion.descripcion_alojamiento|nl2br|e }}</p>
+                        <p class="publicacion-datos">{{ publicacion.localidad|e }}, {{ publicacion.provincia|e }}</p>
+                        <p class="publicacion-datos">Capacidad: {{ publicacion.capacidad_maxima|e }}</p>
+                        <p class="publicacion-datos">Tipo: {{ publicacion.tipo_alojamiento|e }}</p>
+                        <p class="publicacion-datos">Baños: {{ publicacion.cant_banios|e }}</p>
+                        <p class="publicacion-datos">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
+                        <p class="publicacion-datos">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>
+                        <p class="publicacion-datos">
+                            {% if publicacion.cochera %}<span class="instalacion">Cochera</span> {% endif %}
+                            {% if publicacion.pileta %}<span class="instalacion">Pileta</span> {% endif %}
+                            {% if publicacion.aire_acondicionado %}<span class="instalacion">Aire Acondicionado</span> {% endif %}
+                            {% if publicacion.wifi %}<span class="instalacion">Wi-Fi</span> {% endif %}
+                            {% if publicacion.estado_id %}<span class="estado_publicacion estado_publicacion_{{ publicacion.estado_id }}">{{ publicacion.estado_publicacion|replace({'-': ' '})|lower|title }}</span>{% endif %}
+                        </p>
+                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Ver más ></a>
+                        <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}" target="_blank">
+                            <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
+                        </a>
+                        <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
+                            <img src="/assets/imgs/svg/email_green.png" alt="Email">
+                        </a>
+                    </section>
+                </nav>
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% if publicaciones is empty %}
+    <section class="no-resultados">
+        <h2>No se encontraron resultados</h2>
+        <p>Intenta ajustar los filtros!</p>
+    </section>
+{% endif %}

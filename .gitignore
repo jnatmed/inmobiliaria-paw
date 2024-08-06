@@ -3,3 +3,4 @@ logs/
 .env
 public/uploads/
 .vscode
+src/App/views/cache/

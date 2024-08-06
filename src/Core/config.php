@@ -21,6 +21,8 @@ class Config
         $this->configs['DB_CHARSET'] = getenv('DB_CHARSET') ?? 'utf8';      
         $this->configs['OPENCAGEDATA_API_KEY'] = getenv('OPENCAGEDATA_API_KEY') ?? '';
 
+        $this->configs['TEMPLATE_DIR'] =  getenv('TEMPLATE_DIR') ?? '';
+        $this->configs['TEMPLATE_CACHE_DIR'] =  getenv('TEMPLATE_CACHE_DIR') ?? '';
         $this->configs['MAIL_FROM']= getenv('MAIL_FROM');
         $this->configs['MAIL_NAME']= getenv('MAIL_NAME');
         $this->configs['MAIL_PASS']= getenv('MAIL_PASS');

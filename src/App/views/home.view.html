@@ -2,32 +2,26 @@
 <html lang="es">
 
 <head>
-
-    <?php require __DIR__ . '/parts/head.view.php' ?>
+    {% include 'parts/head.view.html' %}
     <script src="/assets/js/index.js"></script>
-
 </head>
 
 <body class="home">
-
-    <?php require __DIR__ . '/parts/header.view.php' ?>
-
+    {% include 'parts/header.view.html' %}
 
     <main class="main-home">
-
         <section class="seccion-portada">
-
             <img class="video-background" src="/assets/imgs/home/Carrouselimages.png" alt="imagen-principal">
 
             <h1 class="h1-titulo-empresa">PAWPERTIES</h1>
             <h2 class="h2-titulo">
                 Encontra el lugar perfecto para tu proximo destino
             </h2>
-            <?php if ($this->usuario->isUserLoggedIn()) : ?>
+            {% if usuario.isUserLoggedIn %}
                 <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
-            <?php else : ?>
+            {% else %}
                 <a href="/publicacion/new" class="enlace-publicar-disable">Quiero Publicar Lugar</a>
-            <?php endif; ?>
+            {% endif %}
 
             <form method="GET" action="/publicaciones/list" class="form-busqueda-propiedad">
                 <label for="zona" class="label-form">Zona</label>
@@ -84,7 +78,6 @@
                         <input type="text" id="input-apellido" name="apellido">
                     </fieldset>
 
-
                     <label for="input-telefono">Teléfono:</label>
                     <input type="tel" id="input-telefono" name="telefono">
 
@@ -102,16 +95,11 @@
                     <p>[Numero de telefono]</p>
                     <input type="submit" id="input-submit-enviar" value="Enviar">
                 </section>
-
-
             </form>
         </section>
     </main>
 
-
-
+    {% include 'parts/footer.view.html' %}
 </body>
-
-<?php require __DIR__ . '/parts/footer.view.php' ?>
 
 </html>
