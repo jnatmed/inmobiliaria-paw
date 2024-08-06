@@ -35,6 +35,14 @@
                 <p class="error-registro">{{ resultado.error|e }}</p>
             {% endif %}
 
+            {% if exito is defined %}
+                {% if exito %}
+                    <p class="msj_exito">{{ mensaje }}</p>
+                {% else %}
+                    <p class="msj_error">{{ mensaje }}</p>
+                {% endif %}
+            {% endif %}
+            
         </section>
 
     </main>

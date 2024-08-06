@@ -31,6 +31,11 @@ class QueryBuilder
                 $bindings[':id'] = $params['id'];
             }
 
+            if (isset($params['token'])) {
+                $whereClauses[] = "token = :token";
+                $bindings[':token'] = $params['token'];
+            }
+
             if (isset($params['email'])) {
                 $whereClauses[] = "email = :email";
                 $bindings[':email'] = $params['email'];
@@ -109,6 +114,7 @@ class QueryBuilder
             $idGenerado = $this->pdo->lastInsertId();
     
             return [$idGenerado, $resultado];
+
         } catch (PDOException $e) {
             // Manejo de errores y excepciones
             $this->logger->error('Error en la inserción: ' . $e->getMessage());
