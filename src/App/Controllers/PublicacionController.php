@@ -494,6 +494,8 @@ class PublicacionController extends Controller
                 'reservas' => $reservas
             ];
 
+            $this->logger->info("RESERVAS : ", [$datos]);
+
             view('publicaciones.reservas.view', array_merge(
                 $datos,
                 $this->menuAndSession
@@ -506,6 +508,19 @@ class PublicacionController extends Controller
         }
     }
     
+    public function gestionarPublicaciones()
+    {
+        $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
+
+        $this->logger->info("Publicaciones : ", [$listaPublicaciones]);
+
+        view('publicaciones.gestionar.view', array_merge(
+            $listaPublicaciones,
+            ["exito" => true],
+            $this->menuAndSession
+        ));
+    }
+
     public function actualizarEstadoReserva() {
         try {
             // Asumiendo que tienes una forma de obtener el id del usuario

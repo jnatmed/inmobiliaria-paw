@@ -354,6 +354,34 @@ class PublicacionCollection extends Model
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
 
+
+    public function traerPublicaciones()
+    {
+        try {
+            // Realizamos la consulta para obtener todas las publicaciones sin filtro de usuario
+            $result = $this->queryBuilder->select('publicaciones');
+
+            if ($result) {
+                return [
+                    'exito' => true,
+                    'publicaciones' => $result,
+                ];
+            } else {
+                return [
+                    'exito' => false,
+                    'publicaciones' => [],
+                ];
+            }
+        } catch (Exception $e) {
+            // Manejo de la excepción
+            return [
+                'exito' => false,
+                'publicaciones' => [],
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function actualizarEstadoReserva($idReserva, $accion)
     {
         try {

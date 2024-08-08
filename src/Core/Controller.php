@@ -53,6 +53,10 @@ class Controller
                 'name' => 'MIS RESERVAS'
             ],
             [
+                'href' => '/publicaciones/gestionar',
+                'name' => 'GESTIONAR PROPIEDADES'
+            ],
+            [
                 'href' => '/usuario/mi_perfil',
                 'name' => 'MI PERFIL'
             ]

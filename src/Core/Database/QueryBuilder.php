@@ -24,45 +24,50 @@ class QueryBuilder
         try {
             $whereClauses = [];
             $bindings = [];
-
+    
             // Construir las cláusulas WHERE y los parámetros de enlace
             if (isset($params['id'])) {
                 $whereClauses[] = "id = :id";
                 $bindings[':id'] = $params['id'];
             }
-
+    
             if (isset($params['token'])) {
                 $whereClauses[] = "token = :token";
                 $bindings[':token'] = $params['token'];
             }
-
+    
             if (isset($params['email'])) {
                 $whereClauses[] = "email = :email";
                 $bindings[':email'] = $params['email'];
             }
-
+    
             if (isset($params['id_publicacion'])) {
                 $whereClauses[] = "id_publicacion = :id_publicacion";
                 $bindings[':id_publicacion'] = $params['id_publicacion'];
             }
-
+    
             if (isset($params['id_imagen'])) {
                 $whereClauses[] = "id_imagen = :id_imagen";
                 $bindings[':id_imagen'] = $params['id_imagen'];
             }
-
-            // Unir las cláusulas WHERE con AND
-            $where = implode(' AND ', $whereClauses);
-            $query = "SELECT * FROM {$table} WHERE {$where}";
-
+    
+            // Verificar si hay cláusulas WHERE
+            $where = '';
+            if (!empty($whereClauses)) {
+                $where = 'WHERE ' . implode(' AND ', $whereClauses);
+            }
+    
+            // Construir la consulta
+            $query = "SELECT * FROM {$table} {$where}";
+    
             // Preparar la sentencia
             $sentencia = $this->pdo->prepare($query);
-
+    
             // Enlazar los valores de los parámetros
             foreach ($bindings as $key => $value) {
                 $sentencia->bindValue($key, $value);
             }
-
+    
             // Establecer el modo de obtención y ejecutar la consulta
             $sentencia->setFetchMode(PDO::FETCH_ASSOC);
             $sentencia->execute();
@@ -77,6 +82,7 @@ class QueryBuilder
             throw new Exception('Ocurrió un error inesperado');
         }
     }
+    
 
 
     public function countRows($table)
@@ -374,6 +380,7 @@ class QueryBuilder
                     AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
             ";
     
+            $this->logger->info("id usuario: $id_usuario");
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
             $statement->execute();
