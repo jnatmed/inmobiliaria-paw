@@ -512,8 +512,6 @@ class PublicacionController extends Controller
     {
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
-        $this->logger->info("Publicaciones : ", [$listaPublicaciones]);
-
         view('publicaciones.gestionar.view', array_merge(
             $listaPublicaciones,
             ["exito" => true],

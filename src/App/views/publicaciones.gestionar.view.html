@@ -26,22 +26,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for publicacion in publicaciones %}
+                    {% if publicaciones is not empty %}
+                        {% for publicacion in publicaciones %}
+                            <tr>
+                                <td>{{ publicacion.id | e }}</td>
+                                <td><a href="/publicacion/ver?id_pub={{ publicacion.id }}">{{ publicacion.nombre_alojamiento | e }}</a></td>
+                                <td>{{ publicacion.localidad | e }}</td>
+                                <td>{{ publicacion.provincia | e }}</td>
+                                <td>{{ publicacion.precio | e }}</td>
+                                <td>{{ publicacion.capacidad_maxima | e }}</td>
+                                <td>{{ publicacion.estado | e }}</td>
+                                <td>
+                                    <a class="publicaciones-accion" href="/mis_publicaciones/editar?id_pub={{ publicacion.id }}">Editar</a> |
+                                    <a class="publicaciones-accion" href="/mis_publicaciones/eliminar?id_pub={{ publicacion.id }}">Eliminar</a> |
+                                    <a class="publicaciones-accion" href="/publicacion/ver?id_pub={{ publicacion.id }}">Ver</a>
+                                </td>
+                            </tr>
+                        {% endfor %}                        
+                    {% else %}
                         <tr>
-                            <td>{{ publicacion.id | e }}</td>
-                            <td><a href="/publicacion/ver?id_pub={{ publicacion.id }}">{{ publicacion.nombre_alojamiento | e }}</a></td>
-                            <td>{{ publicacion.localidad | e }}</td>
-                            <td>{{ publicacion.provincia | e }}</td>
-                            <td>{{ publicacion.precio | e }}</td>
-                            <td>{{ publicacion.capacidad_maxima | e }}</td>
-                            <td>{{ publicacion.estado | e }}</td>
-                            <td>
-                                <a class="publicaciones-accion" href="/mis_publicaciones/editar?id_pub={{ publicacion.id }}">Editar</a> |
-                                <a class="publicaciones-accion" href="/mis_publicaciones/eliminar?id_pub={{ publicacion.id }}">Eliminar</a> |
-                                <a class="publicaciones-accion" href="/publicacion/ver?id_pub={{ publicacion.id }}">Ver</a>
+                            <td colspan="8" class="no-result">
+                                No hay resultados para mostrar.
                             </td>
-                        </tr>
-                    {% endfor %}
+                        </tr>                      
+                    {% endif %}
                 </tbody>
             </table>
         </section>

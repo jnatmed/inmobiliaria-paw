@@ -51,3 +51,18 @@ function limpiarEntrada($textoConsulta, $esHTML = false)
     // Si es HTML, decodificar cualquier entidad HTML existente
     return html_entity_decode($textoConsulta, ENT_QUOTES, 'UTF-8');
 }
+
+
+/**
+ * Filtra un menú eliminando elementos cuyo 'href' esté presente en un array de exclusión.
+ *
+ * @param  array $menu       El array de elementos del menú a filtrar.
+ * @param  array $array_list El array que contiene los 'href' de los elementos que se deben excluir.
+ * @return array             El menú filtrado con los elementos excluidos.
+ */
+function sacarDelMenu($menu, $array_list)
+{
+    return array_filter($menu, function ($item) use ($array_list) {
+        return !in_array($item['href'], $array_list);
+    });
+}

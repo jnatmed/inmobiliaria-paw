@@ -45,19 +45,37 @@ class UsuarioController extends Controller
         if (isset($_SESSION['email'])) {
             // Si el usuario es de tipo "cliente", eliminar el menú de empleado
             $log->info("hay sesion: ", [$_SESSION]);
-            if ($_SESSION['tipo'] === 'propietario') {
+            if ($this->getUserType() === 'propietario') {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
-                $menu = array_filter($menu, function ($item) {
-                    return $item['href'] !== '/menu_empleado'; // Ajusta según sea necesario
-                });
+                $menu = sacarDelMenu($menu, ['/menu_empleado',
+                                             '/publicaciones/gestionar']);
             }
+            
+            if ($this->getUserType() === 'inquilino') {
+                // Filtra el menú para eliminar el menú de empleado si es necesario
+                $menu = sacarDelMenu($menu, ['/menu_empleado',
+                                             '/publicaciones/gestionar',
+                                             '/mis_publicaciones',
+                                            '/mis_publicaciones/reservas']);
+            }
+            if ($this->getUserType() === 'empleado') {
+                // Filtra el menú para eliminar el menú de empleado si es necesario
+                $menu = sacarDelMenu($menu, ['/menu_empleado',
+                                             '/mis_publicaciones',
+                                            '/mis_publicaciones/reservas']);
+            }
+            
             $this->tipoUsuario = $_SESSION['tipo'];
             setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
+
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
-            $menu = array_filter($menu, function ($item) {
-                return !in_array($item['href'], ['/mis_publicaciones', '/usuario/mi_perfil', '/mis_publicaciones/reservas']);
-            });
+
+            $menu = sacarDelMenu($menu, ['/mis_publicaciones', 
+                                        '/usuario/mi_perfil', 
+                                        '/mis_publicaciones/reservas', 
+                                        '/publicaciones/gestionar']);
+
             $log->info("DATOS THIS->MENU: ", [$menu]);
         }
     
@@ -356,7 +374,7 @@ class UsuarioController extends Controller
                         if($resultadoSend){
                             $this->logger->error("Correo enviado con exito: ", [$resultadoSend] );
                             view('password_reset_request.view', array_merge(
-                                ['exito' => true, "mensaje" => 'El mensaje de reseteo se envio con exito'],
+                                ['exito' => true, "mensaje" => 'El mensaje de reseteo se envio con exito. Por favor, revise su casilla de correo'],
                                 $this->menuAndSession
                             ));
                         }else{
