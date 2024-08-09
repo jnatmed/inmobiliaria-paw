@@ -13,6 +13,7 @@
 <section class="container-reserva">
     <article class="container-form">
         <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+            <input type="text" name="email_duenio" value="{{ publicacion.email }}" hidden>
             <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
             <label for="input-desde" class="lbl-desde">Desde</label>
             <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
