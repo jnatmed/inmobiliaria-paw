@@ -24,7 +24,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password1', PASSWORD_DEFAULT),
                 'email' => 'usuario1@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 1
             ],
             [
                 'nombre' => 'Usuario 2',
@@ -32,7 +32,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password2', PASSWORD_DEFAULT),
                 'email' => 'usuario2@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 2
             ],
             [
                 'nombre' => 'Usuario 3',
@@ -40,7 +40,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password3', PASSWORD_DEFAULT),
                 'email' => 'usuario3@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 3
             ],
         ];
 

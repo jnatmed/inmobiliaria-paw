@@ -139,7 +139,7 @@ class UserCollection extends Model
         global $log;
         try {
             $log->info("id: ", [$id]);
-            $result = $this->queryBuilder->select('usuarios', ['id' => $id]);
+            $result = $this->queryBuilder->selectUserAndTipo('usuarios', ['id' => $id]);
             if ($result && count($result) > 0) {
                 $log->info("result: ", [$result[0]]);
                 return $result[0];

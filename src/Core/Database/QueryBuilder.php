@@ -102,6 +102,11 @@ class QueryBuilder
         }
     }
 
+    public function selectUserAndTipo($idUser)
+    {
+
+    }
+
     public function insert($table, $data)
     {
         try {
