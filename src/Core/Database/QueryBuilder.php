@@ -295,7 +295,7 @@ class QueryBuilder
 
     public function traerPublicacionesConEstado() {
         $sql = "
-            SELECT publicaciones.*, estado_publicaciones.estado
+            SELECT publicaciones.*, estado_publicaciones.estado as estado
             FROM publicaciones
             JOIN estado_publicaciones ON publicaciones.estado_id = estado_publicaciones.id
         ";
