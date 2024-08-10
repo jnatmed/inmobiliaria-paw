@@ -508,6 +508,17 @@ class PublicacionController extends Controller
     
     public function gestionarPublicaciones()
     {
+        // Asumiendo que tienes una forma de obtener el id del usuario
+        if (!$this->usuario->isUserLoggedIn()) {
+            $resultado = [
+                "success" => false,
+                "message" => "Debe iniciar sesión para ver el pedido."
+            ];
+            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+            redirect('iniciar-sesion');
+        }
+        
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
         view('publicaciones.gestionar.view', array_merge(
@@ -528,7 +539,6 @@ class PublicacionController extends Controller
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
                 redirect('iniciar-sesion');
-
             }
                         
             $this->logger->info("Segmento 2: ".$this->request->getSegments(2));

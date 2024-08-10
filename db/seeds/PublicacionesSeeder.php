@@ -51,13 +51,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.645782106051634,
                 'longitud' => -58.39849262386727,
-                'id_usuario' => 1,
                 'precio' => 25000000,
-                'nombre' => 'Nombre 1',
-                'apellido' => 'Apellido 1',
-                'dni' => 'DNI 1',
-                'telefono' => 'Telefono 1',
-                'email' => 'email1@example.com',
                 'provincia' => 'Provincia 1',
                 'localidad' => 'Localidad 1',
                 'direccion' => 'Direccion 1',
@@ -72,17 +66,13 @@ class PublicacionesSeeder extends AbstractSeed
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 1',
                 'descripcion_alojamiento' => 'Descripcion 1',
+                'id_usuario' => 1,
+                'estado_id' => 1
             ],
             [
                 'latitud' => -34.6461351622715,
                 'longitud' => -58.4003547989017,
-                'id_usuario' => 2,
                 'precio' => 15000000,
-                'nombre' => 'Nombre 2',
-                'apellido' => 'Apellido 2',
-                'dni' => 'DNI 2',
-                'telefono' => 'Telefono 2',
-                'email' => 'email2@example.com',
                 'provincia' => 'Provincia 2',
                 'localidad' => 'Localidad 2',
                 'direccion' => 'Direccion 2',
@@ -97,17 +87,13 @@ class PublicacionesSeeder extends AbstractSeed
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 2',
                 'descripcion_alojamiento' => 'Descripcion 2',
+                'id_usuario' => 2,
+                'estado_id' => 1
             ],
             [
                 'latitud' => -34.63695079829552,
                 'longitud' => -58.402421370639885,
-                'id_usuario' => 3,
                 'precio' => 5000000,
-                'nombre' => 'Nombre 3',
-                'apellido' => 'Apellido 3',
-                'dni' => 'DNI 3',
-                'telefono' => 'Telefono 3',
-                'email' => 'email3@example.com',
                 'provincia' => 'Provincia 3',
                 'localidad' => 'Localidad 3',
                 'direccion' => 'Direccion 3',
@@ -122,6 +108,8 @@ class PublicacionesSeeder extends AbstractSeed
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 3',
                 'descripcion_alojamiento' => 'Descripcion 3',
+                'id_usuario' => 3,
+                'estado_id' => 1
             ],
         ];
 
