@@ -562,8 +562,46 @@ class PublicacionController extends Controller
         }
     }  
     
+    public function actualizarEstadoPublicacion()
+    {
+
+        try{
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+                redirect('iniciar-sesion');
+            }
+            $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
+            $accion = $this->request->getSegments(2);
+            $idPublicacion = $this->request->get('id_pub');
+            
+            if (!is_null($idPublicacion)) {
+
+                $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
+
+                redirect('publicaciones/gestionar');
+
+            } else {
+                throw new Exception("ID de publicación no proporcionado");
+            }
+
+        }catch (Exception $e){
+            $this->logger->error("Error General al actualizar el estado de la publicacion: " . $e->getMessage());
+            
+            redirect('not_found');            
+        }
+
+    }
+
+
+
     public function mostrarMapa(){
-        view("mapa-general.view");
+        view("mapa-general.view", $this->menuAndSession);
     }
 
     public function apiPublicaciones(){

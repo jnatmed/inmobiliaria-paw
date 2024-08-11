@@ -270,6 +270,7 @@ class UsuarioController extends Controller
 
         if($userId !== null){
             // Obtener los datos del usuario
+            $this->logger->info("UserId $userId");
             $usuario = $this->model->findById($userId);
     
             $this->logger->info("datos de usuario: ", [$usuario]);

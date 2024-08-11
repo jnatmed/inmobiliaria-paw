@@ -104,8 +104,36 @@ class QueryBuilder
 
     public function selectUserAndTipo($idUser)
     {
-
+        try {
+            $sql = "
+                SELECT usuarios.*, tipos_usuarios.tipo as tipo
+                FROM usuarios
+                JOIN tipos_usuarios ON usuarios.tipo_usuario_id = tipos_usuarios.id
+                WHERE usuarios.id = :id
+            ";
+    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
+    
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+    
+            $resultado = $stmt->fetchAll();
+    
+            $this->logger->info("SQL Query: ", [$sql]);
+            $this->logger->info("ID Value: ", [$idUser]);
+            $this->logger->info("resultado selectUserAndTipo: ", [$resultado]);
+    
+            return $resultado;
+    
+        } catch (PDOException $e) {
+            if ($this->logger) {
+                $this->logger->error("Error en selectUserAndTipo: " . $e->getMessage(), ['exception' => $e]);
+            }
+            return null;
+        }
     }
+    
 
     public function insert($table, $data)
     {
