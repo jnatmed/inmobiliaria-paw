@@ -38,12 +38,15 @@ class PageController extends Controller
 
     public function index()
     {
-        $titulo = "PAWPERTIES | HOME";
+        $datos = ['titulo' => "PAWPERTIES | HOME"];
         
-        view('home.view', array_merge($this->menuAndSession));
+        view('home.view', array_merge($this->menuAndSession, $datos));
     }
 
-
+    public function mostrarMapa(){
+        $datos = ['titulo' => "PAWPERTIES | MAPA"];
+        view("mapa-general.view", array_merge($this->menuAndSession, $datos));
+    }
 
 }
 

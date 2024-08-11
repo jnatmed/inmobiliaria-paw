@@ -87,7 +87,8 @@ class PublicacionController extends Controller
                 'precio' => $precio,
                 'instalaciones' => $instalaciones, 
                 'publicaciones' => $publicaciones,
-                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones
+                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
+                'titulo' => "PAWPERTIES | PROPIEDADES"
             ];
 
             view('publicaciones.list.view', array_merge(
@@ -133,7 +134,8 @@ class PublicacionController extends Controller
         $datos = [
             'publicacion' => $publicacion,
             'periodos_json' => $periodos_json,
-            'reservas' => $reservas
+            'reservas' => $reservas,
+            'titulo' => "PAWPERTIES | PROPIEDAD"
         ];
 
         // Mostrar la vista de detalles de la publicación
@@ -231,7 +233,8 @@ class PublicacionController extends Controller
                 'precio' => $precio,
                 'instalaciones' => $instalaciones, 
                 'publicaciones' => $publicaciones,
-                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones
+                'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
+                'titulo' => "PAWPERTIES | MIS PROPIEDADES"
             ];
 
             view('publicaciones-propietario.list.view', 
@@ -450,9 +453,10 @@ class PublicacionController extends Controller
 
                 }
             } else {
-
+                $datos = ['titulo' => 'PAWPERTIES | NUEVA PUBLICACION'];
                 view('publicacion.new.view', array_merge(
-                    $this->menuAndSession
+                    $this->menuAndSession,
+                    $datos
                 ));
 
             }
@@ -489,7 +493,8 @@ class PublicacionController extends Controller
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
     
             $datos = [
-                'reservas' => $reservas
+                'reservas' => $reservas,
+                'titulo' => "PAWPERTIES | RESERVAS"
             ];
 
             $this->logger->info("RESERVAS : ", [$datos]);
@@ -521,9 +526,12 @@ class PublicacionController extends Controller
         
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
+        $datos = ['titulo' => "PAWPERTIES | GESTIONAR",
+                "exito" => true];
+
         view('publicaciones.gestionar.view', array_merge(
             $listaPublicaciones,
-            ["exito" => true],
+            $datos,
             $this->menuAndSession
         ));
     }
@@ -598,17 +606,10 @@ class PublicacionController extends Controller
 
     }
 
-
-
-    public function mostrarMapa(){
-        view("mapa-general.view", $this->menuAndSession);
-    }
-
     public function apiPublicaciones(){
         $publicaciones = $this->model->getAll();
         header('Content-Type: application/json');
         echo json_encode(array_values($publicaciones));
     }
     
-
 }

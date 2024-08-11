@@ -29,7 +29,7 @@ class UsuarioController extends Controller
         }
 
         $this->verificador = new Verificador;
-        $this->menu = $this->adjustMenuForSession($this->menu); 
+        $this->menu = $this->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = [
             'isUserLoggedIn' => $this->isUserLoggedIn(),
@@ -37,51 +37,59 @@ class UsuarioController extends Controller
             'urlPublicacion' => $this->request->fullUrl(),
             'id_usuario' => $this->getUserId()
         ];
-
     }
 
-    public function adjustMenuForSession($menu) {
+    public function adjustMenuForSession($menu)
+    {
         global $log;
         if (isset($_SESSION['email'])) {
             // Si el usuario es de tipo "cliente", eliminar el menú de empleado
             $log->info("hay sesion: ", [$_SESSION]);
             if ($this->getUserType() === 1) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
-                $menu = sacarDelMenu($menu, ['/menu_empleado',
-                                             '/publicaciones/gestionar']);
+                $menu = sacarDelMenu($menu, [
+                    '/menu_empleado',
+                    '/publicaciones/gestionar'
+                ]);
             }
-            
+
             if ($this->getUserType() === 3) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
-                $menu = sacarDelMenu($menu, ['/menu_empleado',
-                                             '/publicaciones/gestionar',
-                                             '/mis_publicaciones',
-                                            '/mis_publicaciones/reservas']);
+                $menu = sacarDelMenu($menu, [
+                    '/menu_empleado',
+                    '/publicaciones/gestionar',
+                    '/mis_publicaciones',
+                    '/mis_publicaciones/reservas'
+                ]);
             }
             if ($this->getUserType() === 2) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
-                $menu = sacarDelMenu($menu, ['/menu_empleado',
-                                             '/mis_publicaciones',
-                                            '/mis_publicaciones/reservas']);
+                $menu = sacarDelMenu($menu, [
+                    '/menu_empleado',
+                    '/mis_publicaciones',
+                    '/mis_publicaciones/reservas'
+                ]);
             }
-            
+
             $this->tipoUsuario = $_SESSION['tipo'];
             setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
 
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
 
-            $menu = sacarDelMenu($menu, ['/mis_publicaciones', 
-                                        '/usuario/mi_perfil', 
-                                        '/mis_publicaciones/reservas', 
-                                        '/publicaciones/gestionar']);
+            $menu = sacarDelMenu($menu, [
+                '/mis_publicaciones',
+                '/usuario/mi_perfil',
+                '/mis_publicaciones/reservas',
+                '/publicaciones/gestionar'
+            ]);
 
             $log->info("DATOS THIS->MENU: ", [$menu]);
         }
-    
+
         // Reindexar el array para que no tenga índices numéricos adicionales
         $menu = array_values($menu);
-    
+
         return $menu;
     }
 
@@ -112,17 +120,18 @@ class UsuarioController extends Controller
         return $_SESSION['tipo'] ?? 'anonimo';
     }
 
-    public function login() {
+    public function login()
+    {
         $titulo = 'PAWPERTIES | SESION';
 
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
             $contrasenia = $this->request->get('contrasenia');
-            
+
             $user = new User($email, $contrasenia);
 
             $usuarioAutenticado = $this->model->findByEmailAndPassword($user->getEmail(), $user->getContrasenia());
-            
+
             $this->logger->info("usuarioAutenticado: ", [$usuarioAutenticado]);
 
             if ($usuarioAutenticado) {
@@ -138,7 +147,7 @@ class UsuarioController extends Controller
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
                 // Redirigir al usuario a la página principal
 
-                $this->logger->info("sesion: ",[$_SESSION]);
+                $this->logger->info("sesion: ", [$_SESSION]);
 
                 redirect('');
             } else {
@@ -151,18 +160,18 @@ class UsuarioController extends Controller
                 ];
                 view('login.view', $resultado);
             }
-        }else{
+        } else {
             view('login.view', ['titulo' => $titulo]);
         }
-    
     }
 
 
-    public function register() {
+    public function register()
+    {
         $titulo = 'PAWPERTIES | REGISTRO';
-    
+
         global $log;
-    
+
         if ($this->request->method() == 'POST') {
             // Obtener los datos del formulario
             $email = $this->request->get('email');
@@ -171,14 +180,14 @@ class UsuarioController extends Controller
             $contrasenia = $this->request->get('contrasenia');
             $contrasenia_repetida = $this->request->get('contrasenia_check');
             $telefono = $this->request->get('telefono');
-            
+
             // Verificar si las contraseñas coinciden
             if ($contrasenia !== $contrasenia_repetida) {
                 $resultado['error'] = 'Las contraseñas no coinciden';
 
                 redirect('registrarse');
             }
-    
+
             try {
                 // Crear un nuevo usuario
                 $nuevoUsuario = [
@@ -188,21 +197,23 @@ class UsuarioController extends Controller
                     'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
                     'telefono' => $telefono,
                     'tipo_usuario' => 1
-                ];   
-                
+                ];
+
                 // Insertar el nuevo usuario en la base de datos
                 list($idUsuario, $resultado) = $this->model->insert('usuarios', $nuevoUsuario);
-                
+
                 if ($resultado) {
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
                     $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
-
+                    $datos = [
+                        'exito' => $resultado['exito'],
+                        'titulo' => $titulo
+                    ];
                     view('register-exito.view', array_merge(
-                        ['exito' => $resultado['exito']],
+                        $datos,
                         $this->menuAndSession
                     ));
-
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
@@ -216,7 +227,7 @@ class UsuarioController extends Controller
             } catch (PDOException $e) {
 
                 $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
-                
+
                 // Mostrar un mensaje de error genérico al usuario
                 $error = 'Error al registrar el usuario';
                 $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
@@ -226,14 +237,15 @@ class UsuarioController extends Controller
                     $this->menuAndSession
                 ));
             }
-        }else{
+        } else {
             view('register.view', array_merge(
                 $this->menuAndSession
             ));
-    }
+        }
     }
 
-    public function logout() {
+    public function logout()
+    {
         // Iniciar la sesión si no está iniciada
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -245,9 +257,14 @@ class UsuarioController extends Controller
         // Si se desea destruir la sesión completamente, también se deben eliminar las cookies de sesión
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
             );
         }
 
@@ -258,7 +275,8 @@ class UsuarioController extends Controller
         redirect('');
     }
 
-    public function perfil() {
+    public function perfil()
+    {
 
         $titulo = 'PAWPERTIES | PERFIL';
 
@@ -268,20 +286,21 @@ class UsuarioController extends Controller
 
         $userId = $this->getUserId(); // Ajusta esto según cómo manejes la sesión
 
-        if($userId !== null){
+        if ($userId !== null) {
             // Obtener los datos del usuario
             $this->logger->info("UserId $userId");
             $usuario = $this->model->findById($userId);
-    
+
             $this->logger->info("datos de usuario: ", [$usuario]);
             // Pasar los datos del usuario a la vista
             view('mi_perfil.view', array_merge(
                 [
                     'usuario' => $usuario,
+                    'titulo' => $titulo
                 ],
                 $this->menuAndSession
             ));
-        }else{
+        } else {
             // Redirigir a la página de inicio si no está logueado
 
             redirect('iniciar-sesion');
@@ -299,14 +318,14 @@ class UsuarioController extends Controller
             ];
             $log->info("Intento de reserva sin sesión iniciada.");
             redirect('iniciar-sesion');
-        }          
+        }
     }
 
     public function resetPassword()
     {
-        if ($this->request->method() == 'POST'){
+        if ($this->request->method() == 'POST') {
 
-            if ($this->request->get('user_id') !== null){
+            if ($this->request->get('user_id') !== null) {
 
                 if ($this->request->get('password') !== null && $this->request->get('password_repeat') !== null) {
 
@@ -314,30 +333,30 @@ class UsuarioController extends Controller
                     $password = htmlspecialchars($this->request->get('password'));
                     $password_repeat = htmlspecialchars($this->request->get('password_repeat'));
 
-                    if ($password === $password_repeat){
+                    if ($password === $password_repeat) {
 
                         $resultado_insert = $this->model->actualizarContrasenia($id_user, $password);
 
-                        if($resultado_insert['exito']){
+                        if ($resultado_insert['exito']) {
                             view('login.view', [
-                                'exito' => true, 
+                                'exito' => true,
                                 "mensaje" => 'Contraseña reseteada. Ya puede iniciar sesion con la nueva contraseña.',
                             ]);
-                        }else{
+                        } else {
                             view('login.view', [
-                                'exito' => false, 
+                                'exito' => false,
                                 "mensaje" => 'Error al resetear la Contraseña.',
                             ]);
                         }
                     }
-                }else{
+                } else {
                     $this->logger->error('Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo');
                     view('login.view', [
-                        'exito' => false, 
+                        'exito' => false,
                         "mensaje" => 'Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo',
                     ]);
                 }
-            }else{
+            } else {
                 $email = htmlspecialchars($this->request->get('email'));
                 /**
                  * 1) buscar email en la tabla usuarios
@@ -348,14 +367,13 @@ class UsuarioController extends Controller
                  * e inserto en la tabla password_resets
                  * (id_user, token_password) 
                  */
-                if($busquedaCorreo['exito'])
-                {
+                if ($busquedaCorreo['exito']) {
                     // Creación de token
                     $token = bin2hex(random_bytes(32));
-                    
+
                     // Insertar el token en la tabla password_resets
                     $insertTokenResult = $this->model->insertResetToken($busquedaCorreo['usuario']['id'], $token);
-                    
+
                     // Verificar si la inserción del token fue exitosa
                     if ($insertTokenResult[1]) {
                         /**
@@ -365,63 +383,61 @@ class UsuarioController extends Controller
                         $body = view('correoDeResetPassword.view', [
                             'url' => $this->request->fullUrl(),
                             'token' => $token
-                            ], true);
+                        ], true);
                         // Aca enviar un correo al usuario 
-                        $resultadoSend = $this->mailer->send($email,
-                                            "Pawproperties - Recuperar contraseña: ",
-                                            $body
-                                            );
-                                    
-                        if($resultadoSend){
-                            $this->logger->error("Correo enviado con exito: ", [$resultadoSend] );
+                        $resultadoSend = $this->mailer->send(
+                            $email,
+                            "Pawproperties - Recuperar contraseña: ",
+                            $body
+                        );
+
+                        if ($resultadoSend) {
+                            $this->logger->error("Correo enviado con exito: ", [$resultadoSend]);
                             view('password_reset_request.view', array_merge(
                                 ['exito' => true, "mensaje" => 'El mensaje de reseteo se envio con exito. Por favor, revise su casilla de correo'],
                                 $this->menuAndSession
                             ));
-                        }else{
-                            $this->logger->error("ERROR al enviar el Correo: ", [$resultadoSend] );
+                        } else {
+                            $this->logger->error("ERROR al enviar el Correo: ", [$resultadoSend]);
                             view('password_reset_request.view', array_merge(
                                 ['exito' => false, "mensaje" => 'Error Interno: no se pudo enviar el correo, debido a un problema del servidor'],
                                 $this->menuAndSession
-                            ));                        
-                        } 
-                    }else{
-                        $this->logger->error("ERROR al guardar el token: ", [$insertTokenResult] );
-                    }            
-                }else{
-                    $this->logger->error("ERROR no se encontro el correo: ", [$busquedaCorreo] );
+                            ));
+                        }
+                    } else {
+                        $this->logger->error("ERROR al guardar el token: ", [$insertTokenResult]);
+                    }
+                } else {
+                    $this->logger->error("ERROR no se encontro el correo: ", [$busquedaCorreo]);
                     view('password_reset_request.view', array_merge(
                         ['exito' => false, "mensaje" => 'Error Cliente: no se encontro el correo proporcionado'],
                         $this->menuAndSession
-                    ));                
+                    ));
                 }
-    
             }
-        }else{
-            if($this->request->get('token') !== null){
+        } else {
+            if ($this->request->get('token') !== null) {
 
                 $token = htmlspecialchars($this->request->get('token'));
 
                 $resultadoBusquedaToken = $this->model->buscarToken($token);
 
-                if ($resultadoBusquedaToken['exito']){
+                if ($resultadoBusquedaToken['exito']) {
                     view('password_reset_request.view', array_merge(
                         ['resetear_de_contrasenia_solicitado' => true, 'user_id' => $resultadoBusquedaToken['usuario']['user_id']],
                         $this->menuAndSession
-                    ));                    
-                }else{
+                    ));
+                } else {
                     view('password_reset_request.view', array_merge(
                         ['exito' => false, "mensaje" => 'Token no encontrado'],
                         $this->menuAndSession
-                    ));                    
-                }               
-                
-            }else{
+                    ));
+                }
+            } else {
                 view('password_reset_request.view', array_merge(
                     $this->menuAndSession
                 ));
             }
         }
     }
-
 }

@@ -137,12 +137,12 @@ $router->get('/mis_publicaciones/reservas', 'PublicacionController@verReservas')
 $router->get('/mis_publicaciones/reserva/aceptar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/cancelar', 'PublicacionController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/rechazar', 'PublicacionController@actualizarEstadoReserva'); // hecha
+$router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
 
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
 
-$router->get('/mapa', 'PublicacionController@mostrarMapa');
+$router->get('/mapa', 'PageController@mostrarMapa');
 
-$router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
 
 /**
  * 9.1) Logeo de usuario
