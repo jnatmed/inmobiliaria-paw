@@ -122,7 +122,7 @@ class UsuarioController extends Controller
 
     public function login()
     {
-        $titulo = 'PAWPERTIES | SESION';
+        $titulo = 'PAWPERTIES | LOGIN';
 
         if ($this->request->method() == 'POST') {
             $email = strtolower($this->request->get('email'));
@@ -218,9 +218,12 @@ class UsuarioController extends Controller
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
                     $resultado['error'] = $error;
-
+                    $datos = [
+                        'error' => $resultado['error'],
+                        'titulo' => $titulo
+                    ];
                     view('register.view', array_merge(
-                        ['error' => $resultado['error']],
+                        $datos,
                         $this->menuAndSession
                     ));
                 }
@@ -238,8 +241,10 @@ class UsuarioController extends Controller
                 ));
             }
         } else {
+            $datos = ['titulo' => $titulo];
             view('register.view', array_merge(
-                $this->menuAndSession
+                $this->menuAndSession,
+                $datos
             ));
         }
     }

@@ -24,11 +24,15 @@ class publicacionNew {
                 const locationDiv = document.querySelector('#location');
 
                 // Agregar un event listener al botón de búsqueda
-                document.querySelector('#buscarUbicacion').addEventListener('click', (event) => {
+                document.querySelector('#buscarUbicacion').addEventListener('click', async (event) => {
                   event.preventDefault(); // Evitar comportamiento predeterminado del botón
                   const address = document.querySelector('#ubicacion').value;
+                  const loading = document.querySelector('.loader');
+                  loading.classList.add('activo');
                   // console.log(address);
-                  mapaLeaf.buscar(address);
+                  await mapaLeaf.buscar(address);
+                  loading.classList.remove('activo');
+                  
                 });
 
 

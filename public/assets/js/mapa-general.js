@@ -30,10 +30,13 @@ class MapaGeneral {
         
                     mapaLeaf.agregarPublicacionesAlMapa(publicaciones);
 
-                    document.querySelector('#buscarUbicacion').addEventListener('click', (e) => {
+                    document.querySelector('#buscarUbicacion').addEventListener('click', async (e) => {
                         e.preventDefault();
                         const address = document.querySelector('#ubicacion').value;
-                        mapaLeaf.buscar(address, false);
+                        const loading = document.querySelector('.loader');
+                        loading.classList.add('activo');
+                        await mapaLeaf.buscar(address, false);
+                        loading.classList.remove('activo');
                     });
 
                 })

@@ -48,7 +48,7 @@ p.paso-titulo {
 
 .input-form-publicacion {
     display: inline-block;
-    width: 50%;
+    width: 20%;
     border: 0;
     border-bottom: 1px solid gray;
     background-color: transparent;
@@ -60,24 +60,6 @@ p.paso-titulo {
 .input-form-publicacion:focus {
     border-color: transparent;
     box-shadow: 0 0 0 2px transparent;
-}
-
-#buscarUbicacion {
-    border-radius: 5px;
-    border-style: solid;
-    background-color: var(--color-verde-header);
-    color: white;
-    border-color: var(--color-verde-header);
-    font-size: 1.3em;
-    padding: .2em;
-    margin: 5px auto;
-}
-
-#buscarUbicacion:hover {
-    background-color: rgb(139, 150, 117);
-    color: white;
-    border-color: rgb(139, 150, 117);
-
 }
 
 .btn-form-enviar-publicacion {
@@ -168,11 +150,6 @@ p.paso-titulo {
     margin: 0 auto;
 }
 
-#mapid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 /* 
 .paso-3 p:nth-child(2) {
     border: none;
@@ -443,6 +420,7 @@ p.paso-titulo {
 #direccion {
     display: none;
 }
+
 
 .form-busqueda-propiedad {
     background-color: #D9D9D9;
