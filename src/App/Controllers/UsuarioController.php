@@ -353,6 +353,11 @@ class UsuarioController extends Controller
                                 "mensaje" => 'Error al resetear la Contraseña.',
                             ]);
                         }
+                    }else{
+                        view('password_reset_request.view', array_merge(
+                            ['exito' => false, "mensaje" => 'Error Cliente: las contraseñas no coinciden. Vuelva a intertarlo porfavor'],
+                            $this->menuAndSession
+                        ));                              
                     }
                 } else {
                     $this->logger->error('Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo');
