@@ -24,50 +24,50 @@ class QueryBuilder
         try {
             $whereClauses = [];
             $bindings = [];
-    
+
             // Construir las cláusulas WHERE y los parámetros de enlace
             if (isset($params['id'])) {
                 $whereClauses[] = "id = :id";
                 $bindings[':id'] = $params['id'];
             }
-    
+
             if (isset($params['token'])) {
                 $whereClauses[] = "token = :token";
                 $bindings[':token'] = $params['token'];
             }
-    
+
             if (isset($params['email'])) {
                 $whereClauses[] = "email = :email";
                 $bindings[':email'] = $params['email'];
             }
-    
+
             if (isset($params['id_publicacion'])) {
                 $whereClauses[] = "id_publicacion = :id_publicacion";
                 $bindings[':id_publicacion'] = $params['id_publicacion'];
             }
-    
+
             if (isset($params['id_imagen'])) {
                 $whereClauses[] = "id_imagen = :id_imagen";
                 $bindings[':id_imagen'] = $params['id_imagen'];
             }
-    
+
             // Verificar si hay cláusulas WHERE
             $where = '';
             if (!empty($whereClauses)) {
                 $where = 'WHERE ' . implode(' AND ', $whereClauses);
             }
-    
+
             // Construir la consulta
             $query = "SELECT * FROM {$table} {$where}";
-    
+
             // Preparar la sentencia
             $sentencia = $this->pdo->prepare($query);
-    
+
             // Enlazar los valores de los parámetros
             foreach ($bindings as $key => $value) {
                 $sentencia->bindValue($key, $value);
             }
-    
+
             // Establecer el modo de obtención y ejecutar la consulta
             $sentencia->setFetchMode(PDO::FETCH_ASSOC);
             $sentencia->execute();
@@ -82,7 +82,7 @@ class QueryBuilder
             throw new Exception('Ocurrió un error inesperado');
         }
     }
-    
+
 
 
     public function countRows($table)
@@ -109,18 +109,17 @@ class QueryBuilder
             $valores = ':' . implode(', :', array_keys($data));
             $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
             $sentencia = $this->pdo->prepare($query);
-    
+
             // Asignar valores a los parámetros
             foreach ($data as $clave => $valor) {
                 $sentencia->bindValue(":$clave", $valor);
             }
-    
-            $resultado = $sentencia->execute();
-    
-            $idGenerado = $this->pdo->lastInsertId();
-    
-            return [$idGenerado, $resultado];
 
+            $resultado = $sentencia->execute();
+
+            $idGenerado = $this->pdo->lastInsertId();
+
+            return [$idGenerado, $resultado];
         } catch (PDOException $e) {
             // Manejo de errores y excepciones
             $this->logger->error('Error en la inserción: ' . $e->getMessage());
@@ -230,6 +229,21 @@ class QueryBuilder
         }
     }
 
+    public function getAll($mainTable)
+    {
+        try {
+            $query = "SELECT main.* FROM {$mainTable} main ";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Logging the error
+            $this->logger->error("Error in getAll: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {
@@ -252,7 +266,6 @@ class QueryBuilder
             if ($precio) {
                 $sql .= " AND main.precio <= :precio";
                 $params[':precio'] = $precio;
-
             }
 
             if ($idUser) {
@@ -277,13 +290,13 @@ class QueryBuilder
             if ($zona) {
                 $sql .= " AND (main.provincia LIKE :zona OR main.localidad LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
-            }            
+            }
 
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value);
             }
-            
+
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -361,7 +374,8 @@ class QueryBuilder
         return $this->lastQuery;
     }
 
-    public function getReservasByUsuario($id_usuario) {
+    public function getReservasByUsuario($id_usuario)
+    {
         try {
             $query = "
                 SELECT
@@ -379,7 +393,7 @@ class QueryBuilder
                     publicaciones.id_usuario = :id_usuario
                     AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
             ";
-    
+
             $this->logger->info("id usuario: $id_usuario");
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
@@ -389,7 +403,7 @@ class QueryBuilder
             $this->logger->error("Error en getReservasByUsuario: " . $e->getMessage());
             return false;
         }
-    }    
+    }
 
     public function update($table, $data, $where)
     {
@@ -420,7 +434,5 @@ class QueryBuilder
         $statement->execute();
     }
 
-    public function delete()
-    {
-    }
+    public function delete() {}
 }

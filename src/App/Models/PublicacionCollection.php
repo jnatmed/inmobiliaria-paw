@@ -181,7 +181,7 @@ class PublicacionCollection extends Model
         }
     }    
 
-    public function getAll()
+    public function getAllWithImages()
     {
         try {
             $result = $this->queryBuilder->getAllWithImages(
@@ -216,6 +216,31 @@ class PublicacionCollection extends Model
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());
             return false; // O lanzar una excepción personalizada si prefieres
+        }
+    }
+
+    public function getAll()
+    {
+        try {
+            $result = $this->queryBuilder->getAll($this->table);
+            // Estructurar los resultados
+            $publicaciones = [];
+            foreach ($result as $row) {
+                $id = $row['id'];
+                if (!isset($publicaciones[$id])) {
+                    $publicaciones[$id] = [];
+                    foreach ($row as $key => $value) {
+                        $publicaciones[$id][$key] = $value;
+                    }
+                    $publicaciones[$id]["url"] = "/publicacion/ver?id_pub={$id}";
+                }
+            }
+            return array_values($publicaciones);
+
+        } catch (PDOException $e) {
+            global $log;
+            $log->error("Error al obtener las publicaciones: " . $e->getMessage());
+            return false; 
         }
     }
     

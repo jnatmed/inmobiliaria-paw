@@ -1,10 +1,10 @@
 <section class="filtro-group">
-    <p for="zona">Zona</p>
+    <p>Zona</p>
     <input type="text" placeholder="Luján..." name="zona" id="zona" value="{{ zona }}">
 </section>
 
 <section class="filtro-group">
-    <p for="precio">Precio</p>
+    <p>Precio</p>
     <input type="range" id="precio" name="precio" min="0" max="1000000" step="5000" value="{{ precio }}" oninput="actualizarPrecio(this.value)">
     <h3 id="precio-valor">{{ precio ? precio : '-' }}</h3>
 </section>

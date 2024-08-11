@@ -37,6 +37,10 @@ class Controller
 
         $this->menu = [
             [
+                'href' => '/mapa',
+                'name' => 'MAPA'
+            ],
+            [
                 'href' => '/publicaciones/list',
                 'name' => 'PROPIEDADES'
             ],

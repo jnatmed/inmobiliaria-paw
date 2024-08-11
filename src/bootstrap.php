@@ -137,6 +137,10 @@ $router->get('/mis_publicaciones/reserva/rechazar', 'PublicacionController@actua
 
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
 
+$router->get('/mapa', 'PublicacionController@mostrarMapa');
+
+$router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
+
 /**
  * 9.1) Logeo de usuario
  */
@@ -149,3 +153,4 @@ $router->post('/recuperar-contrasenia', 'UsuarioController@resetPassword');
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
 $router->get('/usuario/mi_perfil', 'UsuarioController@perfil');
+

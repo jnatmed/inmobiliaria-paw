@@ -1,0 +1,9 @@
+.input-busqueda {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.mapa-view #mapid {
+    height: 80vh;
+    width: 90vw;
+}

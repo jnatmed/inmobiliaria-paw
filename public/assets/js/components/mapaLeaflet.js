@@ -1,73 +1,74 @@
 
 class MapaLeaflet {
-    
-    constructor() {        
+
+    constructor() {
 
         // coordenadas de ciudad autonoma de buenos aires
         this.mapa = L.map('mapid').setView([-34.6037, -58.3816], 11);
 
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?',{}).addTo(this.mapa);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?', {}).addTo(this.mapa);
 
     }
 
-    init()    
-    {
-        
+    init() {
+
     }
 
-    async buscar(address){
+    async buscar(address, marcar = true) {
         // Función para obtener coordenadas usando fetch y Nominatim
         // Construir la URL de la solicitud
         const encodedAddress = encodeURIComponent(address);
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}`;
-    
+
         try {
             // Añadir un retraso de 1 segundo (1000 milisegundos) entre solicitudes
             await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
             // Realizar la solicitud con fetch
             const response = await fetch(url);
-            
+
             // Verificar si la respuesta fue exitosa
             if (!response.ok) {
                 throw new Error(`Error en la solicitud: ${response.statusText}`);
             }
-    
+
             // Convertir la respuesta a JSON
             const data = await response.json();
-    
+
             // Procesar la respuesta JSON
             if (data.length > 0) {
                 const lat = parseFloat(data[0].lat);
                 const lon = parseFloat(data[0].lon);
-    
+
                 // Centrar el mapa en las coordenadas encontradas
                 this.mapa.setView([lat, lon], 13);
-    
-                // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
-                const marker = L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
-                    .bindPopup(address)
-                    .openPopup();
-                const position = marker.getLatLng(); // Obtener la nueva posición del marcador              
-                // Convertir las coordenadas a JSON
-                const coordenadasJSON = JSON.stringify(position);
 
-                // Colocar las coordenadas en el input #direccion en formato JSON
-                document.querySelector('#direccion').value = coordenadasJSON;
-                    
-                // Evento 'dragend' para actualizar las coordenadas después de arrastrar el marcador
-                marker.on('dragend', function(event) {
-                    const marker = event.target; // Obtener el marcador que fue arrastrado
-                    const position = marker.getLatLng(); // Obtener la nueva posición del marcador
-                    console.log(position); // Mostrar la nueva posición en la consola
-                    
+                if (marcar) {
+                    // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
+                    const marker = L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
+                        .bindPopup(address)
+                        .openPopup();
+                    const position = marker.getLatLng(); // Obtener la nueva posición del marcador              
                     // Convertir las coordenadas a JSON
                     const coordenadasJSON = JSON.stringify(position);
-    
+
                     // Colocar las coordenadas en el input #direccion en formato JSON
                     document.querySelector('#direccion').value = coordenadasJSON;
-                });
+
+                    // Evento 'dragend' para actualizar las coordenadas después de arrastrar el marcador
+                    marker.on('dragend', function (event) {
+                        const marker = event.target; // Obtener el marcador que fue arrastrado
+                        const position = marker.getLatLng(); // Obtener la nueva posición del marcador
+                        console.log(position); // Mostrar la nueva posición en la consola
+
+                        // Convertir las coordenadas a JSON
+                        const coordenadasJSON = JSON.stringify(position);
+
+                        // Colocar las coordenadas en el input #direccion en formato JSON
+                        document.querySelector('#direccion').value = coordenadasJSON;
+
+                    });
+                }
             } else {
                 console.log('No se encontraron resultados para la dirección especificada.');
             }
@@ -92,33 +93,59 @@ class MapaLeaflet {
             return 'Dirección no disponible'; // Valor por defecto en caso de error
         }
     }
-    
 
-    async buscarPorLatitudyLongitud(lat, lon){
-    
+
+    async buscarPorLatitudyLongitud(lat, lon) {
+
         try {
-                // Verificar si lat y lon son válidos
-                if (lat == null || lon == null) {
-                    throw new Error('Latitud o longitud no válidas');
-                }
+            // Verificar si lat y lon son válidos
+            if (lat == null || lon == null) {
+                throw new Error('Latitud o longitud no válidas');
+            }
 
-                // Si no se proporciona una dirección, obtenerla usando una función de geocodificación inversa
-                let address = await this.obtenerDireccion(lat, lon);
+            // Si no se proporciona una dirección, obtenerla usando una función de geocodificación inversa
+            let address = await this.obtenerDireccion(lat, lon);
 
-                // Centrar el mapa en las coordenadas encontradas
-                this.mapa.setView([lat, lon], 18);
-    
-                // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
-                L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
-                    .bindPopup(address)
-                    .openPopup();
+            // Centrar el mapa en las coordenadas encontradas
+            this.mapa.setView([lat, lon], 18);
+
+            // Agregar un marcador en las coordenadas encontradas y hacerlo arrastrable
+            L.marker([lat, lon], { draggable: true }).addTo(this.mapa)
+                .bindPopup(address)
+                .openPopup();
 
         } catch (error) {
             console.error('Hubo un problema al mostrar la direccion: ', error);
         }
     }
-    
 
-    
+    agregarPublicacionesAlMapa(publicaciones) {
+        publicaciones.forEach(publicacion => {
+            const lat = publicacion.latitud;
+            const lon = publicacion.longitud;
+            const nombre = publicacion.nombre_alojamiento;
+            const url = publicacion.url;
+
+            // Agregarlo al mapa
+            const marcador = L.marker([lat, lon])
+                .addTo(this.mapa)
+                .bindPopup(nombre);
+
+            // Mostrar el popup al hacer hover
+            marcador.on('mouseover', function () {
+                this.openPopup();
+            });
+
+            // Ocultar el popup al salir del hover
+            marcador.on('mouseout', function () {
+                this.closePopup();
+            });
+
+            marcador.on('click', function() {
+                window.location.href = url;  // Redirigir a la URL de la publicación
+            });
+        });
+    }
+
 
 }
