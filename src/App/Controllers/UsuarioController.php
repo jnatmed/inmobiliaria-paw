@@ -45,20 +45,20 @@ class UsuarioController extends Controller
         if (isset($_SESSION['email'])) {
             // Si el usuario es de tipo "cliente", eliminar el menú de empleado
             $log->info("hay sesion: ", [$_SESSION]);
-            if ($this->getUserType() === 'propietario') {
+            if ($this->getUserType() === 1) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
                 $menu = sacarDelMenu($menu, ['/menu_empleado',
                                              '/publicaciones/gestionar']);
             }
             
-            if ($this->getUserType() === 'inquilino') {
+            if ($this->getUserType() === 3) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
                 $menu = sacarDelMenu($menu, ['/menu_empleado',
                                              '/publicaciones/gestionar',
                                              '/mis_publicaciones',
                                             '/mis_publicaciones/reservas']);
             }
-            if ($this->getUserType() === 'empleado') {
+            if ($this->getUserType() === 2) {
                 // Filtra el menú para eliminar el menú de empleado si es necesario
                 $menu = sacarDelMenu($menu, ['/menu_empleado',
                                              '/mis_publicaciones',
@@ -132,7 +132,7 @@ class UsuarioController extends Controller
                 $this->sesion_en_curso = true;
                 // Guardar los datos del usuario en la sesión
                 $_SESSION['email'] = $usuarioAutenticado['email'];
-                $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario'];
+                $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario_id'];
                 $_SESSION['nombre'] = $usuarioAutenticado['nombre'];
                 $this->tipoUsuario = $_SESSION['tipo'];
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
@@ -187,7 +187,7 @@ class UsuarioController extends Controller
                     'email' => $email,
                     'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
                     'telefono' => $telefono,
-                    'tipo_usuario' => 'propietario'
+                    'tipo_usuario' => 1
                 ];   
                 
                 // Insertar el nuevo usuario en la base de datos
@@ -270,6 +270,7 @@ class UsuarioController extends Controller
 
         if($userId !== null){
             // Obtener los datos del usuario
+            $this->logger->info("UserId $userId");
             $usuario = $this->model->findById($userId);
     
             $this->logger->info("datos de usuario: ", [$usuario]);

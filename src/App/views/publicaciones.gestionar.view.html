@@ -37,8 +37,8 @@
                                 <td>{{ publicacion.capacidad_maxima | e }}</td>
                                 <td>{{ publicacion.estado | e }}</td>
                                 <td>
-                                    <a class="publicaciones-accion" href="/mis_publicaciones/editar?id_pub={{ publicacion.id }}">Editar</a> |
-                                    <a class="publicaciones-accion" href="/mis_publicaciones/eliminar?id_pub={{ publicacion.id }}">Eliminar</a> |
+                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/aceptar?id_pub={{ publicacion.id }}">Aceptar</a> |
+                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/rechazar?id_pub={{ publicacion.id }}">Rechazar</a> | 
                                     <a class="publicaciones-accion" href="/publicacion/ver?id_pub={{ publicacion.id }}">Ver</a>
                                 </td>
                             </tr>

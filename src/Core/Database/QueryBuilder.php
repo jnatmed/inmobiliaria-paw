@@ -102,6 +102,39 @@ class QueryBuilder
         }
     }
 
+    public function selectUserAndTipo($idUser)
+    {
+        try {
+            $sql = "
+                SELECT usuarios.*, tipos_usuarios.tipo as tipo
+                FROM usuarios
+                JOIN tipos_usuarios ON usuarios.tipo_usuario_id = tipos_usuarios.id
+                WHERE usuarios.id = :id
+            ";
+    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
+    
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+    
+            $resultado = $stmt->fetchAll();
+    
+            $this->logger->info("SQL Query: ", [$sql]);
+            $this->logger->info("ID Value: ", [$idUser]);
+            $this->logger->info("resultado selectUserAndTipo: ", [$resultado]);
+    
+            return $resultado;
+    
+        } catch (PDOException $e) {
+            if ($this->logger) {
+                $this->logger->error("Error en selectUserAndTipo: " . $e->getMessage(), ['exception' => $e]);
+            }
+            return null;
+        }
+    }
+    
+
     public function insert($table, $data)
     {
         try {
@@ -306,6 +339,17 @@ class QueryBuilder
         }
     }
 
+    public function traerPublicacionesConEstado() {
+        $sql = "
+            SELECT publicaciones.*, estado_publicaciones.estado as estado
+            FROM publicaciones
+            JOIN estado_publicaciones ON publicaciones.estado_id = estado_publicaciones.id
+        ";
+        
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getOneWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $id)
     {
@@ -315,17 +359,25 @@ class QueryBuilder
                     main.*, 
                     img.id_imagen, 
                     img.path_imagen, 
-                    img.nombre_imagen 
+                    img.nombre_imagen,
+                    usr.nombre AS nombre,
+                    usr.apellido AS apellido,
+                    usr.email AS email,
+                    usr.telefono AS telefono
                 FROM 
                     {$mainTable} main
                 LEFT JOIN 
                     {$imageTable} img
                 ON 
                     main.{$mainTableKey} = img.{$foreignKey}
+                LEFT JOIN
+                    usuarios usr
+                ON
+                    main.id_usuario = usr.id
                 WHERE 
                     main.{$mainTableKey} = :id
             ";
-
+    
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
@@ -336,7 +388,6 @@ class QueryBuilder
             return false;
         }
     }
-
     public function getAllWithImagesByUser($mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser)
     {
         try {

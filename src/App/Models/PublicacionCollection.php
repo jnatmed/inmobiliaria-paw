@@ -384,7 +384,7 @@ class PublicacionCollection extends Model
     {
         try {
             // Realizamos la consulta para obtener todas las publicaciones sin filtro de usuario
-            $result = $this->queryBuilder->select('publicaciones');
+            $result = $this->queryBuilder->traerPublicacionesConEstado();
 
             if ($result) {
                 return [
@@ -430,4 +430,27 @@ class PublicacionCollection extends Model
             throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
         }
     }    
+
+    public function actualizarEstadoPublicacion($idPublicacion, $accion)
+    {
+        try {
+
+            if($accion === 'aceptar'){
+                $nuevoEstado = 2;
+            }
+
+            if($accion === 'rechazar'){
+                $nuevoEstado = 3;
+            }
+
+            $this->queryBuilder->update(
+                'publicaciones',
+                ['estado_id' => $nuevoEstado],
+                ['id' => $idPublicacion]
+            );
+        } catch (Exception $e) {
+            throw new Exception("Error al actualizar la publicacion: " . $e->getMessage());
+        }        
+    }
+    
 }
