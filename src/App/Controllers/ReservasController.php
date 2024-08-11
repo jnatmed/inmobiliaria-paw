@@ -101,9 +101,10 @@ class ReservasController extends Controller
             redirect('iniciar-sesion');
         }
 
-        $id_publicacion = $this->request->get('id_publicacion');
-        $desde = $this->request->get('input-desde');
-        $hasta = $this->request->get('input-hasta');
+        $correo_duenio = htmlspecialchars($this->request->get('email_duenio'));
+        $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));
+        $desde = htmlspecialchars($this->request->get('input-desde'));
+        $hasta = htmlspecialchars($this->request->get('input-hasta'));
         $precio_x_noche = 800;
         $estado_reserva = 'pendiente';
         $notas = 'ninguna';
@@ -128,7 +129,17 @@ class ReservasController extends Controller
             'nroReserva' => $nroReserva,
             'userName' => $userName,
             'desde' => $desde,
-            'hasta' => $hasta
+            'hasta' => $hasta,
+            'destino' => 'interesado'
+        ], true);
+
+        // Mensaje de correo con estilos en línea
+        $bodyPropietario = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $desde,
+            'hasta' => $hasta,
+            'destino' => 'propietario'
         ], true);
 
         // aca deberia enviar un correo al usuario que esta logueado       
@@ -142,7 +153,13 @@ class ReservasController extends Controller
         }else{
             $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
         }                
+
+        $resultadoSendPropietario = $this->mailer->send($correo_duenio,
+                            "Solicitud de Reserva para el usuario: $userName ",
+                            $body,
+                            );
         
+
         $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
         redirect('publicacion/ver?id_pub='.$id_publicacion);

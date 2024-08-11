@@ -297,8 +297,6 @@ class PublicacionController extends Controller
 
     public function new()
     {    
-        // $this->logger->info("request:", [$_REQUEST]);
-        // $this->logger->info("server:", [$_SERVER]);
         try {
             if ($this->request->method() == 'POST') {
     
@@ -328,11 +326,11 @@ class PublicacionController extends Controller
                 $this->logger->info("FILES: ", [$_FILES]);
     
                 // Obtiene y verifica los valores del request
-                $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
-                $apellido = htmlspecialchars($this->request->get('apellido') ?? '');
-                $dni = htmlspecialchars($this->request->get('dni') ?? '');
-                $telefono = htmlspecialchars($this->request->get('telefono') ?? '');
-                $email = htmlspecialchars($this->request->get('email') ?? '');
+                // $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
+                // $apellido = htmlspecialchars($this->request->get('apellido') ?? '');
+                // $dni = htmlspecialchars($this->request->get('dni') ?? '');
+                // $telefono = htmlspecialchars($this->request->get('telefono') ?? '');
+                // $email = htmlspecialchars($this->request->get('email') ?? '');
                 $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
                 $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
                 
@@ -369,11 +367,11 @@ class PublicacionController extends Controller
     
                 // Preparar el array de datos para la inserción
                 $publicacion = [
-                    'nombre' => $nombre,
-                    'apellido' => $apellido,
-                    'dni' => $dni,
-                    'telefono' => $telefono,
-                    'email' => $email,
+                    // 'nombre' => $nombre,
+                    // 'apellido' => $apellido,
+                    // 'dni' => $dni,
+                    // 'telefono' => $telefono,
+                    // 'email' => $email,
                     'provincia' => $provincia,
                     'localidad' => $localidad,
                     'direccion' => $direccion,
@@ -510,6 +508,17 @@ class PublicacionController extends Controller
     
     public function gestionarPublicaciones()
     {
+        // Asumiendo que tienes una forma de obtener el id del usuario
+        if (!$this->usuario->isUserLoggedIn()) {
+            $resultado = [
+                "success" => false,
+                "message" => "Debe iniciar sesión para ver el pedido."
+            ];
+            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+            redirect('iniciar-sesion');
+        }
+        
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
         view('publicaciones.gestionar.view', array_merge(
@@ -530,7 +539,6 @@ class PublicacionController extends Controller
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
                 redirect('iniciar-sesion');
-
             }
                         
             $this->logger->info("Segmento 2: ".$this->request->getSegments(2));

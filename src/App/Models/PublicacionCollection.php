@@ -384,7 +384,7 @@ class PublicacionCollection extends Model
     {
         try {
             // Realizamos la consulta para obtener todas las publicaciones sin filtro de usuario
-            $result = $this->queryBuilder->select('publicaciones');
+            $result = $this->queryBuilder->traerPublicacionesConEstado();
 
             if ($result) {
                 return [
