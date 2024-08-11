@@ -555,7 +555,7 @@ class PublicacionController extends Controller
     }  
     
     public function mostrarMapa(){
-        view("mapa-general.view");
+        view("mapa-general.view", array_merge($this->menuAndSession));
     }
 
     public function apiPublicaciones(){
