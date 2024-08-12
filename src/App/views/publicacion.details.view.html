@@ -77,8 +77,13 @@
             </article>
         </section>
 
-            {% if isUserLoggedIn  %}
+            {% if isUserLoggedIn and tipo_usuario == 1 %} 
                 {% include 'parts/reservas-propiedad.view.html' %}
+            {% else %}
+                <p>
+                    isUserLoggedIn : {{ isUserLoggedIn }}</br>
+                    tipo_usuario : {{ tipo_usuario }}
+                </p>
             {% endif %}
         
     </main>

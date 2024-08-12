@@ -26,14 +26,10 @@ class PageController extends Controller
         $this->verificador = new Verificador;
         
         $this->usuario = new UsuarioController();
+        
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
-        $this->menuAndSession = [
-            'isUserLoggedIn' => $this->usuario->isUserLoggedIn(),
-            'menu' => $this->menu,
-            'urlPublicacion' => $this->request->fullUrl(),
-            'id_usuario' => $this->usuario->getUserId()
-        ];
 
+        $this->menuAndSession = $this->usuario->menuAndSession;
     }
 
     public function index()

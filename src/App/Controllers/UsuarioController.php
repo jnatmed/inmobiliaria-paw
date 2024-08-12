@@ -35,7 +35,8 @@ class UsuarioController extends Controller
             'isUserLoggedIn' => $this->isUserLoggedIn(),
             'menu' => $this->menu,
             'urlPublicacion' => $this->request->fullUrl(),
-            'id_usuario' => $this->getUserId()
+            'id_usuario' => $this->getUserId(),
+            'tipo_usuario' => $this->getUserType(),
         ];
     }
 
