@@ -148,6 +148,8 @@ class ReservasController extends Controller
         }else{
             $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
         }                
+        // Limpia la lista de destinatarios antes de enviar el siguiente correo
+        $this->mailer->clearAddresses();
 
         $resultadoSendPropietario = $this->mailer->send($correo_duenio,
                             "Solicitud de Reserva para el usuario: $userName ",

@@ -28,6 +28,11 @@ class Mailer extends Model
         $this->mail->CharSet    = 'UTF-8';
     }
 
+    public function clearAddresses()
+    {
+        $this->mail->clearAddresses();
+    }
+    
     public function send($to, $subject, $body, $altBody = '')
     {
         global $config;
