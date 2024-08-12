@@ -47,7 +47,7 @@ class UserCollection extends Model
 
             return [
                'exito' => true,
-               'usuario' => $result[0]
+               'token' => $result[0]
              ]; 
 
         } catch (PDOException $e) {

@@ -433,10 +433,21 @@ class UsuarioController extends Controller
                 $resultadoBusquedaToken = $this->model->buscarToken($token);
 
                 if ($resultadoBusquedaToken['exito']) {
-                    view('password_reset_request.view', array_merge(
-                        ['resetear_de_contrasenia_solicitado' => true, 'user_id' => $resultadoBusquedaToken['usuario']['user_id']],
-                        $this->menuAndSession
-                    ));
+
+                    $tokenCreado = strtotime($resultadoBusquedaToken['token']['created_at']);
+                    $tiempoActual = time();
+
+                    if($tokenCreado && ($tiempoActual - $tokenCreado) < 3600){
+                        view('password_reset_request.view', array_merge(
+                            ['resetear_de_contrasenia_solicitado' => true, 'user_id' => $resultadoBusquedaToken['token']['user_id']],
+                            $this->menuAndSession
+                        ));    
+                    }else{
+                        view('password_reset_request.view', array_merge(
+                            ['exito' => false, "mensaje" => 'Token expirado. Vuelva a solicitar un nuevo reseteo de contraseña'],
+                            $this->menuAndSession
+                        ));                        
+                    }
                 } else {
                     view('password_reset_request.view', array_merge(
                         ['exito' => false, "mensaje" => 'Token no encontrado'],
