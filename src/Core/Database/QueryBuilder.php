@@ -111,21 +111,20 @@ class QueryBuilder
                 JOIN tipos_usuarios ON usuarios.tipo_usuario_id = tipos_usuarios.id
                 WHERE usuarios.id = :id
             ";
-    
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
-    
+
             $stmt->setFetchMode(PDO::FETCH_ASSOC);
             $stmt->execute();
-    
+
             $resultado = $stmt->fetchAll();
-    
+
             $this->logger->info("SQL Query: ", [$sql]);
             $this->logger->info("ID Value: ", [$idUser]);
             $this->logger->info("resultado selectUserAndTipo: ", [$resultado]);
-    
+
             return $resultado;
-    
         } catch (PDOException $e) {
             if ($this->logger) {
                 $this->logger->error("Error en selectUserAndTipo: " . $e->getMessage(), ['exception' => $e]);
@@ -133,7 +132,7 @@ class QueryBuilder
             return null;
         }
     }
-    
+
 
     public function insert($table, $data)
     {
@@ -306,9 +305,18 @@ class QueryBuilder
                 $params[':idUser'] = $idUser;
             }
 
-            if ($tipo) {
-                $sql .= " AND main.tipo_alojamiento = :tipo";
-                $params[':tipo'] = $tipo;
+            if (!empty($tipo)) {
+                $allowedTipos = ['casa', 'departamento', 'quinta'];
+                $condiciones = [];
+                foreach ($tipo as $t) {
+                    if (in_array($t, $allowedTipos)) {
+                        $condiciones[] = "main.tipo_alojamiento = '{$t}'";
+                    }
+                }
+                // Si hay condiciones validas, agregarlas a la query
+                if (!empty($condiciones)) {
+                    $sql .= " AND (" . implode(' OR ', $condiciones) . ")";
+                }
             }
 
             if (!empty($instalaciones)) {
@@ -329,8 +337,8 @@ class QueryBuilder
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value);
             }
-
             $stmt->execute();
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             // Logging the error
@@ -339,13 +347,14 @@ class QueryBuilder
         }
     }
 
-    public function traerPublicacionesConEstado() {
+    public function traerPublicacionesConEstado()
+    {
         $sql = "
             SELECT publicaciones.*, estado_publicaciones.estado as estado
             FROM publicaciones
             JOIN estado_publicaciones ON publicaciones.estado_id = estado_publicaciones.id
         ";
-        
+
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -377,7 +386,7 @@ class QueryBuilder
                 WHERE 
                     main.{$mainTableKey} = :id
             ";
-    
+
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();

@@ -5,15 +5,15 @@
 
 <section class="filtro-group">
     <p>Precio</p>
-    <input type="range" id="precio" name="precio" min="0" max="1000000" step="5000" value="{{ precio }}" oninput="actualizarPrecio(this.value)">
-    <h3 id="precio-valor">{{ precio ? precio : "" }}</h3>
+    <input type="range" id="precio" name="precio" min="0" max="1000000" step="5000" value="{{ precio ? precio : 0 }}" oninput="actualizarPrecio(this.value)">
+    <h3 id="precio-valor">{{ precio ? precio : "-" }}</h3>
 </section>
 
 <section class="filtro-group">
     <p>Tipo</p>
-    <label><input type="radio" name="tipo" value="casa" {{ tipo == 'casa' ? 'checked' : '' }}> Casa</label>
-    <label><input type="radio" name="tipo" value="departamento" {{ tipo == 'departamento' ? 'checked' : '' }}> Departamento</label>
-    <label><input type="radio" name="tipo" value="quinta" {{ tipo == 'quinta' ? 'checked' : '' }}> Quinta</label>
+    <label><input type="checkbox" name="tipo[]" value="casa" {{ 'casa' in tipo ? 'checked' : '' }}> Casa</label>
+    <label><input type="checkbox" name="tipo[]" value="departamento" {{ 'departamento' in tipo ? 'checked' : '' }}> Departamento</label>
+    <label><input type="checkbox" name="tipo[]" value="quinta" {{ 'quinta' in tipo ? 'checked' : '' }}> Quinta</label>
 </section>
 
 <section class="filtro-group">

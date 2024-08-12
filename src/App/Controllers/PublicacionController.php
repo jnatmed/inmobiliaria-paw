@@ -39,7 +39,6 @@ class PublicacionController extends Controller
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
-
     }
 
     public function list()
@@ -47,12 +46,12 @@ class PublicacionController extends Controller
         try {
             $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = htmlspecialchars($this->request->get('tipo'));
+            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); 
             $precio = htmlspecialchars($this->request->get('precio'));
-            $instalaciones = htmlspecialchars($this->request->get('instalaciones')) ?? [];
+            $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
-            
+
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
             $this->logger->info("Publicaciones: ", [$publicaciones]);
@@ -61,7 +60,7 @@ class PublicacionController extends Controller
                 'zona' => $zona,
                 'tipo' => $tipo,
                 'precio' => $precio,
-                'instalaciones' => $instalaciones, 
+                'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
                 'titulo' => "PAWPERTIES | PROPIEDADES"
@@ -71,7 +70,6 @@ class PublicacionController extends Controller
                 $datos,
                 $this->menuAndSession
             ));
-
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -82,13 +80,13 @@ class PublicacionController extends Controller
 
     public function verPublicacion()
     {
-    
+
         // Obtener el ID de la publicación de la solicitud
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
-    
+
         // Obtener los datos de la publicación y sus imágenes
         $publicacion = $this->model->getOne($id_publicacion);
-    
+
         // Verificar si se encontró la publicación
         if (!$publicacion) {
             $resultado = [
@@ -99,7 +97,7 @@ class PublicacionController extends Controller
             require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
             return;
         }
-        
+
         // Aca se obtienen las reservas usando el modelo
         $reservas = $this->model->getReservas($id_publicacion);
 
@@ -120,7 +118,7 @@ class PublicacionController extends Controller
             $this->menuAndSession,
         ));
     }
-   
+
 
     public function contactarAlDuenio()
     {
@@ -147,7 +145,7 @@ class PublicacionController extends Controller
          * correo con estilos en linea guardarlos en el body y enviarlo
          * aqui evitamos mezclar html con php y combinamos 
          * el poder del motor de plantillas con php
-         *  */ 
+         *  */
         $body = view('correoAlDuenioDeLaPublicacion', [
             'emailInteresado' => $emailInteresado,
             'telefonoDelInteresado' => $telefonoDelInteresado,
@@ -156,23 +154,24 @@ class PublicacionController extends Controller
         ], true);
 
         // Aca enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send($emailDuenio,
-                            "Consulta sobre publicacion: ",
-                            $body
-                            );
-                      
-        if($resultadoSend){
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
-        }else{
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
-        }                
+        $resultadoSend = $this->mailer->send(
+            $emailDuenio,
+            "Consulta sobre publicacion: ",
+            $body
+        );
 
-        redirect('publicacion/ver?id_pub='.$id_publicacion);
+        if ($resultadoSend) {
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+        } else {
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+        }
+
+        redirect('publicacion/ver?id_pub=' . $id_publicacion);
     }
 
     public function listaPublicacionesPropietario()
     {
-        
+
         try {
             // Verificar si hay sesión iniciada
             if (!$this->usuario->isUserLoggedIn()) {
@@ -183,7 +182,6 @@ class PublicacionController extends Controller
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
                 redirect('iniciar-sesion');
-
             }
 
             // Obtener el ID del usuario desde la sesión
@@ -192,12 +190,12 @@ class PublicacionController extends Controller
             $idUser = $this->usuario->getUserId();
             $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = htmlspecialchars($this->request->get('tipo'));
+            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
             $precio = htmlspecialchars($this->request->get('precio'));
-            $instalaciones = htmlspecialchars($this->request->get('instalaciones')) ?? [];
+            $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []);
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
-            
+
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             // var_dump($publicaciones);
             $this->logger->info("Publicaciones: ", [$publicaciones]);
@@ -207,18 +205,19 @@ class PublicacionController extends Controller
                 'zona' => $zona,
                 'tipo' => $tipo,
                 'precio' => $precio,
-                'instalaciones' => $instalaciones, 
+                'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
                 'titulo' => "PAWPERTIES | MIS PROPIEDADES"
             ];
 
-            view('publicaciones-propietario.list.view', 
-                    array_merge(
-                        $datos,
-                        $this->menuAndSession
-                    )
-                );
+            view(
+                'publicaciones-propietario.list.view',
+                array_merge(
+                    $datos,
+                    $this->menuAndSession
+                )
+            );
             // require $this->viewsDir . 'publicaciones-propietario.list.view.php';
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
@@ -227,13 +226,12 @@ class PublicacionController extends Controller
             view('not_found', [
                 'error_message' => $error_message
             ]);
-            
         }
     }
 
     public function getImgPublicacion()
     {
-        
+
 
         $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
         $idImagen = htmlspecialchars($this->request->get('id_img'));
@@ -275,10 +273,10 @@ class PublicacionController extends Controller
 
 
     public function new()
-    {    
+    {
         try {
             if ($this->request->method() == 'POST') {
-    
+
                 if (!$this->usuario->isUserLoggedIn()) {
                     $resultado = [
                         "success" => false,
@@ -287,26 +285,25 @@ class PublicacionController extends Controller
                     $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
                     redirect('iniciar-sesion');
-
                 }
-                
+
                 // Verificar si $_POST está vacío
                 if (empty($_POST)) {
                     throw new Exception("Error: La solicitud POST está vacía.");
                 }
-    
+
                 // Obtener el ID del usuario desde la sesión
                 $this->logger->info("sesion: ", [$_SESSION]);
-    
+
                 $idUser = $this->usuario->getUserId();
                 $this->logger->info("idUser: ", [$idUser]);
-    
+
                 $this->logger->info("POST: ", [$this->request->all()]);
                 $this->logger->info("FILES: ", [$_FILES]);
-    
+
                 $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
                 $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
-                
+
                 // Verificar y decodificar el JSON de la dirección
                 $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
                 if (is_null($direccion) || $direccion === '') {
@@ -314,18 +311,18 @@ class PublicacionController extends Controller
                 } else {
                     // Convertir entidades HTML a caracteres normales
                     $direccion = html_entity_decode($direccion);
-    
+
                     // Decodificar la cadena JSON
                     $coordenadas = json_decode($direccion, true);
                     if ($coordenadas === null) {
                         throw new Exception("Error al decodificar la dirección: " . json_last_error_msg());
                     }
                 }
-    
+
                 $latitud = $coordenadas['lat'] ?? null;
                 $longitud = $coordenadas['lng'] ?? null;
                 $precio = htmlspecialchars($this->request->get('precio'));
-    
+
                 $nombreAlojamiento = htmlspecialchars($this->request->get('nombre-alojamiento') ?? '');
                 $tipoAlojamiento = htmlspecialchars($this->request->get('tipo-alojamiento') ?? '');
                 $capacidadMaxima = htmlspecialchars($this->request->get('capacidad-maxima') ?? '');
@@ -337,7 +334,7 @@ class PublicacionController extends Controller
                 $wifi = htmlspecialchars($this->request->get('wifi')) ? 1 : 0;
                 $normasAlojamiento = htmlspecialchars($this->request->get('normas-alojamiento') ?? '');
                 $descripcionAlojamiento = htmlspecialchars($this->request->get('descripcion-alojamiento') ?? '');
-    
+
                 // Preparar el array de datos para la inserción
                 $publicacion = [
                     // 'nombre' => $nombre,
@@ -364,22 +361,22 @@ class PublicacionController extends Controller
                     'descripcion_alojamiento' => $descripcionAlojamiento,
                     'id_usuario' => $idUser
                 ];
-    
+
                 // Manejar la inserción de datos
                 list($idPublicacionGenerado, $resultado) = $this->model->create($publicacion);
-    
+
                 // Si la inserción fue exitosa, procede con el manejo de las imágenes
                 if ($idPublicacionGenerado) {
                     // Verificar si $_FILES está vacío
                     if (empty($_FILES['imagenes'])) {
                         throw new Exception("Error: No se han subido archivos.");
                     }
-    
+
                     $imagenesPublicacion = [];
                     $files = $_FILES['imagenes'];
-    
-                    for ($i=0; $i < count($files['name']); $i++){
-                        if($files['name'][$i] != ""){
+
+                    for ($i = 0; $i < count($files['name']); $i++) {
+                        if ($files['name'][$i] != "") {
                             $file = [
                                 'name' => $files['name'][$i],
                                 'type' => $files['type'][$i],
@@ -388,9 +385,9 @@ class PublicacionController extends Controller
                                 'size' => $files['size'][$i],
                             ];
                         }
-                        
-                        if ($file['error'] != UPLOAD_ERR_OK){
-                            throw new Exception("Error al subir una imagen: ".$file['error']);
+
+                        if ($file['error'] != UPLOAD_ERR_OK) {
+                            throw new Exception("Error al subir una imagen: " . $file['error']);
                         }
 
                         // Subiendo el archivo usando el metodo uploadFile de Uploader
@@ -405,22 +402,20 @@ class PublicacionController extends Controller
                                 'nombre_imagen' => $resultUpload['nombre_imagen'],
                                 'id_usuario' => $idUser
                             ];
-                        }else{
+                        } else {
                             throw new Exception("Error al subir una imagen: " . $resultUpload['description']);
                         }
                     }
-    
+
                     $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
                     // Inserta todas las imágenes en la base de datos en una única operación
                     $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
 
                     redirect('mis_publicaciones');
-                    
                 } else {
 
                     $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
                     throw new Exception("Publicacion no generada: $idPublicacionGenerado");
-
                 }
             } else {
                 $datos = ['titulo' => 'PAWPERTIES | NUEVA PUBLICACION'];
@@ -428,22 +423,21 @@ class PublicacionController extends Controller
                     $this->menuAndSession,
                     $datos
                 ));
-
             }
-
         } catch (Exception $e) {
 
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
-            
+
             view('not_found', [
                 'error_message' => "Error en el proceso: " . $e->getMessage()
             ]);
         }
     }
-    
 
-    public function verReservas() {
+
+    public function verReservas()
+    {
 
         try {
             // Asumiendo que tienes una forma de obtener el id del usuario
@@ -455,13 +449,12 @@ class PublicacionController extends Controller
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
                 redirect('iniciar-sesion');
-
             }
-            
+
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-    
+
             $datos = [
                 'reservas' => $reservas,
                 'titulo' => "PAWPERTIES | RESERVAS"
@@ -473,14 +466,13 @@ class PublicacionController extends Controller
                 $datos,
                 $this->menuAndSession
             ));
-
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
 
             redirect('not_found');
         }
     }
-    
+
     public function gestionarPublicaciones()
     {
         // Asumiendo que tienes una forma de obtener el id del usuario
@@ -493,11 +485,13 @@ class PublicacionController extends Controller
 
             redirect('iniciar-sesion');
         }
-        
+
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
-        $datos = ['titulo' => "PAWPERTIES | GESTIONAR",
-                "exito" => true];
+        $datos = [
+            'titulo' => "PAWPERTIES | GESTIONAR",
+            "exito" => true
+        ];
 
         view('publicaciones.gestionar.view', array_merge(
             $listaPublicaciones,
@@ -506,7 +500,8 @@ class PublicacionController extends Controller
         ));
     }
 
-    public function actualizarEstadoReserva() {
+    public function actualizarEstadoReserva()
+    {
         try {
             // Asumiendo que tienes una forma de obtener el id del usuario
             if (!$this->usuario->isUserLoggedIn()) {
@@ -518,8 +513,8 @@ class PublicacionController extends Controller
 
                 redirect('iniciar-sesion');
             }
-                        
-            $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
+
+            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
             $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
             $idReserva = htmlspecialchars($this->request->get('id_reserva'));
@@ -529,21 +524,20 @@ class PublicacionController extends Controller
                 $this->model->actualizarEstadoReserva($idReserva, $accion);
 
                 redirect('mis_publicaciones/reservas');
-
             } else {
                 throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
             }
         } catch (Exception $e) {
             $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
-            
+
             redirect('not_found');
         }
-    }  
-    
+    }
+
     public function actualizarEstadoPublicacion()
     {
 
-        try{
+        try {
             // Asumiendo que tienes una forma de obtener el id del usuario
             if (!$this->usuario->isUserLoggedIn()) {
                 $resultado = [
@@ -554,32 +548,29 @@ class PublicacionController extends Controller
 
                 redirect('iniciar-sesion');
             }
-            $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
+            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
             $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
-            
+
             if (!is_null($idPublicacion)) {
 
                 $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
 
                 redirect('publicaciones/gestionar');
-
             } else {
                 throw new Exception("ID de publicación no proporcionado");
             }
-
-        }catch (Exception $e){
+        } catch (Exception $e) {
             $this->logger->error("Error General al actualizar el estado de la publicacion: " . $e->getMessage());
-            
-            redirect('not_found');            
-        }
 
+            redirect('not_found');
+        }
     }
 
-    public function apiPublicaciones(){
+    public function apiPublicaciones()
+    {
         $publicaciones = $this->model->getAll();
         header('Content-Type: application/json');
         echo json_encode(array_values($publicaciones));
     }
-    
 }
