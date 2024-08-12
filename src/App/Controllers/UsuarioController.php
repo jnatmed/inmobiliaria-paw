@@ -125,8 +125,8 @@ class UsuarioController extends Controller
         $titulo = 'PAWPERTIES | LOGIN';
 
         if ($this->request->method() == 'POST') {
-            $email = strtolower($this->request->get('email'));
-            $contrasenia = $this->request->get('contrasenia');
+            $email = htmlspecialchars(strtolower($this->request->get('email')));
+            $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
 
             $user = new User($email, $contrasenia);
 
@@ -174,12 +174,12 @@ class UsuarioController extends Controller
 
         if ($this->request->method() == 'POST') {
             // Obtener los datos del formulario
-            $email = $this->request->get('email');
-            $nombre = $this->request->get('nombre');
-            $apellido = $this->request->get('apellido');
-            $contrasenia = $this->request->get('contrasenia');
-            $contrasenia_repetida = $this->request->get('contrasenia_check');
-            $telefono = $this->request->get('telefono');
+            $email = htmlspecialchars($this->request->get('email'));
+            $nombre = htmlspecialchars($this->request->get('nombre'));
+            $apellido = htmlspecialchars($this->request->get('apellido'));
+            $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
+            $contrasenia_repetida = htmlspecialchars($this->request->get('contrasenia_check'));
+            $telefono = htmlspecialchars($this->request->get('telefono'));
 
             // Verificar si las contraseñas coinciden
             if ($contrasenia !== $contrasenia_repetida) {

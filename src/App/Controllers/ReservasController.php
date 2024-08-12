@@ -46,7 +46,7 @@ class ReservasController extends Controller
             /**
              * envio los periodos que van a estar reservados y los muestro en el front y manipulo javascript
              */
-            $id_publicacion = $this->request->get('id_pub');
+            $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
             $this->logger->info("id_publicacion: $id_publicacion");
 
             // Obtén las reservas usando el modelo

@@ -46,34 +46,15 @@ class PublicacionController extends Controller
         ];
 
     }
-    
-    // public function buscar()
-    // {
-    //     // Verificar si se recibe una consulta de búsqueda
-    //     if (isset($_GET['ubicacion'])) {
-    //         $location = $_GET['ubicacion'];
-
-    //         // Devolver el resultado como JSON
-    //         header('Content-Type: application/json');
-    //         echo json_encode(['location' => $location]);
-    //     } else {
-    //         // Establecer la cookie para la vista inicial, si no está presente
-    //         if (!isset($_COOKIE['location'])) {
-    //             setcookie('location', 'No hay búsquedas previas', time() + (7 * 24 * 60 * 60), "/");
-    //         }            
-    //         // Si no hay búsqueda, cargar la vista.
-    //         require $this->viewsDir . 'buscar-propiedad.view.php';
-        // }
-    // }
 
     public function list()
     {
         try {
-            $zona = $this->request->get('zona');
+            $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = $this->request->get('tipo');
-            $precio = $this->request->get('precio');
-            $instalaciones = $this->request->get('instalaciones') ?? [];
+            $tipo = htmlspecialchars($this->request->get('tipo'));
+            $precio = htmlspecialchars($this->request->get('precio'));
+            $instalaciones = htmlspecialchars($this->request->get('instalaciones')) ?? [];
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
             
@@ -214,11 +195,11 @@ class PublicacionController extends Controller
             $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
-            $zona = $this->request->get('zona');
+            $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = $this->request->get('tipo');
-            $precio = $this->request->get('precio');
-            $instalaciones = $this->request->get('instalaciones') ?? [];
+            $tipo = htmlspecialchars($this->request->get('tipo'));
+            $precio = htmlspecialchars($this->request->get('precio'));
+            $instalaciones = htmlspecialchars($this->request->get('instalaciones')) ?? [];
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
             
@@ -259,8 +240,8 @@ class PublicacionController extends Controller
     {
         
 
-        $idPublicacion = $this->request->get('id_pub');
-        $idImagen = $this->request->get('id_img');
+        $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
+        $idImagen = htmlspecialchars($this->request->get('id_img'));
 
         try {
 
@@ -328,12 +309,6 @@ class PublicacionController extends Controller
                 $this->logger->info("POST: ", [$this->request->all()]);
                 $this->logger->info("FILES: ", [$_FILES]);
     
-                // Obtiene y verifica los valores del request
-                // $nombre = htmlspecialchars($this->request->get('nombre') ?? '');
-                // $apellido = htmlspecialchars($this->request->get('apellido') ?? '');
-                // $dni = htmlspecialchars($this->request->get('dni') ?? '');
-                // $telefono = htmlspecialchars($this->request->get('telefono') ?? '');
-                // $email = htmlspecialchars($this->request->get('email') ?? '');
                 $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
                 $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
                 
@@ -361,10 +336,10 @@ class PublicacionController extends Controller
                 $capacidadMaxima = htmlspecialchars($this->request->get('capacidad-maxima') ?? '');
                 $cantBanios = htmlspecialchars($this->request->get('cant-banios') ?? '');
                 $cantidadDormitorios = htmlspecialchars($this->request->get('cantidad-dormitorios') ?? '');
-                $cochera = $this->request->get('cochera') ? 1 : 0;
-                $pileta = $this->request->get('pileta') ? 1 : 0;
-                $aireAcondicionado = $this->request->get('aire-acondicionado') ? 1 : 0;
-                $wifi = $this->request->get('wifi') ? 1 : 0;
+                $cochera = htmlspecialchars($this->request->get('cochera')) ? 1 : 0;
+                $pileta = htmlspecialchars($this->request->get('pileta')) ? 1 : 0;
+                $aireAcondicionado = htmlspecialchars($this->request->get('aire-acondicionado')) ? 1 : 0;
+                $wifi = htmlspecialchars($this->request->get('wifi')) ? 1 : 0;
                 $normasAlojamiento = htmlspecialchars($this->request->get('normas-alojamiento') ?? '');
                 $descripcionAlojamiento = htmlspecialchars($this->request->get('descripcion-alojamiento') ?? '');
     
@@ -551,8 +526,8 @@ class PublicacionController extends Controller
                         
             $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
-            $idPublicacion = $this->request->get('id_pub');
-            $idReserva = $this->request->get('id_reserva');
+            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
+            $idReserva = htmlspecialchars($this->request->get('id_reserva'));
 
             if ($idPublicacion && $idReserva) {
 
@@ -586,7 +561,7 @@ class PublicacionController extends Controller
             }
             $this->logger->info("Segmento 2: ".$this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
-            $idPublicacion = $this->request->get('id_pub');
+            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
             
             if (!is_null($idPublicacion)) {
 
