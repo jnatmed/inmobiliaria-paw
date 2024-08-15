@@ -209,7 +209,7 @@ class PublicacionController extends Controller
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
             $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
-            $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []);
+            $instalaciones = $this->request->get('instalaciones') ?? [];
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
