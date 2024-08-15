@@ -46,11 +46,11 @@ class PublicacionController extends Controller
         try {
             $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); 
+            $tipos = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); 
             $precio = htmlspecialchars($this->request->get('precio'));
             $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
 
-            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
+            $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
@@ -58,16 +58,20 @@ class PublicacionController extends Controller
 
             $datos = [
                 'zona' => $zona,
-                'tipo' => $tipo,
                 'precio' => $precio,
-                'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
                 'titulo' => "PAWPERTIES | PROPIEDADES"
             ];
 
-            view('publicaciones.list.view', array_merge(
+            $mergedArray = array_merge(
                 $datos,
+                ['tipo' => $tipos],
+                ['instalaciones' => $instalaciones]
+            );
+
+            view('publicaciones.list.view', array_merge(
+                $mergedArray,
                 $this->menuAndSession
             ));
         } catch (PDOException $e) {
@@ -190,11 +194,11 @@ class PublicacionController extends Controller
             $idUser = $this->usuario->getUserId();
             $zona = htmlspecialchars($this->request->get('zona'));
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
+            $tipos = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
             $precio = htmlspecialchars($this->request->get('precio'));
             $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []);
 
-            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
+            $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, $idUser);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             // var_dump($publicaciones);
@@ -203,7 +207,7 @@ class PublicacionController extends Controller
             $datos = [
                 'idUser' => $idUser,
                 'zona' => $zona,
-                'tipo' => $tipo,
+                'tipo' => $tipos,
                 'precio' => $precio,
                 'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
