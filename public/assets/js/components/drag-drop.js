@@ -72,21 +72,38 @@ class DragDrop {
         let contenedorImagen = document.createElement("div");
         contenedorImagen.setAttribute('class', 'image-container');
         contenedorImagen.appendChild(image);
-        this.previewContainer.appendChild(contenedorImagen);
 
+        // Crear y añadir el nombre y tamaño del archivo
         let nombreImagen = document.createElement("p");
         nombreImagen.setAttribute('class', 'info');
-        nombreImagen.innerHTML = file.name;
+        nombreImagen.innerHTML = `${file.name} - ${this.formatFileSize(file.size)}`;
         contenedorImagen.appendChild(nombreImagen);
 
+        // Crear y añadir el botón de eliminar
         let botonEliminar = document.createElement("button");
         botonEliminar.setAttribute('class', 'remove-button');
         botonEliminar.innerText = "Eliminar imagen";
         botonEliminar.addEventListener('click', () => {
-            this.removeImage(contenedorImagen);
+            this.removeImage(contenedorImagen); 
         });
         contenedorImagen.appendChild(botonEliminar);
+
+        // Añadir el contenedor de la imagen a la vista previa
+        this.previewContainer.appendChild(contenedorImagen);
     }
+
+    formatFileSize(size) {
+        const units = ["bytes", "KB", "MB", "GB", "TB"];
+        let unitIndex = 0;
+        let formattedSize = size;
+
+        while (formattedSize >= 1024 && unitIndex < units.length - 1) {
+            formattedSize /= 1024;
+            unitIndex++;
+        }
+
+        return `${formattedSize.toFixed(2)} ${units[unitIndex]}`;
+    }    
 
     removeImage(element) {
         element.remove();
