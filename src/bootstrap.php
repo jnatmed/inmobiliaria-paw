@@ -82,6 +82,7 @@ try {
 try {
     $twig = new \Twig\Environment($loader, [
         'cache' => $cacheDir, 
+        // 'cache' => false, 
         'debug' => true,
     ]);
 } catch (Exception $e) {

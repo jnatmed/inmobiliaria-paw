@@ -44,11 +44,22 @@ class PublicacionController extends Controller
     public function list()
     {
         try {
-            $zona = htmlspecialchars($this->request->get('zona'));
+            $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipos = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); 
-            $precio = htmlspecialchars($this->request->get('precio'));
-            $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
+            $tipo = $this->request->get('tipo') ?? []; 
+
+            $tipo = $this->request->get('tipo');
+            if (is_array($tipo) && isset($tipo[0]) && is_array($tipo[0])) {
+                $tipo = $tipo[0]; // Asegura que tipo sea un array simple
+                $this->logger->debug("es array multidimensional");
+            } elseif (is_null($tipo)) {
+                $tipo = [];
+                $this->logger->debug("no es array []");
+            }
+            $this->logger->debug("tipo: ", $tipo);
+
+            $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
+            $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
 
             $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, null);
 
@@ -58,6 +69,7 @@ class PublicacionController extends Controller
 
             $datos = [
                 'zona' => $zona,
+                'tipos' => $tipo,
                 'precio' => $precio,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
@@ -70,10 +82,11 @@ class PublicacionController extends Controller
                 ['instalaciones' => $instalaciones]
             );
 
-            view('publicaciones.list.view', array_merge(
-                $mergedArray,
-                $this->menuAndSession
-            ));
+            $this->logger->debug("dato (antes de pasar a la vista): ", $datos);
+            $this->logger->debug("menuAndSession (antes de pasar a la vista): ", $this->menuAndSession);
+
+            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession));
+
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -192,10 +205,10 @@ class PublicacionController extends Controller
             $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
-            $zona = htmlspecialchars($this->request->get('zona'));
+            $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipos = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
-            $precio = htmlspecialchars($this->request->get('precio'));
+            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
+            $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []);
 
             $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, $idUser);
@@ -207,7 +220,7 @@ class PublicacionController extends Controller
             $datos = [
                 'idUser' => $idUser,
                 'zona' => $zona,
-                'tipo' => $tipos,
+                'tipos' => $tipo,
                 'precio' => $precio,
                 'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,

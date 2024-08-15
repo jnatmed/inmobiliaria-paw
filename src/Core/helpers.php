@@ -11,6 +11,8 @@ function view($name, $data = [], $returnView = false)
     global $log, $twig;
 
     try {
+        // depurando data
+        $log->debug('Datos antes de renderizar', ['data' => $data]);
         /**
          * si returnView esta en verdadero 
          * se devuelve la vista en vez de mostrarla
