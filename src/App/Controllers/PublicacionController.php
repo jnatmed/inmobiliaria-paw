@@ -61,7 +61,7 @@ class PublicacionController extends Controller
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
 
-            $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, null);
+            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
@@ -78,7 +78,7 @@ class PublicacionController extends Controller
 
             $mergedArray = array_merge(
                 $datos,
-                ['tipo' => $tipos],
+                ['tipo' => $tipo],
                 ['instalaciones' => $instalaciones]
             );
 
@@ -211,7 +211,7 @@ class PublicacionController extends Controller
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_map('htmlspecialchars', $this->request->get('instalaciones') ?? []);
 
-            $publicaciones = $this->model->getAllFilter($zona, $tipos, $precio, $instalaciones, $idUser);
+            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             // var_dump($publicaciones);
