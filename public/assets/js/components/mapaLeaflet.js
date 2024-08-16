@@ -23,7 +23,6 @@ class MapaLeaflet {
             if (data.length > 0) {
                 const lat = parseFloat(data[0].lat);
                 const lon = parseFloat(data[0].lon);
-                const Direccion = data[0].display_name;
 
                 this.mapa.setView([lat, lon], 13);
 
@@ -34,10 +33,14 @@ class MapaLeaflet {
                     const position = marker.getLatLng();
                     const coordenadasJSON = JSON.stringify(position);
 
+                    document.querySelector('#direccion').value = coordenadasJSON;
+
                     marker.on('dragend', async function (event) {
                         const marker = event.target;
                         const position = marker.getLatLng();
                         const coordenadasJSON = JSON.stringify(position);
+
+                        document.querySelector('#direccion').value = coordenadasJSON;
 
                         // Actualizar Codigo Postal y provincia después de arrastrar el marcador
                         await this.actualizarCodigoPostalProvincia(position.lat, position.lng);
@@ -82,7 +85,6 @@ class MapaLeaflet {
 
         document.querySelector('#codigo_postal').value = codigo_postal || '';
         document.querySelector('#provincia').value = provincia || '';
-        document.querySelector('#direccion').value = displayName;
     }
 
     async buscarPorLatitudyLongitud(lat, lon) {

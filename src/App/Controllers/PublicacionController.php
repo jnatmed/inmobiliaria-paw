@@ -116,8 +116,11 @@ class PublicacionController extends Controller
                 "message" => "Publicación no encontrada."
             ];
             $this->logger->info("Publicación no encontrada: ID $id_publicacion.");
-            require $this->viewsDir . 'error.view.php'; // Redirigir a una página de error
-            return;
+            view('errors/not-found.view', array_merge(
+                ['error_message' => "Publicación no encontrada: ID $id_publicacion"],
+                $this->menuAndSession
+            ));
+            exit();
         }
 
         // Aca se obtienen las reservas usando el modelo
@@ -215,6 +218,8 @@ class PublicacionController extends Controller
             $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = $this->request->get('instalaciones') ?? [];
+
+            $this->logger->debug("zona ,tipo , precio $precio, instalaciones,idUser: $idUser", [$zona, $tipo, $instalaciones]);
 
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
@@ -337,7 +342,7 @@ class PublicacionController extends Controller
                     // Decodificar la cadena JSON
                     $coordenadas = json_decode($direccion, true);
                     if ($coordenadas === null) {
-                        throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg());
+                        throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $direccion);
                     }
                 }
 

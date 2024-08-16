@@ -301,7 +301,7 @@ class QueryBuilder
             }
 
             if ($idUser) {
-                $sql .= " AND main.id = :idUser";
+                $sql .= " AND main.id_usuario = :idUser";
                 $params[':idUser'] = $idUser;
             }
 
@@ -332,6 +332,9 @@ class QueryBuilder
                 $sql .= " AND (main.provincia LIKE :zona OR main.localidad LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
             }
+
+
+            $this->logger->debug("SQL: " , [$sql]);
 
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {
