@@ -8,6 +8,9 @@
 
 .input-form-publicacion.disabled{
     width: 80%;
+    background-color: #f0f0f0; /* Color gris claro */
+    color: #999; /* Texto gris */
+    cursor: not-allowed; /* Esto indica que el campo no es editable */
 }
 
 .tooltip {
