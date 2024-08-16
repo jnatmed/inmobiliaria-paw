@@ -44,10 +44,11 @@ class DragDrop {
         }
     }
 
-    previewFiles(files) {
+    async previewFiles(files) {
         this.error.style.display = "none";
         for (let file of files) {
-            if (!this.allowedImageTypes.includes(file.type)) {
+            const actualType = await this.getFileType(file);
+            if (!this.allowedImageTypes.includes(actualType)) {
                 this.mostrarError("Solo se permiten archivos .jpg, .png, .jpeg");
                 return;
             }
@@ -60,7 +61,7 @@ class DragDrop {
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                this.createImagePreview(file, reader.result);
+                this.createImagePreview(file, reader.result, false, actualType);
             };
         }
     }
@@ -70,7 +71,7 @@ class DragDrop {
         this.error.innerHTML = message;
     }
 
-    createImagePreview(file, src, exceeded = false) {
+    createImagePreview(file, src, exceeded = false, actualType = "") {
         let contenedorImagen = document.createElement("div");
         contenedorImagen.setAttribute('class', `image-container ${exceeded ? 'exceeded' : ''}`);
 
@@ -82,10 +83,11 @@ class DragDrop {
 
         let nombreImagen = document.createElement("p");
         nombreImagen.setAttribute('class', 'info');
+        const tipoArchivo = actualType || file.type;
         if (exceeded) {
-            nombreImagen.innerHTML = `${file.name} - Tamaño máximo excedido (${this.formatFileSize(file.size)}), Máximo permitido = 1MB`;
+            nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - Tamaño máximo excedido (${this.formatFileSize(file.size)}), Máximo permitido = 1MB`;
         } else {
-            nombreImagen.innerHTML = `${file.name} - ${this.formatFileSize(file.size)}`;
+            nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
         }
         contenedorImagen.appendChild(nombreImagen);
 
@@ -100,15 +102,48 @@ class DragDrop {
         let botonEliminar = document.createElement("button");
         botonEliminar.setAttribute('class', 'remove-button');
         botonEliminar.innerText = "Eliminar imagen";
-        console.log('Creando botón eliminar para:', file.name); // Añade un log para depurar
         botonEliminar.onclick = () => {
-            console.log('Botón eliminar clickeado directamente en el atributo onclick');
             this.removeImage(contenedorImagen);
         };
         contenedorImagen.appendChild(botonEliminar);
-        console.log(contenedorImagen)
+
         // Añadir el contenedor de la imagen a la vista previa
         this.previewContainer.appendChild(contenedorImagen);
+    }
+
+    async getFileType(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const arr = (new Uint8Array(reader.result)).subarray(0, 4);
+                let header = "";
+                for (let i = 0; i < arr.length; i++) {
+                    header += arr[i].toString(16);
+                }
+                // Verifica las cabeceras conocidas de los archivos
+                let fileType = "";
+                switch (header) {
+                    case "89504e47":
+                        fileType = "image/png";
+                        break;
+                    case "ffd8ffe0":
+                    case "ffd8ffe1":
+                    case "ffd8ffe2":
+                    case "ffd8ffe3":
+                    case "ffd8ffe8":
+                        fileType = "image/jpeg";
+                        break;
+                    case "47494638":
+                        fileType = "image/gif";
+                        break;
+                    default:
+                        fileType = "unknown"; // Si no coincide, devolverá "unknown"
+                        break;
+                }
+                resolve(fileType);
+            };
+            reader.readAsArrayBuffer(file.slice(0, 4));
+        });
     }
 
     formatFileSize(size) {
@@ -125,8 +160,6 @@ class DragDrop {
     }    
 
     removeImage(element) {
-        console.log('Eliminando imagen'); // Añade un log para depurar
         element.remove();
     }
 }
-
