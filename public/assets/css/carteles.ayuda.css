@@ -1,0 +1,37 @@
+.input-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px; /* Ajusta el espacio entre campos si es necesario */
+    width: 20%;
+
+}
+
+.input-form-publicacion.disabled{
+    width: 80%;
+    background-color: #f0f0f0; /* Color gris claro */
+    color: #999; /* Texto gris */
+    cursor: not-allowed; /* Esto indica que el campo no es editable */
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 300px; /* Ajusta el ancho del tooltip según sea necesario */
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Posición por defecto */
+    left: 50%;
+    margin-left: -150px; /* Centrar el tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.input-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    bottom: 100%; /* Ajusta la posición del tooltip cuando se hace hover */
+}

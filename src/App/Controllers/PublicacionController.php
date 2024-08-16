@@ -309,9 +309,6 @@ class PublicacionController extends Controller
                     throw new Exception("Error: La solicitud POST está vacía.");
                 }
 
-                // Obtener el ID del usuario desde la sesión
-                $this->logger->info("sesion: ", [$_SESSION]);
-
                 $idUser = $this->usuario->getUserId();
                 $this->logger->info("idUser: ", [$idUser]);
 

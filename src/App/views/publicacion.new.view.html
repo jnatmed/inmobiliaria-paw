@@ -32,9 +32,18 @@
 
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
                 <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
-                <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia">
-                <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion" placeholder="Codigo Postal">
-                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección">
+                <div class="input-container">
+                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" placeholder="Provincia" readonly>
+                    <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
+                </div>
+                
+                <div class="input-container">
+                    <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" placeholder="Código Postal" readonly>
+                    <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
+                </div>
+                
+                <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" readonly>
+
                 <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
                 {% include 'parts/mapa.view.html' %}
 
