@@ -49,12 +49,12 @@ class DragDrop {
         for (let file of files) {
             const actualType = await this.getFileType(file);
             if (!this.allowedImageTypes.includes(actualType)) {
-                this.mostrarError("Solo se permiten archivos .jpg, .png, .jpeg");
+                this.mostrarError(`Tipo no permitido: ${file.name} (Tipo Real: ${actualType})`, file);
                 return;
             }
 
             if (file.size > this.maxFileSize) {
-                this.createImagePreview(file, null, true);
+                this.mostrarError(`Tamaño máximo excedido: ${file.name}`, file, true);
                 continue;
             }
 
@@ -66,9 +66,30 @@ class DragDrop {
         }
     }
 
-    mostrarError(message) {
-        this.error.style.display = "block";
-        this.error.innerHTML = message;
+    mostrarError(message, file = null, exceeded = false) {
+        let errorContainer = document.createElement("div");
+        errorContainer.setAttribute('class', `error-message ${exceeded ? 'exceeded' : ''}`);
+        errorContainer.innerHTML = message;
+
+        // Agregar un botón de cerrar (X)
+        let closeButton = document.createElement("span");
+        closeButton.setAttribute('class', 'close-button');
+        closeButton.innerHTML = "&times;"; // Símbolo de X
+        closeButton.onclick = () => {
+            errorContainer.remove();
+        };       
+
+        // Mostrar el tamaño si el error es por tamaño excedido
+        if (exceeded && file) {
+            let sizeInfo = document.createElement("p");
+            sizeInfo.innerHTML = `Tamaño: ${this.formatFileSize(file.size)}, Máximo permitido: 1MB`;
+            errorContainer.appendChild(sizeInfo);
+        }
+
+        errorContainer.appendChild(closeButton);
+
+        // Añadir el contenedor de error a la vista previa
+        this.previewContainer.appendChild(errorContainer);
     }
 
     createImagePreview(file, src, exceeded = false, actualType = "") {
@@ -84,19 +105,8 @@ class DragDrop {
         let nombreImagen = document.createElement("p");
         nombreImagen.setAttribute('class', 'info');
         const tipoArchivo = actualType || file.type;
-        if (exceeded) {
-            nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - Tamaño máximo excedido (${this.formatFileSize(file.size)}), Máximo permitido = 1MB`;
-        } else {
-            nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
-        }
+        nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
         contenedorImagen.appendChild(nombreImagen);
-
-        if (exceeded) {
-            let errorMensaje = document.createElement("div");
-            errorMensaje.setAttribute('class', 'error-message');
-            errorMensaje.innerText = "Máximo excedido";
-            contenedorImagen.appendChild(errorMensaje);
-        }
 
         // Crear y añadir el botón de eliminar
         let botonEliminar = document.createElement("button");
@@ -120,7 +130,6 @@ class DragDrop {
                 for (let i = 0; i < arr.length; i++) {
                     header += arr[i].toString(16);
                 }
-                // Verifica las cabeceras conocidas de los archivos
                 let fileType = "";
                 switch (header) {
                     case "89504e47":
@@ -136,8 +145,20 @@ class DragDrop {
                     case "47494638":
                         fileType = "image/gif";
                         break;
+                    case "25504446":
+                        fileType = "application/pdf";
+                        break;
+                    case "504b0304":
+                        fileType = "application/zip"; // Para archivos zip y jar
+                        break;
+                    case "4d5a9000":
+                        fileType = "application/x-msdownload"; // Para archivos .exe
+                        break;
+                    case "52494646":
+                        fileType = "image/webp";
+                        break;
                     default:
-                        fileType = "unknown"; // Si no coincide, devolverá "unknown"
+                        fileType = "unknown";
                         break;
                 }
                 resolve(fileType);
