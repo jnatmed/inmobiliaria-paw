@@ -4,6 +4,7 @@ class DragDrop {
         this.previewContainer = document.querySelector(".preview-container");
         this.error = document.querySelector(".error-drop");
         this.allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+        this.maxFileSize = 1 * 1024 * 1024; // 1MB en bytes
         this.inputFile = document.querySelector("#drop-input"); 
         this.inicializar();
     }
@@ -50,8 +51,12 @@ class DragDrop {
                 this.mostrarError("Solo se permiten archivos .jpg, .png, .jpeg");
                 return;
             }
-        }
-        for (let file of files) {
+
+            if (file.size > this.maxFileSize) {
+                this.createImagePreview(file, null, true);
+                continue;
+            }
+
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
@@ -65,30 +70,40 @@ class DragDrop {
         this.error.innerHTML = message;
     }
 
-    createImagePreview(file, src) {
-        let image = new Image();
-        image.src = src;
-
+    createImagePreview(file, src, exceeded = false) {
         let contenedorImagen = document.createElement("div");
-        contenedorImagen.setAttribute('class', 'image-container');
-        contenedorImagen.appendChild(image);
+        contenedorImagen.setAttribute('class', `image-container ${exceeded ? 'exceeded' : ''}`);
 
-        // Crear y añadir el nombre y tamaño del archivo
+        if (src) {
+            let image = new Image();
+            image.src = src;
+            contenedorImagen.appendChild(image);
+        }
+
         let nombreImagen = document.createElement("p");
         nombreImagen.setAttribute('class', 'info');
-        nombreImagen.innerHTML = `${file.name} - ${this.formatFileSize(file.size)}`;
+        if (exceeded) {
+            nombreImagen.innerHTML = `${file.name} - Tamaño máximo excedido (${this.formatFileSize(file.size)}), Máximo permitido = 1MB`;
+        } else {
+            nombreImagen.innerHTML = `${file.name} - ${this.formatFileSize(file.size)}`;
+        }
         contenedorImagen.appendChild(nombreImagen);
 
-        // Crear y añadir el botón de eliminar
+        if (exceeded) {
+            let errorMensaje = document.createElement("div");
+            errorMensaje.setAttribute('class', 'error-message');
+            errorMensaje.innerText = "Máximo excedido";
+            contenedorImagen.appendChild(errorMensaje);
+        }
+
         let botonEliminar = document.createElement("button");
         botonEliminar.setAttribute('class', 'remove-button');
         botonEliminar.innerText = "Eliminar imagen";
         botonEliminar.addEventListener('click', () => {
-            this.removeImage(contenedorImagen); 
+            this.removeImage(contenedorImagen);
         });
         contenedorImagen.appendChild(botonEliminar);
 
-        // Añadir el contenedor de la imagen a la vista previa
         this.previewContainer.appendChild(contenedorImagen);
     }
 

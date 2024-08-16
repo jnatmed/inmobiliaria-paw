@@ -74,3 +74,29 @@
     margin-top: 30px;
     display: none;
 }
+
+/* Añadir este CSS a tu archivo de estilos */
+.image-container.exceeded {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container.exceeded img {
+    filter: grayscale(100%) blur(2px); /* Opcional, para oscurecer la imagen */
+}
+
+.image-container.exceeded .error-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.5); /* Color rojo semitransparente */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
