@@ -37,7 +37,11 @@ class ErrorController extends Controller
         http_response_code(500);
         $titulo = 'Internal Error';
         $main = 'Internal Server Error';
-        require $this->viewsDir. 'internal-error.view.php';
+        view('errors/internal_error.view', array_merge(
+            ['titulo' => $titulo],
+            ['main' => $main],
+            $this->menuAndSession
+        ));
     }
 
     

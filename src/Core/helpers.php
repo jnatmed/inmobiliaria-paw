@@ -68,3 +68,14 @@ function sacarDelMenu($menu, $array_list)
         return !in_array($item['href'], $array_list);
     });
 }
+
+
+/**
+ * Sanitiza un valor para prevenir XSS, asegurándose de que no sea nulo.
+ *
+ * @param mixed $value El valor a sanitizar.
+ * @return string El valor sanitizado o una cadena vacía si el valor es nulo.
+ */
+function sanitize($value) {
+    return !is_null($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '';
+}

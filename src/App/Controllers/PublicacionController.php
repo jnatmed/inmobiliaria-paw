@@ -8,6 +8,11 @@ use Paw\App\Utils\Utils;
 use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
+use Paw\Core\Exceptions\PostVacioException; 
+use Paw\Core\Exceptions\JsonVacioException; 
+use Paw\Core\Exceptions\DireccionFailException; 
+use Paw\Core\Exceptions\FallaEnCargaDeImagenesException; 
+use Paw\Core\Exceptions\PublicacionFailException; 
 
 use PDOException;
 use Throwable;
@@ -240,8 +245,8 @@ class PublicacionController extends Controller
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
 
-            view('not_found', [
-                'error_message' => $error_message
+            view('errors/internal_error.view', [
+                'error_message' => "Error de base de datos al obtener las publicaciones: " . $e->getMessage()
             ]);
         }
     }
@@ -306,7 +311,7 @@ class PublicacionController extends Controller
 
                 // Verificar si $_POST está vacío
                 if (empty($_POST)) {
-                    throw new Exception("Error: La solicitud POST está vacía.");
+                    throw new PostVacioException("Error: La solicitud POST está vacía.");
                 }
 
                 // Obtener el ID del usuario desde la sesión
@@ -324,7 +329,7 @@ class PublicacionController extends Controller
                 // Verificar y decodificar el JSON de la dirección
                 $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
                 if (is_null($direccion) || $direccion === '') {
-                    throw new Exception("Error: JSON proporcionado es nulo o vacío.");
+                    throw new JsonVacioException("Error: JSON proporcionado es nulo o vacío.");
                 } else {
                     // Convertir entidades HTML a caracteres normales
                     $direccion = html_entity_decode($direccion);
@@ -332,25 +337,25 @@ class PublicacionController extends Controller
                     // Decodificar la cadena JSON
                     $coordenadas = json_decode($direccion, true);
                     if ($coordenadas === null) {
-                        throw new Exception("Error al decodificar la dirección: " . json_last_error_msg());
+                        throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg());
                     }
                 }
 
                 $latitud = $coordenadas['lat'] ?? null;
                 $longitud = $coordenadas['lng'] ?? null;
-                $precio = htmlspecialchars($this->request->get('precio'));
 
-                $nombreAlojamiento = htmlspecialchars($this->request->get('nombre-alojamiento') ?? '');
-                $tipoAlojamiento = htmlspecialchars($this->request->get('tipo-alojamiento') ?? '');
-                $capacidadMaxima = htmlspecialchars($this->request->get('capacidad-maxima') ?? '');
-                $cantBanios = htmlspecialchars($this->request->get('cant-banios') ?? '');
-                $cantidadDormitorios = htmlspecialchars($this->request->get('cantidad-dormitorios') ?? '');
-                $cochera = htmlspecialchars($this->request->get('cochera')) ? 1 : 0;
-                $pileta = htmlspecialchars($this->request->get('pileta')) ? 1 : 0;
-                $aireAcondicionado = htmlspecialchars($this->request->get('aire-acondicionado')) ? 1 : 0;
-                $wifi = htmlspecialchars($this->request->get('wifi')) ? 1 : 0;
-                $normasAlojamiento = htmlspecialchars($this->request->get('normas-alojamiento') ?? '');
-                $descripcionAlojamiento = htmlspecialchars($this->request->get('descripcion-alojamiento') ?? '');
+                $precio = sanitize($this->request->get('precio'));
+                $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'));
+                $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'));
+                $capacidadMaxima = sanitize($this->request->get('capacidad-maxima'));
+                $cantBanios = sanitize($this->request->get('cant-banios'));
+                $cantidadDormitorios = sanitize($this->request->get('cantidad-dormitorios'));
+                $cochera = sanitize($this->request->get('cochera')) ? 1 : 0;
+                $pileta = sanitize($this->request->get('pileta')) ? 1 : 0;
+                $aireAcondicionado = sanitize($this->request->get('aire-acondicionado')) ? 1 : 0;
+                $wifi = sanitize($this->request->get('wifi')) ? 1 : 0;
+                $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'));
+                $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'));
 
                 // Preparar el array de datos para la inserción
                 $publicacion = [
@@ -371,7 +376,8 @@ class PublicacionController extends Controller
                     'wifi' => $wifi,
                     'normas_alojamiento' => $normasAlojamiento,
                     'descripcion_alojamiento' => $descripcionAlojamiento,
-                    'id_usuario' => $idUser
+                    'id_usuario' => $idUser,
+                    'estado_id' => 1
                 ];
 
                 // Manejar la inserción de datos
@@ -381,7 +387,7 @@ class PublicacionController extends Controller
                 if ($idPublicacionGenerado) {
                     // Verificar si $_FILES está vacío
                     if (empty($_FILES['imagenes'])) {
-                        throw new Exception("Error: No se han subido archivos.");
+                        throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
                     }
 
                     $imagenesPublicacion = [];
@@ -399,7 +405,7 @@ class PublicacionController extends Controller
                         }
 
                         if ($file['error'] != UPLOAD_ERR_OK) {
-                            throw new Exception("Error al subir una imagen: " . $file['error']);
+                            throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $file['error']);
                         }
 
                         // Subiendo el archivo usando el metodo uploadFile de Uploader
@@ -415,7 +421,7 @@ class PublicacionController extends Controller
                                 'id_usuario' => $idUser
                             ];
                         } else {
-                            throw new Exception("Error al subir una imagen: " . $resultUpload['description']);
+                            throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $resultUpload['description']);
                         }
                     }
 
@@ -427,7 +433,7 @@ class PublicacionController extends Controller
                 } else {
 
                     $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
-                    throw new Exception("Publicacion no generada: $idPublicacionGenerado");
+                    throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
                 }
             } else {
                 $datos = ['titulo' => 'PAWPERTIES | NUEVA PUBLICACION'];
@@ -441,7 +447,7 @@ class PublicacionController extends Controller
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
 
-            view('errors/error-500.view', [
+            view('errors/internal_error.view', [
                 'error_message' => "Error en el proceso: " . $e->getMessage()
             ]);
         }
@@ -481,7 +487,7 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
 
-            view('errors/error-500.view', [
+            view('errors/internal_error.view', [
                 'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
             ]);
         }
@@ -544,7 +550,7 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
 
-            view('errors/error-500.view', [
+            view('errors/internal_error.view', [
                 'error_message' => "Error General al cancelar la reserva: " . $e->getMessage()
             ]);
         }
@@ -579,7 +585,9 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             $this->logger->error("Error General al actualizar el estado de la publicacion: " . $e->getMessage());
 
-            redirect('not_found');
+            view('errors/internal_error.view', [
+                'error_message' => "Error General al actualizar el estado de la publicacion: " . $e->getMessage()
+            ]);
         }
     }
 

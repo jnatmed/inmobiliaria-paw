@@ -57,10 +57,10 @@ class ReservasController extends Controller
         } catch (Exception $e) {
             $this->logger->error('Error al obtener las reservas: ' . $e->getMessage());
             // Puedes redirigir a una página de error o mostrar un mensaje de error
-            view('not_found', [
-                'error_message' => 'Error al obtener las reservas: ' . $e->getMessage()
+
+            view('errors/internal_error.view', [
+                'error_message' => "Error al obtener las reservas: " . $e->getMessage()
             ]);
-            
         }
     }
 
