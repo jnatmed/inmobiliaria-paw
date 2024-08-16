@@ -319,7 +319,7 @@ class PublicacionController extends Controller
                 $this->logger->info("FILES: ", [$_FILES]);
 
                 $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
-                $localidad = htmlspecialchars($this->request->get('localidad') ?? '');
+                $codigo_postal = htmlspecialchars($this->request->get('codigo_postal') ?? '');
 
                 // Verificar y decodificar el JSON de la dirección
                 $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
@@ -354,13 +354,8 @@ class PublicacionController extends Controller
 
                 // Preparar el array de datos para la inserción
                 $publicacion = [
-                    // 'nombre' => $nombre,
-                    // 'apellido' => $apellido,
-                    // 'dni' => $dni,
-                    // 'telefono' => $telefono,
-                    // 'email' => $email,
                     'provincia' => $provincia,
-                    'localidad' => $localidad,
+                    'codigo_postal' => $codigo_postal,
                     'direccion' => $direccion,
                     'latitud' => $latitud,
                     'longitud' => $longitud,
@@ -446,7 +441,7 @@ class PublicacionController extends Controller
             // Manejar la excepción
             $this->logger->error("Error en el proceso: " . $e->getMessage());
 
-            view('not_found', [
+            view('errors/error-500.view', [
                 'error_message' => "Error en el proceso: " . $e->getMessage()
             ]);
         }
@@ -486,7 +481,9 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
 
-            redirect('not_found');
+            view('errors/error-500.view', [
+                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
+            ]);
         }
     }
 
@@ -547,7 +544,9 @@ class PublicacionController extends Controller
         } catch (Exception $e) {
             $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
 
-            redirect('not_found');
+            view('errors/error-500.view', [
+                'error_message' => "Error General al cancelar la reserva: " . $e->getMessage()
+            ]);
         }
     }
 

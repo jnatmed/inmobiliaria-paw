@@ -16,18 +16,7 @@
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
-                <p class="paso-titulo">Completá los datos del dueño del alojamiento y de la persona que va a administrar la propiedad.</p>
-
-                <h3 class="titulo-datos-propietario">Datos de Propietario</h3>
-                <p>No son visibles para el usuario. Deben ser los mismos que van a usarse para verificar la identidad</p>
-                <input type="text" name="nombre" id="nombre" class="input-form-publicacion" placeholder="Nombre" required>
-                <input type="text" name="apellido" id="apellido" class="input-form-publicacion" placeholder="Apellido" required>
-                <input type="number" name="dni" id="dni" class="input-form-publicacion" placeholder="DNI" required>
-
-                <h3 class="titulo-datos-propietario">Datos del Administrador</h3>
-                <p>Son los datos que va a utilizar el huésped para comunicarse y reservar</p>
-                <input type="tel" name="telefono" id="telefono" class="input-form-publicacion" placeholder="Número de Teléfono" required>
-                <input type="email" name="email" id="email" class="input-form-publicacion" placeholder="Correo Electrónico" required>
+                <p class="paso-titulo">Completá los datos del alojamiento</p>
 
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
                 <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
@@ -44,7 +33,7 @@
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
                 <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
                 <input type="text" name="provincia" id="provincia" class="input-form-publicacion" placeholder="Provincia">
-                <input type="text" name="localidad" id="localidad" class="input-form-publicacion" placeholder="Localidad">
+                <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion" placeholder="Codigo Postal">
                 <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección">
                 <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
                 {% include 'parts/mapa.view.html' %}

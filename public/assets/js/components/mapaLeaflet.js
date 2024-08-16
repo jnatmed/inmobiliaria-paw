@@ -42,13 +42,13 @@ class MapaLeaflet {
 
                         document.querySelector('#direccion').value = coordenadasJSON;
 
-                        // Actualizar localidad y provincia después de arrastrar el marcador
-                        await this.actualizarLocalidadProvincia(position.lat, position.lng);
+                        // Actualizar Codigo Postal y provincia después de arrastrar el marcador
+                        await this.actualizarCodigoPostalProvincia(position.lat, position.lng);
                     }.bind(this)); // Bind 'this' to maintain context
                 }
 
                 // Actualizar localidad y provincia después de buscar
-                await this.actualizarLocalidadProvincia(lat, lon);
+                await this.actualizarCodigoPostalProvincia(lat, lon);
             } else {
                 console.log('No se encontraron resultados para la dirección especificada.');
             }
@@ -73,18 +73,18 @@ class MapaLeaflet {
         }
     }
 
-    async actualizarLocalidadProvincia(lat, lon) {
+    async actualizarCodigoPostalProvincia(lat, lon) {
         const data = await this.obtenerDireccion(lat, lon);
         const displayName = data.display_name || '';
         const addressParts = displayName.split(',').map(part => part.trim());
 
         console.log(data.display_name)
 
-        const localidad = addressParts.length > 1 ? addressParts[addressParts.length - 3] : '';
-        const provincia = addressParts.length > 2 ? addressParts[addressParts.length - 2] : '';
+        const codigo_postal = addressParts.length > 1 ? addressParts[addressParts.length - 2] : '';
+        const provincia = addressParts.length > 2 ? addressParts[addressParts.length - 3] : '';
 
+        document.querySelector('#codigo_postal').value = codigo_postal || '';
         document.querySelector('#provincia').value = provincia || '';
-        document.querySelector('#localidad').value = localidad || '';
     }
 
     async buscarPorLatitudyLongitud(lat, lon) {

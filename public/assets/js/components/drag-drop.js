@@ -49,12 +49,12 @@ class DragDrop {
         for (let file of files) {
             const actualType = await this.getFileType(file);
             if (!this.allowedImageTypes.includes(actualType)) {
-                this.mostrarError(`Tipo no permitido: ${file.name} (Tipo Real: ${actualType})`, file);
+                this.mostrarError(`Tipo no permitido: ${file.name}  Tipo Archivo: ${actualType}`, file);
                 return;
             }
 
             if (file.size > this.maxFileSize) {
-                this.mostrarError(`Tamaño máximo excedido: ${file.name}`, file, true);
+                this.mostrarError(`Tamaño máximo excedido: Nombre: ${file.name}`, file, true);
                 continue;
             }
 
@@ -66,7 +66,7 @@ class DragDrop {
         }
     }
 
-    mostrarError(message, file = null, exceeded = false) {
+        mostrarError(message, file = null, exceeded = false) {
         let errorContainer = document.createElement("div");
         errorContainer.setAttribute('class', `error-message ${exceeded ? 'exceeded' : ''}`);
         errorContainer.innerHTML = message;
@@ -82,7 +82,7 @@ class DragDrop {
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
             let sizeInfo = document.createElement("p");
-            sizeInfo.innerHTML = `Tamaño: ${this.formatFileSize(file.size)}, Máximo permitido: 1MB`;
+            sizeInfo.innerHTML = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`;
             errorContainer.appendChild(sizeInfo);
         }
 
@@ -105,7 +105,7 @@ class DragDrop {
         let nombreImagen = document.createElement("p");
         nombreImagen.setAttribute('class', 'info');
         const tipoArchivo = actualType || file.type;
-        nombreImagen.innerHTML = `${file.name} (${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
+        nombreImagen.innerHTML = `${file.name} (Tipo Archivo: ${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
         contenedorImagen.appendChild(nombreImagen);
 
         // Crear y añadir el botón de eliminar
