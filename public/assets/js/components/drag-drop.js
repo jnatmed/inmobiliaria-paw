@@ -96,14 +96,18 @@ class DragDrop {
             contenedorImagen.appendChild(errorMensaje);
         }
 
+        // Crear y añadir el botón de eliminar
         let botonEliminar = document.createElement("button");
         botonEliminar.setAttribute('class', 'remove-button');
         botonEliminar.innerText = "Eliminar imagen";
-        botonEliminar.addEventListener('click', () => {
+        console.log('Creando botón eliminar para:', file.name); // Añade un log para depurar
+        botonEliminar.onclick = () => {
+            console.log('Botón eliminar clickeado directamente en el atributo onclick');
             this.removeImage(contenedorImagen);
-        });
+        };
         contenedorImagen.appendChild(botonEliminar);
-
+        console.log(contenedorImagen)
+        // Añadir el contenedor de la imagen a la vista previa
         this.previewContainer.appendChild(contenedorImagen);
     }
 
@@ -121,6 +125,8 @@ class DragDrop {
     }    
 
     removeImage(element) {
+        console.log('Eliminando imagen'); // Añade un log para depurar
         element.remove();
     }
 }
+
