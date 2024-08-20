@@ -368,7 +368,7 @@ class PublicacionController extends Controller
                     'longitud' => $longitud,
                     'precio' => $precio,
                     'nombre_alojamiento' => $nombreAlojamiento,
-                    'tipo_alojamiento' => $tipoAlojamiento,
+                    'tipo_alojamiento_id' => $tipoAlojamiento,
                     'capacidad_maxima' => $capacidadMaxima,
                     'cant_banios' => $cantBanios,
                     'cantidad_dormitorios' => $cantidadDormitorios,
@@ -438,10 +438,14 @@ class PublicacionController extends Controller
                     throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
                 }
             } else {
-                $datos = ['titulo' => 'PAWPERTIES | NUEVA PUBLICACION'];
+                $datos = [ 
+                     'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
+                ];
+
                 view('publicacion.new.view', array_merge(
                     $this->menuAndSession,
-                    $datos
+                    $datos,
+                    $this->model->traerTipos()
                 ));
             }
         } catch (Exception $e) {

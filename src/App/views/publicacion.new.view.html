@@ -22,11 +22,13 @@
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
                 <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
 
-                <input type="text" name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" placeholder="Tipo de Alojamiento" required>
-                <div class="autocomplete-results-container">
-                    <ul class="autocomplete-list"></ul>
-                </div>
-    
+                <select name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" required>
+                    <option value="" disabled selected>Seleccione un tipo de alojamiento</option>
+                    {% for tipo in tipos_alojamiento %}
+                        <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo }}</option>
+                    {% endfor %}
+                </select>
+                    
                 <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Máxima" required>
                 <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños" required>
                 <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Cantidad de Dormitorios" required>

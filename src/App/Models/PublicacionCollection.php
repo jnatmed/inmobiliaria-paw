@@ -288,6 +288,9 @@ class PublicacionCollection extends Model
         return $this->queryBuilder->countRows('publicaciones');
     }
 
+
+
+
     public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {
@@ -452,5 +455,21 @@ class PublicacionCollection extends Model
             throw new Exception("Error al actualizar la publicacion: " . $e->getMessage());
         }        
     }
+ 
     
+    public function traerTipos()
+    {
+        try{
+            return $result = [
+                'exito' => true,
+                'tipos_alojamiento' => $this->queryBuilder->traerTipos()
+            ];
+        }catch(Exception $e){
+            return $result = [
+                'exito' => false,
+                'message' => "Error al traer Tipos: " . $e->getMessage()
+            ];
+        }
+    }
+
 }

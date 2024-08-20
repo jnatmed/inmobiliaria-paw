@@ -498,4 +498,17 @@ class QueryBuilder
     }
 
     public function delete() {}
+
+    public function traerTipos()
+    {
+        try {
+            $sql = "SELECT * FROM tipos_alojamiento"; // Asegúrate de que el nombre de la tabla sea correcto.
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error("Error en traerTipos: " . $e->getMessage());
+            return false;
+        }
+    }    
 }
