@@ -4,9 +4,9 @@
 <head>
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicacion-new.js"></script>
-    <script src="/assets/js/autocompleter.js"></script>
     <link rel="stylesheet" href="/assets/css/autocompleter.css">
     <link rel="stylesheet" href="/assets/css/carteles.ayuda.css">
+    <link rel="stylesheet" href="/assets/css/publicacion-new.carteles.error.css">
     
 </head>
 
@@ -18,7 +18,7 @@
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p class="paso-titulo">Completá los datos del alojamiento</p>
-
+                <p id="cartel-errores-paso-1" class="carteles-error"></p>
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
                 <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
 
@@ -71,24 +71,24 @@
             <fieldset class="paso-2 hidden">
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
                 <p class="paso-titulo">Agrega fotos de tu alojamiento</p>
-
-                <div id="drop-area">
+                <p id="cartel-errores-paso-2" class="carteles-error"></p>
+                <article id="drop-area">
                     <p class="instructions">Arrastra y suelta una o varias imagenes o haz clic para seleccionar</p>
                     <p class="instructions">Solo se permiten imagenes .jpg, .jpeg, .png</p>
                     <input type="file" name="imagenes[]" multiple id="drop-input">
                     <p class="error-drop"></p>
-                    <div class="preview-container"></div>
-                </div>
+                    <span class="preview-container"></span>
+                </article>
 
                 <button type="button" class="prev-btn">Anterior</button>
                 <button type="button" class="next-btn">Siguiente</button>
             </fieldset>
 
             <fieldset class="paso-3 hidden">
-
                 <h2 class="titulo-form-publicacion">PASO 3 de 3</h2>
                 <p class="paso-titulo">Especifica tus condiciones para el alquiler. Recuerda que mientras más flexible seas, más oportunidades tendrás</p>
-
+                <p id="cartel-errores-paso-3" class="carteles-error"></p>
+                
                 <h3 class="titulo-datos-propietario">Descripción</h3>
                 <textarea name="descripcion-alojamiento" class="descripcion-alojamiento" required placeholder="Excelente ubicacion, espaciosa, ..."></textarea>
 
