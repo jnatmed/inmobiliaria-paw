@@ -35,7 +35,7 @@ class Uploader
         if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
             return [
                 'exito' => self::ERROR_TIPO_NO_PERMITIDO,
-                'description' => "El tipo de archivo no está permitido."
+                'description' => "El tipo de archivo $fileName no está permitido."
             ];
         }
 
@@ -45,7 +45,7 @@ class Uploader
         if ($fileSize > $maxFileSize) {
             return [
                 'exito' => self::ERROR_TAMANIO_NO_PERMITIDO,
-                'description' => "El archivo no debe exceder 1 MB."
+                'description' => "El archivo $fileName no debe exceder 1 MB."
             ];
         }
 
@@ -64,7 +64,7 @@ class Uploader
         } else {
             return [
                 'exito' => self::ERROR_SUBIDA,
-                'description' => "Error al subir el archivo."
+                'description' => "Error al subir el archivo $fileName."
             ];
         }
     }

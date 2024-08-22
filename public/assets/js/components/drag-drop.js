@@ -82,8 +82,10 @@ class DragDrop {
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
             let sizeInfo = document.createElement("p");
-            sizeInfo.innerHTML = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`;
+            msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`
+            sizeInfo.innerHTML = msjError
             errorContainer.appendChild(sizeInfo);
+            console.log(msjError)
         }
 
         errorContainer.appendChild(closeButton);

@@ -11,11 +11,14 @@ class publicacionNew {
             const promiseFormularioMultiStep = PAW.cargarScriptPromise('FormularioMultistep', '/assets/js/components/formularioMultiStep.js');
             const promiseDragDrop = PAW.cargarScriptPromise("DragDrop", "/assets/js/components/drag-drop.js");
             const promiseMapaLeafLet = PAW.cargarScriptPromise('MapaLeaflet', '/assets/js/components/mapaLeaflet.js');
+            const promiseFormatterNumberInputs = PAW.cargarScriptPromise('FormatterNumberInputs', '/assets/js/components/FormatterNumberInputs.js');
 
             // Usar Promise.all para esperar a que todos los scripts se carguen
-            Promise.all([promiseFormularioMultiStep, promiseDragDrop, promiseMapaLeafLet]).then(function() {
+            Promise.all([promiseFormatterNumberInputs, promiseFormularioMultiStep, promiseDragDrop, promiseMapaLeafLet]).then(function() {
                 // Una vez que todos los scripts se han cargado, ejecutar el código que depende de esos scripts
                 new FormularioMultistep();
+                
+                new FormatterNumberInputs('#precio'); // Selecciona todos los inputs tipo número
 
                 const mapaLeaf = new MapaLeaflet();
 

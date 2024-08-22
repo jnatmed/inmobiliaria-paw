@@ -302,6 +302,18 @@ class PublicacionController extends Controller
     public function new()
     {
         try {
+
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver las reservas."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+                redirect('iniciar-sesion');
+            }
+                        
             if ($this->request->method() == 'POST') {
 
                 if (!$this->usuario->isUserLoggedIn()) {

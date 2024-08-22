@@ -139,7 +139,7 @@ class ReservasController extends Controller
 
         // aca deberia enviar un correo al usuario que esta logueado       
         $resultadoSend = $this->mailer->send($emailAddress,
-                            "Reserva Exitosa para el usuario: $userName ",
+                            "Solicitud de Reserva Enviada para el usuario: $userName ",
                             $body,
                             );
                       
@@ -152,7 +152,7 @@ class ReservasController extends Controller
         $this->mailer->clearAddresses();
 
         $resultadoSendPropietario = $this->mailer->send($correo_duenio,
-                            "Solicitud de Reserva para el usuario: $userName ",
+                            "Solicitud de Reserva del usuario: $userName ",
                             $body,
                             );
         

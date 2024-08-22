@@ -36,6 +36,7 @@ class PageController extends Controller
     {
         $datos = ['titulo' => "PAWPERTIES | HOME"];
         
+
         view('home.view', array_merge($this->menuAndSession, $datos));
     }
 

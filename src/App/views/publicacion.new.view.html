@@ -25,14 +25,14 @@
                 <select name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" required>
                     <option value="" disabled selected>Seleccione un tipo de alojamiento</option>
                     {% for tipo in tipos_alojamiento %}
-                        <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo }}</option>
+                        <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
                     {% endfor %}
                 </select>
                     
-                <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Máxima" required>
-                <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños" required>
-                <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Cantidad de Dormitorios" required>
-
+                <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Máxima" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Cantidad de Dormitorios" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
                 <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
                 <div class="input-container">
@@ -88,16 +88,19 @@
                 <h2 class="titulo-form-publicacion">PASO 3 de 3</h2>
                 <p class="paso-titulo">Especifica tus condiciones para el alquiler. Recuerda que mientras más flexible seas, más oportunidades tendrás</p>
                 <p id="cartel-errores-paso-3" class="carteles-error"></p>
-                
+            
                 <h3 class="titulo-datos-propietario">Descripción</h3>
-                <textarea name="descripcion-alojamiento" class="descripcion-alojamiento" required placeholder="Excelente ubicacion, espaciosa, ..."></textarea>
-
+                <textarea name="descripcion-alojamiento" class="descripcion-alojamiento"  placeholder="Excelente ubicación, espaciosa, ..."
+                oninvalid="this.setCustomValidity('')" oninput="this.setCustomValidity('')"></textarea>
+            
                 <h3 class="titulo-datos-propietario">Normas</h3>
-                <textarea name="normas-alojamiento" class="descripcion-alojamiento" required placeholder="No se aceptan mascotas, ..."></textarea>
-
+                <textarea name="normas-alojamiento" class="descripcion-alojamiento"  placeholder="No se aceptan mascotas, ..."
+                    oninvalid="this.setCustomValidity('')" oninput="this.setCustomValidity('')"></textarea>
+            
+            
                 <h3 class="titulo-datos-propietario">Precio/Noche ($)</h3>
-                <input type="number" name="precio" id="precio" class="descripcion-alojamiento" required min="0" value="0">
-
+                <input type="text" name="precio" id="precio" class="descripcion-alojamiento" required min="0" value="0" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+            
                 <button type="button" class="prev-btn">Anterior</button>
                 <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>
