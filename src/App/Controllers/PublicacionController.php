@@ -206,6 +206,8 @@ class PublicacionController extends Controller
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
+                $this->usuario->setRedirectTo($this->request->uri(true));
+
                 redirect('iniciar-sesion');
             }
 
@@ -311,6 +313,8 @@ class PublicacionController extends Controller
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
+                $this->usuario->setRedirectTo($this->request->uri(true));
+
                 redirect('iniciar-sesion');
             }
                         
@@ -327,8 +331,6 @@ class PublicacionController extends Controller
                 $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
                 $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
                 $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
-                $latitud = sanitize($this->request->get('lat'));
-                $longitud = sanitize($this->request->get('lng'));
                 $precio = sanitize($this->request->get('precio'), $errors, 'precio');
                 $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'), $errors, 'nombre-alojamiento');
                 $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'), $errors, 'tipo-alojamiento');
@@ -344,14 +346,14 @@ class PublicacionController extends Controller
                 
 
                 // Verifica si hay errores
-                if (!empty($errors)) {
+                if (empty($errors)) {
                     // Preparar el array de datos para setear el objecto
+                    $this->logger->debug("No hay errores..");
+
                     $publicacion = [
                         'provincia' => $provincia,
                         'codigo_postal' => $codigo_postal,
                         'direccion' => $direccion,
-                        'latitud' => $latitud,
-                        'longitud' => $longitud,
                         'precio' => $precio,
                         'nombre_alojamiento' => $nombreAlojamiento,
                         'tipo_alojamiento_id' => $tipoAlojamiento,
@@ -370,8 +372,10 @@ class PublicacionController extends Controller
                     // setear el objeto
                     $publicacionObj = new Publicacion($publicacion);
 
+                    $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
                     // Manejar la inserción de datos
                     list($idPublicacionGenerado, $resultado) = $this->model->create($publicacionObj);
+
 
                     $this->logger->info("Info Publicacion: " . [$idPublicacionGenerado, $resultado]);
 
@@ -480,6 +484,8 @@ class PublicacionController extends Controller
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
+                $this->usuario->setRedirectTo($this->request->uri(true));
+
                 redirect('iniciar-sesion');
             }
 
@@ -516,6 +522,8 @@ class PublicacionController extends Controller
                 "message" => "Debe iniciar sesión para ver el pedido."
             ];
             $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+            $this->usuario->setRedirectTo($this->request->uri(true));
 
             redirect('iniciar-sesion');
         }
@@ -581,6 +589,8 @@ class PublicacionController extends Controller
                     "message" => "Debe iniciar sesión para ver el pedido."
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+                $this->usuario->setRedirectTo($this->request->uri(true));
 
                 redirect('iniciar-sesion');
             }

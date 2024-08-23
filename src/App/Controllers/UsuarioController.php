@@ -150,7 +150,15 @@ class UsuarioController extends Controller
 
                 $this->logger->info("sesion: ", [$_SESSION]);
 
-                redirect('');
+                // Redirigir al usuario a la URL guardada o a la página principal si no hay ninguna
+                if (!is_null($this->getRedirectTo())) {
+                    $redirectUrl = $this->getRedirectTo();
+                    $this->setRedirectTo(null, true);
+                    $this->logger->debug($redirectUrl);
+                    redirect("$redirectUrl");
+                } else {
+                    redirect('');
+                }
             } else {
                 $this->tipoUsuario = 'anonimo';
                 $resultado = [
@@ -166,6 +174,19 @@ class UsuarioController extends Controller
         }
     }
 
+    public function setRedirectTo($redirectUrl = null, $unset = false)
+    {
+        if(!$unset){
+            $_SESSION['redirect_to'] = $redirectUrl;
+        }else{
+            unset($_SESSION['redirect_to']);
+        }
+    }
+
+    public function getRedirectTo()
+    {
+        return $_SESSION['redirect_to'] ?? null;
+    }
 
     public function register()
     {

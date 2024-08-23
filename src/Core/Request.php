@@ -6,9 +6,16 @@ class Request
 {
     private $segments = [];
 
-    public function uri() 
+    public function uri($sacarBarras = false) 
     {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        if (!$sacarBarras) {
+            return $uri;
+        } else {
+            // Eliminar la barra inicial
+            return ltrim($uri, '/');
+        }
     }
 
     public function method()

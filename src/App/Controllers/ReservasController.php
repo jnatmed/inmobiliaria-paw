@@ -93,6 +93,8 @@ class ReservasController extends Controller
             ];
             $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
+            $this->usuario->setRedirectTo($this->request->uri(true));
+            
             redirect('iniciar-sesion');
         }
 

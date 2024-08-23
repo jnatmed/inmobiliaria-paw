@@ -43,19 +43,21 @@ class Publicacion
             if (is_null($data['direccion']) || $data['direccion'] === '') {
                 throw new JsonVacioException("Error: JSON proporcionado es nulo o vacío.");
             } else {
-                // Convertir entidades HTML a caracteres normales
-                $direccion = html_entity_decode($data['direccion']);
+                // Decodificar el JSON en un array asociativo
+                $direccionArray = json_decode($data['direccion'], true);
 
-                // Decodificar la cadena JSON
-                $coordenadas = json_decode($direccion, true);
-                if ($coordenadas === null) {
-                    throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $direccion);
+                if ($direccionArray === null) {
+                    throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $data['direccion']);
                 }
-            }            
-            $this->setDireccion($data['direccion'] ?? null);
-            
-            $this->setLatitud($data['latitud'] ?? null);
-            $this->setLongitud($data['longitud'] ?? null);
+                // Verificar si la decodificación fue exitosa y si las claves 'lat' y 'lng' existen
+                if (json_last_error() === JSON_ERROR_NONE && isset($direccionArray['lat']) && isset($direccionArray['lng'])) {
+                    $this->setLatitud($direccionArray['lat'] ?? null);
+                    $this->setLongitud($direccionArray['lng'] ?? null);
+                } else {
+                    // Manejo de errores: JSON no válido o falta de claves
+                    throw new DireccionFailException("Error al decodificar JSON o faltan claves 'lat' o 'lng'.");                    
+                }                
+            }                        
             $this->setPrecio($data['precio'] ?? null);
             $this->setNombreAlojamiento($data['nombre_alojamiento'] ?? null);
             $this->setTipoAlojamientoId($data['tipo_alojamiento_id'] ?? null);
