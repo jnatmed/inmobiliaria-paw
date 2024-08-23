@@ -14,7 +14,17 @@
     {% include 'parts/header.view.html' %}
 
     <main class="main-home">
+
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
+            {% if errors is not empty %}
+                <article class="carteles-error visible">
+                    <ul>
+                        {% for error in errors %}
+                            <li>Error en el campo o imagen: {{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% endif %} 
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p class="paso-titulo">Completá los datos del alojamiento</p>

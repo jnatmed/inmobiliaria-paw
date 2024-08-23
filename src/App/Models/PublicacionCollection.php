@@ -11,6 +11,8 @@ use Paw\Core\Exceptions\InvalidValueFormatException;
 use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Verificador;
 use PDOException;
+use Paw\App\Models\Publicacion;
+
 
 class PublicacionCollection extends Model 
 {
@@ -93,8 +95,9 @@ class PublicacionCollection extends Model
     }
 
 
-    public function create($data)
+    public function create(Publicacion $Publicacion)
     {
+        $data = $Publicacion->getAll();
         try {
             return $this->queryBuilder->insert($this->table, $data);
         } catch (PDOException $e) {

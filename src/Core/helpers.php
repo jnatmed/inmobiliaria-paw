@@ -72,10 +72,28 @@ function sacarDelMenu($menu, $array_list)
 
 /**
  * Sanitiza un valor para prevenir XSS, asegurándose de que no sea nulo.
+ * Si el valor es nulo o vacío, se agrega un error al array de errores.
  *
  * @param mixed $value El valor a sanitizar.
+ * @param array &$errors El array que almacenará los nombres de los inputs que fallan.
+ * @param string $inputName El nombre del input que se está sanitizando.
  * @return string El valor sanitizado o una cadena vacía si el valor es nulo.
  */
-function sanitize($value) {
-    return !is_null($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '';
+function sanitize($value, &$errors = null, $inputName = null) {
+    // Si no se proporciona el array de errores y el nombre del input, solo sanitiza el valor
+    if ($errors === null && $inputName === null) {
+        if(is_null($value) || $value === ''){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    // Si el valor es nulo o vacío, agrega el nombre del input al array de errores
+    if (is_null($value) || $value === '') {
+        $errors[] = $inputName;
+        return '';
+    }
+
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }

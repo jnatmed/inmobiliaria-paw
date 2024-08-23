@@ -8,9 +8,9 @@ use Paw\App\Utils\Utils;
 use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
+use Paw\App\Models\Publicacion;
 use Paw\Core\Exceptions\PostVacioException; 
-use Paw\Core\Exceptions\JsonVacioException; 
-use Paw\Core\Exceptions\DireccionFailException; 
+
 use Paw\Core\Exceptions\FallaEnCargaDeImagenesException; 
 use Paw\Core\Exceptions\PublicacionFailException; 
 
@@ -316,138 +316,134 @@ class PublicacionController extends Controller
                         
             if ($this->request->method() == 'POST') {
 
-                if (!$this->usuario->isUserLoggedIn()) {
-                    $resultado = [
-                        "success" => false,
-                        "message" => "Debe iniciar sesión para ver el pedido."
-                    ];
-                    $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                    redirect('iniciar-sesion');
-                }
-
-                // Verificar si $_POST está vacío
-                if (empty($_POST)) {
-                    throw new PostVacioException("Error: La solicitud POST está vacía.");
-                }
+                $errors = [];
 
                 $idUser = $this->usuario->getUserId();
                 $this->logger->info("idUser: ", [$idUser]);
 
                 $this->logger->info("POST: ", [$this->request->all()]);
                 $this->logger->info("FILES: ", [$_FILES]);
+                
+                $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
+                $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
+                $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
+                $latitud = sanitize($this->request->get('lat'));
+                $longitud = sanitize($this->request->get('lng'));
+                $precio = sanitize($this->request->get('precio'), $errors, 'precio');
+                $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'), $errors, 'nombre-alojamiento');
+                $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'), $errors, 'tipo-alojamiento');
+                $capacidadMaxima = sanitize($this->request->get('capacidad-maxima'), $errors, 'capacidad-maxima');
+                $cantBanios = sanitize($this->request->get('cant-banios'), $errors, 'cant-banios');
+                $cantidadDormitorios = sanitize($this->request->get('cantidad-dormitorios'), $errors, 'cantidad-dormitorios');
+                $cochera = sanitize($this->request->get('cochera')) ? 1 : 0; //
+                $pileta = sanitize($this->request->get('pileta')) ? 1 : 0; //
+                $aireAcondicionado = sanitize($this->request->get('aire-acondicionado')) ? 1 : 0; //
+                $wifi = sanitize($this->request->get('wifi')) ? 1 : 0; //
+                $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'), $errors, 'normas-alojamiento');
+                $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'), $errors, 'descripcion-alojamiento');
+                
 
-                $provincia = htmlspecialchars($this->request->get('provincia') ?? '');
-                $codigo_postal = htmlspecialchars($this->request->get('codigo_postal') ?? '');
+                // Verifica si hay errores
+                if (!empty($errors)) {
+                    // Preparar el array de datos para setear el objecto
+                    $publicacion = [
+                        'provincia' => $provincia,
+                        'codigo_postal' => $codigo_postal,
+                        'direccion' => $direccion,
+                        'latitud' => $latitud,
+                        'longitud' => $longitud,
+                        'precio' => $precio,
+                        'nombre_alojamiento' => $nombreAlojamiento,
+                        'tipo_alojamiento_id' => $tipoAlojamiento,
+                        'capacidad_maxima' => $capacidadMaxima,
+                        'cant_banios' => $cantBanios,
+                        'cantidad_dormitorios' => $cantidadDormitorios,
+                        'cochera' => $cochera,
+                        'pileta' => $pileta,
+                        'aire_acondicionado' => $aireAcondicionado,
+                        'wifi' => $wifi,
+                        'normas_alojamiento' => $normasAlojamiento,
+                        'descripcion_alojamiento' => $descripcionAlojamiento,
+                        'id_usuario' => $idUser,
+                        'estado_id' => 1
+                    ];                    
+                    // setear el objeto
+                    $publicacionObj = new Publicacion($publicacion);
 
-                // Verificar y decodificar el JSON de la dirección
-                $direccion = htmlspecialchars($this->request->get('direccion') ?? '');
-                if (is_null($direccion) || $direccion === '') {
-                    throw new JsonVacioException("Error: JSON proporcionado es nulo o vacío.");
-                } else {
-                    // Convertir entidades HTML a caracteres normales
-                    $direccion = html_entity_decode($direccion);
+                    // Manejar la inserción de datos
+                    list($idPublicacionGenerado, $resultado) = $this->model->create($publicacionObj);
 
-                    // Decodificar la cadena JSON
-                    $coordenadas = json_decode($direccion, true);
-                    if ($coordenadas === null) {
-                        throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $direccion);
-                    }
-                }
+                    $this->logger->info("Info Publicacion: " . [$idPublicacionGenerado, $resultado]);
 
-                $latitud = $coordenadas['lat'] ?? null;
-                $longitud = $coordenadas['lng'] ?? null;
-
-                $precio = sanitize($this->request->get('precio'));
-                $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'));
-                $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'));
-                $capacidadMaxima = sanitize($this->request->get('capacidad-maxima'));
-                $cantBanios = sanitize($this->request->get('cant-banios'));
-                $cantidadDormitorios = sanitize($this->request->get('cantidad-dormitorios'));
-                $cochera = sanitize($this->request->get('cochera')) ? 1 : 0;
-                $pileta = sanitize($this->request->get('pileta')) ? 1 : 0;
-                $aireAcondicionado = sanitize($this->request->get('aire-acondicionado')) ? 1 : 0;
-                $wifi = sanitize($this->request->get('wifi')) ? 1 : 0;
-                $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'));
-                $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'));
-
-                // Preparar el array de datos para la inserción
-                $publicacion = [
-                    'provincia' => $provincia,
-                    'codigo_postal' => $codigo_postal,
-                    'direccion' => $direccion,
-                    'latitud' => $latitud,
-                    'longitud' => $longitud,
-                    'precio' => $precio,
-                    'nombre_alojamiento' => $nombreAlojamiento,
-                    'tipo_alojamiento_id' => $tipoAlojamiento,
-                    'capacidad_maxima' => $capacidadMaxima,
-                    'cant_banios' => $cantBanios,
-                    'cantidad_dormitorios' => $cantidadDormitorios,
-                    'cochera' => $cochera,
-                    'pileta' => $pileta,
-                    'aire_acondicionado' => $aireAcondicionado,
-                    'wifi' => $wifi,
-                    'normas_alojamiento' => $normasAlojamiento,
-                    'descripcion_alojamiento' => $descripcionAlojamiento,
-                    'id_usuario' => $idUser,
-                    'estado_id' => 1
-                ];
-
-                // Manejar la inserción de datos
-                list($idPublicacionGenerado, $resultado) = $this->model->create($publicacion);
-
-                // Si la inserción fue exitosa, procede con el manejo de las imágenes
-                if ($idPublicacionGenerado) {
-                    // Verificar si $_FILES está vacío
-                    if (empty($_FILES['imagenes'])) {
-                        throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
-                    }
-
-                    $imagenesPublicacion = [];
-                    $files = $_FILES['imagenes'];
-
-                    for ($i = 0; $i < count($files['name']); $i++) {
-                        if ($files['name'][$i] != "") {
-                            $file = [
-                                'name' => $files['name'][$i],
-                                'type' => $files['type'][$i],
-                                'tmp_name' => $files['tmp_name'][$i],
-                                'error' => $files['error'][$i],
-                                'size' => $files['size'][$i],
-                            ];
+                    if ($idPublicacionGenerado) {
+                        // Verificar si $_FILES está vacío
+                        if (empty($_FILES['imagenes'])) {
+                            // throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
+                            $errors[] = '$files vacio';
                         }
-
-                        if ($file['error'] != UPLOAD_ERR_OK) {
-                            throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $file['error']);
+    
+                        $imagenesPublicacion = [];
+                        $files = $_FILES['imagenes'];
+    
+                        for ($i = 0; $i < count($files['name']); $i++) {
+                            if ($files['name'][$i] != "") {
+                                $file = [
+                                    'name' => $files['name'][$i],
+                                    'type' => $files['type'][$i],
+                                    'tmp_name' => $files['tmp_name'][$i],
+                                    'error' => $files['error'][$i],
+                                    'size' => $files['size'][$i],
+                                ];
+                            }
+    
+                            if ($file['error'] != UPLOAD_ERR_OK) {
+                                // throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $file['error']);
+                                $errors[] =  $file['name']. " - error: " . $file['error'];
+                            }
+    
+                            // Subiendo el archivo usando el metodo uploadFile de Uploader
+                            $resultUpload = $this->uploader->uploadFile($file);
+    
+                            $this->logger->info("resultado insercion capa CONTROLLER", [$resultUpload]);
+    
+                            if ($resultUpload['exito'] == Uploader::UPLOAD_COMPLETED) {
+                                $imagenesPublicacion[] = [  
+                                    'id_publicacion' => $idPublicacionGenerado,
+                                    'path_imagen' => $resultUpload['nombre_imagen'],
+                                    'nombre_imagen' => $resultUpload['nombre_imagen'],
+                                    'id_usuario' => $idUser
+                                ];
+                            } else {
+                                // throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $resultUpload['description']);
+                                $errors[] = "Error al subir la imagen: ".$file['name'] ."," . $resultUpload['description'];
+                            }
                         }
+    
+                        $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
+                        // Inserta todas las imágenes en la base de datos en una única operación
+                        $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
+    
+                        redirect('/publicacion/ver?id_pub=' . $idPublicacionGenerado);  
 
-                        // Subiendo el archivo usando el metodo uploadFile de Uploader
-                        $resultUpload = $this->uploader->uploadFile($file);
-
-                        $this->logger->info("resultado insercion capa CONTROLLER", [$resultUpload]);
-
-                        if ($resultUpload['exito'] == Uploader::UPLOAD_COMPLETED) {
-                            $imagenesPublicacion[] = [
-                                'id_publicacion' => $idPublicacionGenerado,
-                                'path_imagen' => $resultUpload['nombre_imagen'],
-                                'nombre_imagen' => $resultUpload['nombre_imagen'],
-                                'id_usuario' => $idUser
-                            ];
-                        } else {
-                            throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $resultUpload['description']);
-                        }
-                    }
-
-                    $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
-                    // Inserta todas las imágenes en la base de datos en una única operación
-                    $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
-
-                    redirect('mis_publicaciones');
-                } else {
-
-                    $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
-                    throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
+                    } else {
+    
+                        $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                        // throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
+                        view('publicacion.new.view', array_merge(
+                            $this->menuAndSession,
+                            ['errors' => $errors],
+                            $this->model->traerTipos()
+                        ));
+                            
+                    }                    
+                }else{
+                    $this->logger->error("Error: ", [$errors]);
+                    
+                    view('publicacion.new.view', array_merge(
+                        $this->menuAndSession,
+                        ['errors' => $errors],
+                        $this->model->traerTipos()
+                    ));
                 }
             } else {
                 $datos = [ 
