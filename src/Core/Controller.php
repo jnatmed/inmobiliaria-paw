@@ -73,6 +73,7 @@ class Controller
         if (!is_null($this->modelName)) {
             $model = new $this->modelName;
             $model->setQueryBuilder($this->qb);
+            $model->setLogger($log);
             $this->setModel($model);
         }
     }

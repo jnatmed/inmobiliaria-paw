@@ -312,7 +312,12 @@ class PublicacionController extends Controller
                     "message" => "Debe iniciar sesión para ver las reservas."
                 ];
                 $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
+                /**
+                 * aca guardamos el sitio en una sesion, a efectos de
+                 * redirigir a la pagina de publicar
+                 * asi no es necesario que tenga q navegar a la opcion 
+                 * si de porsi es la accion que desea realizar el usuario
+                 */
                 $this->usuario->setRedirectTo($this->request->uri(true));
 
                 redirect('iniciar-sesion');
@@ -370,14 +375,13 @@ class PublicacionController extends Controller
                         'estado_id' => 1
                     ];                    
                     // setear el objeto
-                    $publicacionObj = new Publicacion($publicacion);
+                    $publicacionObj = new Publicacion($publicacion, $this->logger);
 
                     $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
                     // Manejar la inserción de datos
                     list($idPublicacionGenerado, $resultado) = $this->model->create($publicacionObj);
 
-
-                    $this->logger->info("Info Publicacion: " . [$idPublicacionGenerado, $resultado]);
+                    $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
 
                     if ($idPublicacionGenerado) {
                         // Verificar si $_FILES está vacío
@@ -427,7 +431,7 @@ class PublicacionController extends Controller
                         // Inserta todas las imágenes en la base de datos en una única operación
                         $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
     
-                        redirect('/publicacion/ver?id_pub=' . $idPublicacionGenerado);  
+                        redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);  
 
                     } else {
     

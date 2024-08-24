@@ -137,8 +137,11 @@ class QueryBuilder
     public function insert($table, $data)
     {
         try {
+            $this->logger->info("Data -> " , [$data]);
             $columnas = implode(', ', array_keys($data));
+            $this->logger->info("Columnas -> " , [$columnas]);
             $valores = ':' . implode(', :', array_keys($data));
+            $this->logger->info("Valores -> " , [$valores]);
             $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
             $sentencia = $this->pdo->prepare($query);
 
@@ -150,6 +153,8 @@ class QueryBuilder
             $resultado = $sentencia->execute();
 
             $idGenerado = $this->pdo->lastInsertId();
+
+            $this->logger->debug("idGenerado : {$idGenerado}, resultado : {$resultado}");
 
             return [$idGenerado, $resultado];
         } catch (PDOException $e) {

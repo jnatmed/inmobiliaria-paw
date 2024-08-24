@@ -97,16 +97,21 @@ class PublicacionCollection extends Model
 
     public function create(Publicacion $Publicacion)
     {
-        $data = $Publicacion->getAll();
         try {
-            return $this->queryBuilder->insert($this->table, $data);
+            $data = $Publicacion->getAll();
+            $this->logger->info("data : ", [$data]);
+
+            list($idPublicacionGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
+
+            $this->logger->info("Info Publicacion (Method - create): " , [$idPublicacionGenerado, $resultado]);
+
+            return [$idPublicacionGenerado, $resultado];
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al crear la publicación: " . $e->getMessage());
             return false; // O lanzar una excepción personalizada si prefieres
         }
     }
-
 
     public function getImg($idPublicacion, $idImagen) {
         

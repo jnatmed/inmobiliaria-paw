@@ -13,7 +13,7 @@ use Exception;
 
 use Paw\Core\Model;
 
-class Publicacion
+class Publicacion extends Model
 {
     private $provincia;
     private $codigo_postal;
@@ -35,17 +35,29 @@ class Publicacion
     private $id_usuario;
     private $estado_id;
 
-    public function __construct(array $data)
+    public function __construct(array $data, $logger)
     {
         try {
+            parent::setLogger($logger);
+
             $this->setProvincia($data['provincia'] ?? null);
             $this->setCodigoPostal($data['codigo_postal'] ?? null);
             if (is_null($data['direccion']) || $data['direccion'] === '') {
                 throw new JsonVacioException("Error: JSON proporcionado es nulo o vacío.");
             } else {
-                // Decodificar el JSON en un array asociativo
-                $direccionArray = json_decode($data['direccion'], true);
-
+                $direccion = $data['direccion'];
+                // Decodificar las entidades HTML
+                try {
+                    //code...
+                    $direccionDecoded = html_entity_decode($direccion);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    throw new DireccionFailException("Error en html_entity_decode: " . $th ); 
+                }
+                
+                // Ahora decodificamos el JSON
+                $direccionArray = json_decode($direccionDecoded, true);
+                
                 if ($direccionArray === null) {
                     throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $data['direccion']);
                 }
@@ -53,6 +65,8 @@ class Publicacion
                 if (json_last_error() === JSON_ERROR_NONE && isset($direccionArray['lat']) && isset($direccionArray['lng'])) {
                     $this->setLatitud($direccionArray['lat'] ?? null);
                     $this->setLongitud($direccionArray['lng'] ?? null);
+                    $this->logger->info("latitud y longitud seteados..", [$this->getLongitud(), $this->getLatitud()]);
+
                 } else {
                     // Manejo de errores: JSON no válido o falta de claves
                     throw new DireccionFailException("Error al decodificar JSON o faltan claves 'lat' o 'lng'.");                    
@@ -90,12 +104,15 @@ class Publicacion
             
             // Genera el nombre del método getter
             $method = 'get'.str_replace('_', '', ucwords($key, '_'));
+            $this->logger->info("method : ". $method);
 
             if (method_exists($this, $method)) {
                 $value = $this->$method();
                 $values[$key] = $value;
+                $this->logger->info("existe el metodo -> " . $method);
             } else {
                 $values[$key] = $property->getValue($this);
+                $this->logger->info("NO existe el metodo -> " . $method);
             }
         }
 
