@@ -26,7 +26,6 @@ class PublicacionController extends Controller
     public Uploader $uploader;
     public $utils;
     public $mailer;
-    // use Loggable;
     public $menuAndSession;
 
     public function __construct()
@@ -349,7 +348,6 @@ class PublicacionController extends Controller
                 $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'), $errors, 'normas-alojamiento');
                 $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'), $errors, 'descripcion-alojamiento');
                 
-
                 // Verifica si hay errores
                 if (empty($errors)) {
                     // Preparar el array de datos para setear el objecto
@@ -379,7 +377,7 @@ class PublicacionController extends Controller
 
                     $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
                     // Manejar la inserción de datos
-                    list($idPublicacionGenerado, $resultado) = $this->model->create($publicacionObj);
+                    [$idPublicacionGenerado, $resultado] = $this->model->create($publicacionObj);
 
                     $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
 
@@ -422,8 +420,8 @@ class PublicacionController extends Controller
                                     'id_usuario' => $idUser
                                 ];
                             } else {
-                                // throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $resultUpload['description']);
-                                $errors[] = "Error al subir la imagen: ".$file['name'] ."," . $resultUpload['description'];
+                                $errors[] = "Error al subir la imagen: {$file['name']} , {$resultUpload['description']}";
+                                $this->logger->error("Error al subir la imagen: {$file['name']} , {$resultUpload['description']}");
                             }
                         }
     
