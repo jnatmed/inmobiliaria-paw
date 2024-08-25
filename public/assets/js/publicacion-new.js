@@ -15,10 +15,10 @@ class publicacionNew {
 
             // Usar Promise.all para esperar a que todos los scripts se carguen
             Promise.all([promiseFormatterNumberInputs, promiseFormularioMultiStep, promiseDragDrop, promiseMapaLeafLet]).then(function() {
-                // Una vez que todos los scripts se han cargado, ejecutar el código que depende de esos scripts
+                // Una vez que todos los scripts se han cargado
                 new FormularioMultistep();
                 
-                new FormatterNumberInputs('#precio'); // Selecciona todos los inputs tipo número
+                new FormatterNumberInputs('#precio'); // Selecciona los inputs tipo número que indiquen
 
                 const mapaLeaf = new MapaLeaflet();
 
@@ -37,8 +37,6 @@ class publicacionNew {
                   loading.classList.remove('activo');
                   
                 });
-
-
 
             }).catch(function(error) {
                 // Manejar cualquier error en la carga de scripts

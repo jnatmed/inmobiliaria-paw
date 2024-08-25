@@ -14,6 +14,7 @@ class FormularioMultistep {
 
         this.nextButtons.forEach((button) => {
             button.addEventListener('click', () => {
+                console.log('siguiente paso')
                 if (this.validateFields()) {
                     this.nextStep();
                 } else {
@@ -56,13 +57,16 @@ class FormularioMultistep {
         const currentErrorContainer = this.errorContainers[this.currentStep];
 
         // Limpiar errores anteriores
+        console.log("limpiando datos")
         currentErrorContainer.innerHTML = '';
         currentErrorContainer.classList.remove('visible'); // Ocultar el contenedor de errores
 
         // Validar todos los campos requeridos en el paso actual
-        this.fieldsets[this.currentStep].querySelectorAll('input input[required], textarea[required], select[required]').forEach((input) => {
+        this.fieldsets[this.currentStep].querySelectorAll('input, input[required], textarea[required], select[required]').forEach((input) => {
+            console.log("para cada input del paso en curso hacer " + this.currentStep)
             if (!input.value.trim() || (input.type === 'number' && parseFloat(input.value) <= 0)) {
                 valid = false;
+                console.log("input invalida " + input)
                 if (!firstInvalidInput) {
                     firstInvalidInput = input;
                 }

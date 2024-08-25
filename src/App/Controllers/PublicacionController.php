@@ -372,7 +372,7 @@ class PublicacionController extends Controller
                         'id_usuario' => $idUser,
                         'estado_id' => 1
                     ];                    
-                    // setear el objeto
+                    // setear el objeto Publicacion
                     $publicacionObj = new Publicacion($publicacion, $this->logger);
 
                     $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
