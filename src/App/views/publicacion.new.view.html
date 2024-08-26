@@ -16,15 +16,20 @@
     <main class="main-home">
 
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
+
             {% if errors is not empty %}
-                <article class="carteles-error visible">
+                <article>
                     <ul>
                         {% for error in errors %}
-                            <li>Error en el campo o imagen: {{ error }}</li>
+                            <li class="error-message">
+                                Error en el campo o imagen: {{ error }} 
+                                <span class="close-button">X</span>
+                            </li>
                         {% endfor %}
                     </ul>
                 </article>
             {% endif %} 
+
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p class="paso-titulo">Completá los datos del alojamiento</p>
@@ -81,7 +86,9 @@
             <fieldset class="paso-2 hidden">
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
                 <p class="paso-titulo">Agrega fotos de tu alojamiento</p>
-                <p id="cartel-errores-paso-2" class="carteles-error"></p>
+
+                <p id="cartel-errores-paso-2" > </p>
+
                 <article id="drop-area">
                     <p class="instructions">Arrastra y suelta una o varias imagenes o haz clic para seleccionar</p>
                     <p class="instructions">Solo se permiten imagenes .jpg, .jpeg, .png</p>

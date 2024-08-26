@@ -66,32 +66,43 @@ class DragDrop {
         }
     }
 
-        mostrarError(message, file = null, exceeded = false) {
-        let errorContainer = document.createElement("div");
-        errorContainer.setAttribute('class', `error-message ${exceeded ? 'exceeded' : ''}`);
-        errorContainer.innerHTML = message;
+    mostrarError(message, file = null, exceeded = false) {
 
-        // Agregar un botón de cerrar (X)
-        let closeButton = document.createElement("span");
-        closeButton.setAttribute('class', 'close-button');
-        closeButton.innerHTML = "&times;"; // Símbolo de X
-        closeButton.onclick = () => {
-            errorContainer.remove();
-        };       
+        let errorContainer = document.querySelector("#cartel-errores-paso-2");
+        
+        console.log(errorContainer)
+        // creo un error item
+        let errorItem = document.createElement("p");
+        // agrego una clase al errorItem
+        errorItem.classList.add("error-message");
+
+        errorItem.innerHTML = message; // Asignamos el mensaje de error
+        errorItem.style.display = "block"; // Mostramos el contenedor de error
 
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
-            let sizeInfo = document.createElement("p");
-            msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`
-            sizeInfo.innerHTML = msjError
-            errorContainer.appendChild(sizeInfo);
-            console.log(msjError)
+            
+            let msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`
+            errorItem.innerHTML += msjError
+
         }
 
-        errorContainer.appendChild(closeButton);
+        // agrego el boton de cerrar, para sacar el mensaje una vez leido
+        let closeButton = document.createElement("span");
+        closeButton.classList.add("close-button");
+        closeButton.innerHTML = `X`
 
-        // Añadir el contenedor de error a la vista previa
-        this.previewContainer.appendChild(errorContainer);
+        // asigno el evento para eliminar el errorItem
+        closeButton.onclick = () => {
+            errorItem.remove();
+        };
+
+        // agrego el boton al errorItem
+        errorItem.appendChild(closeButton);
+        // agrego el errorItem al errorContainer
+        errorContainer.appendChild(errorItem);
+
+        errorContainer.style.display = "flex";
     }
 
     createImagePreview(file, src, exceeded = false, actualType = "") {

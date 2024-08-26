@@ -21,6 +21,7 @@ class FormularioMultistep {
                     this.showError();
                 }
             });
+            
         });
 
         this.prevButtons.forEach((button) => {
