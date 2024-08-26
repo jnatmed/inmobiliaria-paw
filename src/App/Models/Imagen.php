@@ -60,7 +60,7 @@ class Imagen extends Model
 
         if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
             return [
-                'exito' => self::ERROR_TIPO_NO_PERMITIDO,
+                'exito' => false,
                 'description' => "El tipo de archivo $this->fileName no está permitido."
             ];
         }else{
