@@ -75,9 +75,9 @@ class DragDrop {
         let errorItem = document.createElement("p");
         // agrego una clase al errorItem
         errorItem.classList.add("error-message");
+        errorItem.classList.add("visible");
 
         errorItem.innerHTML = message; // Asignamos el mensaje de error
-        errorItem.style.display = "block"; // Mostramos el contenedor de error
 
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {

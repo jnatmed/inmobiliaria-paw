@@ -5,6 +5,7 @@
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicacion-new.js"></script>
     <link rel="stylesheet" href="/assets/css/autocompleter.css">
+    <link rel="stylesheet" href="/assets/css/formularioMultiStep.css">
     <link rel="stylesheet" href="/assets/css/carteles.ayuda.css">
     <link rel="stylesheet" href="/assets/css/publicacion-new.carteles.error.css">
     
@@ -33,7 +34,9 @@
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 <p class="paso-titulo">Completá los datos del alojamiento</p>
-                <p id="cartel-errores-paso-1" class="carteles-error"></p>
+
+                <p id="cartel-errores-paso-1"> </p>
+
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
                 <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
 

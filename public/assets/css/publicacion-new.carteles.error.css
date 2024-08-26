@@ -4,7 +4,7 @@
 }
 
 .error-message.visible {
-    display: block;
+    display: flex;
     margin-top: 10px;
 }
 
