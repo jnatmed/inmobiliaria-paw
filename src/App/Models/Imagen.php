@@ -17,6 +17,8 @@ class Imagen extends Model
 
     private $path_imagen;
     private $nombre_imagen;
+    private $id_publicacion;
+    private $id_usuario;
 
     public function __construct($fileName, $fileType, $fileSize, $fileTmpName, $error)
     {   
@@ -27,9 +29,28 @@ class Imagen extends Model
         $this->error = $error;
     }
 
+    public function setIdPublicacion($id_publicacion)
+    {
+        $this->id_publicacion = $id_publicacion;
+    }
+
+    public function setIdUsuario($id_usuario)
+    {
+        $this->id_usuario = $id_usuario;
+    }
+
     public function getFileName()
     {
         return $this->fileName;
+    }
+
+    public function load() {
+        return [
+            'id_publicacion' => $this->id_publicacion,
+            'path_imagen' => $this->path_imagen,
+            'nombre_imagen' => $this->nombre_imagen,
+            'id_usuario' => $this->id_usuario,
+        ];
     }
 
     public function verificarTipoValido()

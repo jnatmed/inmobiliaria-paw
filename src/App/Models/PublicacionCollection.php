@@ -349,17 +349,21 @@ class PublicacionCollection extends Model
 
     
 
-    public function insertMany($table, $insertData)
+    public function insertMany($table, $imagenesCollection)
     {
         try {
             // Preparar los datos para la inserción
 
             global $log;
 
-            $log->info("data en capa model: ",$insertData);
+            $imagenesData = array_map(function($imagen){
+                return $imagen->load();
+            }, $imagenesCollection);
+
+            $log->info("data en capa model: ",$imagenesData);
 
             // Realizar la inserción utilizando el método de queryBuilder
-            $result = $this->queryBuilder->insertMany($table, $insertData);
+            $result = $this->queryBuilder->insertMany($table, $imagenesData);
     
             // Retornar el resultado de la operación de inserción
             return $result;
