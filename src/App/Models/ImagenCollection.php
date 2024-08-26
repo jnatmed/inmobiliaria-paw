@@ -13,7 +13,18 @@ class ImagenCollection extends Model
 
     public function __construct($imagenes)
     {   
-        $this->imagenesCollection = $imagenes;
+        for ($i = 0; $i < count($imagenes['name']); $i++) 
+        {
+            if ($imagenes['name'][$i] != "") {
+                $this->imagenesCollection = new Imagen(
+                    $imagenes['name'][$i],
+                    $imagenes['type'][$i],
+                    $imagenes['tmp_name'][$i],
+                    $imagenes['error'][$i],
+                    $imagenes['size'][$i],
+                );         
+            }
+        }        
     }
     /**
      * verifico primero si las imagenes no tienen errores
@@ -22,31 +33,22 @@ class ImagenCollection extends Model
      */
     public function verificarCollectionImagenes()
     {
-        for ($i = 0; $i < count($this->imagenesCollection['name']); $i++) 
-        {
-            if ($this->imagenesCollection['name'][$i] != "") {
-                $imagen = new Imagen(
-                    $this->imagenesCollection['name'][$i],
-                    $this->imagenesCollection['type'][$i],
-                    $this->imagenesCollection['tmp_name'][$i],
-                    $this->imagenesCollection['error'][$i],
-                    $this->imagenesCollection['size'][$i],
-                );     
-    
-                $controlSubida = $imagen->verificarErrorDeSubida();
-                if (!$controlSubida['exito']) {
-                    $this->erroresCollection[$imagen->getFileName()][] = $controlSubida['description'];
-                }
-                $controlTipo = $imagen->verificarTipoValido();
-                if (!$controlTipo['exito']) {
-                    $this->erroresCollection[$imagen->getFileName()][] = $controlTipo['description'];
-                }
-                $controlTamanio = $imagen->verificarTamanio();
-                if (!$controlTamanio['exito']) {
-                    $this->erroresCollection[$imagen->getFileName()][] = $controlTamanio['description'];
-                }
-            }            
-        }
+        foreach ($this->imagenesCollection as $imagen){
+
+            $controlSubida = $imagen->verificarErrorDeSubida();
+            if (!$controlSubida['exito']) {
+                $this->erroresCollection[$imagen->getFileName()][] = $controlSubida['description'];
+            }
+            $controlTipo = $imagen->verificarTipoValido();
+            if (!$controlTipo['exito']) {
+                $this->erroresCollection[$imagen->getFileName()][] = $controlTipo['description'];
+            }
+            $controlTamanio = $imagen->verificarTamanio();
+            if (!$controlTamanio['exito']) {
+                $this->erroresCollection[$imagen->getFileName()][] = $controlTamanio['description'];
+            }
+        }  
+
        if(empty($this->erroresCollection)){
              return [
                 'exito' => false,
@@ -66,22 +68,11 @@ class ImagenCollection extends Model
      */
     public function guardarImagenes()
     {
-        for ($i = 0; $i < count($this->imagenesCollection['name']); $i++) 
-        {
-            if ($this->imagenesCollection['name'][$i] != "") {
-                $imagen = new Imagen(
-                    $this->imagenesCollection['name'][$i],
-                    $this->imagenesCollection['type'][$i],
-                    $this->imagenesCollection['tmp_name'][$i],
-                    $this->imagenesCollection['error'][$i],
-                    $this->imagenesCollection['size'][$i],
-                );     
-
-                $controlUpload = $imagen->subirArchivo();
-                if (!$controlUpload['exito']){
-                    $this->erroresCollectionSubida[$imagen->getFileName()][] = $controlUpload['description'];
-                }
-            }            
+        foreach($this->imagenesCollection as $imagen){
+            $controlUpload = $imagen->subirArchivo();
+            if (!$controlUpload['exito']){
+                $this->erroresCollectionSubida[$imagen->getFileName()][] = $controlUpload['description'];
+            }
         }
        if(empty($this->erroresCollectionSubida)){
              return [
