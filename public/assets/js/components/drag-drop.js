@@ -69,7 +69,8 @@ class DragDrop {
     mostrarError(message, file = null, exceeded = false) {
 
         let errorContainer = document.querySelector("#cartel-errores-paso-2");
-        
+        errorContainer.classList.add("visible")
+
         console.log(errorContainer)
         // creo un error item
         let errorItem = document.createElement("p");

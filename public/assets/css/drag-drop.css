@@ -37,6 +37,10 @@
     display: none;
 }
 
+#cartel-errores-paso-2.visible{
+    display: flex;
+}
+
 .image-container {
     padding: 5px;
     background-color: #3c4d68;
