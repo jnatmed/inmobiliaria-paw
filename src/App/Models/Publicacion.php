@@ -35,62 +35,87 @@ class Publicacion extends Model
     private $id_usuario;
     private $estado_id;
 
+    private $erroresCollection;
+    private $exito = true;
+
     public function __construct(array $data, $logger)
     {
-        try {
-            parent::setLogger($logger);
+        parent::setLogger($logger);
 
-            $this->setProvincia($data['provincia'] ?? null);
-            $this->setCodigoPostal($data['codigo_postal'] ?? null);
-            if (is_null($data['direccion']) || $data['direccion'] === '') {
-                throw new JsonVacioException("Error: JSON proporcionado es nulo o vacío.");
-            } else {
-                $direccion = $data['direccion'];
+        // Inicializar erroresCollection y éxito en caso de errores durante la construcción
+        $this->erroresCollection = [];
+        $this->exito = true;
+
+        // Establecer los valores iniciales utilizando los métodos correspondientes
+        $this->setProvincia($data['provincia'] ?? null);
+        $this->setCodigoPostal($data['codigo_postal'] ?? null);
+
+        if (is_null($data['direccion']) || $data['direccion'] === '') {
+            // Almacenar el error y marcar el estado como fallo
+            $this->erroresCollection[] = "Error: JSON proporcionado es nulo o vacío.";
+            $this->exito = false;
+        } else {
+            $direccion = $data['direccion'];
+            try {
                 // Decodificar las entidades HTML
-                try {
-                    //code...
-                    $direccionDecoded = html_entity_decode($direccion);
-                } catch (\Throwable $th) {
-                    //throw $th;
-                    throw new DireccionFailException("Error en html_entity_decode: " . $th ); 
-                }
-                
-                // Ahora decodificamos el JSON
+                $direccionDecoded = html_entity_decode($direccion);
+            } catch (\Throwable $th) {
+                // Almacenar el error y marcar el estado como fallo
+                $this->erroresCollection[] = "Error en html_entity_decode: " . $th->getMessage();
+                $this->exito = false;
+            }
+
+            // Intentar decodificar JSON solo si `direccionDecoded` se ha asignado correctamente
+            if (isset($direccionDecoded)) {
                 $direccionArray = json_decode($direccionDecoded, true);
-                
                 if ($direccionArray === null) {
-                    throw new DireccionFailException("Error al decodificar la dirección: " . json_last_error_msg() . "|| " . $data['direccion']);
-                }
-                // Verificar si la decodificación fue exitosa y si las claves 'lat' y 'lng' existen
-                if (json_last_error() === JSON_ERROR_NONE && isset($direccionArray['lat']) && isset($direccionArray['lng'])) {
+                    $this->erroresCollection[] = "Error al decodificar la dirección: " . json_last_error_msg() . " || " . $data['direccion'];
+                    $this->exito = false;
+                } elseif (isset($direccionArray['lat']) && isset($direccionArray['lng'])) {
                     $this->setLatitud($direccionArray['lat'] ?? null);
                     $this->setLongitud($direccionArray['lng'] ?? null);
-                    $this->logger->info("latitud y longitud seteados..", [$this->getLongitud(), $this->getLatitud()]);
-
+                    $this->logger->info("Latitud y longitud seteados..", [$this->getLongitud(), $this->getLatitud()]);
                 } else {
-                    // Manejo de errores: JSON no válido o falta de claves
-                    throw new DireccionFailException("Error al decodificar JSON o faltan claves 'lat' o 'lng'.");                    
-                }                
-            }                        
-            $this->setPrecio($data['precio'] ?? null);
-            $this->setNombreAlojamiento($data['nombre_alojamiento'] ?? null);
-            $this->setTipoAlojamientoId($data['tipo_alojamiento_id'] ?? null);
-            $this->setCapacidadMaxima($data['capacidad_maxima'] ?? null);
-            $this->setCantBanios($data['cant_banios'] ?? null);
-            $this->setCantidadDormitorios($data['cantidad_dormitorios'] ?? null);
-            $this->setCochera($data['cochera'] ?? 0); // Valores booleanos por defecto a 0
-            $this->setPileta($data['pileta'] ?? 0);
-            $this->setAireAcondicionado($data['aire_acondicionado'] ?? 0);
-            $this->setWifi($data['wifi'] ?? 0);
-            $this->setNormasAlojamiento($data['normas_alojamiento'] ?? null);
-            $this->setDescripcionAlojamiento($data['descripcion_alojamiento'] ?? null);
-            $this->setIdUsuario($data['id_usuario'] ?? null);
-            $this->setEstadoId($data['estado_id'] ?? 1); // Valor por defecto 1
-        } catch (Exception $e) {
-            // Manejar la excepción, por ejemplo, registrarla o lanzar otra excepción
-            throw new Exception("Error al configurar la publicación: " . $e->getMessage());
+                    $this->erroresCollection[] = "Error al decodificar JSON o faltan claves 'lat' o 'lng'.";
+                    $this->exito = false;
+                }
+            }
+        }
+
+        // Continuar con la asignación de otros campos
+        $this->setPrecio($data['precio'] ?? null);
+        $this->setNombreAlojamiento($data['nombre_alojamiento'] ?? null);
+        $this->setTipoAlojamientoId($data['tipo_alojamiento_id'] ?? null);
+        $this->setCapacidadMaxima($data['capacidad_maxima'] ?? null);
+        $this->setCantBanios($data['cant_banios'] ?? null);
+        $this->setCantidadDormitorios($data['cantidad_dormitorios'] ?? null);
+        $this->setCochera($data['cochera'] ?? 0); // Valores booleanos por defecto a 0
+        $this->setPileta($data['pileta'] ?? 0);
+        $this->setAireAcondicionado($data['aire_acondicionado'] ?? 0);
+        $this->setWifi($data['wifi'] ?? 0);
+        $this->setNormasAlojamiento($data['normas_alojamiento'] ?? null);
+        $this->setDescripcionAlojamiento($data['descripcion_alojamiento'] ?? null);
+        $this->setIdUsuario($data['id_usuario'] ?? null);
+        $this->setEstadoId($data['estado_id'] ?? 1); // Valor por defecto 1
+    }
+
+    // Método para obtener el estado del constructor
+    public function getEstadoConstructor()
+    {
+        if ($this->exito) {
+            return [
+                'exito' => true,
+                'description' => "Datos cargados correctamente.",
+            ];
+        } else {
+            return [
+                'exito' => false,
+                'description' => "Se encontraron errores al cargar los datos.",
+                'errores' => $this->erroresCollection,
+            ];
         }
     }
+    
 
     public function getAll()
     {
@@ -111,7 +136,9 @@ class Publicacion extends Model
                 $values[$key] = $value;
                 $this->logger->info("existe el metodo -> " . $method);
             } else {
-                $values[$key] = $property->getValue($this);
+                if (!in_array($key, ['exito', 'erroresCollection'])) {
+                    $values[$key] = $property->getValue($this);
+                }
                 $this->logger->info("NO existe el metodo -> " . $method);
             }
         }

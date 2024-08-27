@@ -25,8 +25,8 @@ class ImagenCollection extends Model
                     $imagenes['name'][$i],
                     $imagenes['type'][$i],
                     $imagenes['tmp_name'][$i],
-                    $imagenes['error'][$i],
                     $imagenes['size'][$i],
+                    $imagenes['error'][$i],
                 );         
             }
         }        
@@ -53,24 +53,28 @@ class ImagenCollection extends Model
      */
     public function verificarCollectionImagenes()
     {
+        global $log;
         $imagenesAEliminar = []; // Array para almacenar los índices de imágenes con errores
 
         foreach ($this->imagenesCollection as $indice => $imagen) {
             $hayError = false; // Bandera para saber si hay algún error en la imagen actual
 
             $controlSubida = $imagen->verificarErrorDeSubida();
+            $log->debug($controlSubida['description']);
             if (!$controlSubida['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlSubida['description'];
                 $hayError = true; // Marca que hubo un error
             }
 
             $controlTipo = $imagen->verificarTipoValido();
+            $log->debug($controlTipo['description']);
             if (!$controlTipo['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlTipo['description'];
                 $hayError = true; // Marca que hubo un error
             }
 
             $controlTamanio = $imagen->verificarTamanio();
+            $log->debug($controlTamanio['description']);
             if (!$controlTamanio['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlTamanio['description'];
                 $hayError = true; // Marca que hubo un error
@@ -108,6 +112,8 @@ class ImagenCollection extends Model
      */
     public function guardarImagenes($id_publicacion, $id_usuario)
     {
+        global $log;
+        $log->debug("id_publicacion, id_usuario (method guardarImagenes)",[$id_publicacion, $id_usuario]);
         foreach($this->imagenesCollection as $imagen){
             $controlUpload = $imagen->subirArchivo();
             if (!$controlUpload['exito']){

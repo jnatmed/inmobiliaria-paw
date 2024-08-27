@@ -9,6 +9,7 @@ use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
 use Paw\App\Models\Publicacion;
+use Paw\App\Models\Imagen;
 use Paw\App\Models\ImagenCollection;
 use Paw\Core\Exceptions\PostVacioException; 
 
@@ -279,24 +280,24 @@ class PublicacionController extends Controller
             }
 
 
-            $mime_type = Uploader::getMimeType($imagenPublicacion['path_imagen']);
+            $mime_type = Imagen::getMimeType($imagenPublicacion['nombre_imagen']);
 
             $this->logger->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
 
-            $this->logger->info("imagenPublicacion: ", [Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
+            $this->logger->info("imagenPublicacion: ", [Imagen::UPLOADDIRECTORY . $imagenPublicacion['nombre_imagen']]);
 
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente
             header("Content-type: " . $mime_type);
-            echo file_get_contents(Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
+            echo file_get_contents(Imagen::UPLOADDIRECTORY . $imagenPublicacion['nombre_imagen']);
         } catch (Exception $e) {
             // Manejo de la excepción
             // Registrar el error utilizando el logger
             $this->logger->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
 
-            $mime_type = Uploader::getMimeType('image-not-found.png');
+            $mime_type = Imagen::getMimeType('image-not-found.png');
             header("Content-type: " . $mime_type);
-            echo file_get_contents(Uploader::UPLOADDIRECTORY . 'image-not-found.png');
+            echo file_get_contents(Imagen::UPLOADDIRECTORY . 'image-not-found.png');
         }
     }
 
@@ -374,16 +375,13 @@ class PublicacionController extends Controller
                         'estado_id' => 1
                     ];                    
                     // setear el objeto Publicacion
-                    $publicacionObj = new Publicacion($publicacion, $this->logger);
+                    $ObjPublicacion = new Publicacion($publicacion, $this->logger);
+                    $publicacionObj = $ObjPublicacion->getEstadoConstructor();
 
-                    $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
-                    // Manejar la inserción de datos
-                    [$idPublicacionGenerado, $resultado] = $this->model->create($publicacionObj);
-
-                    $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
-
-                    if ($idPublicacionGenerado) {
+                    if ($publicacionObj['exito']) {
                         // Verificar si $_FILES está vacío
+                        $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
+
                         if (empty($_FILES['imagenes'])) {
                             // throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
                             $errors[] = '$files vacio';
@@ -396,6 +394,12 @@ class PublicacionController extends Controller
                         $resultadoVerificacion = $imagenesCollection->verificarCollectionImagenes();
 
                         if ($resultadoVerificacion['exito']){
+
+                            // Manejar la inserción de datos
+                            [$idPublicacionGenerado, $resultado] = $this->model->create($ObjPublicacion);
+
+                            $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
+
 
                             $resultadoSubidaImagenes = $imagenesCollection->guardarImagenes($idPublicacionGenerado, $idUser);
 
@@ -426,11 +430,11 @@ class PublicacionController extends Controller
 
                     } else {
     
-                        $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                        $this->logger->error("Publicacion no generada ");
                         // throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
                         view('publicacion.new.view', array_merge(
                             $this->menuAndSession,
-                            ['errors' => $errors],
+                            ['errors' => $publicacionObj['errors']],
                             $this->model->traerTipos()
                         ));
                             

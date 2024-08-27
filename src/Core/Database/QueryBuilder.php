@@ -205,7 +205,7 @@ class QueryBuilder
 
             $this->logger->info("imagesTable, id_publicacion, id_imagen ", [$imagesTable, $id_publicacion, $id_imagen]);
             $sql = "
-                SELECT path_imagen
+                SELECT path_imagen, nombre_imagen
                 FROM $imagesTable
                 WHERE id_publicacion = :id_publicacion AND id_imagen = :id_imagen;
             ";
