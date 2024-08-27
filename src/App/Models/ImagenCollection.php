@@ -8,6 +8,8 @@ use Paw\App\Models\Imagen;
 class ImagenCollection extends Model
 {
     private $imagenesCollection = [];
+    private $imagenesConErrores = [];
+
     private $erroresCollection = [];
     private $erroresCollectionSubida = [];
     private $id_publicacion;
@@ -51,23 +53,43 @@ class ImagenCollection extends Model
      */
     public function verificarCollectionImagenes()
     {
-        foreach ($this->imagenesCollection as $imagen){
+        $imagenesAEliminar = []; // Array para almacenar los índices de imágenes con errores
+
+        foreach ($this->imagenesCollection as $indice => $imagen) {
+            $hayError = false; // Bandera para saber si hay algún error en la imagen actual
 
             $controlSubida = $imagen->verificarErrorDeSubida();
             if (!$controlSubida['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlSubida['description'];
+                $hayError = true; // Marca que hubo un error
             }
+
             $controlTipo = $imagen->verificarTipoValido();
             if (!$controlTipo['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlTipo['description'];
+                $hayError = true; // Marca que hubo un error
             }
+
             $controlTamanio = $imagen->verificarTamanio();
             if (!$controlTamanio['exito']) {
                 $this->erroresCollection[$imagen->getFileName()][] = $controlTamanio['description'];
+                $hayError = true; // Marca que hubo un error
             }
-        }  
 
-        if(!empty($this->erroresCollection)){
+            if ($hayError) {
+                $imagenesAEliminar[] = $indice; // Añade el índice de la imagen con errores para eliminarla más tarde
+            }
+        }
+
+        // Elimina las imágenes con errores de la colección
+        foreach ($imagenesAEliminar as $indice) {
+            unset($this->imagenesCollection[$indice]);
+        }
+
+        // Reindexar el array después de eliminar elementos
+        $this->imagenesCollection = array_values($this->imagenesCollection);
+
+        if (empty($this->erroresCollection)) {
             return [
                 'exito' => true,
                 'description' => "Imágenes Sin Errores Listas para ser subidas",
@@ -77,8 +99,8 @@ class ImagenCollection extends Model
                 'exito' => false,
                 'description' => "Una o más imágenes no pudieron ser subidas.",
                 'errores' => $this->erroresCollection
-            ];        
-       }
+            ];
+        }
     }
     /**
      * si las imagenes pasaron la etapa de verificacion
