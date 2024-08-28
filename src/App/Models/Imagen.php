@@ -229,7 +229,10 @@ class Imagen extends Model
             throw new Exception("No se pudo determinar el tipo MIME del archivo: $filePath");
         }
 
-        return $mimeType;
+        // Extraer la extensión del tipo MIME
+        $extension = substr(strrchr($mimeType, '/'), 1);
+
+        return $extension;
     }
 
 }

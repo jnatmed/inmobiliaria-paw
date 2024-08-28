@@ -280,16 +280,16 @@ class PublicacionController extends Controller
             }
 
 
-            $mime_type = Imagen::getMimeType($imagenPublicacion['nombre_imagen']);
+            $mime_type = Imagen::getMimeType($imagenPublicacion['path_imagen']);
 
             $this->logger->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
 
-            $this->logger->info("imagenPublicacion: ", [Imagen::UPLOADDIRECTORY . $imagenPublicacion['nombre_imagen']]);
+            $this->logger->info("imagenPublicacion: -- ", [Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
 
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente
             header("Content-type: " . $mime_type);
-            echo file_get_contents(Imagen::UPLOADDIRECTORY . $imagenPublicacion['nombre_imagen']);
+            echo file_get_contents(Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
         } catch (Exception $e) {
             // Manejo de la excepción
             // Registrar el error utilizando el logger

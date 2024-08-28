@@ -119,6 +119,7 @@ class PublicacionCollection extends Model
         try {
             $pathImagen = $this->queryBuilder->getImagePath('imagenes_publicacion', $idPublicacion, $idImagen);
             
+            $this->logger->debug("pathImagen : ", [$pathImagen]);
             // Si no se encuentra la imagen, devuelve false
             if (!$pathImagen) {
                 return false;
