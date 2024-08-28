@@ -1,39 +1,27 @@
-class Carrousel{
-
-    constructor()
-    {
-        const carousels = document.querySelectorAll('.carousel');
-          
-        // Iterar sobre cada elemento .carousel
-        carousels.forEach(carousel => {
-            let currentIndex = 0;
-    
-            function nextSlide() {
-                currentIndex++;
-                if (currentIndex >= carousel.children.length) {
-                    currentIndex = 0;
-                }
-                showSlide(carousel, currentIndex);
-            }
-    
-            function prevSlide() {
-                currentIndex--;
-                if (currentIndex < 0) {
-                    currentIndex = carousel.children.length - 1;
-                }
-                showSlide(carousel, currentIndex);
-            }
-    
-            function showSlide(carousel, index) {
-                const offset = index * carousel.clientWidth;
-                carousel.scrollLeft = offset;
-            }
-    
-            // Agregar listeners para los botones de navegación
-            carousel.parentElement.querySelector('.prevButton').addEventListener('click', prevSlide);
-            carousel.parentElement.querySelector('.nextButton').addEventListener('click', nextSlide);
-        });
-
+class Carrousel {
+    constructor() {
+        this.currentIndex = 0;
     }
 
+    init() {
+        // Asegúrate de vincular el método para que mantenga el contexto de 'this'
+        document.querySelector('.prev').addEventListener('click', () => this.moveCarousel(-1));
+        document.querySelector('.next').addEventListener('click', () => this.moveCarousel(1));
+    }
+
+    moveCarousel(step) {
+        const images = document.querySelectorAll('.li-imagen-publicacion');
+        const totalImages = images.length;
+
+        this.currentIndex += step;
+
+        if (this.currentIndex < 0) {
+            this.currentIndex = totalImages - 1; // Mover al final si retrocede desde la primera imagen
+        } else if (this.currentIndex >= totalImages) {
+            this.currentIndex = 0; // Mover al inicio si avanza desde la última imagen
+        }
+
+        const ulElement = document.querySelector('.ul-imagenes-publicacion');
+        ulElement.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+    }
 }

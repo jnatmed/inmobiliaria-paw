@@ -20,6 +20,7 @@
     overflow-x: auto;
 }
 
+
 .li-imagen-publicacion {
     flex: 0 0 auto;
 }
@@ -143,4 +144,49 @@
     height: 300px;
     background-color: #e1e1e1;
     border-radius: 5px;
+}
+
+.carousel-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.ul-imagenes-publicacion {
+    display: flex;
+    transition: transform 0.5s ease;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.li-imagen-publicacion {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 18px;
+    user-select: none;
+}
+
+.carousel-btn.prev {
+    left: 10px;
+}
+
+.carousel-btn.next {
+    right: 10px;
+}
+
+.carousel-img {
+    width: 100%;
+    display: block;
 }

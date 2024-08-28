@@ -15,15 +15,19 @@
         <!-- imagenes del departamento en alquiler-->
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">Detalles Publicacion</h2>
-            <ul class="ul-imagenes-publicacion">
-                {% for imagen in publicacion.imagenes %}
-                    <li class="li-imagen-publicacion">
-                        <img class="carousel-img"
-                             src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                             alt="{{ imagen.nombre_imagen }}">
-                    </li>
-                {% endfor %}
-            </ul>
+            <div class="carousel-container">
+                <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <ul class="ul-imagenes-publicacion">
+                    {% for imagen in publicacion.imagenes %}
+                        <li class="li-imagen-publicacion">
+                            <img class="carousel-img"
+                                 src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
+                                 alt="{{ imagen.nombre_imagen }}">
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+            </div>
         </section>
         <!-- detalles de la publicacion -->
         <section class="details-depto">
