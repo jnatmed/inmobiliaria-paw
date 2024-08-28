@@ -16,7 +16,7 @@
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">Detalles Publicacion</h2>
             <div class="carousel-container">
-                <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <button class="carousel-btn prev">&#10094;</button>
                 <ul class="ul-imagenes-publicacion">
                     {% for imagen in publicacion.imagenes %}
                         <li class="li-imagen-publicacion">
@@ -26,7 +26,7 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+                <button class="carousel-btn next">&#10095;</button>
             </div>
         </section>
         <!-- detalles de la publicacion -->

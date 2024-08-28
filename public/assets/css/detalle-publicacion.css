@@ -1,36 +1,9 @@
-/* Estilos para la sección de imágenes */
-.container-imagenes-publicacion {
-    padding: 20px;
-    background-color: #fff;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
 
 .titulo-imagenes-detail {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-.ul-imagenes-publicacion {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-}
-
-
-.li-imagen-publicacion {
-    flex: 0 0 auto;
-}
-
-.carousel-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
 
 /* Estilos para los detalles de la publicación */
 .details-depto {
@@ -148,20 +121,21 @@
 
 .carousel-container {
     position: relative;
-    max-width: 100%;
-    overflow: hidden;
+    width: 100%; /* Asegura que el contenedor del carrusel ocupe el 100% del espacio disponible */
 }
 
 .ul-imagenes-publicacion {
     display: flex;
-    transition: transform 0.5s ease;
+    overflow: hidden; /* Oculta el desplazamiento horizontal */
+    transition: transform 0.5s ease; /* Suaviza la transición entre imágenes */
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%; /* Asegura que el contenedor de la lista ocupe el 100% del espacio disponible */
 }
 
 .li-imagen-publicacion {
-    min-width: 100%;
+    min-width: 100%; /* Cada imagen ocupa el 100% del ancho del contenedor */
     box-sizing: border-box;
 }
 
@@ -169,13 +143,14 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para los botones */
     color: white;
     border: none;
     cursor: pointer;
     padding: 10px;
     font-size: 18px;
     user-select: none;
+    z-index: 10; /* Asegura que los botones estén por encima de las imágenes */
 }
 
 .carousel-btn.prev {
@@ -187,6 +162,8 @@
 }
 
 .carousel-img {
-    width: 100%;
+    width: 100%; /* Asegura que la imagen ocupe el 100% del contenedor */
+    height: auto; /* Ajusta la altura automáticamente en función del contenido */
     display: block;
+    object-fit: cover; /* Asegura que la imagen cubra todo el contenedor sin distorsionarse */
 }

@@ -8,8 +8,8 @@ class publicacionDetails {
 
         Promise.all([promiseMapaLeafLet, promiseCarrousel]).then(function() {
 
-            let carrousel = new Carrousel()
-            carrousel.init()
+            const carousel = new Carrousel();
+            carousel.init();
 
             const latitudElement = document.querySelector('#latitud');
             const longitudElement = document.querySelector('#longitud');

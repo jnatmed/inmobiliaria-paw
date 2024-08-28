@@ -4,9 +4,17 @@ class Carrousel {
     }
 
     init() {
-        // Asegúrate de vincular el método para que mantenga el contexto de 'this'
-        document.querySelector('.prev').addEventListener('click', () => this.moveCarousel(-1));
-        document.querySelector('.next').addEventListener('click', () => this.moveCarousel(1));
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+
+        // Asegúrate de que los botones existen antes de añadir los eventos
+        if (prevButton) {
+            prevButton.addEventListener('click', () => this.moveCarousel(-1));
+        }
+
+        if (nextButton) {
+            nextButton.addEventListener('click', () => this.moveCarousel(1));
+        }
     }
 
     moveCarousel(step) {
