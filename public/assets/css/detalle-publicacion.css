@@ -119,51 +119,72 @@
     border-radius: 5px;
 }
 
-.carousel-container {
+/*
+regla para carrousel de la vista detalle publicacion */
+
+.container-imagenes-publicacion {
     position: relative;
-    width: 100%; /* Asegura que el contenedor del carrusel ocupe el 100% del espacio disponible */
+    display: block;
+    width: 100vw;
+    height: auto;
+    max-width: 100em;
+    overflow: hidden;
+    margin: 0 auto;
 }
 
-.ul-imagenes-publicacion {
+.titulo-imagenes-detail {
+    text-align: center;
+    letter-spacing: 1rem;
+    text-transform: uppercase;
+    padding: 1rem;
+    margin: 2rem;
+    border-bottom: 30px solid var(--color-amarillo);
+}
+
+.slider {
     display: flex;
-    overflow: hidden; /* Oculta el desplazamiento horizontal */
-    transition: transform 0.5s ease; /* Suaviza la transición entre imágenes */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%; /* Asegura que el contenedor de la lista ocupe el 100% del espacio disponible */
-}
-
-.li-imagen-publicacion {
-    min-width: 100%; /* Cada imagen ocupa el 100% del ancho del contenedor */
-    box-sizing: border-box;
-}
-
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para los botones */
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    font-size: 18px;
-    user-select: none;
-    z-index: 10; /* Asegura que los botones estén por encima de las imágenes */
-}
-
-.carousel-btn.prev {
-    left: 10px;
-}
-
-.carousel-btn.next {
-    right: 10px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.5s ease;
+    height: 63vh;
+    width: 100%;
+    transform: translateX(0%);
 }
 
 .carousel-img {
-    width: 100%; /* Asegura que la imagen ocupe el 100% del contenedor */
-    height: auto; /* Ajusta la altura automáticamente en función del contenido */
+    width: calc(100% / 5);
+    max-width: 100%;
+    min-height: 10vh;
     display: block;
-    object-fit: cover; /* Asegura que la imagen cubra todo el contenedor sin distorsionarse */
+    object-fit: cover;
+    object-position: center center;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.puntos {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    list-style: none;
+    padding: 1em;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+
+.punto {
+    width: 1em;
+    height: 1em;
+    background-color: grey;
+    margin: 1em;
+    border-radius: 50%;
+    box-shadow: 0.6em 0.6em 1.2em var(#c9c9c9), -0.6em -0.6em 1.2em var(#ffffff), inset 0 0 0 transparent, inset 0 0 0 transparent;
+}
+
+.punto.activo {
+    background-color: orangered;
 }

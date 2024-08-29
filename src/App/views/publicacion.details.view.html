@@ -14,20 +14,20 @@
     <main>
         <!-- imagenes del departamento en alquiler-->
         <section class="container-imagenes-publicacion">
-            <h2 class="titulo-imagenes-detail">Detalles Publicacion</h2>
-            <div class="carousel-container">
-                <button class="carousel-btn prev">&#10094;</button>
-                <ul class="ul-imagenes-publicacion">
-                    {% for imagen in publicacion.imagenes %}
-                        <li class="li-imagen-publicacion">
-                            <img class="carousel-img"
-                                 src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                                 alt="{{ imagen.nombre_imagen }}">
-                        </li>
-                    {% endfor %}
-                </ul>
-                <button class="carousel-btn next">&#10095;</button>
+            <h2 class="titulo-imagenes-detail">{{ publicacion.nombre_alojamiento | capitalize }}</h2>
+            <div class="slider" style="width: {{ publicacion.imagenes | length * 100 }}%; transform: translateX(0%);">
+                {% for imagen in publicacion.imagenes %}
+                <img class="carousel-img" 
+                     src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" 
+                     alt="{{ imagen.nombre_imagen }}" 
+                     style="width: calc(100% / {{ publicacion.imagenes | length }});">
+                {% endfor %}
             </div>
+            <ul class="puntos">
+                {% for i in range(0, publicacion.imagenes | length - 1) %}
+                <li class="punto {% if i == 0 %}activo{% endif %}"></li>
+                {% endfor %}
+            </ul>
         </section>
         <!-- detalles de la publicacion -->
         <section class="details-depto">
