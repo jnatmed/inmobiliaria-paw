@@ -13,7 +13,8 @@ class Carrousel {
         
         this.inicializarCarrousel();
         this.startCarrousel();
-        this.selectImage();      
+        this.selectImage();
+        this.habilitarImagenCompleta(); // Llamada al nuevo método
     }
 
     inicializarCarrousel() { 
@@ -87,5 +88,43 @@ class Carrousel {
         });
         punto[i].classList.add('activo');
     }
-}
 
+    habilitarImagenCompleta() {
+        // Crear el modal y los elementos necesarios
+        let modal = document.createElement('div');
+        modal.id = 'fullscreenModal';
+        modal.classList.add('fullscreen-modal');
+
+        let closeBtn = document.createElement('span');
+        closeBtn.classList.add('close');
+        closeBtn.innerHTML = '&times;';
+
+        let modalImg = document.createElement('img');
+        modalImg.classList.add('modal-content');
+        modalImg.id = 'fullscreenImage';
+
+        modal.appendChild(closeBtn);
+        modal.appendChild(modalImg);
+        document.body.appendChild(modal); // Añadir el modal al body
+
+        // Añadir evento a cada imagen para abrirla en pantalla completa
+        this._imagenes.forEach((imagen) => {
+            imagen.addEventListener('click', () => {
+                modal.style.display = 'block'; // Muestra el modal
+                modalImg.src = imagen.src; // Coloca la imagen seleccionada en el modal
+            });
+        });
+
+        // Añadir evento al botón de cierre para cerrar el modal
+        closeBtn.onclick = () => {
+            modal.style.display = 'none'; // Oculta el modal
+        }
+
+        // Añadir evento para cerrar el modal al hacer clic fuera de la imagen
+        modal.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    }
+}

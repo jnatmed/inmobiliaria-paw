@@ -188,3 +188,48 @@ regla para carrousel de la vista detalle publicacion */
 .punto.activo {
     background-color: orangered;
 }
+
+
+/* Estilos para la imagen de pantalla completa */
+.fullscreen-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite el scroll si la imagen es más grande que la ventana */
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo semitransparente */
+}
+
+.fullscreen-modal .modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    transition: transform 0.25s ease; /* Transición para el zoom */
+}
+
+.fullscreen-modal .close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.fullscreen-modal .close:hover,
+.fullscreen-modal .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Añade zoom al hacer hover */
+.fullscreen-modal .modal-content:hover {
+    transform: scale(1.1);
+}
