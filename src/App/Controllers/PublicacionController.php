@@ -423,7 +423,7 @@ class PublicacionController extends Controller
                         }else{
                             view('publicacion.new.view', array_merge(
                                 $this->menuAndSession,
-                                ['errors' => $imagenesCollection->getErroresCollection()],
+                                ['imagen_errors' => $imagenesCollection->getErroresCollection()],
                                 $this->model->traerTipos()
                             ));                            
                         }

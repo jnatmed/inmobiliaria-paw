@@ -45,64 +45,69 @@ class DragDrop {
     }
 
     async previewFiles(files) {
-        this.error.style.display = "none";
+        this.error.style.display = "none"; // Ocultar errores anteriores
+        let hasError = false;
+
         for (let file of files) {
             const actualType = await this.getFileType(file);
+
+            // Verificar tipo de archivo
             if (!this.allowedImageTypes.includes(actualType)) {
-                this.mostrarError(`Tipo no permitido: ${file.name}  Tipo Archivo: ${actualType}`, file);
-                return;
+                this.mostrarError(`Tipo no permitido: ${file.name} Tipo Archivo: ${actualType}`, file);
+                hasError = true;
+                continue; // Saltar a la siguiente imagen
             }
 
+            // Verificar tamaño de archivo
             if (file.size > this.maxFileSize) {
                 this.mostrarError(`Tamaño máximo excedido: Nombre: ${file.name}`, file, true);
-                continue;
+                hasError = true;
+                continue; // Saltar a la siguiente imagen
             }
 
+            // Leer el archivo para vista previa
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
                 this.createImagePreview(file, reader.result, false, actualType);
             };
         }
+
+        // // Mostrar mensaje si hubo errores
+        // if (hasError) {
+        //     this.error.style.display = "flex";
+        // }
     }
 
     mostrarError(message, file = null, exceeded = false) {
-
         let errorContainer = document.querySelector("#cartel-errores-paso-2");
-        errorContainer.classList.add("visible")
+        errorContainer.classList.add("visible");
 
-        console.log(errorContainer)
-        // creo un error item
+        // Crear un error item
         let errorItem = document.createElement("p");
-        // agrego una clase al errorItem
         errorItem.classList.add("error-message");
         errorItem.classList.add("visible");
-
-        errorItem.innerHTML = message; // Asignamos el mensaje de error
+        errorItem.innerHTML = message;
 
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
-            
-            let msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`
-            errorItem.innerHTML += msjError
-
+            let msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`;
+            errorItem.innerHTML += msjError;
         }
 
-        // agrego el boton de cerrar, para sacar el mensaje una vez leido
+        // Crear el botón de cerrar
         let closeButton = document.createElement("span");
         closeButton.classList.add("close-button");
-        closeButton.innerHTML = `X`
+        closeButton.innerHTML = `X`;
 
-        // asigno el evento para eliminar el errorItem
+        // Asignar el evento para eliminar el errorItem
         closeButton.onclick = () => {
             errorItem.remove();
         };
 
-        // agrego el boton al errorItem
+        // Agregar el botón al errorItem y el errorItem al errorContainer
         errorItem.appendChild(closeButton);
-        // agrego el errorItem al errorContainer
         errorContainer.appendChild(errorItem);
-
         errorContainer.style.display = "flex";
     }
 

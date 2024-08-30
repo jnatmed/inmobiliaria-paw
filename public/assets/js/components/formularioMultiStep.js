@@ -5,6 +5,25 @@ class FormularioMultistep {
         this.fieldsets = document.querySelectorAll('fieldset');
         this.currentStep = 0;
 
+        this.errorMessages = document.querySelectorAll('.error-message');
+        // this.closeButtons = document.querySelectorAll('.close-button');
+
+        if (this.errorMessages.length > 0) 
+        {
+            this.errorMessages.forEach(errorMessage => {
+                errorMessage.classList.add("visible");
+                // Verificar si hay un hijo con la clase 'close-button'
+                const closeButton = errorMessage.querySelector('.close-button');
+                
+                if (closeButton) {
+                    // Añadir el evento onclick al botón de cierre
+                    closeButton.onclick = () => {
+                        errorMessage.remove(); // Eliminar el elemento de error
+                    };
+                }
+            });
+        }
+
         // Seleccionar los elementos de error para cada paso
         this.errorContainers = {
             0: document.querySelector('#cartel-errores-paso-1'),

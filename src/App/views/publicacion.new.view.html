@@ -19,8 +19,8 @@
 
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
 
-            {% if errors is not empty %}
-                <article>
+            {% if errors is defined and errors is not empty %}
+            <article>
                     <ul>
                         {% for error in errors %}
                             <li class="error-message">
@@ -31,6 +31,24 @@
                     </ul>
                 </article>
             {% endif %} 
+            {% if imagen_errors is defined and imagen_errors is not empty %}
+                <article>
+                    <ul>
+                        {% for image, errorList in imagen_errors %}
+                            <li>
+                                <ul>
+                                    {% for error in errorList %}
+                                        <li class="error-message">
+                                            {{ error }} 
+                                            <span class="close-button">X</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% endif %}            
 
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
