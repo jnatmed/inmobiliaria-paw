@@ -28,7 +28,6 @@ header {
     padding-left: 3rem;
     padding-right: 3rem;
     font-size: 2rem;
-    position: relative;
 }
 
 .icono-salida {
@@ -68,58 +67,6 @@ header {
 
 a.anchor-item-sesion:hover {
     text-decoration: underline;
-}
-
-.menu-toggle {
-    display: none;
-    font-size: 1.5em;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-@media (max-width: 850px) {
-    .nav-index {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        transform: translateY(-20px);
-        opacity: 0;
-        visibility: hidden; 
-        max-height: 0; 
-        overflow: hidden;
-        transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.2s ease;
-        background-color: #333;
-        z-index: 1000;
-        border-bottom-left-radius: 5px;  
-        border-bottom-right-radius: 5px;
-    }
-
-    .menu-toggle {
-        display: block; 
-    }
-
-    .nav-index.active {
-        opacity: 1;
-        transform: translateY(0);
-        visibility: visible;
-        max-height: 200px; 
-    }
-
-    .lista-nav-main {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: .5rem;
-        padding: 1rem;
-    }
-
-    .nav-index li {
-        margin: 0;
-    }
 }
 
 #mapid {
