@@ -45,53 +45,70 @@ class DragDrop {
     }
 
     async previewFiles(files) {
-        this.error.style.display = "none";
+        this.error.style.display = "none"; // Ocultar errores anteriores
+        let hasError = false;
+
         for (let file of files) {
             const actualType = await this.getFileType(file);
+
+            // Verificar tipo de archivo
             if (!this.allowedImageTypes.includes(actualType)) {
-                this.mostrarError(`Tipo no permitido: ${file.name}  Tipo Archivo: ${actualType}`, file);
-                return;
+                this.mostrarError(`Tipo no permitido: ${file.name} Tipo Archivo: ${actualType}`, file);
+                hasError = true;
+                continue; // Saltar a la siguiente imagen
             }
 
+            // Verificar tamaño de archivo
             if (file.size > this.maxFileSize) {
                 this.mostrarError(`Tamaño máximo excedido: Nombre: ${file.name}`, file, true);
-                continue;
+                hasError = true;
+                continue; // Saltar a la siguiente imagen
             }
 
+            // Leer el archivo para vista previa
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
                 this.createImagePreview(file, reader.result, false, actualType);
             };
         }
+
+        // // Mostrar mensaje si hubo errores
+        // if (hasError) {
+        //     this.error.style.display = "flex";
+        // }
     }
 
-        mostrarError(message, file = null, exceeded = false) {
-        let errorContainer = document.createElement("div");
-        errorContainer.setAttribute('class', `error-message ${exceeded ? 'exceeded' : ''}`);
-        errorContainer.innerHTML = message;
+    mostrarError(message, file = null, exceeded = false) {
+        let errorContainer = document.querySelector("#cartel-errores-paso-2");
+        errorContainer.classList.add("visible");
 
-        // Agregar un botón de cerrar (X)
-        let closeButton = document.createElement("span");
-        closeButton.setAttribute('class', 'close-button');
-        closeButton.innerHTML = "&times;"; // Símbolo de X
-        closeButton.onclick = () => {
-            errorContainer.remove();
-        };       
+        // Crear un error item
+        let errorItem = document.createElement("p");
+        errorItem.classList.add("error-message");
+        errorItem.classList.add("visible");
+        errorItem.innerHTML = message;
 
         // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
-            let sizeInfo = document.createElement("p");
-            msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`
-            sizeInfo.innerHTML = msjError
-            errorContainer.appendChild(sizeInfo);
-            console.log(msjError)
+            let msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`;
+            errorItem.innerHTML += msjError;
         }
 
-        errorContainer.appendChild(closeButton);
+        // Crear el botón de cerrar
+        let closeButton = document.createElement("span");
+        closeButton.classList.add("close-button");
+        closeButton.innerHTML = `X`;
 
-        // Añadir el contenedor de error a la vista previa
-        this.previewContainer.appendChild(errorContainer);
+        // Asignar el evento para eliminar el errorItem
+        closeButton.onclick = () => {
+            errorItem.remove();
+        };
+
+        // Agregar el botón al errorItem y el errorItem al errorContainer
+        errorItem.appendChild(closeButton);
+        errorContainer.appendChild(errorItem);
+        errorContainer.style.display = "flex";
     }
 
     createImagePreview(file, src, exceeded = false, actualType = "") {

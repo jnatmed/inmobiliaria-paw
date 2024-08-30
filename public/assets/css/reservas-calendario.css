@@ -16,8 +16,8 @@ table.greenTable th {
 
 table.greenTable tbody td {
     font-size: 13px;
-    height: 6rem;
-    /* background-color: white; */
+    
+    
 }
 
 table.greenTable thead {
@@ -74,7 +74,9 @@ table.greenTable tfoot .links a {
 }
 
 .calendarTitle {
-    font-size: 5rem;
+    font-size: 3rem;
+    padding: 4px;   
+    text-align: center;
 }
 
 .calendarContainer {
@@ -100,10 +102,9 @@ table.greenTable tfoot .links a {
 
 .form-reserva{
     background-color: #D9D9D9;
-    height: 40%;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    padding: 4px;
 }
 
 .btn-form{
@@ -115,7 +116,7 @@ table.greenTable tfoot .links a {
 }
 
 .reservar{
-    background-color: #252026;
+    background-color: #B53E3E;
 }
 
 .cancelar{
@@ -125,7 +126,7 @@ table.greenTable tfoot .links a {
 
 
 .input-form-reserva{
-    color: #D9D9D9;
+    color: black;
     margin: 1rem;
 }
 
@@ -133,10 +134,7 @@ table.greenTable tfoot .links a {
     border: 0;
 }
 
-.container-reserva{
-    display: flex;
-    justify-content: center;
-}
+
 
 
 .past-date {
@@ -175,4 +173,54 @@ table.greenTable tfoot .links a {
 
 .msj_error {
     background-color: red;
+}
+
+/* Ajustar el ancho de la tabla al 90% del ancho de la ventana */
+#calendarTable {
+    width: 90vw; /* O un porcentaje diferente según lo que necesites */
+    max-width: 100%; /* Para asegurarse de que no se desborde del contenedor */
+    border-collapse: collapse; /* Para eliminar espacios entre celdas */
+    table-layout: fixed; /* Para que las celdas se ajusten al ancho de la tabla */
+  }
+  
+  #calendarTable th, #calendarTable td {
+    padding: 10px; /* Espacio dentro de cada celda */
+    text-align: center; /* Centrar el texto dentro de las celdas */
+  }
+  
+  .calendarContainer {
+    overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
+  }
+
+
+#calendarTable th {
+    font-size: 0.8rem; /* Ajusta el tamaño de fuente si es necesario */
+    position: relative; /* Necesario para posicionar los pseudo-elementos */
+    overflow: hidden; /* Oculta el contenido que exceda el tamaño del elemento */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+#calendarTable th::after {
+    content: attr(data-abbr); /* Utiliza el atributo data-abbr para mostrar la abreviatura */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem; /* Ajusta el tamaño de fuente si es necesario */
+    color: white; /* Cambia el color si es necesario */
+    white-space: nowrap; /* Asegura que el texto no se divida */
+}
+  
+#calendarTable th span {
+    display: none; /* Oculta el contenido original */
+}
+
+.btnNavCalendar {
+    margin: 4px;
+    height: 50%;
+}
+
+.calendarNavigation {
+    display: flex;
+    align-items: center;
 }

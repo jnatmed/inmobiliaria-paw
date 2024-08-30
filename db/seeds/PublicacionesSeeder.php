@@ -65,7 +65,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'aire_acondicionado' => rand(0, 1),
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 1',
-                'descripcion_alojamiento' => 'Descripcion 1',
+                'descripcion_alojamiento' => 'Ubicado en el vibrante y culturalmente rico barrio de San Telmo, Rincón del Tango ofrece una experiencia auténtica y acogedora en uno de los lugares más emblemáticos de Buenos Aires. Ideal para quienes buscan sumergirse en la vida local y disfrutar de la combinación perfecta entre comodidad moderna y encanto histórico.',
                 'id_usuario' => 1,
                 'estado_id' => 1
             ],
@@ -76,7 +76,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'provincia' => 'Provincia 2',
                 'codigo_postal' => '1437',
                 'direccion' => 'Direccion 2',
-                'nombre_alojamiento' => 'Alojamiento 2',
+                'nombre_alojamiento' => 'Rincón del Tango en San Telmo',
                 'tipo_alojamiento_id' => 2,
                 'capacidad_maxima' => rand(1, 10),
                 'cant_banios' => rand(1, 3),
@@ -85,8 +85,8 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 1),
                 'aire_acondicionado' => rand(0, 1),
                 'wifi' => rand(0, 1),
-                'normas_alojamiento' => 'Normas 2',
-                'descripcion_alojamiento' => 'Descripcion 2',
+                'normas_alojamiento' => 'Uso de Instalaciones Se debe usar las instalaciones del alojamiento de manera responsable. No se debe causar daño a los equipos, muebles y electrodomésticos. Cualquier daño causado deberá ser reportado de inmediato y el costo de reparación será a cargo del inquilino.',
+                'descripcion_alojamiento' => 'Ubicado en el vibrante y culturalmente rico barrio de San Telmo, Rincón del Tango ofrece una experiencia auténtica y acogedora en uno de los lugares más emblemáticos de Buenos Aires. Ideal para quienes buscan sumergirse en la vida local y disfrutar de la combinación perfecta entre comodidad moderna y encanto histórico.',
                 'id_usuario' => 2,
                 'estado_id' => 1
             ],

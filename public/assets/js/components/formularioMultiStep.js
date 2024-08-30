@@ -5,6 +5,25 @@ class FormularioMultistep {
         this.fieldsets = document.querySelectorAll('fieldset');
         this.currentStep = 0;
 
+        this.errorMessages = document.querySelectorAll('.error-message');
+        // this.closeButtons = document.querySelectorAll('.close-button');
+
+        if (this.errorMessages.length > 0) 
+        {
+            this.errorMessages.forEach(errorMessage => {
+                errorMessage.classList.add("visible");
+                // Verificar si hay un hijo con la clase 'close-button'
+                const closeButton = errorMessage.querySelector('.close-button');
+                
+                if (closeButton) {
+                    // Añadir el evento onclick al botón de cierre
+                    closeButton.onclick = () => {
+                        errorMessage.remove(); // Eliminar el elemento de error
+                    };
+                }
+            });
+        }
+
         // Seleccionar los elementos de error para cada paso
         this.errorContainers = {
             0: document.querySelector('#cartel-errores-paso-1'),
@@ -21,6 +40,7 @@ class FormularioMultistep {
                     this.showError();
                 }
             });
+
         });
 
         this.prevButtons.forEach((button) => {
@@ -71,7 +91,7 @@ class FormularioMultistep {
                     firstInvalidInput = input;
                 }
                 const placeholder = input.placeholder || input.name;
-                currentErrorContainer.innerHTML += `El campo "${placeholder}" está incompleto o tiene un valor no permitido.<br>`;
+                this.mostrarError(`El campo "${placeholder}" está incompleto o tiene un valor no permitido.`, currentErrorContainer);
             }
         });
 
@@ -80,7 +100,7 @@ class FormularioMultistep {
             const precioInput = document.querySelector('#precio');
             if (precioInput && parseFloat(precioInput.value) <= 0) {
                 valid = false;
-                currentErrorContainer.innerHTML += `El campo "Precio/Noche" debe ser mayor que cero.<br>`;
+                this.mostrarError(`El campo "Precio/Noche" debe ser mayor que cero.`, currentErrorContainer);
             }
         }
 
@@ -93,6 +113,39 @@ class FormularioMultistep {
 
         return valid;
     }
+
+    mostrarError(message, currentErrorContainer) {
+
+        // let errorContainer = document.querySelector("#cartel-errores-paso-1");
+        
+        // console.log(errorContainer)
+        // creo un error item
+        let errorItem = document.createElement("p");
+        // agrego una clase al errorItem
+        errorItem.classList.add("error-message");
+        errorItem.classList.add("visible");
+
+        errorItem.innerHTML = message; // Asignamos el mensaje de error
+
+        // agrego el boton de cerrar, para sacar el mensaje una vez leido
+        let closeButton = document.createElement("span");
+        closeButton.classList.add("close-button");
+        closeButton.innerHTML = `X`
+
+        // asigno el evento para eliminar el errorItem
+        closeButton.onclick = () => {
+            errorItem.remove();
+        };
+
+        // agrego el boton al errorItem
+        errorItem.appendChild(closeButton);
+        // agrego el errorItem al errorContainer
+        currentErrorContainer.appendChild(errorItem);
+
+        // errorContainer.style.display = "flex";
+    }
+
+
 
     formatNumber(event) {
         let value = event.target.value.replace(/\./g, ''); // Eliminar puntos para formatear correctamente

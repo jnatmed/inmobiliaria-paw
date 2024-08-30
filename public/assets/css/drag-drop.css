@@ -33,11 +33,19 @@
     margin-top: 50px;
 }
 
+#cartel-errores-paso-2 {
+    display: none;
+}
+
+#cartel-errores-paso-2.visible{
+    display: flex;
+}
+
 .image-container {
     padding: 5px;
     background-color: #3c4d68;
     color: white;
-    width: 33%;
+    width: 50%;
     box-sizing: border-box;
     position: relative;
 }

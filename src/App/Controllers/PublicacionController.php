@@ -9,6 +9,8 @@ use Paw\App\Models\PublicacionCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
 use Paw\App\Models\Publicacion;
+use Paw\App\Models\Imagen;
+use Paw\App\Models\ImagenCollection;
 use Paw\Core\Exceptions\PostVacioException; 
 
 use Paw\Core\Exceptions\FallaEnCargaDeImagenesException; 
@@ -26,7 +28,6 @@ class PublicacionController extends Controller
     public Uploader $uploader;
     public $utils;
     public $mailer;
-    // use Loggable;
     public $menuAndSession;
 
     public function __construct()
@@ -279,24 +280,24 @@ class PublicacionController extends Controller
             }
 
 
-            $mime_type = Uploader::getMimeType($imagenPublicacion['path_imagen']);
+            $mime_type = Imagen::getMimeType($imagenPublicacion['path_imagen']);
 
             $this->logger->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
 
-            $this->logger->info("imagenPublicacion: ", [Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
+            $this->logger->info("imagenPublicacion: -- ", [Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
 
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente
             header("Content-type: " . $mime_type);
-            echo file_get_contents(Uploader::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
+            echo file_get_contents(Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
         } catch (Exception $e) {
             // Manejo de la excepción
             // Registrar el error utilizando el logger
             $this->logger->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
 
-            $mime_type = Uploader::getMimeType('image-not-found.png');
+            $mime_type = Imagen::getMimeType('image-not-found.png');
             header("Content-type: " . $mime_type);
-            echo file_get_contents(Uploader::UPLOADDIRECTORY . 'image-not-found.png');
+            echo file_get_contents(Imagen::UPLOADDIRECTORY . 'image-not-found.png');
         }
     }
 
@@ -349,7 +350,6 @@ class PublicacionController extends Controller
                 $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'), $errors, 'normas-alojamiento');
                 $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'), $errors, 'descripcion-alojamiento');
                 
-
                 // Verifica si hay errores
                 if (empty($errors)) {
                     // Preparar el array de datos para setear el objecto
@@ -375,71 +375,66 @@ class PublicacionController extends Controller
                         'estado_id' => 1
                     ];                    
                     // setear el objeto Publicacion
-                    $publicacionObj = new Publicacion($publicacion, $this->logger);
+                    $ObjPublicacion = new Publicacion($publicacion, $this->logger);
+                    $publicacionObj = $ObjPublicacion->getEstadoConstructor();
 
-                    $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
-                    // Manejar la inserción de datos
-                    list($idPublicacionGenerado, $resultado) = $this->model->create($publicacionObj);
-
-                    $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
-
-                    if ($idPublicacionGenerado) {
+                    if ($publicacionObj['exito']) {
                         // Verificar si $_FILES está vacío
+                        $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
+
                         if (empty($_FILES['imagenes'])) {
                             // throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
                             $errors[] = '$files vacio';
                         }
     
                         $imagenesPublicacion = [];
-                        $files = $_FILES['imagenes'];
+
+                        $imagenesCollection = new ImagenCollection($_FILES['imagenes']);
     
-                        for ($i = 0; $i < count($files['name']); $i++) {
-                            if ($files['name'][$i] != "") {
-                                $file = [
-                                    'name' => $files['name'][$i],
-                                    'type' => $files['type'][$i],
-                                    'tmp_name' => $files['tmp_name'][$i],
-                                    'error' => $files['error'][$i],
-                                    'size' => $files['size'][$i],
-                                ];
+                        $resultadoVerificacion = $imagenesCollection->verificarCollectionImagenes();
+
+                        if ($resultadoVerificacion['exito']){
+
+                            // Manejar la inserción de datos
+                            [$idPublicacionGenerado, $resultado] = $this->model->create($ObjPublicacion);
+
+                            $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
+
+
+                            $resultadoSubidaImagenes = $imagenesCollection->guardarImagenes($idPublicacionGenerado, $idUser);
+
+                            if ($resultadoSubidaImagenes['exito']){
+
+                                $this->logger->info("imagenesPublicacion: ", [$imagenesCollection->getImagenesCollection()]);
+                                // Inserta todas las imágenes en la base de datos en una única operación
+                                $this->model->insertMany('imagenes_publicacion', $imagenesCollection->getImagenesCollection());
+    
+                                redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);  
+                                
+                            }else{
+                                view('publicacion.new.view', array_merge(
+                                    $this->menuAndSession,
+                                    ['errors' => $imagenesCollection->getErroresCollectionSubida()],
+                                    $this->model->traerTipos()
+                                ));                            
+    
                             }
-    
-                            if ($file['error'] != UPLOAD_ERR_OK) {
-                                // throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $file['error']);
-                                $errors[] =  $file['name']. " - error: " . $file['error'];
-                            }
-    
-                            // Subiendo el archivo usando el metodo uploadFile de Uploader
-                            $resultUpload = $this->uploader->uploadFile($file);
-    
-                            $this->logger->info("resultado insercion capa CONTROLLER", [$resultUpload]);
-    
-                            if ($resultUpload['exito'] == Uploader::UPLOAD_COMPLETED) {
-                                $imagenesPublicacion[] = [  
-                                    'id_publicacion' => $idPublicacionGenerado,
-                                    'path_imagen' => $resultUpload['nombre_imagen'],
-                                    'nombre_imagen' => $resultUpload['nombre_imagen'],
-                                    'id_usuario' => $idUser
-                                ];
-                            } else {
-                                // throw new FallaEnCargaDeImagenesException("Error al subir una imagen: " . $resultUpload['description']);
-                                $errors[] = "Error al subir la imagen: ".$file['name'] ."," . $resultUpload['description'];
-                            }
+
+                        }else{
+                            view('publicacion.new.view', array_merge(
+                                $this->menuAndSession,
+                                ['imagen_errors' => $imagenesCollection->getErroresCollection()],
+                                $this->model->traerTipos()
+                            ));                            
                         }
-    
-                        $this->logger->info("imagenesPublicacion: ", [$imagenesPublicacion]);
-                        // Inserta todas las imágenes en la base de datos en una única operación
-                        $this->model->insertMany('imagenes_publicacion', $imagenesPublicacion);
-    
-                        redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);  
 
                     } else {
     
-                        $this->logger->error("Publicacion no generada: ", [$idPublicacionGenerado]);
+                        $this->logger->error("Publicacion no generada ");
                         // throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
                         view('publicacion.new.view', array_merge(
                             $this->menuAndSession,
-                            ['errors' => $errors],
+                            ['errors' => $publicacionObj['errors']],
                             $this->model->traerTipos()
                         ));
                             

@@ -60,5 +60,18 @@ class Request
 
         return $protocol . $host . $uri;
     }
-    
+
+    public function referer()
+    {
+        return $_SERVER['HTTP_REFERER'] ?? null;
+    }    
+    public function isUrlSafe($url)
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+        $localHost = parse_url($this->fullUrl(), PHP_URL_HOST);
+        $path = parse_url($url, PHP_URL_PATH);
+
+        // Verifica que la URL pertenezca al mismo dominio y no contenga patrones maliciosos
+        return $host === $localHost && !preg_match('/[\r\n]/', $url) && strpos($path, '/publicacion/ver') === 0;
+    }    
 }
