@@ -30,10 +30,10 @@
                 <p class="paso-titulo">Completá los datos del alojamiento</p>
                 <p id="cartel-errores-paso-1" class="carteles-error"></p>
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
-                <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre del Alojamiento" required>
+                <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre" required>
 
-                <select name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion" required>
-                    <option value="" disabled selected>Seleccione un tipo de alojamiento</option>
+                <select name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion-select" required>
+                    <option value="" disabled selected>Tipo</option>
                     {% for tipo in tipos_alojamiento %}
                         <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
                     {% endfor %}

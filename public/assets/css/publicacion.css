@@ -46,7 +46,8 @@ p.paso-titulo {
     align-self: flex-start;
 }
 
-.input-form-publicacion {
+.input-form-publicacion,
+.input-form-publicacion-select {
     display: inline-block;
     width: 20%;
     border: 0;
@@ -55,9 +56,13 @@ p.paso-titulo {
     padding: 0.5em;
     margin: 0.3em;
     margin-left: 0;
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
 }
 
-.input-form-publicacion:focus {
+.input-form-publicacion:focus,
+.input-form-publicacion-select:focus {
     border-color: transparent;
     box-shadow: 0 0 0 2px transparent;
 }
