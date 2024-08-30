@@ -21,7 +21,7 @@ html {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     background-color: var(--color-verde-header);
     height: 5rem;
     align-items: center;
