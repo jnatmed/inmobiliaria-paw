@@ -1,67 +1,71 @@
-        /* Ocultar el checkbox visualmente */
-        #menuHamburguesa {
-            display: none;
-        }
+.logo_chico {
+    color: white;
+}
 
-        /* Estilos para el label que actuará como botón */
-        #menuMobile {
-            cursor: pointer; /* Hacer que el label parezca clickeable */
-            /* Puedes añadir más estilos para el label aquí */
-        }
+/* Ocultar el checkbox visualmente */
+#menuHamburguesa {
+    display: none;
+}
 
-        /* Estilo por defecto para el menú en pantallas grandes */
-        .nav-index {
-            display: flex; /* Mostrar el nav como flex en pantallas grandes */
-        }
+/* Estilos para el label que actuará como botón */
+#menuMobile {
+    cursor: pointer; /* Hacer que el label parezca clickeable */
+    /* Puedes añadir más estilos para el label aquí */
+}
 
-        .lista-nav-main {
-            display: flex;
-            flex-direction: row; /* Mostrar los elementos en fila en pantallas grandes */
-        }
+/* Estilo por defecto para el menú en pantallas grandes */
+.nav-index {
+    display: flex; /* Mostrar el nav como flex en pantallas grandes */
+}
 
-        /* Media query para pantallas menores a 1000px */
-        @media (max-width: 1000px) {
-            #menuMobile {
-                display: block; /* Mostrar el label en pantallas pequeñas */
-            }
+.lista-nav-main {
+    display: flex;
+    flex-direction: row; /* Mostrar los elementos en fila en pantallas grandes */
+}
 
-            .nav-index {
-                display: none; /* Ocultar el nav por defecto en pantallas pequeñas */
-            }
+/* Media query para pantallas menores a 1000px */
+@media (max-width: 1000px) {
+    #menuMobile {
+        display: block; /* Mostrar el label en pantallas pequeñas */
+    }
 
-            #menuHamburguesa:checked ~ .nav-index {
-                display: flex; /* Mostrar el nav cuando el checkbox esté marcado */
-            }
+    .nav-index {
+        display: none; /* Ocultar el nav por defecto en pantallas pequeñas */
+    }
 
-            .lista-nav-main {
-                display: flex;
-                flex-direction: column; /* Cambiar la dirección a columna en pantallas pequeñas */
-                align-items: center; /* Centrar los elementos en pantallas pequeñas */
-                position: absolute;
-                top: 5rem;
-                left: 0;
-                width: 100%;
-                z-index: 1;
-                background-color: rgba(128, 128, 128, 0.8); /* Fondo semi-transparente */
-            }
-        }
+    #menuHamburguesa:checked ~ .nav-index {
+        display: flex; /* Mostrar el nav cuando el checkbox esté marcado */
+    }
 
-        /* Media query para pantallas mayores a 1000px */
-        @media (min-width: 1000px) {
-            #menuHamburguesa {
-                display: none; /* Ocultar el checkbox en pantallas grandes */
-            }
+    .lista-nav-main {
+        display: flex;
+        flex-direction: column; /* Cambiar la dirección a columna en pantallas pequeñas */
+        align-items: center; /* Centrar los elementos en pantallas pequeñas */
+        position: absolute;
+        top: 5rem;
+        left: 0;
+        width: 100%;
+        z-index: 1;
+        background-color: rgba(128, 128, 128, 0.8); /* Fondo semi-transparente */
+    }
+}
 
-            #menuMobile {
-                display: none; /* Ocultar el label en pantallas grandes */
-            }
+/* Media query para pantallas mayores a 1000px */
+@media (min-width: 1000px) {
+    #menuHamburguesa {
+        display: none; /* Ocultar el checkbox en pantallas grandes */
+    }
 
-            .nav-index {
-                display: flex; /* Asegurar que el nav se muestra como flex en pantallas grandes */
-            }
+    #menuMobile {
+        display: none; /* Ocultar el label en pantallas grandes */
+    }
 
-            .lista-nav-main {
-                display: flex;
-                flex-direction: row; /* Cambiar la dirección de los elementos del menú a row */
-            }
-        }
+    .nav-index {
+        display: flex; /* Asegurar que el nav se muestra como flex en pantallas grandes */
+    }
+
+    .lista-nav-main {
+        display: flex;
+        flex-direction: row; /* Cambiar la dirección de los elementos del menú a row */
+    }
+}
