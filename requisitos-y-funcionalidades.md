@@ -35,12 +35,14 @@ Este sistema está diseñado para gestionar propiedades inmobiliarias con difere
 
 ## Técnicas de SEO
 
-- **GEOIp:** Implementación para mejorar la localización geográfica de los usuarios.
-- **Tema Cookies:** Manejo de sesiones para la última ubicación del usuario.
+- **GEOIp:** Implementación para mejorar la localización geográfica de las propiedades mediante la api de [Nominatim](https://nominatim.org/release-docs/develop/api/Search/) de los usuarios.
 
 ## Mapa del Sitio
 
 1. Inicio
-2. Unirte al Equipo
-3. Contacto
-4. Seguimiento (Usuario Empleado)
+2. Mapa
+3. Propiedades
+4. Publicar
+5. Mis Propiedades
+6. Mis Reservas
+7. Mi Perfil
