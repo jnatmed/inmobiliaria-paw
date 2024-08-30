@@ -40,6 +40,8 @@ header {
     display: inline-block;
 }
 
+
+
 .lista-opciones-sesion li {
     background-color: var(--color-negro-boton);
     border-radius: 1rem;

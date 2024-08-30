@@ -1,19 +1,18 @@
-class publicacionesList {
-    constructor() {
-  
-      document.addEventListener('DOMContentLoaded', () => {
 
-        PAW.cargarScriptPromise("Carrousel", "/assets/js/components/carrousel.js")
-        .then(() => {
-          let carrousel = new Carrousel();
-        })
-        .catch((error) => {
-          console.error('Error al cargar el script del Carrousel:', error);
-        });
+  document.addEventListener('DOMContentLoaded', () => {
 
-      })
-    }
-  }
+    const promiseCarrousel = PAW.cargarScriptPromise("Carrousel", "/assets/js/components/carrousel.js");
+
+    Promise.all([promiseCarrousels])-then(function(){
+      
+        new Carrousel();
+   
+    }).catch(function(error) {
+      // Manejar cualquier error en la carga de scripts
+      console.error('Error loading one or more scripts:', error);
+    });
+
+  })
+    
   
-  const publicacionesList = new publicacionesList()
   
