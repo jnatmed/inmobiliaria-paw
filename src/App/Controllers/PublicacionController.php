@@ -11,10 +11,10 @@ use Paw\App\Models\Mailer;
 use Paw\App\Models\Publicacion;
 use Paw\App\Models\Imagen;
 use Paw\App\Models\ImagenCollection;
-use Paw\Core\Exceptions\PostVacioException; 
+use Paw\Core\Exceptions\PostVacioException;
 
-use Paw\Core\Exceptions\FallaEnCargaDeImagenesException; 
-use Paw\Core\Exceptions\PublicacionFailException; 
+use Paw\Core\Exceptions\FallaEnCargaDeImagenesException;
+use Paw\Core\Exceptions\PublicacionFailException;
 
 use PDOException;
 use Throwable;
@@ -52,7 +52,7 @@ class PublicacionController extends Controller
         try {
             $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = $this->request->get('tipo') ?? []; 
+            $tipo = $this->request->get('tipo') ?? [];
 
             $tipo = $this->request->get('tipo');
             if (is_array($tipo) && isset($tipo[0]) && is_array($tipo[0])) {
@@ -92,7 +92,6 @@ class PublicacionController extends Controller
             $this->logger->debug("menuAndSession (antes de pasar a la vista): ", $this->menuAndSession);
 
             view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession));
-
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -323,7 +322,7 @@ class PublicacionController extends Controller
 
                 redirect('iniciar-sesion');
             }
-                        
+
             if ($this->request->method() == 'POST') {
 
                 $errors = [];
@@ -333,7 +332,7 @@ class PublicacionController extends Controller
 
                 $this->logger->info("POST: ", [$this->request->all()]);
                 $this->logger->info("FILES: ", [$_FILES]);
-                
+
                 $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
                 $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
                 $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
@@ -349,7 +348,7 @@ class PublicacionController extends Controller
                 $wifi = sanitize($this->request->get('wifi')) ? 1 : 0; //
                 $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'), $errors, 'normas-alojamiento');
                 $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'), $errors, 'descripcion-alojamiento');
-                
+
                 // Verifica si hay errores
                 if (empty($errors)) {
                     // Preparar el array de datos para setear el objecto
@@ -373,7 +372,7 @@ class PublicacionController extends Controller
                         'descripcion_alojamiento' => $descripcionAlojamiento,
                         'id_usuario' => $idUser,
                         'estado_id' => 1
-                    ];                    
+                    ];
                     // setear el objeto Publicacion
                     $ObjPublicacion = new Publicacion($publicacion, $this->logger);
                     $publicacionObj = $ObjPublicacion->getEstadoConstructor();
@@ -386,50 +385,46 @@ class PublicacionController extends Controller
                             // throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
                             $errors[] = '$files vacio';
                         }
-    
+
                         $imagenesPublicacion = [];
 
                         $imagenesCollection = new ImagenCollection($_FILES['imagenes']);
-    
+
                         $resultadoVerificacion = $imagenesCollection->verificarCollectionImagenes();
 
-                        if ($resultadoVerificacion['exito']){
+                        if ($resultadoVerificacion['exito']) {
 
                             // Manejar la inserción de datos
                             [$idPublicacionGenerado, $resultado] = $this->model->create($ObjPublicacion);
 
-                            $this->logger->info("Info Publicacion: (method - new)" , [$idPublicacionGenerado, $resultado]);
+                            $this->logger->info("Info Publicacion: (method - new)", [$idPublicacionGenerado, $resultado]);
 
 
                             $resultadoSubidaImagenes = $imagenesCollection->guardarImagenes($idPublicacionGenerado, $idUser);
 
-                            if ($resultadoSubidaImagenes['exito']){
+                            if ($resultadoSubidaImagenes['exito']) {
 
                                 $this->logger->info("imagenesPublicacion: ", [$imagenesCollection->getImagenesCollection()]);
                                 // Inserta todas las imágenes en la base de datos en una única operación
                                 $this->model->insertMany('imagenes_publicacion', $imagenesCollection->getImagenesCollection());
-    
-                                redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);  
-                                
-                            }else{
+
+                                redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);
+                            } else {
                                 view('publicacion.new.view', array_merge(
                                     $this->menuAndSession,
                                     ['errors' => $imagenesCollection->getErroresCollectionSubida()],
                                     $this->model->traerTipos()
-                                ));                            
-    
+                                ));
                             }
-
-                        }else{
+                        } else {
                             view('publicacion.new.view', array_merge(
                                 $this->menuAndSession,
                                 ['imagen_errors' => $imagenesCollection->getErroresCollection()],
                                 $this->model->traerTipos()
-                            ));                            
+                            ));
                         }
-
                     } else {
-    
+
                         $this->logger->error("Publicacion no generada ");
                         // throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
                         view('publicacion.new.view', array_merge(
@@ -437,11 +432,10 @@ class PublicacionController extends Controller
                             ['errors' => $publicacionObj['errors']],
                             $this->model->traerTipos()
                         ));
-                            
-                    }                    
-                }else{
+                    }
+                } else {
                     $this->logger->error("Error: ", [$errors]);
-                    
+
                     view('publicacion.new.view', array_merge(
                         $this->menuAndSession,
                         ['errors' => $errors],
@@ -449,8 +443,8 @@ class PublicacionController extends Controller
                     ));
                 }
             } else {
-                $datos = [ 
-                     'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
+                $datos = [
+                    'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
                 ];
 
                 view('publicacion.new.view', array_merge(
