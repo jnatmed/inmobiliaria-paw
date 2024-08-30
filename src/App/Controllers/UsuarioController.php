@@ -44,29 +44,30 @@ class UsuarioController extends Controller
     {
         global $log;
         if (isset($_SESSION['email'])) {
-            // Si el usuario es de tipo "cliente", eliminar el menú de empleado
+            // Si el usuario es de tipo "cliente"
             $log->info("hay sesion: ", [$_SESSION]);
             if ($this->getUserType() === 1) {
-                // Filtra el menú para eliminar el menú de empleado si es necesario
+
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
                     '/publicaciones/gestionar'
                 ]);
             }
+            // Si el usuario es de tipo "empleado"            
+            if ($this->getUserType() === 2) {
 
-            if ($this->getUserType() === 3) {
-                // Filtra el menú para eliminar el menú de empleado si es necesario
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
-                    '/publicaciones/gestionar',
                     '/mis_publicaciones',
                     '/mis_publicaciones/reservas'
                 ]);
             }
-            if ($this->getUserType() === 2) {
-                // Filtra el menú para eliminar el menú de empleado si es necesario
+            // Si el usuario es de tipo "propietario"
+            if ($this->getUserType() === 3) {
+
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
+                    '/publicaciones/gestionar',
                     '/mis_publicaciones',
                     '/mis_publicaciones/reservas'
                 ]);
