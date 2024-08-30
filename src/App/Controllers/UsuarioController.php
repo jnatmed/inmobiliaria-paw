@@ -125,6 +125,9 @@ class UsuarioController extends Controller
     {
         $titulo = 'PAWPERTIES | LOGIN';
 
+        // Captura el Referer usando el nuevo método en Request
+        $referer = $this->request->referer();
+
         if ($this->request->method() == 'POST') {
             $email = htmlspecialchars(strtolower($this->request->get('email')));
             $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
@@ -150,14 +153,11 @@ class UsuarioController extends Controller
 
                 $this->logger->info("sesion: ", [$_SESSION]);
 
-                // Redirigir al usuario a la URL guardada o a la página principal si no hay ninguna
-                if (!is_null($this->getRedirectTo())) {
-                    $redirectUrl = $this->getRedirectTo();
-                    $this->setRedirectTo(null, true);
-                    $this->logger->debug($redirectUrl);
-                    redirect("$redirectUrl");
+                // Redirigir al usuario a la URL de referencia o a la página principal si no hay ninguna
+                if ($referer && $this->request->isUrlSafe($referer)) { // Verificar que la URL es segura
+                    redirect($referer);
                 } else {
-                    redirect('');
+                    redirect(''); // Redirigir a la página principal
                 }
             } else {
                 $this->tipoUsuario = 'anonimo';

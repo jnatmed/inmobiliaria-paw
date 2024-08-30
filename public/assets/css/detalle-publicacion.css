@@ -49,6 +49,7 @@
     margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
 }
 
 .h4-titulo-form {
@@ -233,3 +234,161 @@ regla para carrousel de la vista detalle publicacion */
 .fullscreen-modal .modal-content:hover {
     transform: scale(1.1);
 }
+
+
+/* Estilos por defecto para dispositivos de ancho mayor a 780px */
+.details-depto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        "article-details-texto form-contacto-publicacion"
+        "ubicacion-publicacion ubicacion-publicacion";
+}
+
+/* Cuando .details-depto contiene .container-reserva */
+.details-depto:has(.container-reserva) {
+    grid-template-columns: 1fr 1fr; /* Por defecto, dos columnas */
+    grid-template-areas:
+        "article-details-texto form-contacto-publicacion"
+        "container-reserva container-reserva"
+        "ubicacion-publicacion ubicacion-publicacion";
+}
+
+/* Estilos para pantallas más pequeñas (menor a 780px) */
+@media (max-width: 780px) {
+    .details-depto {
+        grid-template-columns: 1fr; /* Una columna para todo */
+        grid-template-areas:
+            "article-details-texto"
+            "form-contacto-publicacion"
+            "container-reserva"
+            "ubicacion-publicacion";
+    }
+
+    /* Reglas específicas cuando tiene .container-reserva */
+    .details-depto:has(.container-reserva) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "article-details-texto"
+            "form-contacto-publicacion"
+            "container-reserva"
+            "ubicacion-publicacion";
+    }
+}
+  
+  /* Definición de áreas de grid para los elementos */
+  .article-details-texto {
+    grid-area: article-details-texto;
+  }
+  
+  .details-depto__info {
+    grid-area: article-details-texto;
+  }
+  .form-contacto-publicacion {
+    grid-area: form-contacto-publicacion;
+  }
+  
+  .container-reserva {
+    grid-area: container-reserva;
+  }
+  
+  .ubicacion-publicacion {
+    grid-area: ubicacion-publicacion;
+  }
+  
+
+
+/* 
+estilo para los detalles de la propiedad
+*/ 
+
+.details-depto {
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.details-depto__info {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.details-depto__titulo {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.details-depto__descripcion,
+.details-depto__normas {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.details-depto__comodidades {
+    width: 100%;
+}
+
+.details-depto__comodidades-titulo {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.details-depto__comodidades-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.details-depto__comodidades-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comodidades-item__etiqueta {
+    font-weight: bold;
+}
+
+.comodidades-item__valor {
+    color: #555;
+}
+
+/* Diseño por defecto (menos de 780px) */
+.container-reserva {
+    display: grid;
+    grid-template-columns: 1fr; /* Una sola columna */
+    gap: 20px; /* Espacio entre los elementos */
+
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
+  }
+  
+  /* Diseño para pantallas grandes (más de 780px) */
+  @media (min-width: 780px) {
+    .container-reserva {
+      grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    }
+  }
+
+
+  .details-depto__titulo {
+    font-size: 1.5rem; /* Tamaño del texto del encabezado */
+  }
+  
+  .titulo-estatico {
+    display: block; /* Hace que el texto sea una línea completa */
+  }
+  
+  .titulo-dinamico {
+    display: block; /* También lo convierte en una línea completa */
+    font-weight: bold; /* Estilo adicional si es necesario */
+  }
+  

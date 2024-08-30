@@ -15,14 +15,14 @@
         <!-- imagenes del departamento en alquiler-->
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">{{ publicacion.nombre_alojamiento | capitalize }}</h2>
-            <div class="slider" style="width: {{ publicacion.imagenes | length * 100 }}%; transform: translateX(0%);">
+            <article class="slider" style="width: {{ publicacion.imagenes | length * 100 }}%; transform: translateX(0%);">
                 {% for imagen in publicacion.imagenes %}
                 <img class="carousel-img" 
                      src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" 
                      alt="{{ imagen.nombre_imagen }}" 
                      style="width: calc(100% / {{ publicacion.imagenes | length }});">
                 {% endfor %}
-            </div>
+            </article>
             <ul class="puntos">
                 {% for i in range(0, publicacion.imagenes | length - 1) %}
                 <li class="punto {% if i == 0 %}activo{% endif %}"></li>
@@ -31,22 +31,55 @@
         </section>
 
         <!-- Modal para imagen a pantalla completa -->
-        <div id="fullscreenModal" class="fullscreen-modal">
+        <article id="fullscreenModal" class="fullscreen-modal">
             <span class="close">&times;</span>
             <img class="modal-content" id="fullscreenImage">
-        </div>
+        </article>
 
-        <!-- detalles de la publicacion -->
         <section class="details-depto">
-            <article class="article-details-texto">
-                <h3 class="titulo-details-texto">
-                    {{ publicacion.nombre_alojamiento }}
+            <!-- 1) detalles de la publicacion -->
+            <article class="details-depto__info">
+                <h3 class="details-depto__titulo">
+                    <span class="titulo-estatico">Detalles de la Propiedad</span>
+                    <span class="titulo-dinamico">{{ publicacion.nombre_alojamiento }}</span>
                 </h3>
-                <p class="p-details-texto">
+                <p class="details-depto__descripcion">
                     {{ publicacion.descripcion_alojamiento }}
                 </p>
+                <p class="details-depto__normas">
+                    {{ publicacion.normas_alojamiento }}
+                </p>
+                <article class="details-depto__comodidades">
+                    <h4 class="details-depto__comodidades-titulo">Comodidades:</h4>
+                    <ul class="details-depto__comodidades-lista">
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Cantidad de Baños:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.cant_banios }}</span>
+                        </li>
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Cantidad de Dormitorios:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.cantidad_dormitorios }}</span>
+                        </li>
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Cochera:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.cochera }}</span>
+                        </li>
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Pileta:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.pileta }}</span>
+                        </li>
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Aire Acondicionado:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.aire_acondicionado }}</span>
+                        </li>
+                        <li class="details-depto__comodidades-item">
+                            <span class="comodidades-item__etiqueta">Wifi:</span>
+                            <span class="comodidades-item__valor">{{ publicacion.wifi }}</span>
+                        </li>
+                    </ul>
+                </article>
             </article>
-            <!-- formulario de contacto  -->
+            <!-- 2) formulario de contacto con el duenio  -->
             <article class="form-contacto-publicaciom">
                 <h4 class="h4-titulo-form">
                     Contactá al Dueño
@@ -65,10 +98,6 @@
                 <a class="whatsapp-link" href="https://api.whatsapp.com/send/?phone={{ publicacion.telefono | e }}&text=Hola%2C+vi+esta+propiedad+en+Pawproperties+y+quiero+m%C3%A1s+informaci%C3%B3n+por+WhatsApp.+{{ app.request.uri }}&type=phone_number&app_absent=0" target="_blank">
                     <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                 </a>
-
-                <p>Al enviar estas aceptando los
-                    <a href="/publicacion/terminos-y-condiciones">términos y condiciones</a>
-                </p>
                 <hr>
                 <article class="publicaciones-duenio">
                     <h5 class="h5-nombre-duenia">{{ publicacion.nombre }} {{ publicacion.apellido }}</h5>
@@ -76,7 +105,13 @@
                     <p>Ver teléfono</p>
                 </article>
             </article>
-            <!-- mapa donde figura la ubicacion del alquiler -->
+
+            <!-- 3) formulario de reserva junto con la visualizacion del calendario de reserva-->
+            {% if isUserLoggedIn and tipo_usuario in [1, 3] %}
+                {% include 'parts/reservas-propiedad.view.html' %}
+            {% endif %}
+
+            <!-- 4) mapa donde figura la ubicacion del alquiler -->
             <article class="ubicacion-publicacion">
                 <h3 class="titulo-ubicacion">Ubicacion</h3>
                 <p>Bernardo de Irigoyen 700, Piso 18
@@ -87,15 +122,6 @@
                 <div id="mapid"></div>
             </article>
         </section>
-
-            {% if isUserLoggedIn and tipo_usuario == 1 %} 
-                {% include 'parts/reservas-propiedad.view.html' %}
-            {% else %}
-                <p>
-                    isUserLoggedIn : {{ isUserLoggedIn }}</br>
-                    tipo_usuario : {{ tipo_usuario }}
-                </p>
-            {% endif %}
         
     </main>
 
