@@ -157,4 +157,5 @@ $router->post('/recuperar-contrasenia', 'UsuarioController@resetPassword');
 $router->get('/registrarse', 'UsuarioController@register');
 $router->post('/registrarse', 'UsuarioController@register');
 $router->get('/usuario/mi_perfil', 'UsuarioController@perfil');
+$router->post('/perfil/update', 'UsuarioController@update');
 

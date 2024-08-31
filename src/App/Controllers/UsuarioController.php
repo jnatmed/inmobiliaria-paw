@@ -484,4 +484,13 @@ class UsuarioController extends Controller
             }
         }
     }
+
+    public function update()
+    {
+        $email = $this->request->get('email');
+
+        $resultUpdate = $this->model->updateEmail($this->getUserId(), $email);
+
+        redirect('usuario/mi_perfil');
+    }
 }

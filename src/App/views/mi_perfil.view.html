@@ -20,7 +20,7 @@
             <h2>Detalles del Usuario</h2>
             <p><strong>Nombre:</strong> {{ usuario.nombre|escape }}</p>
             <p><strong>Apellido:</strong> {{ usuario.apellido|escape }}</p>
-            <form action="/perfil/update">
+            <form action="/perfil/update" method="post">
                 <label for="email"><strong>Email:</strong></label>
                 <input type="email"  name="email" value="{{ usuario.email|escape }}">
                 <input type="submit" value="Actualizar">

@@ -478,6 +478,8 @@ class QueryBuilder
         $set = [];
         $bindings = [];
 
+        $this->logger->info("data, where", [$data, $where]);
+        
         foreach ($data as $column => $value) {
             $set[] = "$column = :$column";
             $bindings[":$column"] = $value;

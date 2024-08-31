@@ -154,4 +154,20 @@ class UserCollection extends Model
         }
     }  
 
+    public function updateEmail($userId, $email)
+    {
+        try {
+            $data = [
+                'email' => $email
+            ];
+            $where = [
+                'id' => $userId
+            ];
+            $this->queryBuilder->update('usuarios', $data, $where);
+            return ['exito' => true];
+        } catch (\Exception $e) {
+            $this->logger->error('Error al actualizar la email: ' . $e->getMessage());
+            return ['exito' => false, 'message' => $e->getMessage()];
+        }
+    }
 }
