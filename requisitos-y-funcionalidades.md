@@ -20,9 +20,34 @@ Este sistema está diseñado para gestionar propiedades inmobiliarias con difere
   - **Propietario:** Puede publicar propiedades y solicitar reservas en publicaciones de otros propietarios. También recibe notificaciones por correo electrónico sobre las solicitudes de reserva.
   - **Empleado:** Gestiona las propiedades que el propietario solicita dar de alta. La comunicación entre el propietario y el empleado se realiza por correo electrónico, y ambos usuarios son notificados cuando cambia el estado de una publicación.
 
-### 3. Gestión de Usuarios
+## Usuarios por Defecto
 
-- **Usuarios por Defecto:** Hay tres usuarios predeterminados para pruebas. Para probar la comunicación por correo, cambia el seeder en cada tipo de usuario con correos individuales para realizar las pruebas. Se requiere al menos dos correos distintos para los perfiles de propietario y empleado.
+Hay tres usuarios predeterminados para pruebas, cada uno con un rol diferente. Para probar la comunicación por correo y el restablecimiento de contraseñas, es necesario actualizar los correos electrónicos de cada tipo de usuario con direcciones individuales válidas. Se requieren al menos dos correos distintos para los perfiles de propietario y empleado.
+
+### Detalles de Usuarios por Defecto
+
+1. **Usuario Inquilino**
+   - **Email:** `usuario1@example.com`
+   - **Contraseña:** `password1`
+   - **Tipo de Usuario ID:** 1
+
+2. **Usuario Empleado**
+   - **Email:** `usuario2@example.com`
+   - **Contraseña:** `password2`
+   - **Tipo de Usuario ID:** 2
+
+3. **Usuario Propietario**
+   - **Email:** `usuario3@example.com`
+   - **Contraseña:** `password3`
+   - **Tipo de Usuario ID:** 3
+
+> **Nota:** `tipo_usuario_id` corresponde a:
+> - 1 = Inquilino
+> - 2 = Empleado
+> - 3 = Propietario
+
+Para poder hacer las pruebas de reseteo y comunicación entre tipos de usuario, se debe actualizar el correo electrónico. Esto se puede realizar yendo al perfil del usuario y actualizándolo por uno válido, como se indica en la siguiente imagen.
+![imagen de reseteo de email](public/assets/imgs/instructivo/resteo-password.png)
 
 ### 4. Vistas
 
