@@ -49,9 +49,12 @@
                     {{ publicacion.descripcion_alojamiento }}
                 </p>
                 <hr>
-                <p class="details-depto__normas">
-                    {{ publicacion.normas_alojamiento }}
-                </p>
+                {% set normas = publicacion.normas_alojamiento | split(',') %}
+                <ul class="details-depto__normas">
+                    {% for norma in normas %}
+                    <li>{{ norma | trim | capitalize }}</li>
+                    {% endfor %}
+                </ul>
                 <hr>
                 <article class="details-depto__comodidades">
                     <h4 class="details-depto__comodidades-titulo">Comodidades:</h4>
@@ -117,7 +120,7 @@
             </article>
 
             <!-- 3) formulario de reserva junto con la visualizacion del calendario de reserva-->
-            {% if isUserLoggedIn and tipo_usuario in [1, 3] %}
+            {% if isUserLoggedIn and tipo_usuario in [1, 3] and publicacion.id_usuario != idUserSesion %}
                 {% include 'parts/reservas-propiedad.view.html' %}
             {% endif %}
 

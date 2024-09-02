@@ -394,6 +394,22 @@ class PublicacionCollection extends Model
     public function obtenerReservasPendientesYConfirmadas($id_usuario) {
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
+    
+    public function getSolicitudesDeReserva($id_usuario) {
+        try{
+            $params = ['id_usuario_reserva' => $id_usuario];
+            $result = $this->queryBuilder->select('reservas_publicacion', $params);
+
+            if (!empty($result)) {
+                return $result;
+            } else {
+                return []; 
+            }
+        } catch (Exception $e) {
+
+            return false;
+        }
+    }
 
 
     public function traerPublicaciones()
