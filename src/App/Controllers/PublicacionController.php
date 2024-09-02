@@ -132,6 +132,7 @@ class PublicacionController extends Controller
         // Preparar los datos para la vista
         $datos = [
             'publicacion' => $publicacion,
+            'idUserSesion' => $this->usuario->getUserId(),
             'periodos_json' => $periodos_json,
             'reservas' => $reservas,
             'titulo' => "PAWPERTIES | PROPIEDAD"
@@ -486,8 +487,11 @@ class PublicacionController extends Controller
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
 
+            $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
+
             $datos = [
                 'reservas' => $reservas,
+                'reservasSolicitadasPorUserSesion' => $reservasSolicitadasPorUserSesion,
                 'titulo' => "PAWPERTIES | RESERVAS"
             ];
 
@@ -495,6 +499,7 @@ class PublicacionController extends Controller
 
             view('publicaciones.reservas.view', array_merge(
                 $datos,
+                ['idUserSesion' => $this->usuario->getUserId()],
                 $this->menuAndSession
             ));
         } catch (Exception $e) {

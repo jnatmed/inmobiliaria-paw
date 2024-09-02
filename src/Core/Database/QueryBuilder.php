@@ -448,6 +448,7 @@ class QueryBuilder
             $query = "
                 SELECT
                     reservas_publicacion.id AS id_reserva,
+                    reservas_publicacion.id_usuario_reserva AS id_usuario_reserva,
                     reservas_publicacion.fecha_inicio AS desde,
                     reservas_publicacion.fecha_fin AS hasta,
                     reservas_publicacion.notas AS nota,
