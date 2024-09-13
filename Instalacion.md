@@ -1,4 +1,4 @@
-# GUIA DE INSTALACION
+D# GUIA DE INSTALACION
 
 ## 1) INSTALACION DE MYSQL
 
@@ -12,7 +12,8 @@
 * `composer require robmorgan/phinx`
 Luego ejecutar `phinx` desde `vendor/bin/phinx`
 * `vendor/bin/phinx migration`
-* Ejecutar migrations: `vendor/bin/phinx migrate -e development`.
+* Ejecutar las migrations: `vendor/bin/phinx migrate -e development`.
+* Ejecutar los seeder: `vendor/bin/phinx seed:run`.
 
 ## 3) INSTALACION DE PHP
 
