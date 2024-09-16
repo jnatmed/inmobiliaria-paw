@@ -32,6 +32,9 @@
                             {% if publicacion.pileta %}<span class="instalacion">Pileta</span> {% endif %}
                             {% if publicacion.aire_acondicionado %}<span class="instalacion">Aire Acondicionado</span> {% endif %}
                             {% if publicacion.wifi %}<span class="instalacion">Wi-Fi</span> {% endif %}
+                            {% if condition %}
+                                
+                            {% endif %}
                             {% if publicacion.estado_id %}<span class="estado_publicacion estado_publicacion_{{ publicacion.estado_id }}">{{ publicacion.estado_publicacion|replace({'-': ' '})|lower|title }}</span>{% endif %}
                         </p>
                         <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Ver más ></a>
