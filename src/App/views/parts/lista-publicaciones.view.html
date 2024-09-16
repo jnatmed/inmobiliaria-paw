@@ -21,7 +21,7 @@
                         <h3 class="publicacion-precio">${{ publicacion.precio|number_format(0, ',', '.') }}</h3>
                         <h3 class="publicacion-titulo">{{ publicacion.nombre_alojamiento|e }}</h3>
                         <p class="publicacion-datos">{{ publicacion.descripcion_alojamiento|nl2br|e }}</p>
-                        <p class="publicacion-datos">{{ publicacion.localidad|e }}, {{ publicacion.provincia|e }}</p>
+                        <p class="publicacion-datos">Direccion: {{ publicacion.direccion|e }}</p>
                         <p class="publicacion-datos">Capacidad: {{ publicacion.capacidad_maxima|e }}</p>
                         <p class="publicacion-datos">Tipo: {{ publicacion.tipo_alojamiento|e }}</p>
                         <p class="publicacion-datos">Baños: {{ publicacion.cant_banios|e }}</p>
