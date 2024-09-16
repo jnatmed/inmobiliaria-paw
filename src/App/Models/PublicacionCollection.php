@@ -292,6 +292,12 @@ class PublicacionCollection extends Model
         }
     } 
 
+    public function getPublicacionMayorPrecio()
+    {
+        return $this->queryBuilder->selectMaxPrice('publicaciones');
+    }
+
+
     public function getPublicacionesTotales() 
     {
         return $this->queryBuilder->countRows('publicaciones');

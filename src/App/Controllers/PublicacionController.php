@@ -70,6 +70,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+            $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
@@ -77,6 +78,7 @@ class PublicacionController extends Controller
                 'zona' => $zona,
                 'tipos' => $tipo,
                 'precio' => $precio,
+                'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
                 'titulo' => "PAWPERTIES | PROPIEDADES"

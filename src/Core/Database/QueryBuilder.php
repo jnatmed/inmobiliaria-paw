@@ -519,4 +519,32 @@ class QueryBuilder
             return false;
         }
     }    
+
+    public function selectMaxPrice($table)
+    {
+        try {
+            // Consulta para obtener el mayor valor del campo `precio`
+            $query = "SELECT MAX(precio) AS max_precio FROM {$table}";
+            
+            // Preparar la sentencia
+            $stmt = $this->pdo->prepare($query);
+            
+            // Ejecutar la consulta
+            $stmt->execute();
+            
+            // Obtener el resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Registrar la consulta y el resultado
+            $this->logger->info("Consulta SQL: ", [$query]);
+            $this->logger->info("Resultado selectMaxPrice: ", [$result]);
+            
+            // Retornar el valor máximo
+            return $result['max_precio'];
+        } catch (PDOException $e) {
+            // Manejo de errores
+            $this->logger->error('Error al obtener el mayor valor del campo precio: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        }
+    }
 }
