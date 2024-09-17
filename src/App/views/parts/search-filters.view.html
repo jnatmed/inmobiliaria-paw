@@ -11,9 +11,15 @@
 
 <section class="filtro-group">
     <p>Tipo</p>
-    <label><input type="checkbox" name="tipo[]" value="casa" {{ 'casa' in tipos ? 'checked' : '' }}> Casa</label>
-    <label><input type="checkbox" name="tipo[]" value="departamento" {{ 'departamento' in tipos ? 'checked' : '' }}> Departamento</label>
-    <label><input type="checkbox" name="tipo[]" value="quinta" {{ 'quinta' in tipos ? 'checked' : '' }}> Quinta</label>
+    {% if tipos_alojamiento is not empty %}
+        {% for tipo in tipos_alojamiento %}
+            <label>
+                <input type="checkbox" name="tipo[]" value="{{ tipo.id }}" 
+                {{ tipo.descripcion_tipo in tipos ? 'checked' : '' }}>
+                {{ tipo.descripcion_tipo|capitalize }}
+            </label>
+        {% endfor %}
+    {% endif %}
 </section>
 
 <section class="filtro-group">

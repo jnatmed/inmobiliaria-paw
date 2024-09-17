@@ -62,7 +62,7 @@ class PublicacionController extends Controller
                 $tipo = [];
                 $this->logger->debug("no es array []");
             }
-            $this->logger->debug("tipo: ", $tipo);
+            $this->logger->debug("tipo: LISTAR", $tipo);
 
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
@@ -93,7 +93,8 @@ class PublicacionController extends Controller
             $this->logger->debug("dato (antes de pasar a la vista): ", $datos);
             $this->logger->debug("menuAndSession (antes de pasar a la vista): ", $this->menuAndSession);
 
-            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession));
+            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession, $this->model->traerTipos()));
+
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);

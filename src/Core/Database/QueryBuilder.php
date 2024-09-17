@@ -281,7 +281,7 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser)
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $allowedTipos, $precio, $instalaciones, $idUser)
     {
         try {
             $sql = "
@@ -312,11 +312,14 @@ class QueryBuilder
             }
     
             if (!empty($tipo)) {
-                $allowedTipos = ['casa', 'departamento', 'quinta'];
+                // $allowedTipos = ['casa', 'departamento', 'quinta'];
                 $condiciones = [];
+                // $this->logger->debug("Tipos Querybuilder:", [$allowedTipos]);
                 foreach ($tipo as $t) {
+                    // $this->logger->debug("Tipo a buscar: $t");
                     if (in_array($t, $allowedTipos)) {
-                        $condiciones[] = "tipo.descripcion_tipo = '{$t}'";
+                        $condiciones[] = "tipo.id = '{$t}'";
+                        // $this->logger->debug("agrego a filtro: $t");
                     }
                 }
                 if (!empty($condiciones)) {

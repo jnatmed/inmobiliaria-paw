@@ -303,19 +303,24 @@ class PublicacionCollection extends Model
         return $this->queryBuilder->countRows('publicaciones');
     }
 
-
-
-
     public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser)
     {
         try {
+
+
+            $tipos_alojamiento = $this->queryBuilder->traerTipos();
+     
+            // Extraer solo los IDs usando array_map
+            $allowedTipos = array_map(function($tipo) {
+                return $tipo['id'];
+            }, $tipos_alojamiento);            
 
             $result = $this->queryBuilder->getFilterWithImages(
                 $this->table, // Nombre de la tabla principal (publicaciones)
                 'imagenes_publicacion', // Nombre de la tabla de imágenes
                 'id', // Nombre de la clave primaria en la tabla principal
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
-                $zona, $tipo, $precio, $instalaciones, // Filtros
+                $zona, $tipo, $allowedTipos, $precio, $instalaciones, // Filtros
                 $idUser
             );
     
