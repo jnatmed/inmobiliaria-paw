@@ -23,7 +23,7 @@
                         <p class="publicacion-datos">{{ publicacion.descripcion_alojamiento|nl2br|e }}</p>
                         <p class="publicacion-datos">Direccion: {{ publicacion.direccion|e }}</p>
                         <p class="publicacion-datos">Capacidad: {{ publicacion.capacidad_maxima|e }}</p>
-                        <p class="publicacion-datos">Tipo: {{ publicacion.tipo_alojamiento|e }}</p>
+                        <p class="publicacion-datos">Tipo: {{ publicacion.descripcion_tipo|capitalize }}</p>
                         <p class="publicacion-datos">Baños: {{ publicacion.cant_banios|e }}</p>
                         <p class="publicacion-datos">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
                         <p class="publicacion-datos">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>

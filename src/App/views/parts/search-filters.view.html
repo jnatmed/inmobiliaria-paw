@@ -5,8 +5,8 @@
 
 <section class="filtro-group">
     <p>Precio</p>
-    <input type="range" id="precio" name="precio" min="0" max="{{ mayorPrecio }}" step="5000" value="{{ precio ? precio : 0 }}" oninput="actualizarPrecio(this.value)">
-    <h3 id="precio-valor">{{ precio ? precio : "-" }}</h3>
+    <input type="range" id="precio" name="precio" min="0" max="{{ mayorPrecio }}" step="5000" value="{{ precio ? precio|number_format(0, ',', '.') : 0 }}" oninput="actualizarPrecio(this.value)">
+    <h3 id="precio-valor">{{ precio ? precio|number_format(0, ',', '.') : "-" }}</h3>
 </section>
 
 <section class="filtro-group">

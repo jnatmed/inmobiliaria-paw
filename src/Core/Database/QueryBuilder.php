@@ -289,67 +289,65 @@ class QueryBuilder
                 main.*, 
                 img.id_imagen, 
                 img.path_imagen, 
-                img.nombre_imagen 
+                img.nombre_imagen,
+                tipo.descripcion_tipo
             FROM 
                 {$mainTable} main
             LEFT JOIN 
-                {$imageTable} img
-            ON 
-                main.{$mainTableKey} = img.{$foreignKey}
+                {$imageTable} img ON main.{$mainTableKey} = img.{$foreignKey}
+            LEFT JOIN 
+                tipos_alojamiento tipo ON main.tipo_alojamiento_id = tipo.id
             WHERE 1=1
-        ";
+            ";
             $params = [];
-
+    
             if ($precio) {
                 $sql .= " AND main.precio <= :precio";
                 $params[':precio'] = $precio;
             }
-
+    
             if ($idUser) {
                 $sql .= " AND main.id_usuario = :idUser";
                 $params[':idUser'] = $idUser;
             }
-
+    
             if (!empty($tipo)) {
                 $allowedTipos = ['casa', 'departamento', 'quinta'];
                 $condiciones = [];
                 foreach ($tipo as $t) {
                     if (in_array($t, $allowedTipos)) {
-                        $condiciones[] = "main.tipo_alojamiento = '{$t}'";
+                        $condiciones[] = "tipo.descripcion_tipo = '{$t}'";
                     }
                 }
-                // Si hay condiciones validas, agregarlas a la query
                 if (!empty($condiciones)) {
                     $sql .= " AND (" . implode(' OR ', $condiciones) . ")";
                 }
             }
-
+    
             if (!empty($instalaciones)) {
-                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi']; // Instalaciones validas para evitar inyecciones
+                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi'];
                 foreach ($instalaciones as $instalacion) {
                     if (in_array($instalacion, $allowedInstalaciones)) {
                         $sql .= " AND main.{$instalacion} = 1";
                     }
                 }
             }
-
+    
             if ($zona) {
                 $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
             }
-
-
+    
             $this->logger->debug("SQL: " , [$sql]);
-
+    
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value);
             }
             $stmt->execute();
-
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Logging the error
             $this->logger->error("Error in getFilterWithImages: " . $e->getMessage());
             return false;
         }
