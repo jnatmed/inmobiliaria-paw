@@ -48,6 +48,9 @@
                 <p class="details-depto__descripcion">
                     {{ publicacion.descripcion_alojamiento }}
                 </p>
+                <p class="details-depto__descripcion">
+                    Direccion: {{ publicacion.direccion }}
+                </p>
                 <hr>
                 {% set normas = publicacion.normas_alojamiento | split(',') %}
                 <ul class="details-depto__normas">

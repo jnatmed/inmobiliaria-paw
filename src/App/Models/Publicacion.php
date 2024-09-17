@@ -84,6 +84,7 @@ class Publicacion extends Model
 
         // Continuar con la asignación de otros campos
         $this->setPrecio($data['precio'] ?? null);
+        $this->setDireccion($data['direccion_completa'] ?? null);
         $this->setNombreAlojamiento($data['nombre_alojamiento'] ?? null);
         $this->setTipoAlojamientoId($data['tipo_alojamiento_id'] ?? null);
         $this->setCapacidadMaxima($data['capacidad_maxima'] ?? null);

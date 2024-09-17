@@ -340,6 +340,7 @@ class PublicacionController extends Controller
                 $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
                 $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
                 $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
+                $direccion_completa = sanitize($this->request->get('direccion_completa'), $errors, 'direccion_completa');
                 $precio = sanitize($this->request->get('precio'), $errors, 'precio');
                 $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'), $errors, 'nombre-alojamiento');
                 $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'), $errors, 'tipo-alojamiento');
@@ -362,6 +363,7 @@ class PublicacionController extends Controller
                         'provincia' => $provincia,
                         'codigo_postal' => $codigo_postal,
                         'direccion' => $direccion,
+                        'direccion_completa' => $direccion_completa,
                         'precio' => $precio,
                         'nombre_alojamiento' => $nombreAlojamiento,
                         'tipo_alojamiento_id' => $tipoAlojamiento,
