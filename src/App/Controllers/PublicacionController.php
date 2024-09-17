@@ -565,7 +565,7 @@ class PublicacionController extends Controller
 
                 redirect('mis_publicaciones/reservas');
             } else {
-                throw new Exception("ID de publicación o reserva no proporcionado: " . $e->getMessage());
+                throw new Exception("ID de publicación o reserva no proporcionado: ");
             }
         } catch (Exception $e) {
             $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());

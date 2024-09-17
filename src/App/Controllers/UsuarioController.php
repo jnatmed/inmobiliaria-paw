@@ -2,6 +2,7 @@
 
 namespace Paw\App\Controllers;
 
+use Exception;
 use PDOException;
 
 use Paw\App\Models\UserCollection;
@@ -219,7 +220,7 @@ class UsuarioController extends Controller
                     'email' => $email,
                     'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
                     'telefono' => $telefono,
-                    'tipo_usuario' => 1
+                    'tipo_usuario_id' => 1
                 ];
 
                 // Insertar el nuevo usuario en la base de datos
@@ -233,10 +234,9 @@ class UsuarioController extends Controller
                         'exito' => $resultado['exito'],
                         'titulo' => $titulo
                     ];
-                    view('register-exito.view', array_merge(
-                        $datos,
-                        $this->menuAndSession
-                    ));
+
+                    redirect('');
+
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("error: ", [$error]);
@@ -263,6 +263,21 @@ class UsuarioController extends Controller
                     $this->menuAndSession
                 ));
             }
+            catch (Exception $e) {
+
+                $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
+
+                // Mostrar un mensaje de error genérico al usuario
+                $error = 'Error al registrar el usuario';
+                $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
+
+                view('register.view', array_merge(
+                    ['error' => $resultado['error']],
+                    $this->menuAndSession
+                ));
+            }            
+            
+            
         } else {
             $datos = ['titulo' => $titulo];
             view('register.view', array_merge(

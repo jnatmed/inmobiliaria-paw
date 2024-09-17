@@ -134,36 +134,85 @@ class QueryBuilder
     }
 
 
-    public function insert($table, $data)
-    {
-        try {
-            $this->logger->info("Data -> " , [$data]);
-            $columnas = implode(', ', array_keys($data));
-            $this->logger->info("Columnas -> " , [$columnas]);
-            $valores = ':' . implode(', :', array_keys($data));
-            $this->logger->info("Valores -> " , [$valores]);
-            $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
-            $sentencia = $this->pdo->prepare($query);
+    public function insert($table, $data, $uniqs = []) 
+    { 
+        try { 
+            // Log de los datos
+            $this->logger->info("Data -> ", [$data]);
 
-            // Asignar valores a los parámetros
-            foreach ($data as $clave => $valor) {
-                $sentencia->bindValue(":$clave", $valor);
+            $result['hay_repetidos'] = false;
+            // Validación de claves únicas
+            if (!empty($uniqs)) {
+                $result['hay_repetidos'] = $this->validateUniqueKeys($table, $data, $uniqs);
+            }
+    
+            if (!$result['hay_repetidos']){
+                // Preparar columnas y valores
+                $columnas = implode(', ', array_keys($data)); 
+                $this->logger->info("Columnas -> ", [$columnas]);
+                
+                $valores = ':' . implode(', :', array_keys($data)); 
+                $this->logger->info("Valores -> ", [$valores]);
+                
+                // Construir la consulta
+                $query = "INSERT INTO $table ($columnas) VALUES ($valores)"; 
+                $sentencia = $this->pdo->prepare($query); 
+                
+                // Asignar valores a los parámetros
+                foreach ($data as $clave => $valor) { 
+                    $sentencia->bindValue(":$clave", $valor); 
+                } 
+                
+                // Ejecutar la consulta
+                $resultado = $sentencia->execute(); 
+                
+                // Obtener el ID generado
+                $idGenerado = $this->pdo->lastInsertId(); 
+                
+                // Log de resultados
+                $this->logger->debug("idGenerado : {$idGenerado}, resultado : {$resultado}"); 
+                
+                return [$idGenerado, $resultado]; 
+            }else{
+
+                $this->logger->error('Error en la inserción: ya existe un usuario con ese email'); 
+                throw new Exception('Error en la inserción: ya existe un usuario con ese email'); 
+    
             }
 
-            $resultado = $sentencia->execute();
-
-            $idGenerado = $this->pdo->lastInsertId();
-
-            $this->logger->debug("idGenerado : {$idGenerado}, resultado : {$resultado}");
-
-            return [$idGenerado, $resultado];
-        } catch (PDOException $e) {
+        } 
+        catch (PDOException $e) { 
+            // Manejo de errores y excepciones
+            $this->logger->error('Error en la inserción: ' . $e->getMessage()); 
+            return [null, false]; 
+        } 
+        catch (Exception $e) {
             // Manejo de errores y excepciones
             $this->logger->error('Error en la inserción: ' . $e->getMessage());
-            return [null, false];
-        }
+            
+            // Retornar una estructura que indique que hubo un error
+            return [null, false]; 
+        }        
     }
-
+    
+    // Método para validar claves únicas
+    private function validateUniqueKeys($table, $data, $uniqs) 
+    { 
+        foreach ($uniqs as $uniqueKey) { 
+            if (array_key_exists($uniqueKey, $data)) {
+                $query = "SELECT COUNT(*) FROM $table WHERE $uniqueKey = :value"; 
+                $sentencia = $this->pdo->prepare($query); 
+                $sentencia->bindValue(':value', $data[$uniqueKey]); 
+                $sentencia->execute(); 
+                $count = $sentencia->fetchColumn();
+                
+                if ($count > 0) { 
+                    return true; 
+                } 
+            }
+        } 
+    }
+    
     public function insertMany($table, $data)
     {
         try {

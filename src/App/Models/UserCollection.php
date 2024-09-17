@@ -123,14 +123,21 @@ class UserCollection extends Model
      public function insert($table, $data)
      {
         global $log;
-         try {
+        try {
              // Llamar al método insert del QueryBuilder y devolver el resultado
-             return $this->queryBuilder->insert($table, $data);
-         } catch (PDOException $e) {
+             return $this->queryBuilder->insert($table, $data, ['email']);
+        } catch (PDOException $e) {
              // Capturar excepción y manejarla
              $log->error("error al registrar: ", ["Error al insertar datos en la tabla $table: " . $e->getMessage()]);
-             return false; // O devuelve un valor que indique que hubo un error
+             return [null, false];  // O devuelve un valor que indique que hubo un error
          }
+         catch (Exception $e) {
+            // Manejo de errores y excepciones
+            $this->logger->error('Error en la inserción: ' . $e->getMessage());
+            
+            // Retornar una estructura que indique que hubo un error
+            return [null, false]; 
+        }     
      }
 
 
