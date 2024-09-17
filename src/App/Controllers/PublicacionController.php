@@ -62,7 +62,7 @@ class PublicacionController extends Controller
                 $tipo = [];
                 $this->logger->debug("no es array []");
             }
-            $this->logger->debug("tipo: LISTAR", $tipo);
+            $this->logger->debug("tipo: LISTAR", [$tipo]);
 
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
