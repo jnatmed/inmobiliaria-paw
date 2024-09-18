@@ -5,15 +5,21 @@
 
 <section class="filtro-group">
     <p>Precio</p>
-    <input type="range" id="precio" name="precio" min="0" max="1000000" step="5000" value="{{ precio ? precio : 0 }}" oninput="actualizarPrecio(this.value)">
-    <h3 id="precio-valor">{{ precio ? precio : "-" }}</h3>
+    <input type="range" id="precio" name="precio" min="0" max="{{ mayorPrecio }}" step="5000" value="{{ precio ? precio|number_format(0, ',', '.') : 0 }}" oninput="actualizarPrecio(this.value)">
+    <h3 id="precio-valor">{{ precio ? precio|number_format(0, ',', '.') : "-" }}</h3>
 </section>
 
 <section class="filtro-group">
     <p>Tipo</p>
-    <label><input type="checkbox" name="tipo[]" value="casa" {{ 'casa' in tipos ? 'checked' : '' }}> Casa</label>
-    <label><input type="checkbox" name="tipo[]" value="departamento" {{ 'departamento' in tipos ? 'checked' : '' }}> Departamento</label>
-    <label><input type="checkbox" name="tipo[]" value="quinta" {{ 'quinta' in tipos ? 'checked' : '' }}> Quinta</label>
+    {% if tipos_alojamiento is not empty %}
+        {% for tipo in tipos_alojamiento %}
+            <label>
+                <input type="checkbox" name="tipo[]" value="{{ tipo.id }}" 
+                {{ tipo.descripcion_tipo in tipos ? 'checked' : '' }}>
+                {{ tipo.descripcion_tipo|capitalize }}
+            </label>
+        {% endfor %}
+    {% endif %}
 </section>
 
 <section class="filtro-group">

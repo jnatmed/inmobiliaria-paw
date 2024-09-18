@@ -330,7 +330,7 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser)
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $allowedTipos, $precio, $instalaciones, $idUser)
     {
         try {
             $sql = "
@@ -338,67 +338,68 @@ class QueryBuilder
                 main.*, 
                 img.id_imagen, 
                 img.path_imagen, 
-                img.nombre_imagen 
+                img.nombre_imagen,
+                tipo.descripcion_tipo
             FROM 
                 {$mainTable} main
             LEFT JOIN 
-                {$imageTable} img
-            ON 
-                main.{$mainTableKey} = img.{$foreignKey}
+                {$imageTable} img ON main.{$mainTableKey} = img.{$foreignKey}
+            LEFT JOIN 
+                tipos_alojamiento tipo ON main.tipo_alojamiento_id = tipo.id
             WHERE 1=1
-        ";
+            ";
             $params = [];
-
+    
             if ($precio) {
                 $sql .= " AND main.precio <= :precio";
                 $params[':precio'] = $precio;
             }
-
+    
             if ($idUser) {
                 $sql .= " AND main.id_usuario = :idUser";
                 $params[':idUser'] = $idUser;
             }
-
+    
             if (!empty($tipo)) {
-                $allowedTipos = ['casa', 'departamento', 'quinta'];
+                // $allowedTipos = ['casa', 'departamento', 'quinta'];
                 $condiciones = [];
+                // $this->logger->debug("Tipos Querybuilder:", [$allowedTipos]);
                 foreach ($tipo as $t) {
+                    // $this->logger->debug("Tipo a buscar: $t");
                     if (in_array($t, $allowedTipos)) {
-                        $condiciones[] = "main.tipo_alojamiento = '{$t}'";
+                        $condiciones[] = "tipo.id = '{$t}'";
+                        // $this->logger->debug("agrego a filtro: $t");
                     }
                 }
-                // Si hay condiciones validas, agregarlas a la query
                 if (!empty($condiciones)) {
                     $sql .= " AND (" . implode(' OR ', $condiciones) . ")";
                 }
             }
-
+    
             if (!empty($instalaciones)) {
-                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi']; // Instalaciones validas para evitar inyecciones
+                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi'];
                 foreach ($instalaciones as $instalacion) {
                     if (in_array($instalacion, $allowedInstalaciones)) {
                         $sql .= " AND main.{$instalacion} = 1";
                     }
                 }
             }
-
+    
             if ($zona) {
                 $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
             }
-
-
+    
             $this->logger->debug("SQL: " , [$sql]);
-
+    
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value);
             }
             $stmt->execute();
-
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Logging the error
             $this->logger->error("Error in getFilterWithImages: " . $e->getMessage());
             return false;
         }
@@ -568,4 +569,32 @@ class QueryBuilder
             return false;
         }
     }    
+
+    public function selectMaxPrice($table)
+    {
+        try {
+            // Consulta para obtener el mayor valor del campo `precio`
+            $query = "SELECT MAX(precio) AS max_precio FROM {$table}";
+            
+            // Preparar la sentencia
+            $stmt = $this->pdo->prepare($query);
+            
+            // Ejecutar la consulta
+            $stmt->execute();
+            
+            // Obtener el resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Registrar la consulta y el resultado
+            $this->logger->info("Consulta SQL: ", [$query]);
+            $this->logger->info("Resultado selectMaxPrice: ", [$result]);
+            
+            // Retornar el valor máximo
+            return $result['max_precio'];
+        } catch (PDOException $e) {
+            // Manejo de errores
+            $this->logger->error('Error al obtener el mayor valor del campo precio: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        }
+    }
 }

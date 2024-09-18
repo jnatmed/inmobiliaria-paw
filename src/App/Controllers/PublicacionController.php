@@ -62,7 +62,7 @@ class PublicacionController extends Controller
                 $tipo = [];
                 $this->logger->debug("no es array []");
             }
-            $this->logger->debug("tipo: ", $tipo);
+            $this->logger->debug("tipo: LISTAR", [$tipo]);
 
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
@@ -70,6 +70,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+            $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
             $this->logger->info("Publicaciones: ", [$publicaciones]);
 
@@ -77,6 +78,7 @@ class PublicacionController extends Controller
                 'zona' => $zona,
                 'tipos' => $tipo,
                 'precio' => $precio,
+                'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
                 'titulo' => "PAWPERTIES | PROPIEDADES"
@@ -91,7 +93,8 @@ class PublicacionController extends Controller
             $this->logger->debug("dato (antes de pasar a la vista): ", $datos);
             $this->logger->debug("menuAndSession (antes de pasar a la vista): ", $this->menuAndSession);
 
-            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession));
+            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession, $this->model->traerTipos()));
+
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -337,6 +340,7 @@ class PublicacionController extends Controller
                 $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
                 $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
                 $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
+                $direccion_completa = sanitize($this->request->get('direccion_completa'), $errors, 'direccion_completa');
                 $precio = sanitize($this->request->get('precio'), $errors, 'precio');
                 $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'), $errors, 'nombre-alojamiento');
                 $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'), $errors, 'tipo-alojamiento');
@@ -359,6 +363,7 @@ class PublicacionController extends Controller
                         'provincia' => $provincia,
                         'codigo_postal' => $codigo_postal,
                         'direccion' => $direccion,
+                        'direccion_completa' => $direccion_completa,
                         'precio' => $precio,
                         'nombre_alojamiento' => $nombreAlojamiento,
                         'tipo_alojamiento_id' => $tipoAlojamiento,

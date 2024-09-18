@@ -7,20 +7,18 @@
   * `.env`
 * Crear la base de datos `mvc-pawperties`.
 
-## 2) INSTALACION DE PHINX
+## 2) INSTALACION DE COMPOSER
 
-* `composer require robmorgan/phinx`
-Luego ejecutar `phinx` desde `vendor/bin/phinx`
-* `vendor/bin/phinx migration`
-* Ejecutar migrations: `vendor/bin/phinx migrate -e development`.
-
+* Para sistemas Windows:
+  * Descargar el instalador del siguiente [enlace](https://getcomposer.org/Composer-Setup.exe).
+  
 ## 3) INSTALACION DE PHP
 
 * Descargar PHP desde el siguiente [link](https://windows.php.net/downloads/releases/php-8.3.6-nts-Win32-vs16-x64.zip).
   * Descomprimir el archivo zip y cambiar el nombre a `php`.
   * Mover la carpeta a `c:\\php`.
   * Agregar dicha ruta a las variables de entorno.
-
+    
 ### 3.1) CONFIGURACION DEL ARCHIVO `php.ini`
 
 * Descomentar las siguientes líneas en `php.ini`:
@@ -28,11 +26,14 @@ Luego ejecutar `phinx` desde `vendor/bin/phinx`
   * `extension=pdo_mysql`.
 * Aumentar tamaño de `upload_max_filesize` a 10M:
   * `upload_max_filesize = 10M`.
+    
+## 4) INSTALACION DE PHINX
 
-## 4) INSTALACION DE COMPOSER
-
-* Para sistemas Windows:
-  * Descargar el instalador del siguiente [enlace](https://getcomposer.org/Composer-Setup.exe).
+* `composer require robmorgan/phinx`
+Luego ejecutar `phinx` desde `vendor/bin/phinx`
+* `vendor/bin/phinx migration`
+* Ejecutar las migrations: `vendor/bin/phinx migrate -e development`.
+* Ejecutar los seeder: `vendor/bin/phinx seed:run`.
 
 ## 5) Instalacion y Ejecucion del Proyecto
 

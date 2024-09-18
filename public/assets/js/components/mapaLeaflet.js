@@ -34,6 +34,7 @@ class MapaLeaflet {
                     const coordenadasJSON = JSON.stringify(position);
 
                     document.querySelector('#direccion').value = coordenadasJSON;
+                    document.querySelector('#direccion_completa').value = data[0].display_name;
 
                     marker.on('dragend', async function (event) {
                         const marker = event.target;
@@ -41,6 +42,7 @@ class MapaLeaflet {
                         const coordenadasJSON = JSON.stringify(position);
 
                         document.querySelector('#direccion').value = coordenadasJSON;
+                        document.querySelector('#direccion_completa').value = position.display_name;
 
                         // Actualizar Codigo Postal y provincia después de arrastrar el marcador
                         await this.actualizarCodigoPostalProvincia(position.lat, position.lng);
