@@ -65,17 +65,35 @@ class PublicacionController extends Controller
         try {
             $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = $this->request->get('tipo') ?? [];
 
             $tipo = $this->request->get('tipo');
-            if (is_array($tipo) && isset($tipo[0]) && is_array($tipo[0])) {
-                $tipo = $tipo[0]; // Asegura que tipo sea un array simple
-                $this->logger->debug("es array multidimensional");
-            } elseif (is_null($tipo)) {
+
+            // Verifica si $tipo es null o vacío, y ajusta según el tipo de input
+            if (is_array($tipo)) {
+                // Viene de los checkboxes
+                // Si no es un array, inicializa como un array vacío
+                $tipo = $tipo ?? [];
+            } elseif (is_string($tipo)) {
+                // Viene del select, revisa si tiene un valor seleccionado
+                if (empty($tipo)) {
+                    $tipo = []; // Si es un string vacío, lo tratamos como un array vacío
+                } else {
+                    // Si tiene un valor, lo convertimos a array para manejarlo de forma consistente
+                    $tipo = [$tipo];
+                }
+            } else {
+                // En caso de no recibir nada
                 $tipo = [];
-                $this->logger->debug("no es array []");
             }
-            $this->logger->debug("tipo: LISTAR", [$tipo]);
+
+            // if (is_array($tipo) && isset($tipo[0]) && is_array($tipo[0])) {
+            //     $tipo = $tipo[0]; // Asegura que tipo sea un array simple
+            //     $this->logger->debug("es array multidimensional");
+            // } elseif (is_null($tipo)) {
+            //     $tipo = [];
+            //     $this->logger->debug("no es array []");
+            // }
+            // $this->logger->debug("tipo: LISTAR", [$tipo]);
 
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
