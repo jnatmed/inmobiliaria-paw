@@ -27,6 +27,7 @@ class PageController extends Controller
         
         $this->usuario = new UsuarioController();
         
+        
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;

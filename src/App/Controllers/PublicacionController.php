@@ -47,6 +47,19 @@ class PublicacionController extends Controller
         $this->menuAndSession = $this->usuario->menuAndSession;
     }
 
+    public function index()
+    {
+        $datos = ['titulo' => "PAWPERTIES | HOME"];
+        
+        
+
+        view('home.view', array_merge(
+            $this->menuAndSession, 
+            $datos,
+            $this->model->traerTipos()
+        ));        
+    }
+
     public function list()
     {
         try {
