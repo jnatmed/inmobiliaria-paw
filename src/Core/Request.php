@@ -73,5 +73,13 @@ class Request
 
         // Verifica que la URL pertenezca al mismo dominio y no contenga patrones maliciosos
         return $host === $localHost && !preg_match('/[\r\n]/', $url) && strpos($path, '/publicacion/ver') === 0;
+    }
+        
+    public function host()
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+    
+        return $protocol . $host;
     }    
 }

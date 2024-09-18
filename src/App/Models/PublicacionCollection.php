@@ -13,7 +13,6 @@ use Paw\App\Utils\Verificador;
 use PDOException;
 use Paw\App\Models\Publicacion;
 
-
 class PublicacionCollection extends Model 
 {
     public $table = 'publicaciones';

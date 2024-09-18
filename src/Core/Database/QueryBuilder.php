@@ -176,22 +176,24 @@ class QueryBuilder
             }else{
 
                 $this->logger->error('Error en la inserción: ya existe un usuario con ese email'); 
-                throw new Exception('Error en la inserción: ya existe un usuario con ese email'); 
+                throw new Exception('Ya existe un usuario con ese email'); 
     
             }
 
         } 
         catch (PDOException $e) { 
             // Manejo de errores y excepciones
-            $this->logger->error('Error en la inserción: ' . $e->getMessage()); 
-            return [null, false]; 
+            $msjError = 'Error en la inserción: ' . $e->getMessage();
+            $this->logger->error($msjError); 
+            return [null, $msjError]; 
         } 
         catch (Exception $e) {
             // Manejo de errores y excepciones
-            $this->logger->error('Error en la inserción: ' . $e->getMessage());
+            $msjError = 'Error en la inserción: ' . $e->getMessage();
+            $this->logger->error($msjError);
             
             // Retornar una estructura que indique que hubo un error
-            return [null, false]; 
+            return [null, $msjError]; 
         }        
     }
     

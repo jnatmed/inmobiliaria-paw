@@ -601,9 +601,31 @@ class PublicacionController extends Controller
             $accion = $this->request->getSegments(2);
             $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
 
+            
+
             if (!is_null($idPublicacion)) {
 
                 $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
+
+                /**
+                 * enviar comunicacion a interesado 
+                 */
+                $body = view('correoDeCambioEstadoPublicacion', [
+                    'fullUrl' => $this->request->host() ."/mis_publicaciones/reservas"
+                ], true);
+
+                // Aca enviar un correo al usuario que esta logueado       
+                $resultadoSend = $this->mailer->send(
+                    $this->usuario->getEmailAddress(),
+                    "Cambio el estado de la publicacion: ",
+                    $body
+                );
+
+                if ($resultadoSend) {
+                    $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+                } else {
+                    $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+                }
 
                 redirect('publicaciones/gestionar');
             } else {

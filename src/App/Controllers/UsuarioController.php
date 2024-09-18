@@ -202,7 +202,7 @@ class UsuarioController extends Controller
             $nombre = htmlspecialchars($this->request->get('nombre'));
             $apellido = htmlspecialchars($this->request->get('apellido'));
             $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
-            $contrasenia_repetida = htmlspecialchars($this->request->get('contrasenia_check'));
+            $contrasenia_repetida = htmlspecialchars($this->request->get('contrasenia-check'));
             $telefono = htmlspecialchars($this->request->get('telefono'));
 
             // Verificar si las contraseñas coinciden
@@ -226,7 +226,7 @@ class UsuarioController extends Controller
                 // Insertar el nuevo usuario en la base de datos
                 list($idUsuario, $resultado) = $this->model->insert('usuarios', $nuevoUsuario);
 
-                if ($resultado) {
+                if (!is_null($idUsuario)) {
                     $log->info("registro exitoso del usuario {$nombre}");
                     $resultado = [];
                     $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
@@ -239,12 +239,13 @@ class UsuarioController extends Controller
 
                 } else {
                     $error = 'Error al registrar el usuario';
-                    $log->error("error: ", [$error]);
-                    $resultado['error'] = $error;
+                    $log->error("(UsuarioController) error: ", [$resultado]);
+
                     $datos = [
-                        'error' => $resultado['error'],
+                        'error' => $resultado,
                         'titulo' => $titulo
                     ];
+
                     view('register.view', array_merge(
                         $datos,
                         $this->menuAndSession
@@ -254,12 +255,8 @@ class UsuarioController extends Controller
 
                 $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
 
-                // Mostrar un mensaje de error genérico al usuario
-                $error = 'Error al registrar el usuario';
-                $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
-
                 view('register.view', array_merge(
-                    ['error' => $resultado['error']],
+                    ['error' => "Error al registrar el usuario: " . $e->getMessage()],
                     $this->menuAndSession
                 ));
             }
@@ -267,12 +264,8 @@ class UsuarioController extends Controller
 
                 $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
 
-                // Mostrar un mensaje de error genérico al usuario
-                $error = 'Error al registrar el usuario';
-                $resultado['error'] = "Error al registrar el usuario: " . $e->getMessage();
-
                 view('register.view', array_merge(
-                    ['error' => $resultado['error']],
+                    ['error' => "Error al registrar el usuario: " . $e->getMessage()],
                     $this->menuAndSession
                 ));
             }            
