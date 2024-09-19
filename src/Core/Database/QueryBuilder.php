@@ -513,7 +513,7 @@ class QueryBuilder
                     publicaciones ON publicaciones.id = reservas_publicacion.id_publicacion
                 WHERE
                     publicaciones.id_usuario = :id_usuario
-                    AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
+                    
             ";
 
             $this->logger->info("id usuario: $id_usuario");
