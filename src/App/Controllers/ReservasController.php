@@ -18,6 +18,7 @@ class ReservasController extends Controller
     public $usuario;
     public $mailer;
     public $menuAndSession;
+    public $publicationCollection;
 
     public function __construct()
     {
@@ -33,6 +34,8 @@ class ReservasController extends Controller
 
         $this->menuAndSession = $this->usuario->menuAndSession;
 
+        $this->publicationCollection = new PublicacionCollection();
+
     }
 
     public function reservas()
@@ -46,14 +49,15 @@ class ReservasController extends Controller
 
             // Obtén las reservas usando el modelo
             $reservas = $this->model->getReservas($id_publicacion);
+            $publicacion = $this->publicationCollection->getOne($id_publicacion);
 
             // Codifica las reservas a JSON para su uso en JavaScript
             $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
+            $this->logger->info("publicacion: $publicacion");
             $this->logger->info("periodos_json: $periodos_json");
 
             view('publicaciones.reservas.view');
-            // require $this->viewsDir . 'reservas-propiedad.view.php';
         } catch (Exception $e) {
             $this->logger->error('Error al obtener las reservas: ' . $e->getMessage());
             // Puedes redirigir a una página de error o mostrar un mensaje de error

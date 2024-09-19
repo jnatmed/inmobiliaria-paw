@@ -531,7 +531,7 @@ class PublicacionController extends Controller
                 'titulo' => "PAWPERTIES | RESERVAS"
             ];
 
-            $this->logger->info("RESERVAS : ", [$datos]);
+            $this->logger->info("RESERVAS : ", [$reservas]);
 
             view('publicaciones.reservas.view', array_merge(
                 $datos,
