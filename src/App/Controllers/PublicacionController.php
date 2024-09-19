@@ -522,7 +522,7 @@ class PublicacionController extends Controller
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-
+            
             $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
 
             $datos = [

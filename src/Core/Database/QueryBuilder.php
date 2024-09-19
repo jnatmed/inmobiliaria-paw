@@ -505,7 +505,8 @@ class QueryBuilder
                     reservas_publicacion.fecha_fin AS hasta,
                     reservas_publicacion.notas AS nota,
                     reservas_publicacion.id_publicacion AS id_pub,
-                    reservas_publicacion.estado_reserva
+                    reservas_publicacion.estado_reserva,
+                    publicaciones.nombre_alojamiento
                 FROM
                     reservas_publicacion
                 INNER JOIN

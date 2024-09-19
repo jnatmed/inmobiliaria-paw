@@ -29,7 +29,7 @@
                     {% for reserva in reservas %}
                         <tr>
                             <td>{{ reserva.id_reserva | e }}</td>
-                            <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.id_pub }}</a></td>
+                            <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.nombre_alojamiento }}</a></td>
                             <td>{{ reserva.desde | e }}</td>
                             <td>{{ reserva.hasta | e }}</td>
                             <td>{{ reserva.estado_reserva | e }}</td>
@@ -52,7 +52,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>ID Publicacion</th>
+                        <th>Alojamiento</th>
                         <th>Desde</th>
                         <th>Hasta</th>
                         <th>Estado</th>
@@ -65,7 +65,7 @@
                         {% if reserva.id_usuario_reserva == idUserSesion %}                        
                             <tr>
                                 <td>{{ reserva.id_publicacion | e }}</td>
-                                <td><a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">{{ reserva.id_publicacion }}</a></td>
+                                <td><a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">{{ reserva.nombre_alojamiento }}</a></td>
                                 <td>{{ reserva.fecha_inicio | e }}</td>
                                 <td>{{ reserva.fecha_fin | e }}</td>
                                 <td>{{ reserva.estado_reserva | e }}</td>
