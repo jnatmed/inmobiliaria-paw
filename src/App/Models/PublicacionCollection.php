@@ -241,7 +241,7 @@ class PublicacionCollection extends Model
                     foreach ($row as $key => $value) {
                         $publicaciones[$id][$key] = $value;
                     }
-                    $publicaciones[$id]["url"] = "/publicacion/ver?id_pub={$id}";
+                    $publicaciones[$id]["url_pub"] = "/publicacion/ver?id_pub={$id}";
                     $publicaciones[$id]["img_principal"] = "/publicacion?id_pub={$id}&id_img={$id_imagen}";
                 }
             }

@@ -113,18 +113,21 @@ class MapaLeaflet {
             const lon = publicacion.longitud;
             const nombre = publicacion.nombre_alojamiento;
             const precio = publicacion.precio;
-            const url = `${window.location.origin}${publicacion.img_principal}`;
+            const url_pub = `${window.location.origin}${publicacion.url_pub}`;
+            const url_imagen = `${window.location.origin}${publicacion.img_principal}`;
             const direccion = publicacion.direccion;
 
-            console.log(`<img src="${url}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />`);
+            // console.log(`<img src="${url}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />`);
             const contenido = `
-            <div style="text-align: center;">
-                <img src="${url}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />
-                <h1 style="font-size: 1.5rem; font-weight: bold;">$${precio} / noche</h1>
-                <h2 style="font-size: 1.25rem;">${nombre}</h2>
-                <h3 style="font-size: 1rem;">${direccion}</h3>
-            </div>
-        `;
+                <div style="text-align: center;">
+                    <a href="${url_pub}" target="_blank">
+                        <img src="${url_imagen}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />
+                    </a>
+                    <h1 style="font-size: 1.5rem; font-weight: bold;">$${precio} / noche</h1>
+                    <h2 style="font-size: 1.25rem;">${nombre}</h2>
+                    <h3 style="font-size: 1rem;">${direccion}</h3>
+                </div>
+                `;
 
 
             const marcador = L.marker([lat, lon])
@@ -140,7 +143,7 @@ class MapaLeaflet {
             });
 
             marcador.on('click', function () {
-                window.location.href = url;
+                window.location.href = url_pub;
             });
         });
     }
