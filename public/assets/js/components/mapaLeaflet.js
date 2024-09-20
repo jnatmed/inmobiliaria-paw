@@ -112,11 +112,22 @@ class MapaLeaflet {
             const lat = publicacion.latitud;
             const lon = publicacion.longitud;
             const nombre = publicacion.nombre_alojamiento;
+            const precio = publicacion.precio;
             const url = publicacion.url;
+            const direccion = publicacion.direccion;
+
+            const contenido = `
+                <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center">
+                    $${precio} / noche
+                </h1>
+                <h2 style="font-size: 1.25rem; text-align: center">${nombre}</h2>
+                <h3 style="font-size: 1rem; text-align: center">${direccion}</h3>
+             `;
+
 
             const marcador = L.marker([lat, lon])
                 .addTo(this.mapa)
-                .bindPopup(nombre);
+                .bindPopup(contenido);
 
             marcador.on('mouseover', function () {
                 this.openPopup();
@@ -126,7 +137,7 @@ class MapaLeaflet {
                 this.closePopup();
             });
 
-            marcador.on('click', function() {
+            marcador.on('click', function () {
                 window.location.href = url;
             });
         });
