@@ -113,16 +113,18 @@ class MapaLeaflet {
             const lon = publicacion.longitud;
             const nombre = publicacion.nombre_alojamiento;
             const precio = publicacion.precio;
-            const url = publicacion.url;
+            const url = `${window.location.origin}${publicacion.img_principal}`;
             const direccion = publicacion.direccion;
 
+            console.log(`<img src="${url}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />`);
             const contenido = `
-                <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center">
-                    $${precio} / noche
-                </h1>
-                <h2 style="font-size: 1.25rem; text-align: center">${nombre}</h2>
-                <h3 style="font-size: 1rem; text-align: center">${direccion}</h3>
-             `;
+            <div style="text-align: center;">
+                <img src="${url}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />
+                <h1 style="font-size: 1.5rem; font-weight: bold;">$${precio} / noche</h1>
+                <h2 style="font-size: 1.25rem;">${nombre}</h2>
+                <h3 style="font-size: 1rem;">${direccion}</h3>
+            </div>
+        `;
 
 
             const marcador = L.marker([lat, lon])

@@ -235,12 +235,14 @@ class PublicacionCollection extends Model
             $publicaciones = [];
             foreach ($result as $row) {
                 $id = $row['id'];
+                $id_imagen = $row['id_imagen'];
                 if (!isset($publicaciones[$id])) {
                     $publicaciones[$id] = [];
                     foreach ($row as $key => $value) {
                         $publicaciones[$id][$key] = $value;
                     }
                     $publicaciones[$id]["url"] = "/publicacion/ver?id_pub={$id}";
+                    $publicaciones[$id]["img_principal"] = "/publicacion?id_pub={$id}&id_img={$id_imagen}";
                 }
             }
             return array_values($publicaciones);
