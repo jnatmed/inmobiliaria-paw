@@ -51,7 +51,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.645782106051634,
                 'longitud' => -58.39849262386727,
-                'precio' => 25000000,
+                'precio' => 2500,
                 'provincia' => 'Provincia 1',
                 'codigo_postal' => '6712',
                 'direccion' => 'Direccion 1',
@@ -72,7 +72,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.6461351622715,
                 'longitud' => -58.4003547989017,
-                'precio' => 15000000,
+                'precio' => 1500,
                 'provincia' => 'Provincia 2',
                 'codigo_postal' => '1437',
                 'direccion' => 'Direccion 2',
@@ -93,7 +93,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.63695079829552,
                 'longitud' => -58.402421370639885,
-                'precio' => 5000000,
+                'precio' => 500,
                 'provincia' => 'Provincia 3',
                 'codigo_postal' => '1190',
                 'direccion' => 'Direccion 3',
