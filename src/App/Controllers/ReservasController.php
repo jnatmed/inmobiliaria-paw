@@ -7,12 +7,12 @@ use Paw\App\Utils\Uploader;
 use Paw\App\Models\Mailer;
 
 use Paw\Core\Controller;
-use Paw\App\Models\PublicacionCollection;
+use Paw\App\Models\ReservasCollection;
 use Exception;
 
 class ReservasController extends Controller
 {
-    public ?string $modelName = PublicacionCollection::class;
+    public ?string $modelName = ReservasCollection::class;
     public Uploader $uploader;
     public Verificador $verificador;
     public $usuario;
@@ -35,31 +35,83 @@ class ReservasController extends Controller
 
     }
 
-    public function reservas()
+    public function verReservas()
     {
+
         try {
-            /**
-             * envio los periodos que van a estar reservados y los muestro en el front y manipulo javascript
-             */
-            $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
-            $this->logger->info("id_publicacion: $id_publicacion");
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver las reservas."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
-            // Obtén las reservas usando el modelo
-            $reservas = $this->model->getReservas($id_publicacion);
+                $this->usuario->setRedirectTo($this->request->uri(true));
 
-            // Codifica las reservas a JSON para su uso en JavaScript
-            $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
+                redirect('iniciar-sesion');
+            }
 
-            $this->logger->info("periodos_json: $periodos_json");
 
-            view('publicaciones.reservas.view');
-            // require $this->viewsDir . 'reservas-propiedad.view.php';
+            // Obtener las reservas pendientes y confirmadas
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
+            
+            $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
+
+            $datos = [
+                'reservas' => $reservas,
+                'reservasSolicitadasPorUserSesion' => $reservasSolicitadasPorUserSesion,
+                'titulo' => "PAWPERTIES | RESERVAS"
+            ];
+
+            $this->logger->info("RESERVAS : ", [$reservas]);
+
+            view('publicaciones.reservas.view', array_merge(
+                $datos,
+                ['idUserSesion' => $this->usuario->getUserId()],
+                $this->menuAndSession
+            ));
         } catch (Exception $e) {
-            $this->logger->error('Error al obtener las reservas: ' . $e->getMessage());
-            // Puedes redirigir a una página de error o mostrar un mensaje de error
+            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
 
             view('errors/internal_error.view', [
-                'error_message' => "Error al obtener las reservas: " . $e->getMessage()
+                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function actualizarEstadoReserva()
+    {
+        try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver el pedido."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+                redirect('iniciar-sesion');
+            }
+
+            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
+            $accion = $this->request->getSegments(2);
+            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
+            $idReserva = htmlspecialchars($this->request->get('id_reserva'));
+
+            if ($idPublicacion && $idReserva) {
+
+                $this->model->actualizarEstadoReserva($idReserva, $accion);
+
+                redirect('mis_publicaciones/reservas');
+            } else {
+                throw new Exception("ID de publicación o reserva no proporcionado: ");
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
+
+            view('errors/internal_error.view', [
+                'error_message' => "Error General al cancelar la reserva: " . $e->getMessage()
             ]);
         }
     }
