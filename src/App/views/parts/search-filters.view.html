@@ -14,8 +14,7 @@
     {% if tipos_alojamiento is not empty %}
         {% for tipo in tipos_alojamiento %}
             <label>
-                <input type="checkbox" name="tipo[]" value="{{ tipo.id }}" 
-                {{ tipo.descripcion_tipo in tipos ? 'checked' : '' }}>
+                <input type="checkbox" name="tipo[]" value="{{ tipo.id }}"{{ tipo.descripcion_tipo in tipos ? 'checked' : '' }}>
                 {{ tipo.descripcion_tipo|capitalize }}
             </label>
         {% endfor %}
