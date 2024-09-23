@@ -16,15 +16,15 @@
             <!-- FILTROS -->
             <aside class="filtro-container">
                 <h2>Filtros</h2>
-                <form method="GET" action="/publicaciones/list" class="form-filtros">
+                <form id="formFiltros" method="GET" class="form-filtros">
                     {% include 'parts/search-filters.view.html' %}
                 </form>
             </aside>
 
             <!-- PUBLICACIONES -->
-            <section class="publicaciones-list">
-                <h2 class="h2-titulo-publicaciones">Propiedades en Alquiler</h2>
-                {% include 'parts/lista-publicaciones.view.html' %}
+            <section>
+                <h2 class="h2-titulo-publicaciones">{{ subtitulo }}</h2>
+                <section class="publicaciones-list">{% include 'parts/lista-publicaciones.view.html' %}</section>
             </section>
         </section>
     </main>

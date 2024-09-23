@@ -50,61 +50,46 @@ class PublicacionController extends Controller
     public function index()
     {
         $datos = ['titulo' => "PAWPERTIES | HOME"];
-        
-        
 
         view('home.view', array_merge(
-            $this->menuAndSession, 
+            $this->menuAndSession,
             $datos,
             $this->model->traerTipos()
-        ));        
+        ));
     }
 
     public function list()
     {
         try {
+            // Obtener los filtros del request
             $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
             $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
 
             $tipo = $this->request->get('tipo');
 
-            // Verifica si $tipo es null o vacío, y ajusta según el tipo de input
+            // Verificación de tipos
             if (is_array($tipo)) {
-                // Viene de los checkboxes
-                // Si no es un array, inicializa como un array vacío
                 $tipo = $tipo ?? [];
             } elseif (is_string($tipo)) {
-                // Viene del select, revisa si tiene un valor seleccionado
                 if (empty($tipo)) {
-                    $tipo = []; // Si es un string vacío, lo tratamos como un array vacío
+                    $tipo = [];
                 } else {
-                    // Si tiene un valor, lo convertimos a array para manejarlo de forma consistente
                     $tipo = [$tipo];
                 }
             } else {
-                // En caso de no recibir nada
                 $tipo = [];
             }
 
-            // if (is_array($tipo) && isset($tipo[0]) && is_array($tipo[0])) {
-            //     $tipo = $tipo[0]; // Asegura que tipo sea un array simple
-            //     $this->logger->debug("es array multidimensional");
-            // } elseif (is_null($tipo)) {
-            //     $tipo = [];
-            //     $this->logger->debug("no es array []");
-            // }
-            // $this->logger->debug("tipo: LISTAR", [$tipo]);
-
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
-            $instalaciones = array_merge($this->request->get('instalaciones') ?? []); //aplica la funcion a cada elemento del array
+            $instalaciones = array_merge($this->request->get('instalaciones') ?? []);
 
+            // Obtener publicaciones filtradas
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
-            $this->logger->info("Publicaciones: ", [$publicaciones]);
-
+            // Preparar datos para la vista
             $datos = [
                 'zona' => $zona,
                 'tipos' => $tipo,
@@ -112,20 +97,17 @@ class PublicacionController extends Controller
                 'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
-                'titulo' => "PAWPERTIES | PROPIEDADES"
+                'titulo' => "PAWPERTIES | PROPIEDADES",
+                'subtitulo' => "Propiedades en Alquiler"
             ];
 
-            $mergedArray = array_merge(
-                $datos,
-                ['tipo' => $tipo],
-                ['instalaciones' => $instalaciones]
-            );
-
-            $this->logger->debug("dato (antes de pasar a la vista): ", $datos);
-            $this->logger->debug("menuAndSession (antes de pasar a la vista): ", $this->menuAndSession);
-
-            view('publicaciones.list.view',  array_merge($datos, $this->menuAndSession, $this->model->traerTipos()));
-
+            if ($this->request->isAjaxRequest()) {
+                view('parts/lista-publicaciones.view', $datos);
+                $this->logger->debug("REQUEST", ["AJAX"]);
+            } else {
+                view('publicaciones.list.view', array_merge($datos, $this->menuAndSession, $this->model->traerTipos()));
+                $this->logger->debug("REQUEST", ["NO AJAX"]);
+            }
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -231,7 +213,6 @@ class PublicacionController extends Controller
 
     public function listaPublicacionesPropietario()
     {
-
         try {
             // Verificar si hay sesión iniciada
             if (!$this->usuario->isUserLoggedIn()) {
@@ -256,14 +237,11 @@ class PublicacionController extends Controller
             $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
             $instalaciones = $this->request->get('instalaciones') ?? [];
 
-            $this->logger->debug("zona ,tipo , precio $precio, instalaciones,idUser: $idUser", [$zona, $tipo, $instalaciones]);
-
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
-            // var_dump($publicaciones);
-            $this->logger->info("Publicaciones: ", [$publicaciones]);
 
+            // Datos para pasar a la vista
             $datos = [
                 'idUser' => $idUser,
                 'zona' => $zona,
@@ -272,17 +250,22 @@ class PublicacionController extends Controller
                 'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
-                'titulo' => "PAWPERTIES | MIS PROPIEDADES"
+                'titulo' => "PAWPERTIES | MIS PROPIEDADES",
+                'subtitulo' => "Mis Propiedades"
             ];
 
-            view(
-                'publicaciones-propietario.list.view',
-                array_merge(
-                    $datos,
-                    $this->menuAndSession
-                )
-            );
-            // require $this->viewsDir . 'publicaciones-propietario.list.view.php';
+            if ($this->request->isAjaxRequest()) {
+                return view('parts/lista-publicaciones.view', $datos);
+            } else {
+                view(
+                    'publicaciones.list.view',
+                    array_merge(
+                        $datos,
+                        $this->menuAndSession,
+                        $this->model->traerTipos()
+                    )
+                );
+            }
         } catch (PDOException $e) {
             $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
             $this->logger->error($error_message);
@@ -293,10 +276,9 @@ class PublicacionController extends Controller
         }
     }
 
+
     public function getImgPublicacion()
     {
-
-
         $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
         $idImagen = htmlspecialchars($this->request->get('id_img'));
 
@@ -501,6 +483,52 @@ class PublicacionController extends Controller
         }
     }
 
+
+    public function verReservas()
+    {
+
+        try {
+            // Asumiendo que tienes una forma de obtener el id del usuario
+            if (!$this->usuario->isUserLoggedIn()) {
+                $resultado = [
+                    "success" => false,
+                    "message" => "Debe iniciar sesión para ver las reservas."
+                ];
+                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+
+                $this->usuario->setRedirectTo($this->request->uri(true));
+
+                redirect('iniciar-sesion');
+            }
+
+
+            // Obtener las reservas pendientes y confirmadas
+            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
+
+            $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
+
+            $datos = [
+                'reservas' => $reservas,
+                'reservasSolicitadasPorUserSesion' => $reservasSolicitadasPorUserSesion,
+                'titulo' => "PAWPERTIES | RESERVAS"
+            ];
+
+            $this->logger->info("RESERVAS : ", [$reservas]);
+
+            view('publicaciones.reservas.view', array_merge(
+                $datos,
+                ['idUserSesion' => $this->usuario->getUserId()],
+                $this->menuAndSession
+            ));
+        } catch (Exception $e) {
+            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
+
+            view('errors/internal_error.view', [
+                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
+            ]);
+        }
+    }
+
     public function gestionarPublicaciones()
     {
         // Asumiendo que tienes una forma de obtener el id del usuario
@@ -550,7 +578,7 @@ class PublicacionController extends Controller
             $accion = $this->request->getSegments(2);
             $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
 
-            
+
 
             if (!is_null($idPublicacion)) {
 
@@ -560,7 +588,7 @@ class PublicacionController extends Controller
                  * enviar comunicacion a interesado 
                  */
                 $body = view('correoDeCambioEstadoPublicacion', [
-                    'fullUrl' => $this->request->host() ."/mis_publicaciones/reservas"
+                    'fullUrl' => $this->request->host() . "/mis_publicaciones/reservas"
                 ], true);
 
                 // Aca enviar un correo al usuario que esta logueado       
