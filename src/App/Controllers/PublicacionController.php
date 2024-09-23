@@ -70,11 +70,14 @@ class PublicacionController extends Controller
             // Verificación de tipos
             if (is_array($tipo)) {
                 $tipo = $tipo ?? [];
+                $this->logger->debug("tipo ES ARRAY", [$tipo]);
             } elseif (is_string($tipo)) {
-                if (empty($tipo)) {
+                if (empty($tipo) || $tipo == "" || is_null($tipo)) {
                     $tipo = [];
+                    $this->logger->debug("tipo ES string y es null o empty ", [$tipo]);
                 } else {
                     $tipo = [$tipo];
+                    $this->logger->debug("tipo ES string pero tiene valor", [$tipo]);
                 }
             } else {
                 $tipo = [];
