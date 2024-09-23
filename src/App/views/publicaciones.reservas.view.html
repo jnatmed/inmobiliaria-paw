@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/assets/css/tabla-reservas.css">
 </head>
 
-<br class="home">
+<body class="home">
     {% include 'parts/header.view.html' %}
 
     <main>
@@ -16,8 +16,8 @@
             <table class="reservas-tabla">
                 <thead>
                     <tr>
-                        <th>ID Reserva</th>
-                        <th>ID Publicacion</th>
+                        <th>#</th>
+                        <th>Alojamiento</th>
                         <th>Desde</th>
                         <th>Hasta</th>
                         <th>Estado</th>
@@ -29,7 +29,7 @@
                     {% for reserva in reservas %}
                         <tr>
                             <td>{{ reserva.id_reserva | e }}</td>
-                            <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.id_pub }}</a></td>
+                            <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.nombre_alojamiento }}</a></td>
                             <td>{{ reserva.desde | e }}</td>
                             <td>{{ reserva.hasta | e }}</td>
                             <td>{{ reserva.estado_reserva | e }}</td>
@@ -51,8 +51,8 @@
             <table class="reservas-tabla">
                 <thead>
                     <tr>
-                        <th>ID Reserva</th>
-                        <th>ID Publicacion</th>
+                        <th>#</th>
+                        <th>Id Alojamiento</th>
                         <th>Desde</th>
                         <th>Hasta</th>
                         <th>Estado</th>

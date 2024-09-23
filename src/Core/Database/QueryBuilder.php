@@ -320,7 +320,14 @@ class QueryBuilder
     public function getAll($mainTable)
     {
         try {
-            $query = "SELECT main.* FROM {$mainTable} main ";
+            // Modificar la consulta para incluir un INNER JOIN con la tabla imagenes_publicacion
+            $query = "
+                SELECT main.*, MIN(img.id_imagen) as id_imagen 
+                FROM {$mainTable} main
+                INNER JOIN imagenes_publicacion img 
+                    ON main.id = img.id_publicacion
+                GROUP BY main.id
+            ";
 
             $statement = $this->pdo->prepare($query);
             $statement->execute();
@@ -505,14 +512,15 @@ class QueryBuilder
                     reservas_publicacion.fecha_fin AS hasta,
                     reservas_publicacion.notas AS nota,
                     reservas_publicacion.id_publicacion AS id_pub,
-                    reservas_publicacion.estado_reserva
+                    reservas_publicacion.estado_reserva,
+                    publicaciones.nombre_alojamiento
                 FROM
                     reservas_publicacion
                 INNER JOIN
                     publicaciones ON publicaciones.id = reservas_publicacion.id_publicacion
                 WHERE
                     publicaciones.id_usuario = :id_usuario
-                    AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
+                    
             ";
 
             $this->logger->info("id usuario: $id_usuario");

@@ -12,15 +12,17 @@
 
 <section class="container-reserva">
     <article class="container-form">
-        <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
-            <input type="text" name="email_duenio" value="{{ publicacion.email }}" hidden>
-            <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
-            <label for="input-desde" class="lbl-desde">Desde</label>
-            <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
-            <label for="input-hasta" class="lbl-hasta">Hasta</label>
-            <input type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
-            <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
-        </form>
+        {% if publicacion.id_usuario != idUserSesion %}          
+            <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+                <input type="text" name="email_duenio" value="{{ publicacion.email }}" hidden>
+                <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
+                <label for="input-desde" class="lbl-desde">Desde</label>
+                <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
+                <label for="input-hasta" class="lbl-hasta">Hasta</label>
+                <input type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
+                <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
+            </form>
+        {% endif %}
     </article>
     <article id="calendarContainer" class="calendarContainer">
         <input type="text" id="periodos" value="{{ periodos_json }}" hidden>

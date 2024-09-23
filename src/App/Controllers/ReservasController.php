@@ -18,6 +18,7 @@ class ReservasController extends Controller
     public $usuario;
     public $mailer;
     public $menuAndSession;
+    public $publicationCollection;
 
     public function __construct()
     {
@@ -32,6 +33,8 @@ class ReservasController extends Controller
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
+
+        $this->publicationCollection = new PublicacionCollection();
 
     }
 

@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });                          
 
 
-                    }, 1000);
+                    }, 50);
                   }, logoutButtonStates["falling2"]["--duracao--caminhada"]);
                 }, logoutButtonStates["falling1"]["--duracao--caminhada"]);
               }, logoutButtonStates["walking2"]["--elemento__botao--conjunto-duration"]);
@@ -81,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const logoutButtonStates = {
         default: {
-          "--elemento__botao--conjunto-duration": "100",
+          "--elemento__botao--conjunto-duration": "10",
           "--transform-elemento__botao--conjunto": "none",
-          "--duracao--caminhada": "100",
+          "--duracao--caminhada": "10",
           "--transform-elemento__botao--braco1": "none",
           "--transform-pulso1": "none",
           "--transform-elemento__botao--braco2": "none",
@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-parturilha2": "none",
         },
         hover: {
-          "--elemento__botao--conjunto-duration": "100",
+          "--elemento__botao--conjunto-duration": "10",
           "--transform-elemento__botao--conjunto": "translateX(1.5px)",
-          "--duracao--caminhada": "100",
+          "--duracao--caminhada": "10",
           "--transform-elemento__botao--braco1": "rotate(-5deg)",
           "--transform-pulso1": "rotate(-15deg)",
           "--transform-elemento__botao--braco2": "rotate(5deg)",
@@ -107,9 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-parturilha2": "rotate(-20deg)",
         },
         walking1: {
-          "--elemento__botao--conjunto-duration": "300",
+          "--elemento__botao--conjunto-duration": "30",
           "--transform-elemento__botao--conjunto": "translateX(11px)",
-          "--duracao--caminhada": "300",
+          "--duracao--caminhada": "30",
           "--transform-elemento__botao--braco1":
             "translateX(-4px) translateY(-2px) rotate(120deg)",
           "--transform-pulso1": "rotate(-5deg)",
@@ -121,9 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-parturilha2": "rotate(20deg)",
         },
         walking2: {
-          "--elemento__botao--conjunto-duration": "400",
+          "--elemento__botao--conjunto-duration": "40",
           "--transform-elemento__botao--conjunto": "translateX(17px)",
-          "--duracao--caminhada": "300",
+          "--duracao--caminhada": "30",
           "--transform-elemento__botao--braco1": "rotate(60deg)",
           "--transform-pulso1": "rotate(-15deg)",
           "--transform-elemento__botao--braco2": "rotate(-45deg)",
@@ -134,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-parturilha2": "rotate(-20deg)",
         },
         falling1: {
-          "--elemento__botao--conjunto-duration": "1600",
-          "--duracao--caminhada": "400",
+          "--elemento__botao--conjunto-duration": "160",
+          "--duracao--caminhada": "40",
           "--transform-elemento__botao--braco1": "rotate(-60deg)",
           "--transform-pulso1": "none",
           "--transform-elemento__botao--braco2": "rotate(30deg)",
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-elemento__botao--perna2": "rotate(20deg)",
         },
         falling2: {
-          "--duracao--caminhada": "300",
+          "--duracao--caminhada": "30",
           "--transform-elemento__botao--braco1": "rotate(-100deg)",
           "--transform-elemento__botao--braco2": "rotate(-60deg)",
           "--transform-pulso2": "rotate(60deg)",
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
           "--transform-elemento__botao--perna2": "rotate(-60deg)",
         },
         falling3: {
-          "--duracao--caminhada": "500",
+          "--duracao--caminhada": "50",
           "--transform-elemento__botao--braco1": "rotate(-30deg)",
           "--transform-pulso1": "rotate(40deg)",
           "--transform-elemento__botao--braco2": "rotate(50deg)",

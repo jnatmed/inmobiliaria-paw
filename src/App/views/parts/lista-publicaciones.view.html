@@ -37,7 +37,7 @@
                             {% endif %}
                             {% if publicacion.estado_id %}<span class="estado_publicacion estado_publicacion_{{ publicacion.estado_id }}">{{ publicacion.estado_publicacion|replace({'-': ' '})|lower|title }}</span>{% endif %}
                         </p>
-                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Ver más ></a>
+                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Reservar ></a>
                         <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}" target="_blank">
                             <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                         </a>
