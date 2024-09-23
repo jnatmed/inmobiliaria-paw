@@ -14,12 +14,24 @@
         <section class="container_publicaciones">
 
             <!-- FILTROS -->
-            <aside class="filtro-container">
+            <!-- DESKTOP -->
+            <aside class="filtro-container filtro-desktop">
                 <h2>Filtros</h2>
                 <form id="formFiltros" method="GET" class="form-filtros">
                     {% include 'parts/search-filters.view.html' %}
                 </form>
             </aside>
+
+            <!-- MOBILE -->
+            <details class="filtro-mobile">
+                <summary>Filtros</summary>
+                <aside class="filtro-container">
+                    <!-- <h2>Filtros</h2> -->
+                    <form id="formFiltros" method="GET" class="form-filtros">
+                        {% include 'parts/search-filters.view.html' %}
+                    </form>
+                </aside>
+            </details>
 
             <!-- PUBLICACIONES -->
             <section>

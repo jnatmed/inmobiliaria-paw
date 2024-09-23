@@ -12,6 +12,7 @@
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+    font-family: var(--font-principal);
 }
 
 .reservas-tabla {
@@ -31,6 +32,7 @@
     background-color: #f9f9f9;
     color: #333;
     font-weight: bold;
+    font-family: var(--font-principal);
 }
 
 .reservas-tabla tr:hover {

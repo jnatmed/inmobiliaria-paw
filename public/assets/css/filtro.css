@@ -47,7 +47,7 @@
     padding: 10px;
 }
 
-.filtro-container h2 {
+.filtro-container h2{
     font-size: 35px;
     border-bottom: 2px;
     border-style: solid;
@@ -186,4 +186,28 @@ select.input-form-busqueda[type="text"]{
     appearance: none; /* Eliminar la apariencia por defecto */
     -webkit-appearance: none; /* Eliminar la apariencia por defecto en WebKit */
     -moz-appearance: none;
+}
+
+
+.filtro-mobile {
+    display: none;
+}
+
+.filtro-mobile summary {
+    font-size: 35px;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+@media (max-width: 682px) {
+    .filtro-desktop {
+        display: none;
+    }
+
+    .filtro-mobile {
+        display: block;
+    }
 }

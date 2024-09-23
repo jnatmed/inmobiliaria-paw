@@ -47,6 +47,7 @@
 .profile-section h2 {
     font-size: 28px;
     margin-bottom: 20px;
+    font-family: var(--font-principal);
 }
 
 .profile-section p {

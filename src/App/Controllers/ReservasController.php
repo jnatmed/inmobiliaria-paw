@@ -34,8 +34,6 @@ class ReservasController extends Controller
 
         $this->menuAndSession = $this->usuario->menuAndSession;
 
-        $this->publicationCollection = new PublicacionCollection();
-
     }
 
     public function verReservas()

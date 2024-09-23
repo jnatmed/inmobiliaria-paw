@@ -74,6 +74,7 @@ table.greenTable tfoot .links a {
 }
 
 .calendarTitle {
+    font-family: var(--font-principal);
     font-size: 3rem;
     padding: 4px;   
     text-align: center;
@@ -113,10 +114,11 @@ table.greenTable tfoot .links a {
     border-radius: 1rem;
     padding: 1rem 1rem 1rem 1rem;
     margin: .5rem 1rem;
+    font-weight: 1000;
 }
 
 .reservar{
-    background-color: #B53E3E;
+    background-color: var(--color-verde-header);
 }
 
 .cancelar{
@@ -184,6 +186,7 @@ table.greenTable tfoot .links a {
   }
   
   #calendarTable th, #calendarTable td {
+    font-family: var(--font-principal);
     padding: 10px; /* Espacio dentro de cada celda */
     text-align: center; /* Centrar el texto dentro de las celdas */
   }
@@ -201,6 +204,7 @@ table.greenTable tfoot .links a {
 }
 
 #calendarTable th::after {
+    font-family: var(--font-principal);
     content: attr(data-abbr); /* Utiliza el atributo data-abbr para mostrar la abreviatura */
     position: absolute;
     top: 50%;

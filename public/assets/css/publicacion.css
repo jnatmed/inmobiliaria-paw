@@ -178,11 +178,7 @@ p.paso-titulo {
     margin-bottom: 20px;
     display: flex;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Añade sombra */
-    border-top-right-radius: 50px;
-    border-bottom-right-radius: 50px;
     background-color: #fff;
-    /* Opcional: establece un fondo blanco */
 }
 
 /* Estilos para el título de la publicación */
