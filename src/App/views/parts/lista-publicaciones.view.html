@@ -1,7 +1,7 @@
 <!-- Muestra los filtros que se aplican en la búsqueda -->
-{% if zona or tipo or precio or instalaciones %}
+<!-- {% if zona or tipo or precio or instalaciones %}
     <p class="applied-filters">Filtros: {{ zona }} {{ tipo }} {{ precio }} {{ instalaciones|join(' ') }}</p>
-{% endif %}
+{% endif %} -->
 
 <!-- Muestra la lista de publicaciones -->
 <ul>
@@ -21,9 +21,9 @@
                         <h3 class="publicacion-precio">${{ publicacion.precio|number_format(0, ',', '.') }}</h3>
                         <h3 class="publicacion-titulo">{{ publicacion.nombre_alojamiento|e }}</h3>
                         <p class="publicacion-datos">{{ publicacion.descripcion_alojamiento|nl2br|e }}</p>
-                        <p class="publicacion-datos">{{ publicacion.localidad|e }}, {{ publicacion.provincia|e }}</p>
+                        <p class="publicacion-datos">Direccion: {{ publicacion.direccion|e }}</p>
                         <p class="publicacion-datos">Capacidad: {{ publicacion.capacidad_maxima|e }}</p>
-                        <p class="publicacion-datos">Tipo: {{ publicacion.tipo_alojamiento|e }}</p>
+                        <p class="publicacion-datos">Tipo: {{ publicacion.descripcion_tipo|capitalize }}</p>
                         <p class="publicacion-datos">Baños: {{ publicacion.cant_banios|e }}</p>
                         <p class="publicacion-datos">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
                         <p class="publicacion-datos">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>
@@ -32,9 +32,12 @@
                             {% if publicacion.pileta %}<span class="instalacion">Pileta</span> {% endif %}
                             {% if publicacion.aire_acondicionado %}<span class="instalacion">Aire Acondicionado</span> {% endif %}
                             {% if publicacion.wifi %}<span class="instalacion">Wi-Fi</span> {% endif %}
+                            {% if condition %}
+                                
+                            {% endif %}
                             {% if publicacion.estado_id %}<span class="estado_publicacion estado_publicacion_{{ publicacion.estado_id }}">{{ publicacion.estado_publicacion|replace({'-': ' '})|lower|title }}</span>{% endif %}
                         </p>
-                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Ver más ></a>
+                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas">Reservar ></a>
                         <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}" target="_blank">
                             <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                         </a>

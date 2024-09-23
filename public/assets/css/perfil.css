@@ -2,6 +2,7 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
+
 }
 
 .profile-aside {
@@ -55,4 +56,23 @@
 
 .profile-section p strong {
     color: #333;
+}
+
+/* Media query para pantallas menores a 650px */
+@media (max-width: 650px) {
+    .profile-main {
+        flex-direction: column; /* Cambia la dirección a columna en pantallas pequeñas */
+        align-items: center; /* Alinea los elementos al centro */
+    }
+
+    .profile-aside,
+    .profile-section {
+        width: 100%; /* Asegura que cada sección ocupe el 100% del ancho disponible */
+        max-width: none; /* Elimina cualquier restricción de ancho máximo */
+        margin-bottom: 20px; /* Añade un margen inferior entre los elementos */
+    }
+
+    .profile-section {
+        width: 100%; /* Asegura que el section ocupe el 100% del ancho disponible */
+    }
 }

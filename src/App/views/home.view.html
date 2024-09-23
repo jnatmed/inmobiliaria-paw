@@ -2,8 +2,7 @@
 <html lang="es">
 
 <head>
-    {% include 'parts/head.view.html' %}
-    <script src="/assets/js/index.js"></script>
+    {% include 'parts/head.view.html' %}    
 </head>
 
 <body class="home">
@@ -29,9 +28,9 @@
                 <label for="tipo" class="label-form">Tipo</label>
                 <select type="text" class="input-form-busqueda" id="tipo" placeholder="Tipo" name="tipo">
                     <option selected value="">Elija una opción...</option>
-                    <option value="casa">Casa</option>
-                    <option value="departamento">Departamento</option>
-                    <option value="quinta">Quinta</option>
+                    {% for tipo in tipos_alojamiento %}
+                        <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
+                    {% endfor %}
                 </select>
                 <input type="submit" value="Buscar" class="btn-form-busqueda">
             </form>

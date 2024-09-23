@@ -37,6 +37,10 @@ class Controller
 
         $this->menu = [
             [
+                'href' => '/mapa',
+                'name' => 'MAPA'
+            ],
+            [
                 'href' => '/publicaciones/list',
                 'name' => 'PROPIEDADES'
             ],
@@ -53,6 +57,10 @@ class Controller
                 'name' => 'MIS RESERVAS'
             ],
             [
+                'href' => '/publicaciones/gestionar',
+                'name' => 'GESTIONAR PROPIEDADES'
+            ],
+            [
                 'href' => '/usuario/mi_perfil',
                 'name' => 'MI PERFIL'
             ]
@@ -65,6 +73,7 @@ class Controller
         if (!is_null($this->modelName)) {
             $model = new $this->modelName;
             $model->setQueryBuilder($this->qb);
+            $model->setLogger($log);
             $this->setModel($model);
         }
     }

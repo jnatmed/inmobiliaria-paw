@@ -12,35 +12,38 @@
 
 <section class="container-reserva">
     <article class="container-form">
-        <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
-            <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
-            <label for="input-desde" class="lbl-desde">Desde</label>
-            <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
-            <label for="input-hasta" class="lbl-hasta">Hasta</label>
-            <input type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
-            <input type="submit" value="Reservar Periodo" class="btn-form reservar">
-            <input type="submit" value="Cancelar" class="btn-form cancelar">
-        </form>
+        {% if publicacion.id_usuario != idUserSesion %}          
+            <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+                <input type="text" name="email_duenio" value="{{ publicacion.email }}" hidden>
+                <input type="text" name="id_publicacion" value="{{ publicacion.id }}" hidden>
+                <label for="input-desde" class="lbl-desde">Desde</label>
+                <input type="date" name="input-desde" id="input-desde" class="input-form-reserva">
+                <label for="input-hasta" class="lbl-hasta">Hasta</label>
+                <input type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
+                <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
+            </form>
+        {% endif %}
     </article>
     <article id="calendarContainer" class="calendarContainer">
         <input type="text" id="periodos" value="{{ periodos_json }}" hidden>
         <input type="text" id="monthInput" placeholder="Introduce el mes (ej: marzo)" hidden>
         <button id="showCalendarButton" hidden>Mostrar Calendario</button>
-        <div id="calendarNavigation">
-            <button id="prevMonthButton" disabled>←</button>
-            <button id="nextMonthButton">→</button>
+        <div id="calendarNavigation" class="calendarNavigation">
+            <button id="prevMonthButton" class="btnNavCalendar" disabled>←</button>
+            <h3 id="calendarTitle" class="calendarTitle"></h3>
+            <button id="nextMonthButton" class="btnNavCalendar">→</button>
         </div>
-        <h3 id="calendarTitle" class="calendarTitle"></h3>
+        
         <table id="calendarTable" class="greenTable">
             <thead>
                 <tr>
-                    <th>Lunes</th>
-                    <th>Martes</th>
-                    <th>Miércoles</th>
-                    <th>Jueves</th>
-                    <th>Viernes</th>
-                    <th>Sábado</th>
-                    <th>Domingo</th>
+                    <th data-abbr="Lun"><span>Lunes</span></th>
+                    <th data-abbr="Mar"><span>Martes</span></th>
+                    <th data-abbr="Mié"><span>Miércoles</span></th>
+                    <th data-abbr="Jue"><span>Jueves</span></th>
+                    <th data-abbr="Vie"><span>Viernes</span></th>
+                    <th data-abbr="Sáb"><span>Sábado</span></th>
+                    <th data-abbr="Dom"><span>Domingo</span></th>
                 </tr>
             </thead>
             <tbody>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    {% include 'parts/head.view.html' %}
+</head>
+
+<body>
+
+    {% include 'parts/header.view.html' %}
+
+    <main>
+        <div class="error-container">
+            <div class="error-404-bg"></div>
+            <p class="h1">Error 500</p>
+            <p class="error-lead">Oops!, algo salio mal.</p>
+            <p>Error Interno del Servidor.</p>
+            <p>{{ error_message }}</p>
+            <div class="center">
+                <a href="/" class="btn btn-primary">Volver</a>
+            </div>  
+        </div>
+    </main>
+
+
+    {% include 'parts/footer.view.html' %}
+
+</body>
+</html>

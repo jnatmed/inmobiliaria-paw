@@ -8,12 +8,15 @@ use Paw\Core\Controller;
 class ErrorController extends Controller
 {
     public $usuario;
+    public $menuAndSession;
 
     public function __construct(){
         parent::__construct();
 
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
+
+        $this->menuAndSession = $this->usuario->menuAndSession;
 
     }
     
@@ -22,11 +25,11 @@ class ErrorController extends Controller
         $titulo = 'Page Not Found';
         $main = 'Page Not Found';
 
-        view('errors/not-found.view', [
-            'titulo' => $titulo,
-            'main' => $main,
-            'menu' => $this->menu
-        ]);
+        view('errors/not-found.view', array_merge(
+            ['titulo' => $titulo],
+            ['main' => $main],
+            $this->menuAndSession
+        ));
 
     }
     
@@ -34,7 +37,11 @@ class ErrorController extends Controller
         http_response_code(500);
         $titulo = 'Internal Error';
         $main = 'Internal Server Error';
-        require $this->viewsDir. 'internal-error.view.php';
+        view('errors/internal_error.view', array_merge(
+            ['titulo' => $titulo],
+            ['main' => $main],
+            $this->menuAndSession
+        ));
     }
 
     

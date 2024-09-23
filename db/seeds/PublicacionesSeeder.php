@@ -24,7 +24,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password1', PASSWORD_DEFAULT),
                 'email' => 'usuario1@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 1
             ],
             [
                 'nombre' => 'Usuario 2',
@@ -32,7 +32,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password2', PASSWORD_DEFAULT),
                 'email' => 'usuario2@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 2
             ],
             [
                 'nombre' => 'Usuario 3',
@@ -40,7 +40,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password3', PASSWORD_DEFAULT),
                 'email' => 'usuario3@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario' => 'propietario'
+                'tipo_usuario_id' => 3
             ],
         ];
 
@@ -51,18 +51,12 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.645782106051634,
                 'longitud' => -58.39849262386727,
-                'id_usuario' => 1,
-                'precio' => 25000000,
-                'nombre' => 'Nombre 1',
-                'apellido' => 'Apellido 1',
-                'dni' => 'DNI 1',
-                'telefono' => 'Telefono 1',
-                'email' => 'email1@example.com',
+                'precio' => 2500,
                 'provincia' => 'Provincia 1',
-                'localidad' => 'Localidad 1',
+                'codigo_postal' => '6712',
                 'direccion' => 'Direccion 1',
                 'nombre_alojamiento' => 'Alojamiento 1',
-                'tipo_alojamiento' => 'Tipo 1',
+                'tipo_alojamiento_id' => 1,
                 'capacidad_maxima' => rand(1, 10),
                 'cant_banios' => rand(1, 3),
                 'cantidad_dormitorios' => rand(1, 5),
@@ -71,23 +65,19 @@ class PublicacionesSeeder extends AbstractSeed
                 'aire_acondicionado' => rand(0, 1),
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 1',
-                'descripcion_alojamiento' => 'Descripcion 1',
+                'descripcion_alojamiento' => 'Ubicado en el vibrante y culturalmente rico barrio de San Telmo, Rincón del Tango ofrece una experiencia auténtica y acogedora en uno de los lugares más emblemáticos de Buenos Aires. Ideal para quienes buscan sumergirse en la vida local y disfrutar de la combinación perfecta entre comodidad moderna y encanto histórico.',
+                'id_usuario' => 1,
+                'estado_id' => 1
             ],
             [
                 'latitud' => -34.6461351622715,
                 'longitud' => -58.4003547989017,
-                'id_usuario' => 2,
-                'precio' => 15000000,
-                'nombre' => 'Nombre 2',
-                'apellido' => 'Apellido 2',
-                'dni' => 'DNI 2',
-                'telefono' => 'Telefono 2',
-                'email' => 'email2@example.com',
+                'precio' => 1500,
                 'provincia' => 'Provincia 2',
-                'localidad' => 'Localidad 2',
+                'codigo_postal' => '1437',
                 'direccion' => 'Direccion 2',
-                'nombre_alojamiento' => 'Alojamiento 2',
-                'tipo_alojamiento' => 'Tipo 2',
+                'nombre_alojamiento' => 'Rincón del Tango en San Telmo',
+                'tipo_alojamiento_id' => 2,
                 'capacidad_maxima' => rand(1, 10),
                 'cant_banios' => rand(1, 3),
                 'cantidad_dormitorios' => rand(1, 5),
@@ -95,24 +85,20 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 1),
                 'aire_acondicionado' => rand(0, 1),
                 'wifi' => rand(0, 1),
-                'normas_alojamiento' => 'Normas 2',
-                'descripcion_alojamiento' => 'Descripcion 2',
+                'normas_alojamiento' => 'Uso de Instalaciones Se debe usar las instalaciones del alojamiento de manera responsable. No se debe causar daño a los equipos, muebles y electrodomésticos. Cualquier daño causado deberá ser reportado de inmediato y el costo de reparación será a cargo del inquilino.',
+                'descripcion_alojamiento' => 'Ubicado en el vibrante y culturalmente rico barrio de San Telmo, Rincón del Tango ofrece una experiencia auténtica y acogedora en uno de los lugares más emblemáticos de Buenos Aires. Ideal para quienes buscan sumergirse en la vida local y disfrutar de la combinación perfecta entre comodidad moderna y encanto histórico.',
+                'id_usuario' => 2,
+                'estado_id' => 1
             ],
             [
                 'latitud' => -34.63695079829552,
                 'longitud' => -58.402421370639885,
-                'id_usuario' => 3,
-                'precio' => 5000000,
-                'nombre' => 'Nombre 3',
-                'apellido' => 'Apellido 3',
-                'dni' => 'DNI 3',
-                'telefono' => 'Telefono 3',
-                'email' => 'email3@example.com',
+                'precio' => 500,
                 'provincia' => 'Provincia 3',
-                'localidad' => 'Localidad 3',
+                'codigo_postal' => '1190',
                 'direccion' => 'Direccion 3',
                 'nombre_alojamiento' => 'Alojamiento 3',
-                'tipo_alojamiento' => 'Tipo 3',
+                'tipo_alojamiento_id' => 3,
                 'capacidad_maxima' => rand(1, 10),
                 'cant_banios' => rand(1, 3),
                 'cantidad_dormitorios' => rand(1, 5),
@@ -122,6 +108,8 @@ class PublicacionesSeeder extends AbstractSeed
                 'wifi' => rand(0, 1),
                 'normas_alojamiento' => 'Normas 3',
                 'descripcion_alojamiento' => 'Descripcion 3',
+                'id_usuario' => 3,
+                'estado_id' => 1
             ],
         ];
 

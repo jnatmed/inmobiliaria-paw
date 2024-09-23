@@ -31,6 +31,11 @@ class QueryBuilder
                 $bindings[':id'] = $params['id'];
             }
 
+            if (isset($params['token'])) {
+                $whereClauses[] = "token = :token";
+                $bindings[':token'] = $params['token'];
+            }
+
             if (isset($params['email'])) {
                 $whereClauses[] = "email = :email";
                 $bindings[':email'] = $params['email'];
@@ -46,9 +51,14 @@ class QueryBuilder
                 $bindings[':id_imagen'] = $params['id_imagen'];
             }
 
-            // Unir las cláusulas WHERE con AND
-            $where = implode(' AND ', $whereClauses);
-            $query = "SELECT * FROM {$table} WHERE {$where}";
+            // Verificar si hay cláusulas WHERE
+            $where = '';
+            if (!empty($whereClauses)) {
+                $where = 'WHERE ' . implode(' AND ', $whereClauses);
+            }
+
+            // Construir la consulta
+            $query = "SELECT * FROM {$table} {$where}";
 
             // Preparar la sentencia
             $sentencia = $this->pdo->prepare($query);
@@ -74,6 +84,7 @@ class QueryBuilder
     }
 
 
+
     public function countRows($table)
     {
         try {
@@ -91,31 +102,119 @@ class QueryBuilder
         }
     }
 
-    public function insert($table, $data)
+    public function selectUserAndTipo($idUser)
     {
         try {
-            $columnas = implode(', ', array_keys($data));
-            $valores = ':' . implode(', :', array_keys($data));
-            $query = "INSERT INTO $table ($columnas) VALUES ($valores)";
-            $sentencia = $this->pdo->prepare($query);
-    
-            // Asignar valores a los parámetros
-            foreach ($data as $clave => $valor) {
-                $sentencia->bindValue(":$clave", $valor);
-            }
-    
-            $resultado = $sentencia->execute();
-    
-            $idGenerado = $this->pdo->lastInsertId();
-    
-            return [$idGenerado, $resultado];
+            $sql = "
+                SELECT usuarios.*, tipos_usuarios.tipo as tipo
+                FROM usuarios
+                JOIN tipos_usuarios ON usuarios.tipo_usuario_id = tipos_usuarios.id
+                WHERE usuarios.id = :id
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
+
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+
+            $resultado = $stmt->fetchAll();
+
+            $this->logger->info("SQL Query: ", [$sql]);
+            $this->logger->info("ID Value: ", [$idUser]);
+            $this->logger->info("resultado selectUserAndTipo: ", [$resultado]);
+
+            return $resultado;
         } catch (PDOException $e) {
-            // Manejo de errores y excepciones
-            $this->logger->error('Error en la inserción: ' . $e->getMessage());
-            return [null, false];
+            if ($this->logger) {
+                $this->logger->error("Error en selectUserAndTipo: " . $e->getMessage(), ['exception' => $e]);
+            }
+            return null;
         }
     }
 
+
+    public function insert($table, $data, $uniqs = []) 
+    { 
+        try { 
+            // Log de los datos
+            $this->logger->info("Data -> ", [$data]);
+
+            $result['hay_repetidos'] = false;
+            // Validación de claves únicas
+            if (!empty($uniqs)) {
+                $result['hay_repetidos'] = $this->validateUniqueKeys($table, $data, $uniqs);
+            }
+    
+            if (!$result['hay_repetidos']){
+                // Preparar columnas y valores
+                $columnas = implode(', ', array_keys($data)); 
+                $this->logger->info("Columnas -> ", [$columnas]);
+                
+                $valores = ':' . implode(', :', array_keys($data)); 
+                $this->logger->info("Valores -> ", [$valores]);
+                
+                // Construir la consulta
+                $query = "INSERT INTO $table ($columnas) VALUES ($valores)"; 
+                $sentencia = $this->pdo->prepare($query); 
+                
+                // Asignar valores a los parámetros
+                foreach ($data as $clave => $valor) { 
+                    $sentencia->bindValue(":$clave", $valor); 
+                } 
+                
+                // Ejecutar la consulta
+                $resultado = $sentencia->execute(); 
+                
+                // Obtener el ID generado
+                $idGenerado = $this->pdo->lastInsertId(); 
+                
+                // Log de resultados
+                $this->logger->debug("idGenerado : {$idGenerado}, resultado : {$resultado}"); 
+                
+                return [$idGenerado, $resultado]; 
+            }else{
+
+                $this->logger->error('Error en la inserción: ya existe un usuario con ese email'); 
+                throw new Exception('Ya existe un usuario con ese email'); 
+    
+            }
+
+        } 
+        catch (PDOException $e) { 
+            // Manejo de errores y excepciones
+            $msjError = 'Error en la inserción: ' . $e->getMessage();
+            $this->logger->error($msjError); 
+            return [null, $msjError]; 
+        } 
+        catch (Exception $e) {
+            // Manejo de errores y excepciones
+            $msjError = 'Error en la inserción: ' . $e->getMessage();
+            $this->logger->error($msjError);
+            
+            // Retornar una estructura que indique que hubo un error
+            return [null, $msjError]; 
+        }        
+    }
+    
+    // Método para validar claves únicas
+    private function validateUniqueKeys($table, $data, $uniqs) 
+    { 
+        foreach ($uniqs as $uniqueKey) { 
+            if (array_key_exists($uniqueKey, $data)) {
+                $query = "SELECT COUNT(*) FROM $table WHERE $uniqueKey = :value"; 
+                $sentencia = $this->pdo->prepare($query); 
+                $sentencia->bindValue(':value', $data[$uniqueKey]); 
+                $sentencia->execute(); 
+                $count = $sentencia->fetchColumn();
+                
+                if ($count > 0) { 
+                    return true; 
+                } 
+            }
+        } 
+    }
+    
     public function insertMany($table, $data)
     {
         try {
@@ -157,7 +256,7 @@ class QueryBuilder
 
             $this->logger->info("imagesTable, id_publicacion, id_imagen ", [$imagesTable, $id_publicacion, $id_imagen]);
             $sql = "
-                SELECT path_imagen
+                SELECT path_imagen, nombre_imagen
                 FROM $imagesTable
                 WHERE id_publicacion = :id_publicacion AND id_imagen = :id_imagen;
             ";
@@ -218,7 +317,29 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser)
+    public function getAll($mainTable)
+    {
+        try {
+            // Modificar la consulta para incluir un INNER JOIN con la tabla imagenes_publicacion
+            $query = "
+                SELECT main.*, MIN(img.id_imagen) as id_imagen 
+                FROM {$mainTable} main
+                INNER JOIN imagenes_publicacion img 
+                    ON main.id = img.id_publicacion
+                GROUP BY main.id
+            ";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Logging the error
+            $this->logger->error("Error in getAll: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $allowedTipos, $precio, $instalaciones, $idUser)
     {
         try {
             $sql = "
@@ -226,61 +347,85 @@ class QueryBuilder
                 main.*, 
                 img.id_imagen, 
                 img.path_imagen, 
-                img.nombre_imagen 
+                img.nombre_imagen,
+                tipo.descripcion_tipo
             FROM 
                 {$mainTable} main
             LEFT JOIN 
-                {$imageTable} img
-            ON 
-                main.{$mainTableKey} = img.{$foreignKey}
+                {$imageTable} img ON main.{$mainTableKey} = img.{$foreignKey}
+            LEFT JOIN 
+                tipos_alojamiento tipo ON main.tipo_alojamiento_id = tipo.id
             WHERE 1=1
-        ";
+            ";
             $params = [];
-
+    
             if ($precio) {
                 $sql .= " AND main.precio <= :precio";
                 $params[':precio'] = $precio;
-
             }
-
+    
             if ($idUser) {
-                $sql .= " AND main.id = :idUser";
+                $sql .= " AND main.id_usuario = :idUser";
                 $params[':idUser'] = $idUser;
             }
-
-            if ($tipo) {
-                $sql .= " AND main.tipo_alojamiento = :tipo";
-                $params[':tipo'] = $tipo;
+    
+            if (!empty($tipo)) {
+                // $allowedTipos = ['casa', 'departamento', 'quinta'];
+                $condiciones = [];
+                // $this->logger->debug("Tipos Querybuilder:", [$allowedTipos]);
+                foreach ($tipo as $t) {
+                    // $this->logger->debug("Tipo a buscar: $t");
+                    if (in_array($t, $allowedTipos)) {
+                        $condiciones[] = "tipo.id = '{$t}'";
+                        // $this->logger->debug("agrego a filtro: $t");
+                    }
+                }
+                if (!empty($condiciones)) {
+                    $sql .= " AND (" . implode(' OR ', $condiciones) . ")";
+                }
             }
-
+    
             if (!empty($instalaciones)) {
-                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi']; // Instalaciones validas para evitar inyecciones
+                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi'];
                 foreach ($instalaciones as $instalacion) {
                     if (in_array($instalacion, $allowedInstalaciones)) {
                         $sql .= " AND main.{$instalacion} = 1";
                     }
                 }
             }
-
+    
             if ($zona) {
-                $sql .= " AND (main.provincia LIKE :zona OR main.localidad LIKE :zona)";
+                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
-            }            
-
+            }
+    
+            $this->logger->debug("SQL: " , [$sql]);
+    
             $stmt = $this->pdo->prepare($sql);
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value);
             }
-            
             $stmt->execute();
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Logging the error
             $this->logger->error("Error in getFilterWithImages: " . $e->getMessage());
             return false;
         }
     }
 
+    public function traerPublicacionesConEstado()
+    {
+        $sql = "
+            SELECT publicaciones.*, estado_publicaciones.estado as estado
+            FROM publicaciones
+            JOIN estado_publicaciones ON publicaciones.estado_id = estado_publicaciones.id
+        ";
+
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getOneWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $id)
     {
@@ -290,13 +435,21 @@ class QueryBuilder
                     main.*, 
                     img.id_imagen, 
                     img.path_imagen, 
-                    img.nombre_imagen 
+                    img.nombre_imagen,
+                    usr.nombre AS nombre,
+                    usr.apellido AS apellido,
+                    usr.email AS email,
+                    usr.telefono AS telefono
                 FROM 
                     {$mainTable} main
                 LEFT JOIN 
                     {$imageTable} img
                 ON 
                     main.{$mainTableKey} = img.{$foreignKey}
+                LEFT JOIN
+                    usuarios usr
+                ON
+                    main.id_usuario = usr.id
                 WHERE 
                     main.{$mainTableKey} = :id
             ";
@@ -311,7 +464,6 @@ class QueryBuilder
             return false;
         }
     }
-
     public function getAllWithImagesByUser($mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser)
     {
         try {
@@ -349,25 +501,29 @@ class QueryBuilder
         return $this->lastQuery;
     }
 
-    public function getReservasByUsuario($id_usuario) {
+    public function getReservasByUsuario($id_usuario)
+    {
         try {
             $query = "
                 SELECT
                     reservas_publicacion.id AS id_reserva,
+                    reservas_publicacion.id_usuario_reserva AS id_usuario_reserva,
                     reservas_publicacion.fecha_inicio AS desde,
                     reservas_publicacion.fecha_fin AS hasta,
                     reservas_publicacion.notas AS nota,
                     reservas_publicacion.id_publicacion AS id_pub,
-                    reservas_publicacion.estado_reserva
+                    reservas_publicacion.estado_reserva,
+                    publicaciones.nombre_alojamiento
                 FROM
                     reservas_publicacion
                 INNER JOIN
                     publicaciones ON publicaciones.id = reservas_publicacion.id_publicacion
                 WHERE
                     publicaciones.id_usuario = :id_usuario
-                    AND reservas_publicacion.estado_reserva IN ('pendiente', 'confirmada')
+                    
             ";
-    
+
+            $this->logger->info("id usuario: $id_usuario");
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
             $statement->execute();
@@ -376,13 +532,15 @@ class QueryBuilder
             $this->logger->error("Error en getReservasByUsuario: " . $e->getMessage());
             return false;
         }
-    }    
+    }
 
     public function update($table, $data, $where)
     {
         $set = [];
         $bindings = [];
 
+        $this->logger->info("data, where", [$data, $where]);
+        
         foreach ($data as $column => $value) {
             $set[] = "$column = :$column";
             $bindings[":$column"] = $value;
@@ -407,7 +565,46 @@ class QueryBuilder
         $statement->execute();
     }
 
-    public function delete()
+    public function delete() {}
+
+    public function traerTipos()
     {
+        try {
+            $sql = "SELECT * FROM tipos_alojamiento"; // Asegúrate de que el nombre de la tabla sea correcto.
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error("Error en traerTipos: " . $e->getMessage());
+            return false;
+        }
+    }    
+
+    public function selectMaxPrice($table)
+    {
+        try {
+            // Consulta para obtener el mayor valor del campo `precio`
+            $query = "SELECT MAX(precio) AS max_precio FROM {$table}";
+            
+            // Preparar la sentencia
+            $stmt = $this->pdo->prepare($query);
+            
+            // Ejecutar la consulta
+            $stmt->execute();
+            
+            // Obtener el resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Registrar la consulta y el resultado
+            $this->logger->info("Consulta SQL: ", [$query]);
+            $this->logger->info("Resultado selectMaxPrice: ", [$result]);
+            
+            // Retornar el valor máximo
+            return $result['max_precio'];
+        } catch (PDOException $e) {
+            // Manejo de errores
+            $this->logger->error('Error al obtener el mayor valor del campo precio: ' . $e->getMessage());
+            throw new Exception('Error al realizar la consulta en la base de datos');
+        }
     }
 }

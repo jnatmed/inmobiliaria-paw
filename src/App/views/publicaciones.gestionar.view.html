@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    {% include 'parts/head.view.html' %}
+    <link rel="stylesheet" href="/assets/css/gestion-publicaciones.css">
+</head>
+
+<body class="home">
+    {% include 'parts/header.view.html' %}
+
+    <main>
+        <section class="publicaciones-container">
+            <h1 class="publicaciones-titulo">Lista de Publicaciones</h1>
+            <table class="publicaciones-tabla">
+                <thead>
+                    <tr>
+                        <th>ID Publicación</th>
+                        <th>Nombre Alojamiento</th>
+                        <th>Localidad</th>
+                        <th>Provincia</th>
+                        <th>Precio</th>
+                        <th>Capacidad Máxima</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if publicaciones is not empty %}
+                        {% for publicacion in publicaciones %}
+                            <tr>
+                                <td>{{ publicacion.id | e }}</td>
+                                <td><a href="/publicacion/ver?id_pub={{ publicacion.id }}">{{ publicacion.nombre_alojamiento | e }}</a></td>
+                                <td>{{ publicacion.localidad | e }}</td>
+                                <td>{{ publicacion.provincia | e }}</td>
+                                <td>{{ publicacion.precio | e }}</td>
+                                <td>{{ publicacion.capacidad_maxima | e }}</td>
+                                <td>{{ publicacion.estado | e }}</td>
+                                <td>
+                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/aceptar?id_pub={{ publicacion.id }}">Aceptar</a> |
+                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/rechazar?id_pub={{ publicacion.id }}">Rechazar</a> | 
+                                    <a class="publicaciones-accion" href="/publicacion/ver?id_pub={{ publicacion.id }}">Ver</a>
+                                </td>
+                            </tr>
+                        {% endfor %}                        
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="no-result">
+                                No hay resultados para mostrar.
+                            </td>
+                        </tr>                      
+                    {% endif %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    {% include 'parts/footer.view.html' %}
+</body>
+
+</html>

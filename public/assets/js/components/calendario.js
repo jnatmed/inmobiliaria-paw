@@ -59,7 +59,9 @@ class Calendario {
         const firstDay = new Date(year, this.currentMonth, 1).getDay();
         const daysInMonth = new Date(year, this.currentMonth + 1, 0).getDate();
 
-        title.innerText = `${monthName} ${year}`;
+        const capitalizedMonthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+        title.innerText = `${capitalizedMonthName} ${year}`;
 
         let day = 1;
         const startDay = (firstDay === 0) ? 6 : firstDay - 1;

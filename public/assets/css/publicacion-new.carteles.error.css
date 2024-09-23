@@ -1,0 +1,21 @@
+.error-message {
+    color: red !important;
+    display: none;
+}
+
+.error-message.visible {
+    display: flex;
+    margin-top: 10px;
+}
+
+
+.carteles-error {
+    color: red !important;
+    display: none; /* Ocultos por defecto */
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.carteles-error.visible {
+    display: block; /* Mostrar cuando haya errores */
+}

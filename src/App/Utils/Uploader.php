@@ -2,13 +2,12 @@
 
 namespace Paw\App\Utils;
 use Exception;
+use Paw\Core\Model;
 
-class Uploader
+class Uploader extends Model
 {
-    // src\App\Utils\Uploader.php
-    // uploads\casa-foto-1.png
     const UPLOADDIRECTORY = '../uploads/';
-    const UPLOAD_COMPLETED = 0;
+    const UPLOAD_COMPLETED = true;
     const ERROR_TIPO_NO_PERMITIDO = 1;
     const ERROR_TAMANIO_NO_PERMITIDO = 2;
     const ERROR_SUBIDA = 3;
@@ -28,24 +27,38 @@ class Uploader
         
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         
+        if ($finfo === false) {
+            return [
+                'exito' => false,
+                'description' => "No se pudo abrir el recurso de fileinfo."
+            ];
+        }
+
+        if (!file_exists($fileTmpName) || !is_readable($fileTmpName)) {
+            return [
+                'exito' => false,
+                'description' => "El archivo {$fileName} no existe o no se puede leer."
+            ];
+        }
+        
         $fileMimeType = finfo_file($finfo, $fileTmpName);
-        finfo_close($finfo);
+        finfo_close($finfo);        
 
         $log->info("TIPO ARCHIVO ", [$fileMimeType]);
         if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
             return [
                 'exito' => self::ERROR_TIPO_NO_PERMITIDO,
-                'description' => "El tipo de archivo no está permitido."
+                'description' => "El tipo de archivo $fileName no está permitido."
             ];
         }
 
 
         // Verificar el tamaño del archivo
-        $maxFileSize = 5 * 1024 * 1024; // 5 MB en bytes
+        $maxFileSize = 1 * 1024 * 1024; // 1 MB en bytes
         if ($fileSize > $maxFileSize) {
             return [
                 'exito' => self::ERROR_TAMANIO_NO_PERMITIDO,
-                'description' => "El archivo no debe exceder 1 MB."
+                'description' => "El archivo $fileName no debe exceder {$maxFileSize} bytes."
             ];
         }
 
@@ -64,7 +77,7 @@ class Uploader
         } else {
             return [
                 'exito' => self::ERROR_SUBIDA,
-                'description' => "Error al subir el archivo."
+                'description' => "Error al subir el archivo $fileName."
             ];
         }
     }

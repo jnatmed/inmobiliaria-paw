@@ -1,0 +1,32 @@
+/* Estilos para el autocompletado */
+
+.autocomplete-results-container {
+    position: relative;
+}
+
+.autocomplete-results {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    
+}
+
+.autocomplete-list {
+    position: absolute;
+    top:-4px;
+    left: 21.4%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: gray;
+    width: 18%;
+}
+
+.autocomplete-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background-color: #eee;
+}

@@ -4,8 +4,13 @@ class publicacionDetails {
       document.addEventListener('DOMContentLoaded', () => {
 
         const promiseMapaLeafLet = PAW.cargarScriptPromise('MapaLeaflet', '/assets/js/components/mapaLeaflet.js');
+        const promiseCarrousel = PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrousel.js');
 
-        Promise.all([promiseMapaLeafLet]).then(function() {
+        Promise.all([promiseMapaLeafLet, promiseCarrousel]).then(function() {
+
+
+            const carousel = new Carrousel('.container-imagenes-publicacion');
+
 
             const latitudElement = document.querySelector('#latitud');
             const longitudElement = document.querySelector('#longitud');

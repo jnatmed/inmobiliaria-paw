@@ -1,35 +1,9 @@
-/* Estilos para la sección de imágenes */
-.container-imagenes-publicacion {
-    padding: 20px;
-    background-color: #fff;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
 
 .titulo-imagenes-detail {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-.ul-imagenes-publicacion {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-}
-
-.li-imagen-publicacion {
-    flex: 0 0 auto;
-}
-
-.carousel-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
 
 /* Estilos para los detalles de la publicación */
 .details-depto {
@@ -75,6 +49,7 @@
     margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
 }
 
 .h4-titulo-form {
@@ -144,3 +119,275 @@
     background-color: #e1e1e1;
     border-radius: 5px;
 }
+
+/*
+regla para carrousel de la vista detalle publicacion */
+
+.container-imagenes-publicacion {
+    position: relative;
+    display: block;
+    width: 100vw;
+    height: auto;
+    max-width: 100em;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.titulo-imagenes-detail {
+    text-align: center;
+    letter-spacing: 1rem;
+    text-transform: uppercase;
+    padding: 1rem;
+    margin: 2rem;
+    border-bottom: 30px solid var(--color-amarillo);
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.5s ease;
+    height: 63vh;
+    width: 100%;
+    transform: translateX(0%);
+}
+
+.carousel-img {
+    width: calc(100% / 5);
+    max-width: 100%;
+    min-height: 10vh;
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.puntos {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    list-style: none;
+    padding: 1em;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+
+.punto {
+    width: 1em;
+    height: 1em;
+    background-color: grey;
+    margin: 1em;
+    border-radius: 50%;
+    box-shadow: 0.6em 0.6em 1.2em var(#c9c9c9), -0.6em -0.6em 1.2em var(#ffffff), inset 0 0 0 transparent, inset 0 0 0 transparent;
+}
+
+.punto.activo {
+    background-color: orangered;
+}
+
+
+/* Estilos para la imagen de pantalla completa */
+.fullscreen-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite el scroll si la imagen es más grande que la ventana */
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo semitransparente */
+}
+
+.fullscreen-modal .modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    transition: transform 0.25s ease; /* Transición para el zoom */
+}
+
+.fullscreen-modal .close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.fullscreen-modal .close:hover,
+.fullscreen-modal .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Añade zoom al hacer hover */
+.fullscreen-modal .modal-content:hover {
+    transform: scale(1.1);
+}
+
+
+/* Estilos por defecto para dispositivos de ancho mayor a 780px */
+.details-depto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        "article-details-texto form-contacto-publicacion"
+        "ubicacion-publicacion ubicacion-publicacion";
+}
+
+/* Cuando .details-depto contiene .container-reserva */
+.details-depto:has(.container-reserva) {
+    grid-template-columns: 1fr 1fr; /* Por defecto, dos columnas */
+    grid-template-areas:
+        "article-details-texto form-contacto-publicacion"
+        "container-reserva container-reserva"
+        "ubicacion-publicacion ubicacion-publicacion";
+}
+
+/* Estilos para pantallas más pequeñas (menor a 780px) */
+@media (max-width: 780px) {
+    .details-depto {
+        grid-template-columns: 1fr; /* Una columna para todo */
+        grid-template-areas:
+            "article-details-texto"
+            "form-contacto-publicacion"
+            "container-reserva"
+            "ubicacion-publicacion";
+    }
+
+    /* Reglas específicas cuando tiene .container-reserva */
+    .details-depto:has(.container-reserva) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "article-details-texto"
+            "form-contacto-publicacion"
+            "container-reserva"
+            "ubicacion-publicacion";
+    }
+}
+  
+  /* Definición de áreas de grid para los elementos */
+  .article-details-texto {
+    grid-area: article-details-texto;
+  }
+  
+  .details-depto__info {
+    grid-area: article-details-texto;
+  }
+  .form-contacto-publicacion {
+    grid-area: form-contacto-publicacion;
+  }
+  
+  .container-reserva {
+    grid-area: container-reserva;
+  }
+  
+  .ubicacion-publicacion {
+    grid-area: ubicacion-publicacion;
+  }
+  
+
+
+/* 
+estilo para los detalles de la propiedad
+*/ 
+
+.details-depto {
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.details-depto__info {
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.details-depto__titulo {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.details-depto__descripcion,
+.details-depto__normas {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.details-depto__comodidades {
+    width: 100%;
+}
+
+.details-depto__comodidades-titulo {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.details-depto__comodidades-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.details-depto__comodidades-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comodidades-item__etiqueta {
+    font-weight: bold;
+}
+
+.comodidades-item__valor {
+    color: #555;
+}
+
+/* Diseño por defecto (menos de 780px) */
+.container-reserva {
+    display: grid;
+    grid-template-columns: 1fr; /* Una sola columna */
+    gap: 20px; /* Espacio entre los elementos */
+
+    padding: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
+  }
+  
+  /* Diseño para pantallas grandes (más de 780px) */
+  @media (min-width: 780px) {
+    .container-reserva {
+      grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    }
+  }
+
+
+  .details-depto__titulo {
+    font-size: 1.5rem; /* Tamaño del texto del encabezado */
+  }
+  
+  .titulo-estatico {
+    display: block; /* Hace que el texto sea una línea completa */
+  }
+  
+  .titulo-dinamico {
+    display: block; /* También lo convierte en una línea completa */
+    font-weight: bold; /* Estilo adicional si es necesario */
+  }
+  

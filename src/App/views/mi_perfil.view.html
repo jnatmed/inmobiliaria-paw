@@ -13,14 +13,18 @@
         <aside class="profile-aside">
             <img src="/assets/imgs/perfil/tipe-{{ usuario.tipo_usuario == 'propietario' ? 'administrator' : 'visitor' }}.png" alt="Imagen de perfil" class="profile-image">
             <h2 class="profile-name">{{ usuario.nombre|escape }}</h2>
-            <p class="profile-type">{{ usuario.tipo_usuario|escape }}</p>
+            <p class="profile-type">{{ usuario.tipo|escape }}</p>
         </aside>
 
         <section class="profile-section">
             <h2>Detalles del Usuario</h2>
             <p><strong>Nombre:</strong> {{ usuario.nombre|escape }}</p>
             <p><strong>Apellido:</strong> {{ usuario.apellido|escape }}</p>
-            <p><strong>Email:</strong> {{ usuario.email|escape }}</p>
+            <form action="/perfil/update" method="post">
+                <label for="email"><strong>Email:</strong></label>
+                <input type="email"  name="email" value="{{ usuario.email|escape }}">
+                <input type="submit" value="Actualizar">
+            </form>
             <p><strong>Teléfono:</strong> {{ usuario.telefono|escape }}</p>
         </section>
     </main>
