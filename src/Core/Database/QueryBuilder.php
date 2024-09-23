@@ -580,14 +580,21 @@ class QueryBuilder
         }
     }    
 
-    public function selectMaxPrice($table)
+    public function selectMaxPrice($table, $id_user = null)
     {
         try {
             // Consulta para obtener el mayor valor del campo `precio`
-            $query = "SELECT MAX(precio) AS max_precio FROM {$table}";
-            
+            $query = $id_user 
+                ? "SELECT MAX(precio) AS max_precio FROM {$table} WHERE id = :id_user" 
+                : "SELECT MAX(precio) AS max_precio FROM {$table}";
+
             // Preparar la sentencia
             $stmt = $this->pdo->prepare($query);
+
+            // Si hay un id de usuario, enlazamos el parámetro
+            if ($id_user) {
+                $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+            }
             
             // Ejecutar la consulta
             $stmt->execute();

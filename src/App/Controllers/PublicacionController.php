@@ -90,6 +90,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+            
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
             // Preparar datos para la vista
@@ -243,6 +244,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+            $mayorPrecio = $this->model->getPublicacionMayorPrecio($idUser);
 
             // Datos para pasar a la vista
             $datos = [
@@ -250,6 +252,7 @@ class PublicacionController extends Controller
                 'zona' => $zona,
                 'tipos' => $tipo,
                 'precio' => $precio,
+                'mayorPrecio' => $mayorPrecio,
                 'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,

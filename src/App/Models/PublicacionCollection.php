@@ -254,9 +254,9 @@ class PublicacionCollection extends Model
         }
     } 
 
-    public function getPublicacionMayorPrecio()
+    public function getPublicacionMayorPrecio($id_user = null)
     {
-        return $this->queryBuilder->selectMaxPrice('publicaciones');
+        return $this->queryBuilder->selectMaxPrice('publicaciones', $id_user);
     }
 
 
