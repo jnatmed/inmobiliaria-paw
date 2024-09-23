@@ -558,42 +558,6 @@ class PublicacionController extends Controller
         ));
     }
 
-    public function actualizarEstadoReserva()
-    {
-        try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver el pedido."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                redirect('iniciar-sesion');
-            }
-
-            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
-            $accion = $this->request->getSegments(2);
-            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
-            $idReserva = htmlspecialchars($this->request->get('id_reserva'));
-
-            if ($idPublicacion && $idReserva) {
-
-                $this->model->actualizarEstadoReserva($idReserva, $accion);
-
-                redirect('mis_publicaciones/reservas');
-            } else {
-                throw new Exception("ID de publicación o reserva no proporcionado: ");
-            }
-        } catch (Exception $e) {
-            $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
-
-            view('errors/internal_error.view', [
-                'error_message' => "Error General al cancelar la reserva: " . $e->getMessage()
-            ]);
-        }
-    }
-
     public function actualizarEstadoPublicacion()
     {
 
