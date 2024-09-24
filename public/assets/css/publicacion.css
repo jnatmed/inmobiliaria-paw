@@ -87,7 +87,7 @@ p.paso-titulo {
 
 .descripcion-alojamiento[type="number"] {
     display: inline-block;
-    width: 30vw;
+    width: 10vw;
     padding: 10px;
     font-family: var(--font-precio);
 }
