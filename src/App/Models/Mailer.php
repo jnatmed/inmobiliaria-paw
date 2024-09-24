@@ -50,9 +50,33 @@ class Mailer extends Model
             $this->mail->send();
             return true;
         } catch (Exception $e) {
-            // Puedes agregar un log o manejar el error de otra manera aquí
-            
+
             return false;
         }
+    }
+
+    public function enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio)
+    {
+        /**
+         * aca lo que se busca es usar las plantilla para redactar un
+         * correo con estilos en linea guardarlos en el body y enviarlo
+         * aqui evitamos mezclar html con php y combinamos 
+         * el poder del motor de plantillas con php
+         *  */
+        $body = view('correoAlDuenioDeLaPublicacion', [
+            'emailInteresado' => $emailInteresado,
+            'telefonoDelInteresado' => $telefonoDelInteresado,
+            'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
+            'fullUrl' => $fullUrl
+        ], true);
+
+        // Aca enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->send(
+            $emailDuenio,
+            "Consulta sobre publicacion: ",
+            $body
+        );        
+
+        return $resultadoSend;
     }
 }

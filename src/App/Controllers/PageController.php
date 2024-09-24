@@ -33,14 +33,6 @@ class PageController extends Controller
         $this->menuAndSession = $this->usuario->menuAndSession;
     }
 
-    public function index()
-    {
-        $datos = ['titulo' => "PAWPERTIES | HOME"];
-        
-
-        view('home.view', array_merge($this->menuAndSession, $datos));
-    }
-
     public function mostrarMapa(){
         $datos = ['titulo' => "PAWPERTIES | MAPA"];
         view("mapa-general.view", array_merge($this->menuAndSession, $datos));

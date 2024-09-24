@@ -64,7 +64,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'No se permiten fiestas. Mascotas bajo petición.',
+                'normas_alojamiento' => 'No se permiten fiestas, Mascotas bajo petición.',
                 'descripcion_alojamiento' => 'Exclusiva casa con vista al río, ubicada en el barrio más prestigioso de Buenos Aires. Ideal para familias o grupos grandes que buscan lujo y comodidad.',
                 'id_usuario' => 1,
                 'estado_id' => 1
@@ -85,7 +85,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 1),
                 'aire_acondicionado' => rand(0, 1),
                 'wifi' => rand(0, 1),
-                'normas_alojamiento' => 'Prohibido fumar en interiores. No se permiten mascotas.',
+                'normas_alojamiento' => 'Prohibido fumar en interiores, No se permiten mascotas.',
                 'descripcion_alojamiento' => 'Cabañas rústicas con vistas impresionantes a la cordillera de los Andes. Perfectas para disfrutar de la tranquilidad y los vinos mendocinos.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -106,7 +106,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'Silencio después de las 22:00. No se permiten eventos.',
+                'normas_alojamiento' => 'Silencio después de las 22:00, No se permiten eventos.',
                 'descripcion_alojamiento' => 'Hermosa estancia en las sierras cordobesas. Perfecta para escapar del ruido de la ciudad y disfrutar de la naturaleza en familia.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -127,7 +127,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 0),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'No se permiten mascotas. Solo estudiantes.',
+                'normas_alojamiento' => 'No se permiten mascotas, Solo estudiantes.',
                 'descripcion_alojamiento' => 'Cómodo apartamento ideal para estudiantes, ubicado cerca de las principales universidades de La Plata. Cuenta con todas las comodidades necesarias para una estancia agradable.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -169,7 +169,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'Solo acceso por lancha. No se permiten fiestas.',
+                'normas_alojamiento' => 'Solo acceso por lancha, No se permiten fiestas.',
                 'descripcion_alojamiento' => 'Ubicada en una exclusiva isla del Delta del Paraná, esta propiedad ofrece una experiencia única para los amantes de la naturaleza y la tranquilidad. Perfecto para escapadas de fin de semana.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -190,7 +190,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'No se permiten mascotas. Respeto por el horario de descanso.',
+                'normas_alojamiento' => 'No se permiten mascotas, Respeto por el horario de descanso.',
                 'descripcion_alojamiento' => 'Casa acogedora con un amplio jardín, ubicada en el corazón de San Miguel de Tucumán. Perfecta para familias que buscan tranquilidad y comodidad.',
                 'id_usuario' => 1,
                 'estado_id' => 1
@@ -211,7 +211,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 0),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'No se permiten fiestas. No fumar en el interior.',
+                'normas_alojamiento' => 'No se permiten fiestas, No fumar en el interior.',
                 'descripcion_alojamiento' => 'Departamento moderno en el centro de Rosario, a metros del río Paraná. Ideal para parejas o grupos pequeños que desean explorar la ciudad.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -232,7 +232,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 0),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'Mascotas permitidas bajo petición. Silencio después de las 23:00.',
+                'normas_alojamiento' => 'Mascotas permitidas bajo petición, Silencio después de las 23:00.',
                 'descripcion_alojamiento' => 'Casa familiar situada a orillas del río Paraná, con vistas increíbles y ambientes relajados para disfrutar de Corrientes en su máxima expresión.',
                 'id_usuario' => 1,
                 'estado_id' => 1
@@ -253,7 +253,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'Prohibido fumar. Respetar las normas de convivencia.',
+                'normas_alojamiento' => 'Prohibido fumar, Respetar las normas de convivencia.',
                 'descripcion_alojamiento' => 'Imponente casa colonial con vistas a los cerros salteños. Un espacio ideal para disfrutar de la arquitectura tradicional y el encanto del norte argentino.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -295,7 +295,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(0, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'No se permiten eventos. Desayuno incluido.',
+                'normas_alojamiento' => 'No se permiten eventos, Desayuno incluido.',
                 'descripcion_alojamiento' => 'Pequeño hotel boutique en el centro de La Plata, con servicios de primera calidad y ambiente exclusivo. Perfecto para escapadas románticas o viajes de negocios.',
                 'id_usuario' => 2,
                 'estado_id' => 1
@@ -316,7 +316,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'pileta' => rand(1, 1),
                 'aire_acondicionado' => rand(1, 1),
                 'wifi' => rand(1, 1),
-                'normas_alojamiento' => 'Acceso a las termas hasta las 22:00. Prohibido hacer ruido excesivo.',
+                'normas_alojamiento' => 'Acceso a las termas hasta las 22:00, Prohibido hacer ruido excesivo.',
                 'descripcion_alojamiento' => 'Complejo termal en el corazón de Entre Ríos, ideal para relajarse y disfrutar de aguas termales naturales. Perfecto para familias o grupos grandes.',
                 'id_usuario' => 3,
                 'estado_id' => 1

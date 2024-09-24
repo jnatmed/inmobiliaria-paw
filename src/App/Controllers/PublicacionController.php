@@ -186,25 +186,7 @@ class PublicacionController extends Controller
             $id_publicacion
         ]);
 
-        /**
-         * aca lo que se busca es usar las plantilla para redactar un
-         * correo con estilos en linea guardarlos en el body y enviarlo
-         * aqui evitamos mezclar html con php y combinamos 
-         * el poder del motor de plantillas con php
-         *  */
-        $body = view('correoAlDuenioDeLaPublicacion', [
-            'emailInteresado' => $emailInteresado,
-            'telefonoDelInteresado' => $telefonoDelInteresado,
-            'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
-            'fullUrl' => $fullUrl
-        ], true);
-
-        // Aca enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send(
-            $emailDuenio,
-            "Consulta sobre publicacion: ",
-            $body
-        );
+        $resultadoSend = $this->mailer->enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio);
 
         if ($resultadoSend) {
             $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
