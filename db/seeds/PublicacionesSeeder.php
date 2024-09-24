@@ -173,7 +173,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'descripcion_alojamiento' => 'Ubicada en una exclusiva isla del Delta del Paraná, esta propiedad ofrece una experiencia única para los amantes de la naturaleza y la tranquilidad. Perfecto para escapadas de fin de semana.',
                 'id_usuario' => 2,
                 'estado_id' => 1
-            ], 
+            ],
             [
                 'latitud' => -26.827067,
                 'longitud' => -65.203662,
@@ -341,7 +341,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'descripcion_alojamiento' => 'Cabañas rústicas y acogedoras a orillas del río Limay. Un entorno natural perfecto para escapadas en familia o con amigos.',
                 'id_usuario' => 2,
                 'estado_id' => 1
-            ]       
+            ]
         ];
 
         $this->table('publicaciones')->insert($publicacionesData)->save();
@@ -385,17 +385,14 @@ class PublicacionesSeeder extends AbstractSeed
         // Crear imágenes para cada publicación
         $imagenesPublicacionData = [];
         for ($i = 1; $i <= count($publicacionesData); $i++) {
-            foreach ($imagenes as $imagen) {
-                $imagenesPublicacionData[] = [
-                    'id_publicacion' => $i,
-                    'path_imagen' => $imagen['path_imagen'],
-                    'nombre_imagen' => $imagen['nombre_imagen'],
-                    'id_usuario' => rand(1, 3)
-                ];
-            }
+            $img = rand(1, 8);
+            $imagenesPublicacionData[] = [
+                'id_publicacion' => $i,
+                'path_imagen' => $imagenes[$img]['path_imagen'],
+                'nombre_imagen' => $imagenes[$img]['nombre_imagen'],
+                'id_usuario' => rand(1, 3)
+            ];
         }
         $this->table('imagenes_publicacion')->insert($imagenesPublicacionData)->saveData();
-      
-
     }
 }

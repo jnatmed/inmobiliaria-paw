@@ -395,7 +395,7 @@ class QueryBuilder
             }
     
             if ($zona) {
-                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona)";
+                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona OR main.nombre_alojamiento LIKE :zona OR main.descripcion_alojamiento LIKE :zona OR main.normas_alojamiento LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
             }
     

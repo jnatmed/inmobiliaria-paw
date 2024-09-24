@@ -1,6 +1,6 @@
 <section class="filtro-group">
-    <p>Zona</p>
-    <input type="text" placeholder="Luján..." name="zona" id="zona" value="{{ zona }}">
+    <p>Búsqueda</p>
+    <input type="text" placeholder="Buscar palabra clave..." name="zona" id="zona" value="{{ zona }}">
 </section>
 
 <section class="filtro-group">
@@ -13,7 +13,7 @@
     <p>Tipo</p>
     {% if tipos_alojamiento is not empty %}
         {% for tipo in tipos_alojamiento %}
-            <label>
+            <label> 
                 <input type="checkbox" name="tipo[]" value="{{ tipo.id }}"{{ tipo.id in tipos ? 'checked' : '' }}>
                 {{ tipo.descripcion_tipo|capitalize }}
             </label>
