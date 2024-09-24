@@ -4,13 +4,17 @@ class Carrousel {
         this._seccionCarrousel = document.querySelector(this._clase);
         this._imagenes = this._seccionCarrousel.querySelectorAll('.carousel-img');
         this._cantidadImagenes = this._imagenes.length;
-        this._puntos = this._seccionCarrousel.querySelectorAll('.punto'); // Selecciona los puntos ya existentes
+        this._puntos = this._seccionCarrousel.querySelectorAll('.punto');
 
         this.imagenActual = 0; // Índice de la imagen actual
+        this.touchStartX = 0;
+        this.touchEndX = 0;
+
         this.inicializarCarrousel();
         this.startCarrousel();
         this.selectImage();
         this.habilitarImagenCompleta();
+        this.addTouchEvents(); // Añadimos eventos touch
     }
 
     inicializarCarrousel() { 
@@ -93,5 +97,43 @@ class Carrousel {
                 modal.style.display = 'none';
             }
         }
+    }
+
+    // Nuevos eventos táctiles
+    addTouchEvents() {
+        const slider = this._seccionCarrousel.querySelector('.slider');
+
+        // Capturar cuando el usuario empieza a tocar
+        slider.addEventListener('touchstart', (e) => {
+            this.touchStartX = e.changedTouches[0].screenX;
+        });
+
+        // Capturar cuando el usuario mueve el dedo
+        slider.addEventListener('touchmove', (e) => {
+            this.touchEndX = e.changedTouches[0].screenX;
+        });
+
+        // Capturar cuando el usuario termina de tocar
+        slider.addEventListener('touchend', () => {
+            this.handleGesture(slider);
+        });
+    }
+
+    handleGesture(slider) {
+        // Calculamos la diferencia entre donde empezó y terminó el toque
+        const diffX = this.touchStartX - this.touchEndX;
+
+        // Si la diferencia es significativa, decidimos si mover a la izquierda o a la derecha
+        if (diffX > 50) {
+            // Deslizó a la izquierda (mostrar siguiente imagen)
+            this.imagenActual = (this.imagenActual + 1) % this._cantidadImagenes;
+        } else if (diffX < -50) {
+            // Deslizó a la derecha (mostrar imagen anterior)
+            this.imagenActual = (this.imagenActual - 1 + this._cantidadImagenes) % this._cantidadImagenes;
+        }
+
+        // Movemos el slider y actualizamos los puntos
+        this.moverSlider(this.imagenActual, slider);
+        this.pintarPunto(this._puntos, this.imagenActual);
     }
 }
