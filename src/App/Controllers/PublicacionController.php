@@ -6,15 +6,12 @@ use Paw\Core\Controller;
 use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Utils;
 use Paw\App\Models\PublicacionCollection;
+use Paw\App\Models\ReservasCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
 use Paw\App\Models\Publicacion;
 use Paw\App\Models\Imagen;
 use Paw\App\Models\ImagenCollection;
-use Paw\Core\Exceptions\PostVacioException;
-
-use Paw\Core\Exceptions\FallaEnCargaDeImagenesException;
-use Paw\Core\Exceptions\PublicacionFailException;
 
 use PDOException;
 use Throwable;
@@ -29,6 +26,7 @@ class PublicacionController extends Controller
     public $utils;
     public $mailer;
     public $menuAndSession;
+    public ReservasCollection $ReservasCollection;
 
     public function __construct()
     {
@@ -38,9 +36,11 @@ class PublicacionController extends Controller
         $this->verificador = new Verificador;
         $this->utils = new  Utils();
         $this->mailer = new Mailer();
-
+        $this->ReservasCollection = new ReservasCollection();
         parent::__construct();
 
+        $this->ReservasCollection->setQueryBuilder($this->qb);
+        
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
@@ -144,7 +144,7 @@ class PublicacionController extends Controller
         }
 
         // Aca se obtienen las reservas usando el modelo
-        $reservas = $this->model->getReservas($id_publicacion);
+        $reservas = $this->ReservasCollection->getReservas($id_publicacion);
 
         // se codifican las reservas a JSON para su uso en JavaScript
         $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
