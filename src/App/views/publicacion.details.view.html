@@ -17,12 +17,11 @@
         <!-- imagenes del departamento en alquiler-->
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">{{ publicacion.nombre_alojamiento | capitalize }}</h2>
-            <article class="slider" style="width: {{ publicacion.imagenes | length * 100 }}%; transform: translateX(0%);">
+            <article class="slider">
                 {% for imagen in publicacion.imagenes %}
                 <img class="carousel-img" 
                      src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" 
-                     alt="{{ imagen.nombre_imagen }}" 
-                     style="width: calc(100% / {{ publicacion.imagenes | length }});">
+                     alt="{{ imagen.nombre_imagen }}">
                 {% endfor %}
             </article>
             <ul class="puntos">

@@ -1,20 +1,16 @@
 class Carrousel {
-
-    /*
-    Recibe un argumento (clase) ->
-        clase         => contenedor de tipo class donde está el carrousel
-    */
-    
     constructor(clase) {
         this._clase = clase;
         this._seccionCarrousel = document.querySelector(this._clase);
         this._imagenes = this._seccionCarrousel.querySelectorAll('.carousel-img');
         this._cantidadImagenes = this._imagenes.length;
-        
+        this._puntos = this._seccionCarrousel.querySelectorAll('.punto'); // Selecciona los puntos ya existentes
+
+        this.imagenActual = 0; // Índice de la imagen actual
         this.inicializarCarrousel();
         this.startCarrousel();
         this.selectImage();
-        this.habilitarImagenCompleta(); // Llamada al nuevo método
+        this.habilitarImagenCompleta();
     }
 
     inicializarCarrousel() { 
@@ -26,71 +22,45 @@ class Carrousel {
         this._imagenes.forEach((imagen) => {
             imagen.style.width = `calc(100% / ${this._cantidadImagenes})`;
         });
-
-        this.agregarPuntos(this._seccionCarrousel);
-    }
-
-    agregarPuntos(contenedor) {
-        let ul = document.createElement('ul');
-        ul.classList.add('puntos');
-        let li;
-        
-        for (let i = 0; i < this._cantidadImagenes; i++) {
-            li = document.createElement('li');
-            li.classList.add('punto');
-            if (i === 0) {
-                li.classList.add('activo');
-            }
-            ul.appendChild(li);
-        }    
-
-        contenedor.appendChild(ul);
     }
 
     startCarrousel() {
         let time = 3000;
-        let imagenActual = 0;
-        let punto = document.querySelectorAll('.punto');
         let slider = document.querySelector('.slider');
-        let divisor = 100 / this._cantidadImagenes;
         
         setInterval(() => {
-            let operacion = imagenActual * -divisor;
-            slider.style.transform = `translateX(${operacion}%)`;
-            this.pintarPunto(punto, imagenActual);
+            this.moverSlider(this.imagenActual, slider);
+            this.pintarPunto(this._puntos, this.imagenActual);
 
-            if (imagenActual < this._cantidadImagenes - 1) {
-                imagenActual++;
-            } else {
-                imagenActual = 0;
-            }
+            this.imagenActual = (this.imagenActual + 1) % this._cantidadImagenes; // Ciclo infinito
         }, time);
     }
 
-    selectImage() {
-        let punto = document.querySelectorAll('.punto');
-        let slider = document.querySelector('.slider');
-        let divisor = 100 / punto.length;
-
-        punto.forEach((puntoParticular, i) => {
-            punto[i].addEventListener('click', () => {
-                let posicion = i;
-                let operacion = posicion * -divisor;
-                slider.style.transform = `translateX(${operacion}%)`;
-                this.pintarPunto(punto, i);
-            });    
-        });  
+    moverSlider(posicion, slider) {
+        let porcentajeDesplazamiento = (100 / this._cantidadImagenes) * posicion;
+        slider.style.transform = `translateX(-${porcentajeDesplazamiento}%)`;
     }
 
-    pintarPunto(punto, i) {
-        punto.forEach((puntoParticular) => {
+    selectImage() {
+        let slider = document.querySelector('.slider');
+
+        this._puntos.forEach((puntoParticular, i) => {
+            puntoParticular.addEventListener('click', () => {
+                this.imagenActual = i;  // Actualizamos el índice de la imagen actual
+                this.moverSlider(i, slider);  // Movemos el slider a la imagen seleccionada
+                this.pintarPunto(this._puntos, i);
+            });
+        });
+    }
+
+    pintarPunto(puntos, i) {
+        puntos.forEach((puntoParticular) => {
             puntoParticular.classList.remove('activo');
         });
-        punto[i].classList.add('activo');
+        puntos[i].classList.add('activo');
     }
 
     habilitarImagenCompleta() {
-        // Crear el modal y los elementos necesarios
         let modal = document.createElement('div');
         modal.id = 'fullscreenModal';
         modal.classList.add('fullscreen-modal');
@@ -105,22 +75,19 @@ class Carrousel {
 
         modal.appendChild(closeBtn);
         modal.appendChild(modalImg);
-        document.body.appendChild(modal); // Añadir el modal al body
+        document.body.appendChild(modal);
 
-        // Añadir evento a cada imagen para abrirla en pantalla completa
         this._imagenes.forEach((imagen) => {
             imagen.addEventListener('click', () => {
-                modal.style.display = 'block'; // Muestra el modal
-                modalImg.src = imagen.src; // Coloca la imagen seleccionada en el modal
+                modal.style.display = 'block';
+                modalImg.src = imagen.src;
             });
         });
 
-        // Añadir evento al botón de cierre para cerrar el modal
         closeBtn.onclick = () => {
-            modal.style.display = 'none'; // Oculta el modal
+            modal.style.display = 'none';
         }
 
-        // Añadir evento para cerrar el modal al hacer clic fuera de la imagen
         modal.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
