@@ -127,20 +127,17 @@ $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesProp
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 $router->post('/publicacion/contactar-al-duenio-form', 'PublicacionController@contactarAlDuenio');
-// $router->get('/reserva', 'ReservasController@reservas');
-$router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 $router->get('/publicaciones/gestionar', 'PublicacionController@gestionarPublicaciones');
 $router->get('/publicaciones/gestionar/aceptar', 'PublicacionController@actualizarEstadoPublicacion');
 $router->get('/publicaciones/gestionar/cancelar', 'PublicacionController@actualizarEstadoPublicacion');
 $router->get('/publicaciones/gestionar/rechazar', 'PublicacionController@actualizarEstadoPublicacion');
 
-// $router->get('/mis_publicaciones/reservas', 'PublicacionController@verReservas'); // hecha
+$router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 $router->get('/mis_publicaciones/reservas', 'ReservasController@verReservas'); // hecha
 $router->get('/mis_publicaciones/reserva/aceptar', 'ReservasController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/cancelar', 'ReservasController@actualizarEstadoReserva'); // hecha
 $router->get('/mis_publicaciones/reserva/rechazar', 'ReservasController@actualizarEstadoReserva'); // hecha
 $router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
-
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
 
 $router->get('/mapa', 'PageController@mostrarMapa');

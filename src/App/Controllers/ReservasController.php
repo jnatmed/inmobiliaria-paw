@@ -9,6 +9,7 @@ use Paw\App\Models\Mailer;
 use Paw\Core\Controller;
 use Paw\App\Models\ReservasCollection;
 use Exception;
+use Paw\App\Models\Reserva;
 
 class ReservasController extends Controller
 {
@@ -155,9 +156,20 @@ class ReservasController extends Controller
         $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));
         $desde = htmlspecialchars($this->request->get('input-desde'));
         $hasta = htmlspecialchars($this->request->get('input-hasta'));
-        $precio_x_noche = 800;
+        $precio_x_noche = 0;
         $estado_reserva = 'pendiente';
         $notas = 'ninguna';
+
+        // $reserva = [
+        //     'id_publicacion' => $id_publicacion,
+        //     'id_usuario_reserva' => $this->usuario->getUserId(),
+        //     'fecha_inicio' => $desde,
+        //     'fecha_fin' => $hasta,
+        //     'precio_por_noche' => $precio_x_noche,
+        //     'estado_reserva' => $estado_reserva,
+        // ]
+
+        // $ObjReserva = new Reserva($reserva, $this->logger);
 
         $alojamientoReservado = $this->model->reservarAlojamiento(
             $id_publicacion,

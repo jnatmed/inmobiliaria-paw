@@ -122,9 +122,9 @@
             </article>
 
             <!-- 3) formulario de reserva junto con la visualizacion del calendario de reserva-->
-            {% if isUserLoggedIn and tipo_usuario in [1, 3]  %}
+            
                 {% include 'parts/reservas-propiedad.view.html' %}
-            {% endif %}
+            
 
             <!-- 4) mapa donde figura la ubicacion del alquiler -->
             <article class="ubicacion-publicacion">

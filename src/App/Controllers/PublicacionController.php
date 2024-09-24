@@ -31,14 +31,13 @@ class PublicacionController extends Controller
     public function __construct()
     {
         global $config;
+        parent::__construct();
 
         $this->uploader = new Uploader;
         $this->verificador = new Verificador;
         $this->utils = new  Utils();
         $this->mailer = new Mailer();
         $this->ReservasCollection = new ReservasCollection();
-        parent::__construct();
-
         $this->ReservasCollection->setQueryBuilder($this->qb);
         
         $this->usuario = new UsuarioController();
@@ -226,6 +225,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+
             $mayorPrecio = $this->model->getPublicacionMayorPrecio($idUser);
 
             // Datos para pasar a la vista
@@ -467,52 +467,6 @@ class PublicacionController extends Controller
 
             view('errors/internal_error.view', [
                 'error_message' => "Error en el proceso: " . $e->getMessage()
-            ]);
-        }
-    }
-
-
-    public function verReservas()
-    {
-
-        try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver las reservas."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
-
-
-            // Obtener las reservas pendientes y confirmadas
-            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-
-            $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
-
-            $datos = [
-                'reservas' => $reservas,
-                'reservasSolicitadasPorUserSesion' => $reservasSolicitadasPorUserSesion,
-                'titulo' => "PAWPERTIES | RESERVAS"
-            ];
-
-            $this->logger->info("RESERVAS : ", [$reservas]);
-
-            view('publicaciones.reservas.view', array_merge(
-                $datos,
-                ['idUserSesion' => $this->usuario->getUserId()],
-                $this->menuAndSession
-            ));
-        } catch (Exception $e) {
-            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
-
-            view('errors/internal_error.view', [
-                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
             ]);
         }
     }
