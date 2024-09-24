@@ -348,22 +348,6 @@ class PublicacionCollection extends Model
         }
     }    
 
-    public function getReservas($id_publicacion)
-    {
-        // Utilizamos el QueryBuilder para obtener las reservas
-        $result = $this->queryBuilder->select('reservas_publicacion', ['id_publicacion' => $id_publicacion]);
-
-        // Formatear los resultados según el formato requerido
-        $reservas = [];
-        foreach ($result as $row) {
-            $fecha_inicio = (new \DateTime($row['fecha_inicio']))->format('d/m/Y');
-            $fecha_fin = (new \DateTime($row['fecha_fin']))->format('d/m/Y');
-            $reservas[] = [$fecha_inicio, $fecha_fin];
-        }
-
-        return $reservas;
-    }
-
     public function traerPublicaciones()
     {
         try {
