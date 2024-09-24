@@ -4,7 +4,6 @@
 <head>
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicaciones-list.js"></script>
-    <script src="/assets/js/components/sliderPrecio.js" defer></script>
 </head>
 
 <body class="home">
@@ -27,7 +26,7 @@
                 <summary>Filtros</summary>
                 <aside class="filtro-container">
                     <!-- <h2>Filtros</h2> -->
-                    <form id="formFiltros" method="GET" class="form-filtros">
+                    <form id="formFiltrosMobile" method="GET" class="form-filtros">
                         {% include 'parts/search-filters.view.html' %}
                     </form>
                 </aside>

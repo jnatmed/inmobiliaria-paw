@@ -1,32 +1,34 @@
 class filtrarPublicaciones {
     constructor() {
-        const formFiltros = document.getElementById('formFiltros');
+        const formularios = document.querySelectorAll('#formFiltros, #formFiltrosMobile');
 
-        formFiltros.addEventListener('submit', function (e) {
-            e.preventDefault();
+        formularios.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); 
 
-            const formData = new FormData(formFiltros);
-            const queryString = new URLSearchParams(formData).toString();
-            const url = `/publicaciones/list?${queryString}`;
-
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest' // Indica que es una solicitud AJAX
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error en la solicitud: ${response.status}`);
+                const formData = new FormData(form);
+                const queryString = new URLSearchParams(formData).toString();
+                const url = `/publicaciones/list?${queryString}`;
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Indicamos que es una solicitud AJAX
                     }
-                    return response.text();
                 })
-                .then(html => {
-                    document.querySelector('.publicaciones-list').innerHTML = html; // Actualiza la lista de publicaciones
-                })
-                .catch(error => {
-                    console.error('Error en la solicitud AJAX', error);
-                });
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('.publicaciones-list').innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud AJAX', error);
+                    });
+            });
+
+            // Escuchar el evento de reset
+            form.addEventListener('reset', (e) => {
+                e.preventDefault(); 
+                window.location.href = '/publicaciones/list';
+            });
         });
     }
 }

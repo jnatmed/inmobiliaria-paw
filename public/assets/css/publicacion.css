@@ -203,6 +203,7 @@ p.paso-titulo {
 .publicacion-datos {
     margin-bottom: 6px;
     font-size: 15px;
+    overflow: auto;
 }
 
 
@@ -511,7 +512,9 @@ p.paso-titulo {
     transition: background-color 0.3s, transform 0.3s;
     border-radius: 10px;
     margin-top: 3em;
-    width: 10%;
+    width: 25%;
+    margin-bottom: 2rem;
+    font-weight: 800;
 }
 
 .ver-mas:hover {
@@ -632,6 +635,10 @@ p.paso-titulo {
 
     .carousel {
         width: 100%;
+    }
+
+    .publicacion-datos {
+        display: none;
     }
 
 }

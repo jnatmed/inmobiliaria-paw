@@ -9,8 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		"/assets/js/components/filtrarPublicaciones.js"
 	);
 
-	Promise.all([promiseFiltro])
+	const promiseSliderPrecio = PAW.cargarScriptPromise(
+		"SliderPrecio",
+		"/assets/js/components/sliderPrecio.js"
+	);
+
+	Promise.all([promiseFiltro, promiseSliderPrecio])
 		.then(function () {
+			new SliderPrecio();
 			new filtrarPublicaciones(); 
 		})
 		.catch(function (error) {

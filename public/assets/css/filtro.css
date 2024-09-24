@@ -37,11 +37,6 @@
     font-family: var(--font-precio);
 }
 
-#precio-valor::before {
-    content: "$";
-    margin-right: 5px
-}
-
 .form-filtros button {
     width: 100px;
     padding: 10px;
