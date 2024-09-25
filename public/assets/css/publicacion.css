@@ -65,7 +65,7 @@ p.paso-titulo {
 }
 
 .input-form-publicacion:required, .input-form-publicacion-select:required {
-    background-color: #00000008;
+    background-color: #00000005;
 }
 
 .paso-1 label {
@@ -619,48 +619,7 @@ input#ubicacion {
     }
 
     .form-busqueda-propiedad {
-        background-color: #D9D9D9;
-        display: flex;
-        flex-wrap: wrap;
-        width: 94%;
-        height: 15.8rem;
-        margin-left: 0;
-        padding: 2rem 2rem 0 2rem;
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-        position: relative;
+        width: 90%;
+        flex-wrap: nowrap;
     }
-}
-
-
-@media (max-width: 682px) {
-    .container-dad {
-        grid-template-columns: 1fr;
-    }
-
-    .nav-destacados {
-        /* flex-direction: column; */
-        grid-template-columns: 1fr;
-    }
-
-    .container_publicaciones {
-        grid-template-columns: 1fr;
-        /* Una sola columna para pantallas pequeñas */
-    }
-
-    .flechas {
-        top: 28%;
-    }
-
-    .nextButton {
-        right: 0;
-    }
-
-    .carousel {
-        width: 100%;
-    }
-
-    .publicacion-datos {
-        display: none;
-    }
-
 }

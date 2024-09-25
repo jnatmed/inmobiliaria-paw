@@ -197,7 +197,7 @@ select.input-form-busqueda[type="text"]{
     margin-top: 5px;
 }
 
-@media (max-width: 682px) {
+@media (max-width: 1200px) {
     .filtro-desktop {
         display: none;
     }

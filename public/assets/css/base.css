@@ -21,7 +21,7 @@ html {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: var(--color-verde-header);
     height: 5rem;
     align-items: center;
@@ -43,12 +43,12 @@ header {
 
 
 .lista-opciones-sesion li {
-    background-color: var(--color-negro-boton);
     border-radius: 1rem;
-    height: 3.8rem;
+    height: 3.5rem;
     display: flex;
     align-items: center;
     padding-right: 6px;
+    background-color: var(--color-negro-boton);
 }
 
 .anchor-item-sesion,
@@ -79,7 +79,7 @@ a.anchor-item-sesion:hover {
     cursor: pointer;
 }
 
-@media (max-width: 682px) {
+@media (max-width: 1200px) {
     .nav-index {
         position: absolute;
         top: 100%;
