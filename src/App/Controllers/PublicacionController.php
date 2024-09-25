@@ -155,9 +155,11 @@ class PublicacionController extends Controller
             'idUserSesion' => $this->usuario->getUserId(),
             'periodos_json' => $periodos_json,
             'reservas' => $reservas,
-            'titulo' => "PAWPERTIES | PROPIEDAD"
+            'titulo' => "PAWPERTIES | PROPIEDAD",
+            'resultadoReserva' => $this->request->getResultadoGuardardo('resultadoReserva')
         ];
 
+        
         // Mostrar la vista de detalles de la publicación
         view('publicacion.details.view', array_merge(
             $datos,

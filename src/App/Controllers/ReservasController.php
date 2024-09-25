@@ -8,6 +8,7 @@ use Paw\App\Models\Mailer;
 use Paw\Core\Database\QueryBuilder;
 
 use Paw\Core\Controller;
+use Paw\App\Models\Reserva;
 use Paw\App\Models\ReservasCollection;
 use Paw\App\Models\PublicacionCollection;
 use Exception;
@@ -184,29 +185,20 @@ class ReservasController extends Controller
                      $alojamientoReservado['nro_reserva'], $this->usuario->getUsername(), 
                      $this->usuario->getEmailAddress(), $correo_duenio);               
             }
-            $publicacion = $this->publicationCollection->getOne($id_publicacion);
-            $reservas = $this->model->getReservas($id_publicacion);
-            // se codifican las reservas a JSON para su uso en JavaScript
-            $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
-            // Preparar los datos para la vista
-            $datos = [
-                'publicacion' => $publicacion,
-                'idUserSesion' => $this->usuario->getUserId(),
-                'periodos_json' => $periodos_json,
-                'reservas' => $reservas,
-                'titulo' => "PAWPERTIES | PROPIEDAD"
-            ];            
-            view('publicacion.details.view', array_merge(
-                $datos,
-                $alojamientoReservado, 
-                $this->menuAndSession
-            ));        
+            $this->request->setResultadoEnSesion("resultadoReserva", $alojamientoReservado);
+
+            $this->logger->debug("info resultadoReserva: ", [$alojamientoReservado]);
+
+            redirect('publicacion/ver?id_pub=' . $id_publicacion);
+
         }else{
-            view('publicacion.details.view', array_merge(
-                $ObjReserva, $this->menuAndSession
-            ));
-        }                         
+
+            $this->request->setResultadoEnSesion("resultadoReserva", $resultadoObjReserva); 
+
+            $this->logger->debug("info resultadoReserva: ", [$resultadoObjReserva]);
+
+            redirect('publicacion/ver?id_pub=' . $id_publicacion);        }                         
 
     }
 }

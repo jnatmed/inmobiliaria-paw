@@ -85,7 +85,7 @@ class ReservasCollection extends Model
             if ($idReservaGenerado) {
                 return [
                     "exito" => true,
-                    "mensaje" => "Reserva realizada con éxito.",
+                    "mensaje" => "Reserva realizada con éxito",
                     "nro_reserva" => $idReservaGenerado // es el id_generado
                 ];
             } else {
