@@ -527,7 +527,7 @@ input#ubicacion {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #007bff;
+    background-color: var(--color-verde-header);
     color: white;
     text-align: center;
     text-decoration: none;
@@ -545,7 +545,7 @@ input#ubicacion {
 }
 
 .ver-mas:hover {
-    background-color: #0056b3;
+    background-color: #86a9c0;
 }
 
 .no-resultados {
