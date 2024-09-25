@@ -44,17 +44,17 @@
 }
 
 .reservas-accion {
-    color: #007bff;
+    color: var(--color-verde-header);
     text-decoration: none;
     padding: 5px 10px;
-    border: 1px solid #007bff;
+    border: 1px solid var(--color-verde-header);
     border-radius: 5px;
     margin: 0 5px;
     display: inline-block;
 }
 
 .reservas-accion:hover {
-    background-color: #007bff;
+    background-color: var(--color-verde-header);
     color: #fff;
 }
 
@@ -106,4 +106,80 @@
         overflow: hidden;
         margin-bottom: 10px;
     }
+}
+
+
+
+/* Estilos para el contenedor de reservas */
+.reservas-container {
+    margin-bottom: 2rem;
+}
+
+/* Estilos para los detalles y el resumen */
+.detalles-reservas {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.reservas-titulo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.reservas-titulo:hover {
+    color: white;
+}
+
+/* Estilos para la tabla */
+.reservas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reservas-tabla th,
+.reservas-tabla td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.reservas-tabla th {
+    background-color: var(--color-verde-header);
+    color: #fff;
+    font-weight: bold;
+}
+
+.reservas-tabla td a {
+    color: var(--color-verde-header);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.reservas-tabla td a:hover {
+    color: white;
+}
+
+/* Estilos para las acciones */
+.reservas-accion {
+    color: #e74c3c;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.reservas-accion:hover {
+    color: #c0392b;
+}
+
+/* Transiciones */
+details[open] .detalles-reservas {
+    background-color: #ecf0f1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
