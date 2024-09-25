@@ -158,7 +158,8 @@ class PublicacionController extends Controller
             'resultadoReserva' => $this->request->getResultadoGuardardo('resultadoReserva')
         ];
 
-        
+        $this->request->setResultadoEnSesion('resultadoReserva', null);
+
         // Mostrar la vista de detalles de la publicación
         view('publicacion.details.view', array_merge(
             $datos,
