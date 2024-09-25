@@ -385,14 +385,17 @@ class PublicacionesSeeder extends AbstractSeed
         // Crear imágenes para cada publicación
         $imagenesPublicacionData = [];
         for ($i = 1; $i <= count($publicacionesData); $i++) {
-            $img = rand(1, 8);
-            $imagenesPublicacionData[] = [
-                'id_publicacion' => $i,
-                'path_imagen' => $imagenes[$img]['path_imagen'],
-                'nombre_imagen' => $imagenes[$img]['nombre_imagen'],
-                'id_usuario' => rand(1, 3)
-            ];
-        }
-        $this->table('imagenes_publicacion')->insert($imagenesPublicacionData)->saveData();
+            $id_usuario = rand(1, 3);
+            for ($j = 1; $j <= 3; $j++) { // Bucle que va del 1 al 3
+                $img = rand(0, 7); // Mantenemos la generación aleatoria de imágenes
+        
+                $imagenesPublicacionData[] = [
+                    'id_publicacion' => $i,
+                    'path_imagen' => $imagenes[$img]['path_imagen'],
+                    'nombre_imagen' => $imagenes[$img]['nombre_imagen'],
+                    'id_usuario' => $id_usuario 
+                ];
+            }
+        }        $this->table('imagenes_publicacion')->insert($imagenesPublicacionData)->saveData();
     }
 }

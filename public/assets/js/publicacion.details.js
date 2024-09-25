@@ -29,6 +29,11 @@ class publicacionDetails {
 
         })
 
+        const btn_close = document.querySelector('.close-btn')
+        btn_close.addEventListener('click', function(e) {
+          document.querySelector('.overlay').style.display = 'none';
+        })
+        
       })
     }
 }

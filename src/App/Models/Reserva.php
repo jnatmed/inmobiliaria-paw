@@ -25,6 +25,54 @@ class Reserva extends Model
         // Inicializar erroresCollection y éxito en caso de errores durante la construcción
         $this->erroresCollection = [];
         $this->exito = true;
+
+        // Asignar valores del array $data a los atributos de la clase utilizando los setters
+        if (isset($data['id_publicacion'])) {
+            $this->setIdPublicacion($data['id_publicacion']);
+        } else {
+            $this->erroresCollection[] = "ID de publicación no proporcionado";
+            $this->exito = false;
+        }
+
+        if (isset($data['id_usuario_reserva'])) {
+            $this->setIdUsuarioReserva($data['id_usuario_reserva']);
+        } else {
+            $this->erroresCollection[] = "ID de usuario de reserva no proporcionado";
+            $this->exito = false;
+        }
+
+        if (isset($data['fecha_inicio'])) {
+            $this->setFechaInicio($data['fecha_inicio']);
+        } else {
+            $this->erroresCollection[] = "Fecha de inicio no proporcionada";
+            $this->exito = false;
+        }
+
+        if (isset($data['fecha_fin'])) {
+            $this->setFechaFin($data['fecha_fin']);
+        } else {
+            $this->erroresCollection[] = "Fecha de fin no proporcionada";
+            $this->exito = false;
+        }
+
+        if (isset($data['precio_por_noche'])) {
+            $this->setPrecioPorNoche($data['precio_por_noche']);
+        } else {
+            $this->erroresCollection[] = "Precio por noche no proporcionado";
+            $this->exito = false;
+        }
+
+        if (isset($data['estado_reserva'])) {
+            $this->setEstadoReserva($data['estado_reserva']);
+        } else {
+            $this->erroresCollection[] = "Estado de reserva no proporcionado";
+            $this->exito = false;
+        }
+
+        // Se podría agregar el campo 'notas' si se encuentra en los datos
+        if (isset($data['notas'])) {
+            $this->setNotas($data['notas']);
+        }        
     }
 
     // Método para obtener el estado del constructor
@@ -58,9 +106,11 @@ class Reserva extends Model
             $method = 'get' . str_replace('_', '', ucwords($key, '_'));
             $this->logger->info("method : " . $method);
 
-            if (method_exists($this, $method)) {
+            if (method_exists($this, $method) && !in_array($method, ['getExito', 'getErroresCollection'])) {
                 $value = $this->$method();
-                $values[$key] = $value;
+                // Transformar el nombre del método en snake_case para la clave
+                $transformedKey = lcfirst(str_replace(' ', '_', preg_replace('/([a-z])([A-Z])/', '$1 $2', str_replace('get', '', $method))));
+                $values[$transformedKey] = $value;                
                 $this->logger->info("existe el metodo -> " . $method);
             } else {
                 if (!in_array($key, ['exito', 'erroresCollection'])) {

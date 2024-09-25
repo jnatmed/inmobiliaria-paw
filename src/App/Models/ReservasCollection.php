@@ -10,6 +10,7 @@ use PDOException;
 
 class ReservasCollection extends Model
 {
+    public $table = 'reservas_publicacion';
 
     public function getReservas($id_publicacion)
     {
@@ -73,30 +74,26 @@ class ReservasCollection extends Model
         }
     }
 
-    public function reservarAlojamiento($id_publicacion, $id_usuario_reserva, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
+    public function reservarAlojamiento(Reserva $reserva)
     {
-        $data = [
-            'id_publicacion' => $id_publicacion,
-            'id_usuario_reserva' => $id_usuario_reserva,
-            'fecha_inicio' => $desde,
-            'fecha_fin' => $hasta,
-            'precio_por_noche' => $precio_x_noche,
-            'estado_reserva' => $estado_reserva,
-            'notas' => $notas
-        ];
-
         try {
-            $result = $this->queryBuilder->insert('reservas_publicacion', $data);
-            if ($result[1]) {
+            $data = $reserva->getAll();
+            $this->logger->info("data : ", [$data]);
+
+            list($idReservaGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
+
+            $this->logger->info("Info Reserva (Method - create): " , [$idReservaGenerado, $resultado]);
+
+            if ($idReservaGenerado) {
                 return [
                     "exito" => true,
-                    "mensaje" => "Reserva realizada con éxito.",
-                    "nro_reserva" => $result[0] // es el id_generado
+                    "mensaje" => "Reserva realizada con éxito",
+                    "nro_reserva" => $idReservaGenerado // es el id_generado
                 ];
             } else {
                 return [
                     "exito" => false,
-                    "mensaje" => "No se pudo realizar la reserva."
+                    "mensaje" => "No se pudo realizar la reserva, error: " . $resultado 
                 ];
             }
         } catch (PDOException $e) {

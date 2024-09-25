@@ -14,6 +14,26 @@
     {% include 'parts/header.view.html' %}
 
     <main>
+
+        {% if resultadoReserva is not null %}
+            <div class="overlay">
+                <article class="msj_reserva">
+                    <span class="close-btn">✖</span> <!-- Botón de cierre -->
+                    {% if resultadoReserva.exito %}
+                        <p class="msj_exito">✔ Exito: {{ resultadoReserva.mensaje }}, Nro Reserva: {{ resultadoReserva.nro_reserva }}</p>
+                    {% else %}
+                        <p class="msj_error">✖ Error: {{ resultadoReserva.mensaje }}</p>
+                        {% if resultadoReserva.errores is defined %}
+                            <ul class="lista-errores">
+                                {% for error in resultadoReserva.errores %}
+                                    <li><p>{{ error }}</p></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+                </article>
+            </div>
+        {% endif %}     
         <!-- imagenes del departamento en alquiler-->
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">{{ publicacion.nombre_alojamiento | capitalize }}</h2>
@@ -122,8 +142,8 @@
             </article>
 
             <!-- 3) formulario de reserva junto con la visualizacion del calendario de reserva-->
-            
-                {% include 'parts/reservas-propiedad.view.html' %}
+
+            {% include 'parts/reservas-propiedad.view.html' %}
             
 
             <!-- 4) mapa donde figura la ubicacion del alquiler -->

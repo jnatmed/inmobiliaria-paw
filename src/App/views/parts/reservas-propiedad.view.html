@@ -1,14 +1,3 @@
-{% if resultadoReserva is defined and resultadoReserva.exito is defined %}
-    {% if resultadoReserva.exito %}
-        <p class="msj_reserva msj_exito">
-            {{ resultadoReserva.mensaje }}
-        </p>
-    {% else %}
-        <p class="msj_reserva msj_error">
-            {{ resultadoReserva.mensaje }}
-        </p>
-    {% endif %}
-{% endif %}
 
 <section class="container-reserva">
     <article class="container-form">

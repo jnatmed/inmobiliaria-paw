@@ -87,4 +87,14 @@ class Request
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
+
+    public function setResultadoEnSesion($key, $datos)
+    {
+        $_SESSION[$key] = $datos;
+    }
+
+    public function getResultadoGuardardo($key)
+    {
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
+    }
 }
