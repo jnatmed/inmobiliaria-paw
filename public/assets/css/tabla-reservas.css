@@ -1,3 +1,7 @@
+.container-general-reservas{
+    min-height: 53vh;
+}
+
 /* Estilo base para la tabla */
 .reservas-container {
     max-width: 70vw;
