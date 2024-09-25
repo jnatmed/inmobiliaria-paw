@@ -3,6 +3,7 @@
 
 <head>
     {% include 'parts/head.view.html' %}    
+    <script src="/assets/js/home.js"></script>
 </head>
 
 <body class="home">
@@ -24,10 +25,10 @@
 
             <form method="GET" action="/publicaciones/list" class="form-busqueda-propiedad">
                 <label for="zona" class="label-form">Zona</label>
-                <input type="text" class="input-form-busqueda" placeholder="Elegi tu Zona..." id="zona" name="zona">
+                <input type="text" class="input-form-busqueda" placeholder="Buscar por palabra clave..." id="zona" name="zona">
                 <label for="tipo" class="label-form">Tipo</label>
                 <select type="text" class="input-form-busqueda" id="tipo" placeholder="Tipo" name="tipo">
-                    <option selected value="">Elija una opción...</option>
+                    <option selected value="">Tipo Alojamiento...</option>
                     {% for tipo in tipos_alojamiento %}
                         <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
                     {% endfor %}
