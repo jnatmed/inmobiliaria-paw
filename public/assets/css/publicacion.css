@@ -232,11 +232,11 @@ input#ubicacion {
 /* Estilos para las instalaciones */
 .instalacion{
     display: inline-block;
-    background-color: #ffeb3b;
+    background-color: #ffef60;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 4px;
     font-weight: bold;
-    color: #333;
+    color: #000000;
     margin-top: 1em;
 }
 
@@ -629,6 +629,10 @@ input#ubicacion {
     }
 }
 
+.mobile-show {
+    display: none;
+}
+
 @media (max-width: 1200px) {
     .container-dad {
         grid-template-columns: 1fr;
@@ -658,6 +662,10 @@ input#ubicacion {
 
     .mobile-hidden {
         display: none;
+    }
+
+    .mobile-show {
+        display: inline-block;
     }
 
 }
