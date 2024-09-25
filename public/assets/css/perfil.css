@@ -2,7 +2,8 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
-
+    min-height: 53vh;
+    align-items: center;
 }
 
 .profile-aside {
@@ -11,6 +12,7 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 250px;
+    max-height: 240px;
     text-align: center;
 }
 
