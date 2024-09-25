@@ -230,7 +230,7 @@ input#ubicacion {
 
 
 /* Estilos para las instalaciones */
-.instalacion {
+.instalacion{
     display: inline-block;
     background-color: #ffeb3b;
     padding: 5px 10px;
@@ -238,6 +238,11 @@ input#ubicacion {
     font-weight: bold;
     color: #333;
     margin-top: 1em;
+}
+
+.descripcion {
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
 /* Estilos para las instalaciones */
@@ -651,7 +656,7 @@ input#ubicacion {
         width: 100%;
     }
 
-    .publicacion-datos {
+    .mobile-hidden {
         display: none;
     }
 

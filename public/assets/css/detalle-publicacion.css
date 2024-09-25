@@ -383,11 +383,13 @@ estilo para los detalles de la propiedad
   }
   
   .titulo-estatico {
-    display: block; /* Hace que el texto sea una línea completa */
+    display: block; 
+    margin-bottom: 2rem;
+    font-size: 20px;
   }
   
   .titulo-dinamico {
-    display: block; /* También lo convierte en una línea completa */
-    font-weight: bold; /* Estilo adicional si es necesario */
+    display: block; 
+    font-weight: bold; 
   }
   
