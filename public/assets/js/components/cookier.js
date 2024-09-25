@@ -20,6 +20,14 @@ class Cookier {
         return null;
     }
 
+    // Método para restaurar valores en los campos a partir de cookies
+    static restoreCookieToField(fieldId, cookieName) {
+        const savedValue = Cookier.getCookie(cookieName);
+        if (savedValue) {
+            document.getElementById(fieldId).value = savedValue;
+        }
+    }    
+
     // Método para inicializar el almacenamiento de cookies y restaurar los valores en los campos de búsqueda
     static init(formSelector, fields) {
         // Restaurar los valores guardados en las cookies al cargar la página

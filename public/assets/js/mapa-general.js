@@ -46,13 +46,8 @@ class MapaGeneral {
                         loading.classList.remove('activo');
                     });
 
-                    // Restaurar el valor de la cookie al cargar la página
-                    window.onload = function() {
-                        const savedUbicacion = Cookier.getCookie('ubicacion');
-                        if (savedUbicacion) {
-                            document.querySelector('#ubicacion').value = savedUbicacion;
-                        }
-                    };                    
+                    // Usar Cookier para restaurar el valor de la cookie en el campo de búsqueda
+                    Cookier.restoreCookieToField('ubicacion', 'ubicacion');                
 
                 })
                 .catch(error => {
