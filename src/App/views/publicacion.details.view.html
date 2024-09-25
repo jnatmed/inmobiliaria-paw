@@ -122,9 +122,24 @@
             </article>
 
             <!-- 3) formulario de reserva junto con la visualizacion del calendario de reserva-->
-            {% if isUserLoggedIn and tipo_usuario in [1, 3]  %}
-                {% include 'parts/reservas-propiedad.view.html' %}
+            {% if exito is defined %}
+                <div class="mensaje-contenedor">
+                    {% if exito %}
+                        <p class="mensaje-exito">✔ Exito: {{ mensaje }}, Nro Reserva: {{ nro_reserva }}</p>     
+                    {% else %}
+                        <p class="mensaje-error">✖ Error: {{ mensaje }}</p> 
+                        {% if errores is defined %}
+                        <ul class="lista-errores">
+                            {% for error in errores %}
+                                <li><p>{{ error }}</p></li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}    
+                    {% endif %}    
+                </div>
             {% endif %}
+            {% include 'parts/reservas-propiedad.view.html' %}
+            
 
             <!-- 4) mapa donde figura la ubicacion del alquiler -->
             <article class="ubicacion-publicacion">

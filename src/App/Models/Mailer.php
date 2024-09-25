@@ -5,6 +5,7 @@ use Paw\Core\Model;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Paw\Core\Traits\Loggable;
+use Paw\App\Models\Reserva;
 
 class Mailer extends Model
 {
@@ -79,4 +80,49 @@ class Mailer extends Model
 
         return $resultadoSend;
     }
+
+    public function comunicarAlInteresadoYalPropietario(Reserva $reserva, $nroReserva, $userName, $emailAddress, $correo_duenio)
+    {
+
+        // Mensaje de correo con estilos en línea
+        $body = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $reserva->getFechaInicio(),
+            'hasta' => $reserva->getFechaFin(),
+            'destino' => 'interesado'
+        ], true);
+
+        // Mensaje de correo con estilos en línea
+        $bodyPropietario = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $reserva->getFechaInicio(),
+            'hasta' => $reserva->getFechaFin(),
+            'destino' => 'propietario'
+        ], true);
+
+        // aca deberia enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->send($emailAddress,
+                            "Solicitud de Reserva Enviada para el usuario: $userName ",
+                            $body,
+                            );
+                      
+        if($resultadoSend){
+            $this->logger->info("Correo enviado con exito ");
+        }else{
+            $this->logger->info("ERROR al enviar el Correo ");
+        }                
+        // Limpia la lista de destinatarios antes de enviar el siguiente correo
+        $this->clearAddresses();
+
+        $resultadoSendPropietario = $this->send($correo_duenio,
+                            "Solicitud de Reserva del usuario: $userName ",
+                            $body,
+                            );
+        
+
+        $this->logger->info("resultado reservar alojamiento: ", [$resultadoSendPropietario]);                                   
+    }
+
 }
