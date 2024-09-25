@@ -53,10 +53,10 @@ class Reserva extends Model
         foreach ($properties as $property) {
             $property->setAccessible(true);
             $key = $property->getName();
-            
+
             // Genera el nombre del método getter
-            $method = 'get'.str_replace('_', '', ucwords($key, '_'));
-            $this->logger->info("method : ". $method);
+            $method = 'get' . str_replace('_', '', ucwords($key, '_'));
+            $this->logger->info("method : " . $method);
 
             if (method_exists($this, $method)) {
                 $value = $this->$method();

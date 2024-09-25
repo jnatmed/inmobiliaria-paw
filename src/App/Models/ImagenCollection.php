@@ -1,6 +1,7 @@
 <?php
 
 namespace Paw\App\Models;
+
 use Exception;
 use Paw\Core\Model;
 use Paw\App\Models\Imagen;
@@ -16,10 +17,9 @@ class ImagenCollection extends Model
     private $id_usuario;
 
     public function __construct($imagenes)
-    {   
+    {
 
-        for ($i = 0; $i < count($imagenes['name']); $i++) 
-        {
+        for ($i = 0; $i < count($imagenes['name']); $i++) {
             if ($imagenes['name'][$i] != "") {
                 $this->imagenesCollection[] = new Imagen(
                     $imagenes['name'][$i],
@@ -27,12 +27,13 @@ class ImagenCollection extends Model
                     $imagenes['tmp_name'][$i],
                     $imagenes['size'][$i],
                     $imagenes['error'][$i],
-                );         
+                );
             }
-        }        
+        }
     }
 
-    public function getErroresCollection(){
+    public function getErroresCollection()
+    {
         return $this->erroresCollection;
     }
 
@@ -113,27 +114,27 @@ class ImagenCollection extends Model
     public function guardarImagenes($id_publicacion, $id_usuario)
     {
         global $log;
-        $log->debug("id_publicacion, id_usuario (method guardarImagenes)",[$id_publicacion, $id_usuario]);
-        foreach($this->imagenesCollection as $imagen){
+        $log->debug("id_publicacion, id_usuario (method guardarImagenes)", [$id_publicacion, $id_usuario]);
+        foreach ($this->imagenesCollection as $imagen) {
             $controlUpload = $imagen->subirArchivo();
-            if (!$controlUpload['exito']){
+            if (!$controlUpload['exito']) {
                 $this->erroresCollectionSubida[$imagen->getFileName()][] = $controlUpload['description'];
-            }else{
+            } else {
                 $imagen->setIdPublicacion($id_publicacion);
-                $imagen->setIdUsuario($id_usuario);    
+                $imagen->setIdUsuario($id_usuario);
             }
         }
-       if(empty($this->erroresCollectionSubida)){
-             return [
+        if (empty($this->erroresCollectionSubida)) {
+            return [
                 'exito' => true,
                 'description' => "Imagenes Subidas con exito",
             ];
-        }else{
+        } else {
             return [
                 'exito' => false,
                 'description' => "No se pudo abrir el recurso de fileinfo.",
                 'errores' => $this->erroresCollectionSubida
-            ];            
+            ];
         }
     }
 }

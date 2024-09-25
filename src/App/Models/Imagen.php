@@ -1,6 +1,7 @@
 <?php
 
 namespace Paw\App\Models;
+
 use Exception;
 use Paw\Core\Model;
 
@@ -21,13 +22,12 @@ class Imagen extends Model
     private $id_usuario;
 
     public function __construct(
-                                $fileName, 
-                                $fileType, 
-                                $fileTmpName, 
-                                $fileSize, 
-                                $error
-                                )
-    {   
+        $fileName,
+        $fileType,
+        $fileTmpName,
+        $fileSize,
+        $error
+    ) {
         global $log;
 
         $this->fileName = $fileName;
@@ -36,11 +36,11 @@ class Imagen extends Model
         $this->fileSize = $fileSize;
         $this->error = $error;
 
-        $log->debug("this->name: ". $this->fileName);
-        $log->debug("this->type: ". $this->fileType);
-        $log->debug("this->tmpname: ". $this->fileTmpName);
-        $log->debug("this->size: ". $this->fileSize);
-        $log->debug("this->error: ". $this->error);
+        $log->debug("this->name: " . $this->fileName);
+        $log->debug("this->type: " . $this->fileType);
+        $log->debug("this->tmpname: " . $this->fileTmpName);
+        $log->debug("this->size: " . $this->fileSize);
+        $log->debug("this->error: " . $this->error);
     }
 
     public function setIdPublicacion($id_publicacion)
@@ -58,7 +58,8 @@ class Imagen extends Model
         return $this->fileName;
     }
 
-    public function load() {
+    public function load()
+    {
         return [
             'id_publicacion' => $this->id_publicacion,
             'path_imagen' => $this->path_imagen,
@@ -72,7 +73,7 @@ class Imagen extends Model
         global $log;
         // Verificar el tipo de archivo
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        
+
         if ($finfo === false) {
             return [
                 'exito' => false,
@@ -87,24 +88,24 @@ class Imagen extends Model
                 'description' => "El archivo {$this->fileName} no existe o no se puede leer."
             ];
         }
-        
+
         $fileMimeType = finfo_file($finfo, $this->fileTmpName);
 
         $this->fileType = $fileMimeType;
 
-        finfo_close($finfo);          
+        finfo_close($finfo);
 
         if ($fileMimeType !== 'image/jpeg' && $fileMimeType !== 'image/png') {
             return [
                 'exito' => false,
                 'description' => "El tipo de archivo $this->fileName no está permitido."
             ];
-        }else{
+        } else {
             return [
                 'exito' => true,
                 'description' => "Validacion de TIPO del archivo $this->fileName (tipo: $this->fileTmpName), superada."
             ];
-        }        
+        }
     }
 
     public function verificarTamanio()
@@ -113,18 +114,18 @@ class Imagen extends Model
         if ($this->fileSize > self::MAX_FILE_SIZE) {
             return [
                 'exito' => false,
-                'description' => "El archivo $this->fileName no debe exceder ".self::MAX_FILE_SIZE." bytes."
+                'description' => "El archivo $this->fileName no debe exceder " . self::MAX_FILE_SIZE . " bytes."
             ];
-        }else{
+        } else {
             return [
                 'exito' => true,
                 'description' => "Validacion de TAMANIO del archivo $this->fileName (tamaño: $this->fileSize), superada."
-            ];            
-        }        
+            ];
+        }
     }
 
     public function verificarErrorDeSubida()
-    {   
+    {
         global $log;
         $log->debug("this->error: " . $this->error);
         if ($this->error !== UPLOAD_ERR_OK) {
@@ -140,7 +141,7 @@ class Imagen extends Model
             ];
         }
     }
-    
+
     private function obtenerMensajeError($codigoError)
     {
         switch ($codigoError) {
@@ -166,16 +167,16 @@ class Imagen extends Model
     public function subirArchivo()
     {
         global $log;
-    
+
         // Generar un nombre de archivo único para evitar colisiones
         $newFileName = uniqid() . "." . pathinfo($this->fileName, PATHINFO_EXTENSION);
         $uploadPath = self::UPLOADDIRECTORY . $newFileName;
-    
+
         $log->info("fileName: ", [$this->fileName]);
         $log->info("uploadPath: ", [$uploadPath]);
         $log->info("newFileName: ", [$newFileName]);
         $log->info("fileTmpName: ", [$this->fileTmpName]);
-    
+
         // Verificar si el archivo temporal existe
         if (!file_exists($this->fileTmpName)) {
             $log->error("El archivo temporal no existe: ", [$this->fileTmpName]);
@@ -184,7 +185,7 @@ class Imagen extends Model
                 'description' => "El archivo temporal no existe o no es accesible."
             ];
         }
-    
+
         // Verificar si el directorio de destino tiene permisos de escritura
         if (!is_writable(self::UPLOADDIRECTORY)) {
             $log->error("El directorio de destino no tiene permisos de escritura: ", [self::UPLOADDIRECTORY]);
@@ -193,7 +194,7 @@ class Imagen extends Model
                 'description' => "El directorio de destino no tiene permisos de escritura."
             ];
         }
-    
+
         // Intentar mover el archivo subido al directorio de destino
         if (move_uploaded_file($this->fileTmpName, $uploadPath)) {
             $this->path_imagen = $uploadPath;
@@ -213,16 +214,17 @@ class Imagen extends Model
             ];
         }
     }
-    
 
-    public static function getMimeType($filePath) {
+
+    public static function getMimeType($filePath)
+    {
         // Verificar si el archivo existe
-        if (!file_exists(self::UPLOADDIRECTORY.$filePath)) {
+        if (!file_exists(self::UPLOADDIRECTORY . $filePath)) {
             throw new Exception("El archivo no existe: $filePath");
         }
 
         // Obtener el tipo MIME del archivo
-        $mimeType = mime_content_type(self::UPLOADDIRECTORY.$filePath);
+        $mimeType = mime_content_type(self::UPLOADDIRECTORY . $filePath);
 
         // Verificar si se pudo obtener el tipo MIME
         if ($mimeType === false) {
@@ -234,5 +236,4 @@ class Imagen extends Model
 
         return $extension;
     }
-
 }

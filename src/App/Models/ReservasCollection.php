@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Paw\App\Models;
 
@@ -8,9 +8,9 @@ use Exception;
 use PDOException;
 
 
-class ReservasCollection extends Model 
+class ReservasCollection extends Model
 {
-    
+
     public function getReservas($id_publicacion)
     {
         // Utilizamos el QueryBuilder para obtener las reservas
@@ -26,38 +26,40 @@ class ReservasCollection extends Model
 
         return $reservas;
     }
-    
-    public function obtenerReservasPendientesYConfirmadas($id_usuario) {
+
+    public function obtenerReservasPendientesYConfirmadas($id_usuario)
+    {
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
 
-    public function getSolicitudesDeReserva($id_usuario) {
-        try{
+    public function getSolicitudesDeReserva($id_usuario)
+    {
+        try {
             $params = ['id_usuario_reserva' => $id_usuario];
             $result = $this->queryBuilder->select('reservas_publicacion', $params);
 
             if (!empty($result)) {
                 return $result;
             } else {
-                return []; 
+                return [];
             }
         } catch (Exception $e) {
 
             return false;
         }
-    }    
+    }
 
     public function actualizarEstadoReserva($idReserva, $accion)
     {
         try {
 
-            if($accion === 'aceptar'){
+            if ($accion === 'aceptar') {
                 $nuevoEstado = 'confirmada';
             }
-            if($accion === 'cancelar'){
+            if ($accion === 'cancelar') {
                 $nuevoEstado = 'cancelada';
             }
-            if($accion === 'rechazar'){
+            if ($accion === 'rechazar') {
                 $nuevoEstado = 'rechazada';
             }
 
@@ -69,7 +71,7 @@ class ReservasCollection extends Model
         } catch (Exception $e) {
             throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
         }
-    }    
+    }
 
     public function reservarAlojamiento($id_publicacion, $id_usuario_reserva, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
     {
@@ -89,7 +91,7 @@ class ReservasCollection extends Model
                 return [
                     "exito" => true,
                     "mensaje" => "Reserva realizada con éxito.",
-                    "nro_reserva" =>$result[0] // es el id_generado
+                    "nro_reserva" => $result[0] // es el id_generado
                 ];
             } else {
                 return [

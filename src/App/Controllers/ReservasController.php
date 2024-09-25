@@ -34,7 +34,6 @@ class ReservasController extends Controller
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
-
     }
 
     public function verReservas()
@@ -57,7 +56,7 @@ class ReservasController extends Controller
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-            
+
             $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
 
             $datos = [
@@ -148,7 +147,7 @@ class ReservasController extends Controller
             $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
             $this->usuario->setRedirectTo($this->request->uri(true));
-            
+
             redirect('iniciar-sesion');
         }
 
@@ -205,27 +204,29 @@ class ReservasController extends Controller
         ], true);
 
         // aca deberia enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send($emailAddress,
-                            "Solicitud de Reserva Enviada para el usuario: $userName ",
-                            $body,
-                            );
-                      
-        if($resultadoSend){
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
-        }else{
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
-        }                
+        $resultadoSend = $this->mailer->send(
+            $emailAddress,
+            "Solicitud de Reserva Enviada para el usuario: $userName ",
+            $body,
+        );
+
+        if ($resultadoSend) {
+            $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+        } else {
+            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+        }
         // Limpia la lista de destinatarios antes de enviar el siguiente correo
         $this->mailer->clearAddresses();
 
-        $resultadoSendPropietario = $this->mailer->send($correo_duenio,
-                            "Solicitud de Reserva del usuario: $userName ",
-                            $body,
-                            );
-        
+        $resultadoSendPropietario = $this->mailer->send(
+            $correo_duenio,
+            "Solicitud de Reserva del usuario: $userName ",
+            $body,
+        );
 
-        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
 
-        redirect('publicacion/ver?id_pub='.$id_publicacion);
+        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);
+
+        redirect('publicacion/ver?id_pub=' . $id_publicacion);
     }
 }

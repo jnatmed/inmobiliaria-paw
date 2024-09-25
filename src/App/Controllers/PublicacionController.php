@@ -39,7 +39,7 @@ class PublicacionController extends Controller
         $this->mailer = new Mailer();
         $this->ReservasCollection = new ReservasCollection();
         $this->ReservasCollection->setQueryBuilder($this->qb);
-        
+
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
@@ -89,7 +89,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
-            
+
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
             // Preparar datos para la vista

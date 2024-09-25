@@ -1,4 +1,5 @@
 <?php
+
 namespace Paw\App\Models;
 
 use Paw\Core\Model;
@@ -32,7 +33,7 @@ class Mailer extends Model
     {
         $this->mail->clearAddresses();
     }
-    
+
     public function send($to, $subject, $body, $altBody = '')
     {
         global $config;
@@ -75,7 +76,7 @@ class Mailer extends Model
             $emailDuenio,
             "Consulta sobre publicacion: ",
             $body
-        );        
+        );
 
         return $resultadoSend;
     }

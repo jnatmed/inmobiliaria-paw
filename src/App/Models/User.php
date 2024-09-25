@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Paw\App\Models;
 
@@ -38,6 +38,4 @@ class User extends Model
     {
         $this->contrasenia = $contrasenia;
     }
-
-
 }
