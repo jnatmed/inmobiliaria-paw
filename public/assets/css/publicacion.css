@@ -623,3 +623,36 @@ input#ubicacion {
         flex-wrap: nowrap;
     }
 }
+
+@media (max-width: 1200px) {
+    .container-dad {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-destacados {
+        /* flex-direction: column; */
+        grid-template-columns: 1fr;
+    }
+
+    .container_publicaciones {
+        grid-template-columns: 1fr;
+        /* Una sola columna para pantallas pequeñas */
+    }
+
+    .flechas {
+        top: 28%;
+    }
+
+    .nextButton {
+        right: 0;
+    }
+
+    .carousel {
+        width: 100%;
+    }
+
+    .publicacion-datos {
+        display: none;
+    }
+
+}
