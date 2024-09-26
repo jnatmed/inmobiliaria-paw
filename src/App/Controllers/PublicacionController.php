@@ -48,12 +48,16 @@ class PublicacionController extends Controller
 
     public function index()
     {
-        $datos = ['titulo' => "PAWPERTIES | HOME"];
+        $datos = [
+              'titulo' => "PAWPERTIES | HOME",
+              'resultadoContacto' => $this->request->getResultadoGuardardo('resultadoContacto')
+            ];
 
         view('home.view', array_merge(
             $this->menuAndSession,
             $datos,
-            $this->model->traerTipos()
+            $this->model->traerTipos(),
+            
         ));
     }
 

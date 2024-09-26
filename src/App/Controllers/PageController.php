@@ -15,6 +15,7 @@ class PageController extends Controller
     public Uploader $uploader;
     public Verificador $verificador;
     public $usuario;
+    public $mailer;
     public $menuAndSession;
 
     public function __construct()

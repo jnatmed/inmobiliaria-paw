@@ -156,6 +156,20 @@ class Mailer extends Model
             name: ($nombre . " " . $apellido)
         );
 
-        return $resultadoSend;
+        if($resultadoSend)
+        {
+            return [
+                "exito" => true,
+                "mensaje" => "Consulta Enviada.",
+            ];
+    
+        }else{
+
+            return [
+                "exito" => false,
+                "mensaje" => "No se pudo tu mensaje"
+            ];        
+    
+        }
     }
 }

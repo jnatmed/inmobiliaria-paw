@@ -374,6 +374,7 @@ estilo para los detalles de la propiedad
   @media (min-width: 780px) {
     .container-reserva {
       grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+      align-items: flex-end;
     }
   }
 

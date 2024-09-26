@@ -4,6 +4,7 @@
 <head>
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/home.js"></script>
+    <link rel="stylesheet" href="/assets/css/reservas-calendario.css">
 </head>
 
 <body class="home">
@@ -101,20 +102,26 @@
                 </section>
                 <section class="form_info">
                     <h3>Ubicación</h3>
-                    <p>[Domicilio]</p>
+                    <p>BsAs</p>
                     <p>Luján - Buenos Aires - Argentina</p>
                     <h3>Teléfono</h3>
-                    <p>[Número de teléfono]</p>
+                    <p>02323 - 123456</p>
                     <input type="submit" id="input-submit-enviar" value="Enviar">
                 </section>
             </form>
+
             {% if resultadoContacto is not null %}
-                {% if resultadoContacto %}
-                    <p class="alerta alerta-exito">Consulta enviada con éxito!</p>
-                {% else %}
-                    <p class="alerta alerta-error">Ha ocurrido un error al enviar la consulta. Inténtelo nuevamente</p>
-                {% endif %}
-            {% endif %}
+                <div class="overlay">
+                    <article class="msj_reserva">
+                        <span class="close-btn">✖</span> <!-- Botón de cierre -->
+                        {% if resultadoContacto.exito %}
+                            <p class="msj_exito">✔ Exito: {{ resultadoContacto.mensaje }} </p>
+                        {% else %}
+                            <p class="msj_error">✖ Error: {{ resultadoContacto.mensaje }}</p>
+                        {% endif %}
+                    </article>
+                </div>
+            {% endif %}            
         </section>
     </main>
 
