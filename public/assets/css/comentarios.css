@@ -68,3 +68,46 @@
 .submit-button:hover {
     background-color: #4cae4c; /* Color de fondo al pasar el ratón */
 }
+
+
+.comentarios-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.comentario {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.comentario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comentario-usuario {
+    font-weight: bold;
+    color: #333;
+}
+
+.comentario-rating {
+    font-size: 20px;
+}
+
+.estrella {
+    color: #ffcc00; /* Color de las estrellas llenas */
+    margin-right: 3px;
+}
+
+.estrella.vacia {
+    color: #ccc; /* Color de las estrellas vacías */
+}
+
+.comentario-body {
+    margin-top: 10px;
+    font-size: 16px;
+}

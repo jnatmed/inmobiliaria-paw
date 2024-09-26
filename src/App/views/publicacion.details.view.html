@@ -191,7 +191,37 @@
             
         {% endif %}        
         
-
+        <section class="comentarios-container">
+            {% if comentarios.exito %}
+                <h3>Comentarios</h3>
+        
+                {% for comentario in comentarios.comentarios %}
+                    <section class="comentario">
+                        <article class="comentario-header">
+                            <span class="comentario-usuario">Usuario ID: {{ comentario.id_usuario }}</span>
+                            <article class="comentario-rating">
+                                {# Mostrar estrellas según la calificación #}
+                                {% for i in 1..5 %}
+                                    {% if i <= comentario.calificacion %}
+                                        <span class="estrella llena">&#9733;</span> {# Estrella llena #}
+                                    {% else %}
+                                        <span class="estrella vacia">&#9734;</span> {# Estrella vacía #}
+                                    {% endif %}
+                                {% endfor %}
+                            </article>
+                        </article>
+                        <div class="comentario-body">
+                            <p>{{ comentario.comment }}</p>
+                        </div>
+                    </sect>
+                {% else %}
+                    <p>No hay comentarios para esta publicación.</p>
+                {% endfor %}
+            {% else %}
+                <p>No se pudieron cargar los comentarios: {{ comentarios.mensaje }}</p>
+            {% endif %}
+        </section>
+        
         
     </main>
 

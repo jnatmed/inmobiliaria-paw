@@ -133,6 +133,9 @@ class PublicacionController extends Controller
 
         // Aca se obtienen las reservas usando el modelo
         $reservas = $this->ReservasCollection->getReservas($id_publicacion);
+        $comentarios = $this->model->getComentarios($id_publicacion);
+
+        $this->logger->info("comentarios :", [$comentarios]);
 
         // se codifican las reservas a JSON para su uso en JavaScript
         $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
@@ -144,6 +147,7 @@ class PublicacionController extends Controller
             'periodos_json' => $periodos_json,
             'reservas' => $reservas,
             'titulo' => "PAWPERTIES | PROPIEDAD",
+            'comentarios' => $comentarios,
             'resultadoReserva' => $this->request->getResultadoGuardardo('resultadoReserva')
         ];
 

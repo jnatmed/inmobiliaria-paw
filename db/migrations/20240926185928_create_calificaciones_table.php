@@ -19,7 +19,7 @@ final class CreateCalificacionesTable extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('calificaciones', ['id' => false, 'primary_key' => ['id_publicacion', 'id_usuario']]);
+        $table = $this->table('calificaciones', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id_publicacion', 'integer', ['signed' => false, 'null' => false]) // Clave foránea, NO NULL
               ->addColumn('id_usuario', 'integer', ['signed' => false, 'null' => false]) // Clave foránea, NO NULL
               ->addColumn('calificacion', 'integer', ['limit' => 1, 'null' => false]) // Calificación entre 1 y 5, NO NULL
