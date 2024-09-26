@@ -38,6 +38,7 @@ class UsuarioController extends Controller
             'urlPublicacion' => $this->request->fullUrl(),
             'id_usuario' => $this->getUserId(),
             'tipo_usuario' => $this->getUserType(),
+            'email' => $this->getEmailAddress()
         ];
     }
 

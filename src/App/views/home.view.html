@@ -91,8 +91,8 @@
                     <input type="tel" id="input-telefono" name="telefono" required>
 
                     <label for="input-email">Email:</label>
-                    {% if usuario.isUserLoggedIn %}
-                        <input type="email" id="input-email" name="email" value="{{ usuario.email_usuario }}" required readonly>
+                    {% if isUserLoggedIn %}
+                        <input type="email" id="input-email" name="email" value="{{ email }}" required readonly>
                     {% else %}
                         <input type="email" id="input-email" name="email" required>
                     {% endif %}
