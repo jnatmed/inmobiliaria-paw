@@ -257,12 +257,18 @@ textarea {
 }
 
 
-
 .destacado-item {
-    flex: 0 0 100%;
     width: 100%;
     object-fit: cover;
-    scroll-snap-align: center;
+    display: none; 
+    opacity: 0; 
+    transition: opacity 0.5s ease;
+}
+
+
+.destacado-item.show {
+    display: block; 
+    opacity: 1; 
 }
 
 .destacado-img {

@@ -5,7 +5,8 @@ class DragDrop {
         this.error = document.querySelector(".error-drop");
         this.allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
         this.maxFileSize = 1 * 1024 * 1024; // 1MB en bytes
-        this.inputFile = document.querySelector("#drop-input"); 
+        this.inputFile = document.querySelector("#drop-input");
+        this.filesList = []; // Lista para almacenar los archivos
         this.inicializar();
     }
 
@@ -18,10 +19,11 @@ class DragDrop {
         this.dropArea.addEventListener('dragover', this.highlightDropArea.bind(this));
         this.dropArea.addEventListener('dragleave', this.unhighlightDropArea.bind(this));
         this.dropArea.addEventListener('drop', this.handleDrop.bind(this));
-        this.inputFile.addEventListener('change', this.handleFileSelect.bind(this)); 
+        this.inputFile.addEventListener('change', this.handleFileSelect.bind(this));
     }
 
     handleFileSelect(e) {
+        this.addFilesToList(e.target.files);
         this.previewFiles(e.target.files);
     }
 
@@ -33,15 +35,31 @@ class DragDrop {
     unhighlightDropArea(e) {
         this.dropArea.classList.remove("highlight");
         e.preventDefault();
-    }                                                                      
+    }
 
     handleDrop(e) {
         this.dropArea.classList.remove("highlight");
         e.preventDefault();
 
         if (e.dataTransfer.files) {
+            this.addFilesToList(e.dataTransfer.files);
             this.previewFiles(e.dataTransfer.files);
         }
+    }
+
+    addFilesToList(files) {
+        for (let file of files) {
+            this.filesList.push(file);
+        }
+        this.updateInputFiles();
+    }
+
+    updateInputFiles() {
+        let dataTransfer = new DataTransfer();
+        for (let file of this.filesList) {
+            dataTransfer.items.add(file);
+        }
+        this.inputFile.files = dataTransfer.files; // Actualizar el input con la lista de archivos
     }
 
     async previewFiles(files) {
@@ -54,6 +72,7 @@ class DragDrop {
             // Verificar tipo de archivo
             if (!this.allowedImageTypes.includes(actualType)) {
                 this.mostrarError(`Tipo no permitido: ${file.name} Tipo Archivo: ${actualType}`, file);
+                this.removeImageFromList(file); // Eliminar archivo de la lista
                 hasError = true;
                 continue; // Saltar a la siguiente imagen
             }
@@ -61,6 +80,7 @@ class DragDrop {
             // Verificar tamaño de archivo
             if (file.size > this.maxFileSize) {
                 this.mostrarError(`Tamaño máximo excedido: Nombre: ${file.name}`, file, true);
+                this.removeImageFromList(file); // Eliminar archivo de la lista
                 hasError = true;
                 continue; // Saltar a la siguiente imagen
             }
@@ -72,40 +92,30 @@ class DragDrop {
                 this.createImagePreview(file, reader.result, false, actualType);
             };
         }
-
-        // // Mostrar mensaje si hubo errores
-        // if (hasError) {
-        //     this.error.style.display = "flex";
-        // }
     }
 
     mostrarError(message, file = null, exceeded = false) {
         let errorContainer = document.querySelector("#cartel-errores-paso-2");
         errorContainer.classList.add("visible");
 
-        // Crear un error item
         let errorItem = document.createElement("p");
         errorItem.classList.add("error-message");
         errorItem.classList.add("visible");
         errorItem.innerHTML = message;
 
-        // Mostrar el tamaño si el error es por tamaño excedido
         if (exceeded && file) {
             let msjError = `- Tamaño: ${this.formatFileSize(file.size)},  - Máximo permitido: 1MB`;
             errorItem.innerHTML += msjError;
         }
 
-        // Crear el botón de cerrar
         let closeButton = document.createElement("span");
         closeButton.classList.add("close-button");
         closeButton.innerHTML = `X`;
 
-        // Asignar el evento para eliminar el errorItem
         closeButton.onclick = () => {
             errorItem.remove();
         };
 
-        // Agregar el botón al errorItem y el errorItem al errorContainer
         errorItem.appendChild(closeButton);
         errorContainer.appendChild(errorItem);
         errorContainer.style.display = "flex";
@@ -127,16 +137,14 @@ class DragDrop {
         nombreImagen.innerHTML = `${file.name} (Tipo Archivo: ${tipoArchivo}) - ${this.formatFileSize(file.size)}`;
         contenedorImagen.appendChild(nombreImagen);
 
-        // Crear y añadir el botón de eliminar
         let botonEliminar = document.createElement("button");
         botonEliminar.setAttribute('class', 'remove-button');
         botonEliminar.innerText = "Eliminar imagen";
         botonEliminar.onclick = () => {
-            this.removeImage(contenedorImagen);
+            this.removeImage(contenedorImagen, file);
         };
         contenedorImagen.appendChild(botonEliminar);
 
-        // Añadir el contenedor de la imagen a la vista previa
         this.previewContainer.appendChild(contenedorImagen);
     }
 
@@ -164,15 +172,6 @@ class DragDrop {
                     case "47494638":
                         fileType = "image/gif";
                         break;
-                    case "25504446":
-                        fileType = "application/pdf";
-                        break;
-                    case "504b0304":
-                        fileType = "application/zip"; // Para archivos zip y jar
-                        break;
-                    case "4d5a9000":
-                        fileType = "application/x-msdownload"; // Para archivos .exe
-                        break;
                     case "52494646":
                         fileType = "image/webp";
                         break;
@@ -197,9 +196,15 @@ class DragDrop {
         }
 
         return `${formattedSize.toFixed(2)} ${units[unitIndex]}`;
-    }    
+    }
 
-    removeImage(element) {
+    removeImage(element, file) {
         element.remove();
+        this.removeImageFromList(file); // Asegurarse de eliminar el archivo de la lista
+    }
+
+    removeImageFromList(file) {
+        this.filesList = this.filesList.filter((f) => f !== file);
+        this.updateInputFiles(); // Actualizar el input con la lista de archivos actualizada
     }
 }
