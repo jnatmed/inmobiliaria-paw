@@ -117,7 +117,7 @@ $router->setLogger($log);
  * 9) RUTAS
  * Aca van los enrutadores
  */
-$router->get('/', 'PublicacionController@index');
+$router->get('/', 'PageController@index');
 
 $router->get('/publicacion/new', 'PublicacionController@new');
 $router->post('/publicacion/new', 'PublicacionController@new');

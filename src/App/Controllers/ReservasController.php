@@ -5,12 +5,12 @@ namespace Paw\App\Controllers;
 use Paw\App\Utils\Verificador;
 use Paw\App\Utils\Uploader;
 use Paw\App\Models\Mailer;
-use Paw\Core\Database\QueryBuilder;
 
 use Paw\Core\Controller;
 use Paw\App\Models\Reserva;
 use Paw\App\Models\ReservasCollection;
 use Paw\App\Models\PublicacionCollection;
+use Paw\Core\Database\QueryBuilder;
 use Exception;
 
 class ReservasController extends Controller
