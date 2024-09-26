@@ -291,23 +291,7 @@ class PublicacionController extends Controller
     {
         try {
 
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver las reservas."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-                /**
-                 * aca guardamos el sitio en una sesion, a efectos de
-                 * redirigir a la pagina de publicar
-                 * asi no es necesario que tenga q navegar a la opcion 
-                 * si de porsi es la accion que desea realizar el usuario
-                 */
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
+            $this->usuario->chequearSesion();
 
             if ($this->request->method() == 'POST') {
 
@@ -454,18 +438,7 @@ class PublicacionController extends Controller
 
     public function gestionarPublicaciones()
     {
-        // Asumiendo que tienes una forma de obtener el id del usuario
-        if (!$this->usuario->isUserLoggedIn()) {
-            $resultado = [
-                "success" => false,
-                "message" => "Debe iniciar sesión para ver el pedido."
-            ];
-            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-            $this->usuario->setRedirectTo($this->request->uri(true));
-
-            redirect('iniciar-sesion');
-        }
+        $this->usuario->chequearSesion();
 
         $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
 
@@ -485,23 +458,11 @@ class PublicacionController extends Controller
     {
 
         try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver el pedido."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+            $this->usuario->chequearSesion();
 
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
             $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
             $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
-
-
 
             if (!is_null($idPublicacion)) {
 
