@@ -30,12 +30,12 @@ class ReservasController extends Controller
 
         $this->uploader = new Uploader;
         $this->usuario = new UsuarioController();
+        $this->usuario->setLogger($log);
         $this->verificador = new Verificador;
         $this->mailer = new Mailer();
         $this->mailer->setLogger($log);
         $this->publicationCollection = new PublicacionCollection();
         $this->publicationCollection->setQueryBuilder(new QueryBuilder($connection, $log));
-        $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
@@ -45,19 +45,8 @@ class ReservasController extends Controller
     {
 
         try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver las reservas."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
-
+            $this->usuario->chequearSesion();
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
@@ -89,16 +78,7 @@ class ReservasController extends Controller
     public function actualizarEstadoReserva()
     {
         try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver el pedido."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                redirect('iniciar-sesion');
-            }
+            $this->usuario->chequearSesion();
 
             $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
@@ -110,6 +90,7 @@ class ReservasController extends Controller
                 $this->model->actualizarEstadoReserva($idReserva, $accion);
 
                 redirect('mis_publicaciones/reservas');
+
             } else {
                 throw new Exception("ID de publicación o reserva no proporcionado: ");
             }
@@ -142,18 +123,7 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento()
     {
-        // Verificar si hay sesión iniciada
-        if (!$this->usuario->isUserLoggedIn()) {
-            $resultado = [
-                "success" => false,
-                "message" => "Debe iniciar sesión para ver el pedido."
-            ];
-            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-            $this->usuario->setRedirectTo($this->request->uri(true));
-
-            redirect('iniciar-sesion');
-        }
+        $this->usuario->chequearSesion();
 
         $correo_duenio = htmlspecialchars($this->request->get('email_duenio'));
         $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));

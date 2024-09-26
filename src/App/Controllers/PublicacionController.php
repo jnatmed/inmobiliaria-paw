@@ -191,18 +191,7 @@ class PublicacionController extends Controller
     public function listaPublicacionesPropietario()
     {
         try {
-            // Verificar si hay sesión iniciada
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver el pedido."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
+            $this->usuario->chequearSesion();
 
             // Obtener el ID del usuario desde la sesión
             $this->logger->info("sesion: ", [$_SESSION]);

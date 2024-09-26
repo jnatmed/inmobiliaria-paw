@@ -13,7 +13,6 @@ use Paw\App\Models\Mailer;
 
 class UsuarioController extends Controller
 {
-
     public Verificador $verificador;
     public ?string $modelName = UserCollection::class;
     public $tipoUsuario;
@@ -100,7 +99,17 @@ class UsuarioController extends Controller
         return $menu;
     }
 
+    public function chequearSesion()
+    {
+        if (!$this->isUserLoggedIn()) {
+            
+            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
+            $this->setRedirectTo($this->request->uri(true));
+
+            redirect('iniciar-sesion');
+        }        
+    }
 
     public function isUserLoggedIn()
     {
