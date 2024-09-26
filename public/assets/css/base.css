@@ -153,6 +153,16 @@ a.anchor-item-sesion:hover {
     /* Elimina cualquier borde por defecto */
 }
 
+.icono-header-pawperties-grande {
+    width: 200px;
+    height: 190px;
+    background-image: url(../imgs/header/Logo.svg);
+    background-size: cover;
+    background-position: center;
+    text-indent: -9999px;
+    border: none;
+}
+
 textarea {
     resize: none;
 }
@@ -314,6 +324,7 @@ textarea {
 
 .form-contactanos {
     display: flex;
+    flex-wrap: nowrap;
     width: 100%;
     max-width: 1000px;
     padding: 20px;
@@ -321,6 +332,41 @@ textarea {
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 832px) {
+    .form-contactanos {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "label-nombre"
+            "input-nombre"
+            "label-apellido"
+            "input-apellido";
+        row-gap: 10px; /* Espacio entre filas */
+    }
+
+    /* Asignar áreas a los elementos */
+    .form-group label[for="input-nombre"] {
+        grid-area: label-nombre;
+    }
+    
+    .form-group input[name="nombre"] {
+        grid-area: input-nombre;
+    }
+
+    .form-group label[for="input-apellido"] {
+        grid-area: label-apellido;
+    }
+    
+    .form-group input[name="apellido"] {
+        grid-area: input-apellido;
+    }
 }
 
 
@@ -334,6 +380,7 @@ textarea {
     flex-direction: column;
     justify-content: flex-end;
     margin-left: 25px;
+    align-items: center;
 }
 
 .form_info h3 {
