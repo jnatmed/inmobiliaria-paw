@@ -20,7 +20,7 @@
                 {% endfor %}
             </ul>
             <section class="info_publicacion">
-                <h3 class="publicacion-precio">${{ publicacion.precio|number_format(0, ',', '.') }}/noche</h3>
+                <h3 class="publicacion-precio">USD {{ publicacion.precio|number_format(0, ',', '.') }}/noche</h3>
                 <h3 class="publicacion-titulo" itemprop="name">{{ publicacion.nombre_alojamiento|e }}</h3>
                 <p class="publicacion-datos descripcion" itemprop="description">{{ publicacion.descripcion_alojamiento|nl2br|e }}
                 </p>
