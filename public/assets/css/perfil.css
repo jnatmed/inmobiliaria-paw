@@ -52,13 +52,30 @@
     font-family: var(--font-principal);
 }
 
-.profile-section p {
+.profile-section p, form label strong {
     font-size: 18px;
     margin: 10px 0;
 }
 
 .profile-section p strong {
     color: #333;
+}
+
+#cambiar-mail{
+    padding: 1px;
+    text-align: center;
+    width: 20%;
+}
+
+#actualizar-mail {
+    background-color: var(--color-negro-boton);
+    color: white;
+    border: none;
+    width: 10%;
+    height: 2.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 5px
 }
 
 /* Media query para pantallas menores a 650px */

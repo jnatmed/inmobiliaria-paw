@@ -21,12 +21,12 @@
                 <h2>Detalles del Usuario</h2>
                 <p><strong>Nombre:</strong> {{ usuario.nombre|escape }}</p>
                 <p><strong>Apellido:</strong> {{ usuario.apellido|escape }}</p>
+                <p><strong>Teléfono:</strong> {{ usuario.telefono|escape }}</p>
                 <form action="/perfil/update" method="post">
                     <label for="email"><strong>Email:</strong></label>
-                    <input type="email"  name="email" value="{{ usuario.email|escape }}">
-                    <input type="submit" value="Actualizar">
+                    <input type="email" class="input-form-busqueda" id="cambiar-mail" name="email" value="{{ usuario.email|escape }}">
+                    <input type="submit" id="actualizar-mail" value="Actualizar">
                 </form>
-                <p><strong>Teléfono:</strong> {{ usuario.telefono|escape }}</p>
             </section>    
         </section>
     </main>
