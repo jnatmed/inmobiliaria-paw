@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-	// const promiseCarrousel = PAW.cargarScriptPromise(
-	// 	"Carrousel",
-	// 	"/assets/js/components/carrousel.js"
-	// );
 
 	const promiseFiltro = PAW.cargarScriptPromise(
 		"filtrarPublicaciones",
@@ -14,10 +10,18 @@ document.addEventListener("DOMContentLoaded", () => {
 		"/assets/js/components/sliderPrecio.js"
 	);
 
-	Promise.all([promiseFiltro, promiseSliderPrecio])
+	const promiseCarrouselPausa = PAW.cargarScriptPromise(
+		"CarrouselPausa",
+		"/assets/js/components/carrousel-pausa.js"
+	);
+
+	Promise.all([promiseFiltro, promiseSliderPrecio, promiseCarrouselPausa])
 		.then(function () {
 			new SliderPrecio();
-			new filtrarPublicaciones(); 
+			new filtrarPublicaciones();
+			document.querySelectorAll('.publicacion-item').forEach(publicacion => {
+				new CarrouselPausa(publicacion);
+			});
 		})
 		.catch(function (error) {
 			console.error("Error loading one or more scripts:", error);
