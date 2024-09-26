@@ -5,6 +5,7 @@ namespace Paw\App\Models;
 use ReflectionClass;
 use ReflectionProperty;
 use Paw\Core\Model;
+use DateTime;
 
 class Reserva extends Model
 {
@@ -52,6 +53,14 @@ class Reserva extends Model
             $this->setFechaFin($data['fecha_fin']);
         } else {
             $this->erroresCollection[] = "Fecha de fin no proporcionada";
+            $this->exito = false;
+        }
+
+        $fechaInicio = new DateTime($this->getFechaInicio()); 
+        $fechaFin = new DateTime($this->getFechaFin());
+    
+        if ($fechaInicio >= $fechaFin) {
+            $this->erroresCollection[] = "La fecha de inicio debe ser menor que la fecha de fin";
             $this->exito = false;
         }
 

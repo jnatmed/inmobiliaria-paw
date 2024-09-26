@@ -614,4 +614,21 @@ class QueryBuilder
             throw new Exception('Error al realizar la consulta en la base de datos');
         }
     }
+
+    public function buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin)
+    {
+        $sql = "SELECT COUNT(*) FROM reservas_publicacion 
+                WHERE id_publicacion = :id_publicacion 
+                AND (
+                    (fecha_inicio <= :fecha_fin AND fecha_fin >= :fecha_inicio)
+                )";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_publicacion', $idPublicacion);
+        $stmt->bindParam(':fecha_inicio', $fechaInicio);
+        $stmt->bindParam(':fecha_fin', $fechaFin);
+        $stmt->execute();
+
+        return $stmt->fetchColumn(); // Retorna el número de reservas en conflicto
+    }    
 }

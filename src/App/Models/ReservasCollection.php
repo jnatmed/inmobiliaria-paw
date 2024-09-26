@@ -80,6 +80,22 @@ class ReservasCollection extends Model
             $data = $reserva->getAll();
             $this->logger->info("data : ", [$data]);
 
+            // Obtener los datos relevantes de la reserva
+            $idPublicacion = $reserva->getIdPublicacion();
+            $fechaInicio = $reserva->getFechaInicio();
+            $fechaFin = $reserva->getFechaFin();
+
+            // Utilizar el nuevo método para buscar conflictos de reservas
+            $reservasEnConflicto = $this->queryBuilder->buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin);
+
+            if ($reservasEnConflicto > 0) {
+                // Si hay reservas que se solapan, lanzar un error
+                return [
+                    "exito" => false,
+                    "mensaje" => "El intervalo de fechas ya está reservado para esta publicación."
+                ];
+            }
+
             list($idReservaGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
 
             $this->logger->info("Info Reserva (Method - create): " , [$idReservaGenerado, $resultado]);
