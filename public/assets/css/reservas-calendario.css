@@ -74,6 +74,7 @@ table.greenTable tfoot .links a {
 }
 
 .calendarTitle {
+    font-family: var(--font-principal);
     font-size: 3rem;
     padding: 4px;   
     text-align: center;
@@ -113,10 +114,11 @@ table.greenTable tfoot .links a {
     border-radius: 1rem;
     padding: 1rem 1rem 1rem 1rem;
     margin: .5rem 1rem;
+    font-weight: 1000;
 }
 
 .reservar{
-    background-color: #B53E3E;
+    background-color: var(--color-verde-header);
 }
 
 .cancelar{
@@ -160,21 +162,6 @@ table.greenTable tfoot .links a {
     font-weight: bold; /* Texto en negrita */
 }
 
-.msj_reserva {
-    height: 1rem;
-    width: 100%;
-    color: white;
-    font-weight: bold;
-}
-
-.msj_exito {
-    background-color: green;
-}
-
-.msj_error {
-    background-color: red;
-}
-
 /* Ajustar el ancho de la tabla al 90% del ancho de la ventana */
 #calendarTable {
     width: 90vw; /* O un porcentaje diferente según lo que necesites */
@@ -184,6 +171,7 @@ table.greenTable tfoot .links a {
   }
   
   #calendarTable th, #calendarTable td {
+    font-family: var(--font-principal);
     padding: 10px; /* Espacio dentro de cada celda */
     text-align: center; /* Centrar el texto dentro de las celdas */
   }
@@ -201,6 +189,7 @@ table.greenTable tfoot .links a {
 }
 
 #calendarTable th::after {
+    font-family: var(--font-principal);
     content: attr(data-abbr); /* Utiliza el atributo data-abbr para mostrar la abreviatura */
     position: absolute;
     top: 50%;
@@ -223,4 +212,72 @@ table.greenTable tfoot .links a {
 .calendarNavigation {
     display: flex;
     align-items: center;
+}
+
+
+/*
+*  ESTILOS PARA MENSAJE DE ERROR
+*/
+
+/* Fondo oscuro semitransparente detrás del mensaje */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro con transparencia */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center;     /* Centrar verticalmente */
+    z-index: 9999;           /* Asegurar que esté por encima de otros elementos */
+}
+
+/* Estilos para el mensaje */
+.msj_reserva {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px; /* Limitar el ancho del mensaje */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+/* Botón de cerrar */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Mensajes de éxito y error */
+.msj_exito {
+    color: white;
+    background-color: #28a745;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.msj_error {
+    color: white;
+    background-color: #dc3545;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+/* Estilos para la lista de errores */
+.lista-errores {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.lista-errores li {
+    color: #dc3545;
+    text-align: left;
 }

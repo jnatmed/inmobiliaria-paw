@@ -38,6 +38,7 @@ class UsuarioController extends Controller
             'urlPublicacion' => $this->request->fullUrl(),
             'id_usuario' => $this->getUserId(),
             'tipo_usuario' => $this->getUserType(),
+            'email' => $this->isUserLoggedIn() ? $this->getEmailAddress() : null
         ];
     }
 
@@ -178,9 +179,9 @@ class UsuarioController extends Controller
 
     public function setRedirectTo($redirectUrl = null, $unset = false)
     {
-        if(!$unset){
+        if (!$unset) {
             $_SESSION['redirect_to'] = $redirectUrl;
-        }else{
+        } else {
             unset($_SESSION['redirect_to']);
         }
     }
@@ -236,7 +237,6 @@ class UsuarioController extends Controller
                     ];
 
                     redirect('');
-
                 } else {
                     $error = 'Error al registrar el usuario';
                     $log->error("(UsuarioController) error: ", [$resultado]);
@@ -259,8 +259,7 @@ class UsuarioController extends Controller
                     ['error' => "Error al registrar el usuario: " . $e->getMessage()],
                     $this->menuAndSession
                 ));
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
 
                 $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
 
@@ -268,9 +267,7 @@ class UsuarioController extends Controller
                     ['error' => "Error al registrar el usuario: " . $e->getMessage()],
                     $this->menuAndSession
                 ));
-            }            
-            
-            
+            }
         } else {
             $datos = ['titulo' => $titulo];
             view('register.view', array_merge(
@@ -384,11 +381,11 @@ class UsuarioController extends Controller
                                 "mensaje" => 'Error al resetear la Contraseña.',
                             ]);
                         }
-                    }else{
+                    } else {
                         view('password_reset_request.view', array_merge(
                             ['exito' => false, "mensaje" => 'Error Cliente: las contraseñas no coinciden. Vuelva a intertarlo porfavor'],
                             $this->menuAndSession
-                        ));                              
+                        ));
                     }
                 } else {
                     $this->logger->error('Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo');
@@ -468,16 +465,16 @@ class UsuarioController extends Controller
                     $tokenCreado = strtotime($resultadoBusquedaToken['token']['created_at']);
                     $tiempoActual = time();
 
-                    if($tokenCreado && ($tiempoActual - $tokenCreado) < 3600){
+                    if ($tokenCreado && ($tiempoActual - $tokenCreado) < 3600) {
                         view('password_reset_request.view', array_merge(
                             ['resetear_de_contrasenia_solicitado' => true, 'user_id' => $resultadoBusquedaToken['token']['user_id']],
                             $this->menuAndSession
-                        ));    
-                    }else{
+                        ));
+                    } else {
                         view('password_reset_request.view', array_merge(
                             ['exito' => false, "mensaje" => 'Token expirado. Vuelva a solicitar un nuevo reseteo de contraseña'],
                             $this->menuAndSession
-                        ));                        
+                        ));
                     }
                 } else {
                     view('password_reset_request.view', array_merge(

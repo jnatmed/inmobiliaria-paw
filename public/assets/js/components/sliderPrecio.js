@@ -1,23 +1,39 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const precioSlider = document.getElementById('precio');
-    const precioValor = document.getElementById('precio-valor');
-    const form = document.querySelector('form');
+class SliderPrecio {
+    constructor() {
+        this.sliders = document.querySelectorAll('#precio');
+        this.valores = document.querySelectorAll('#precio-valor');
+        this.forms = document.querySelectorAll('form');
 
-    // Actualizar el valor del span cuando cambia el valor del slider
-    precioSlider.addEventListener('input', function () {
-        if (this.value == 0)
-            precioValor.innerText = "-"
-        else
-            precioValor.innerText = this.value;
-    });
+        //Hay mas de un form por ende hay que asignar un listener a cada uno
 
-    // Restablecer el valor cuando se hace clic en el botón de limpiar
-    form.addEventListener('reset', function () {
-        setTimeout(() => {
-            if (precioSlider.value == 0)
-                precioValor.innerText = "-"
-            else
-                precioValor.innerText = precioSlider.value;
-        }, 0);
-    });
-});
+        this.sliders.forEach((slider, i) => {
+            slider.addEventListener('input', () => {
+                // Si el valor del slider es 0, mostrar solo "-"
+                if (slider.value == 0) {
+                    this.valores[i].innerText = "-";
+                } else {
+                    // Mostrar el valor actualizado del slider
+                    this.valores[i].innerText = `$0 - $${this.formatearPrecio(slider.value)}`;
+                }
+            });
+        });
+
+        this.forms.forEach(form => {
+            form.addEventListener('reset', () => {
+                setTimeout(() => {
+                    this.sliders.forEach((slider, i) => {
+                        if (slider.value == 0) {
+                            this.valores[i].innerText = "-";
+                        } else {
+                            this.valores[i].innerText = `$0 - $${this.formatearPrecio(slider.value)}`;
+                        }
+                    });
+                }, 0);
+            });
+        });
+    }
+
+    formatearPrecio(valor) {
+        return new Intl.NumberFormat('es-AR').format(valor);
+    }
+}

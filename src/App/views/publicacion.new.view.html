@@ -52,33 +52,39 @@
 
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
-                <p class="paso-titulo">Completá los datos del alojamiento</p>
-
+                
                 <p id="cartel-errores-paso-1"> </p>
-
+                
+                <p class="paso-titulo">Completá los datos del alojamiento</p>
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
-                <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" placeholder="Nombre" required>
 
+                <label for="nombre-alojamiento">Nombre (*)</label>
+                <input type="text" name="nombre-alojamiento" id="nombre-alojamiento" class="input-form-publicacion" required>
+                <label for="tipo-alojamiento">Tipo (*)</label>
                 <select name="tipo-alojamiento" id="tipo-alojamiento" class="input-form-publicacion-select" required>
                     <option value="" disabled selected>Tipo</option>
                     {% for tipo in tipos_alojamiento %}
                         <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
                     {% endfor %}
                 </select>
-                    
-                <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" placeholder="Capacidad Máxima" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
-                <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" placeholder="Cantidad de Baños" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
-                <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" placeholder="Cantidad de Dormitorios" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                <label for="capacidad-maxima">Capacidad Máxima (Personas) (*)</label>
+                <input type="number" name="capacidad-maxima" id="capacidad-maxima" class="input-form-publicacion" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                <label for="cant-banios">Cantidad de Baños (*)</label>
+                <input type="number" name="cant-banios" id="cant-banios" class="input-form-publicacion" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
+                <label for="cantidad-dormitorios">Cantidad de Dormitorios (*)</label>
+                <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
                 
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
-                <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa. La dirección exacta no va a ser visible para los usuarios</p>
+                <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa</p>
                 <div class="input-container">
-                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" placeholder="Provincia" readonly>
+                    <label for="provincia">Provincia</label>
+                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" readonly>
                     <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
                 </div>
                 
                 <div class="input-container">
-                    <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" placeholder="Código Postal" readonly>
+                    <label for="codigo_postal">Codigo Postal</label>
+                    <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" readonly>
                     <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
                 </div>
                 
@@ -86,6 +92,7 @@
                 <input type="text" name="direccion_completa" id="direccion_completa" class="input-form-publicacion" readonly hidden>
 
                 <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
+                <label for="ubicacion">Ubicacion (*)</label>
                 {% include 'parts/mapa.view.html' %}
 
                 <h3 class="titulo-datos-propietario">Instalaciones</h3>

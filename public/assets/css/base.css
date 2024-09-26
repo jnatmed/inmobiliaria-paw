@@ -21,7 +21,7 @@ html {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: var(--color-verde-header);
     height: 5rem;
     align-items: center;
@@ -43,12 +43,12 @@ header {
 
 
 .lista-opciones-sesion li {
-    background-color: var(--color-negro-boton);
     border-radius: 1rem;
-    height: 3.8rem;
+    height: 3.5rem;
     display: flex;
     align-items: center;
     padding-right: 6px;
+    background-color: var(--color-negro-boton);
 }
 
 .anchor-item-sesion,
@@ -79,7 +79,7 @@ a.anchor-item-sesion:hover {
     cursor: pointer;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1200px) {
     .nav-index {
         position: absolute;
         top: 100%;
@@ -207,7 +207,7 @@ textarea {
     color: white;
     display: block;
     border: none;
-    width: 30%;
+    width: 25%;
     height: 4rem;
     font-size: 1.5rem;
     font-weight: bold;
@@ -337,7 +337,7 @@ textarea {
 }
 
 .form_info h3 {
-    margin-top: 40px;
+    margin-top: 20px;
     font-size: 14px;
     font-weight: 800;
 }
@@ -373,6 +373,7 @@ textarea {
     border: 1px solid var(--color-verde-header);
     font-family: var(--font-principal);
     color: black;
+    
 }
 
 .form-contactanos input[type="submit"] {
@@ -383,9 +384,10 @@ textarea {
     border: none;
     border-radius: 4px;
     color: #fff;
-    font-size: 12px;
+    font-size: 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: bolder;
 }
 
 .form-contactanos input[type="submit"]:hover {
@@ -413,5 +415,27 @@ textarea {
     margin: 3rem;
     
 }
+
+.alerta {
+    font-size: 15px;
+    margin-top: 1rem;
+    padding: .5rem;
+
+}
+
+.alerta-error {
+    background-color: rgb(255, 209, 209);
+    border: 1px solid red;
+    border-radius: 2px;
+    color: red;
+}
+
+.alerta-exito {
+    background-color: rgb(116, 255, 158);
+    border: 1px solid green;
+    border-radius: 2px;
+    color: greenyellow;
+}
+
 
 

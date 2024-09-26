@@ -99,11 +99,6 @@ class Calendario {
             this.changeMonth(1);
         });
 
-        document.getElementById('calendarTable').addEventListener('click', (event) => {
-            if (event.target.tagName === 'TD' && event.target.classList.contains('libre')) {
-                this.handleDayClick(event.target);
-            }
-        });
     }
 
     changeMonth(change) {

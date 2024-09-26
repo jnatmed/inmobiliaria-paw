@@ -16,9 +16,9 @@
     width: 100%;
 }
 
-.paso-1 p {
-    padding: 1rem 0 1rem 0;
-    margin-top: .5em;
+.paso-1 p {  
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     width: 100%;
     font-size: 1.5rem;
     color: gray;
@@ -48,7 +48,7 @@ p.paso-titulo {
 
 .input-form-publicacion,
 .input-form-publicacion-select {
-    display: inline-block;
+    display: block;
     width: 20%;
     border: 0;
     border-bottom: 1px solid gray;
@@ -56,9 +56,24 @@ p.paso-titulo {
     padding: 0.5em;
     margin: 0.3em;
     margin-left: 0;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
     appearance: none; 
     -webkit-appearance: none; 
     -moz-appearance: none; 
+    box-sizing: border-box;
+}
+
+.input-form-publicacion:required, .input-form-publicacion-select:required {
+    background-color: #00000005;
+}
+
+.paso-1 label {
+    font-size: 15px;
+}
+
+input#ubicacion {
+    display: inline-block;
 }
 
 .input-form-publicacion:focus,
@@ -87,7 +102,7 @@ p.paso-titulo {
 
 .descripcion-alojamiento[type="number"] {
     display: inline-block;
-    width: 30vw;
+    width: 10vw;
     padding: 10px;
     font-family: var(--font-precio);
 }
@@ -155,6 +170,13 @@ p.paso-titulo {
     margin: 0 auto;
 }
 
+.paso-3 input#precio {
+    padding: 10px;
+    font-family: var(--font-precio);
+    width: 15%;
+    border-radius: 5px;
+}
+
 /* 
 .paso-3 p:nth-child(2) {
     border: none;
@@ -178,11 +200,7 @@ p.paso-titulo {
     margin-bottom: 20px;
     display: flex;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Añade sombra */
-    border-top-right-radius: 50px;
-    border-bottom-right-radius: 50px;
     background-color: #fff;
-    /* Opcional: establece un fondo blanco */
 }
 
 /* Estilos para el título de la publicación */
@@ -207,18 +225,24 @@ p.paso-titulo {
 .publicacion-datos {
     margin-bottom: 6px;
     font-size: 15px;
+    overflow: auto;
 }
 
 
 /* Estilos para las instalaciones */
-.instalacion {
+.instalacion{
     display: inline-block;
-    background-color: #ffeb3b;
+    background-color: #ffef60;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 4px;
     font-weight: bold;
-    color: #333;
+    color: #000000;
     margin-top: 1em;
+}
+
+.descripcion {
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
 /* Estilos para las instalaciones */
@@ -503,7 +527,7 @@ p.paso-titulo {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #007bff;
+    background-color: var(--color-verde-header);
     color: white;
     text-align: center;
     text-decoration: none;
@@ -515,11 +539,13 @@ p.paso-titulo {
     transition: background-color 0.3s, transform 0.3s;
     border-radius: 10px;
     margin-top: 3em;
-    width: 10%;
+    width: 25%;
+    margin-bottom: 2rem;
+    font-weight: 800;
 }
 
 .ver-mas:hover {
-    background-color: #0056b3;
+    background-color: #86a9c0;
 }
 
 .no-resultados {
@@ -598,20 +624,16 @@ p.paso-titulo {
     }
 
     .form-busqueda-propiedad {
-        background-color: #D9D9D9;
-        display: flex;
-        flex-wrap: wrap;
-        width: 94%;
-        height: 15.8rem;
-        margin-left: 0;
-        padding: 2rem 2rem 0 2rem;
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-        position: relative;
+        width: 90%;
+        flex-wrap: nowrap;
     }
 }
 
+.mobile-show {
+    display: none;
+}
 
-@media (max-width: 682px) {
+@media (max-width: 1200px) {
     .container-dad {
         grid-template-columns: 1fr;
     }
@@ -636,6 +658,14 @@ p.paso-titulo {
 
     .carousel {
         width: 100%;
+    }
+
+    .mobile-hidden {
+        display: none;
+    }
+
+    .mobile-show {
+        display: inline-block;
     }
 
 }

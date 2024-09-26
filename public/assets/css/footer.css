@@ -27,7 +27,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 50%;
+    height: 20%;
     background-color: #2e2e2e;
 }
 
@@ -83,4 +83,10 @@ footer {
 
 .redes_sociales {
     margin-right: 10px;
+}
+
+@media (max-width: 1200px) {
+    .footer_secciones:first-child::before {
+        display: none;
+    }
 }

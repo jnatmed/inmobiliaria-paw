@@ -1,10 +1,12 @@
 <?php
+
 namespace Paw\App\Models;
 
 use Paw\Core\Model;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Paw\Core\Traits\Loggable;
+use Paw\App\Models\Reserva;
 
 class Mailer extends Model
 {
@@ -32,13 +34,17 @@ class Mailer extends Model
     {
         $this->mail->clearAddresses();
     }
-    
-    public function send($to, $subject, $body, $altBody = '')
+
+    public function send($to, $subject, $body, $altBody = '', $from = null, $name = null)
     {
         global $config;
         try {
             // Configuración del correo electrónico
-            $this->mail->setFrom($config->get('MAIL_FROM'), $config->get('MAIL_NAME'));
+            if (!isset($from) || !isset($name)) {
+                $this->mail->setFrom($config->get('MAIL_FROM'), $config->get('MAIL_NAME'));
+            } else {
+                $this->mail->setFrom($from, $name);
+            }
             $this->mail->addAddress($to);
 
             // Contenido del correo electrónico
@@ -50,9 +56,120 @@ class Mailer extends Model
             $this->mail->send();
             return true;
         } catch (Exception $e) {
-            // Puedes agregar un log o manejar el error de otra manera aquí
-            
+            $this->logger->info("Error al enviar Mailer", [$e]);
             return false;
+        }
+    }
+
+    public function enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio)
+    {
+        /**
+         * aca lo que se busca es usar las plantilla para redactar un
+         * correo con estilos en linea guardarlos en el body y enviarlo
+         * aqui evitamos mezclar html con php y combinamos 
+         * el poder del motor de plantillas con php
+         *  */
+        $body = view('correoAlDuenioDeLaPublicacion', [
+            'emailInteresado' => $emailInteresado,
+            'telefonoDelInteresado' => $telefonoDelInteresado,
+            'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
+            'fullUrl' => $fullUrl
+        ], true);
+
+        // Aca enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->send(
+            $emailDuenio,
+            "Consulta sobre publicacion: ",
+            $body
+        );
+
+        return $resultadoSend;
+    }
+
+    public function comunicarAlInteresadoYalPropietario(Reserva $reserva, $nroReserva, $userName, $emailAddress, $correo_duenio)
+    {
+
+        // Mensaje de correo con estilos en línea
+        $body = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $reserva->getFechaInicio(),
+            'hasta' => $reserva->getFechaFin(),
+            'destino' => 'interesado'
+        ], true);
+
+        // Mensaje de correo con estilos en línea
+        $bodyPropietario = view('solicitudDeReservaAlojamiento', [
+            'nroReserva' => $nroReserva,
+            'userName' => $userName,
+            'desde' => $reserva->getFechaInicio(),
+            'hasta' => $reserva->getFechaFin(),
+            'destino' => 'propietario'
+        ], true);
+
+        // aca deberia enviar un correo al usuario que esta logueado       
+        $resultadoSend = $this->send(
+            $emailAddress,
+            "Solicitud de Reserva Enviada para el usuario: $userName ",
+            $body,
+        );
+
+        if ($resultadoSend) {
+            $this->logger->info("Correo enviado con exito ");
+        } else {
+            $this->logger->info("ERROR al enviar el Correo ");
+        }
+        // Limpia la lista de destinatarios antes de enviar el siguiente correo
+        $this->clearAddresses();
+
+        $resultadoSendPropietario = $this->send(
+            $correo_duenio,
+            "Solicitud de Reserva del usuario: $userName ",
+            $bodyPropietario,
+        );
+
+
+        $this->logger->info("resultado reservar alojamiento: ", [$resultadoSendPropietario]);
+    }
+
+
+    // Este es el formulario de contacto del home
+    public function enviarFormContacto($nombre, $apellido, $telefono, $emailOrigen, $consulta)
+    {
+        global $config;
+
+        $body = view('correoContacto', [
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'telefono' => $telefono,
+            'emailOrigen' => $emailOrigen,
+            'consulta' => $consulta
+        ], true);
+
+        $emailEmpresa = $config->get('COMPANY_MAIL');
+
+        $resultadoSend = $this->send(
+            $emailEmpresa,
+            "Consulta",
+            $body,
+            from: $emailOrigen,
+            name: ($nombre . " " . $apellido)
+        );
+
+        if($resultadoSend)
+        {
+            return [
+                "exito" => true,
+                "mensaje" => "Consulta Enviada.",
+            ];
+    
+        }else{
+
+            return [
+                "exito" => false,
+                "mensaje" => "No se pudo tu mensaje"
+            ];        
+    
         }
     }
 }

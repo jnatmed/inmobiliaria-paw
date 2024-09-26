@@ -395,7 +395,7 @@ class QueryBuilder
             }
     
             if ($zona) {
-                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona)";
+                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona OR main.nombre_alojamiento LIKE :zona OR main.descripcion_alojamiento LIKE :zona OR main.normas_alojamiento LIKE :zona)";
                 $params[':zona'] = '%' . $zona . '%';
             }
     
@@ -580,14 +580,21 @@ class QueryBuilder
         }
     }    
 
-    public function selectMaxPrice($table)
+    public function selectMaxPrice($table, $id_user = null)
     {
         try {
             // Consulta para obtener el mayor valor del campo `precio`
-            $query = "SELECT MAX(precio) AS max_precio FROM {$table}";
-            
+            $query = $id_user 
+                ? "SELECT MAX(precio) AS max_precio FROM {$table} WHERE id = :id_user" 
+                : "SELECT MAX(precio) AS max_precio FROM {$table}";
+
             // Preparar la sentencia
             $stmt = $this->pdo->prepare($query);
+
+            // Si hay un id de usuario, enlazamos el parámetro
+            if ($id_user) {
+                $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+            }
             
             // Ejecutar la consulta
             $stmt->execute();
@@ -607,4 +614,21 @@ class QueryBuilder
             throw new Exception('Error al realizar la consulta en la base de datos');
         }
     }
+
+    public function buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin)
+    {
+        $sql = "SELECT COUNT(*) FROM reservas_publicacion 
+                WHERE id_publicacion = :id_publicacion 
+                AND (
+                    (fecha_inicio <= :fecha_fin AND fecha_fin >= :fecha_inicio)
+                )";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_publicacion', $idPublicacion);
+        $stmt->bindParam(':fecha_inicio', $fechaInicio);
+        $stmt->bindParam(':fecha_fin', $fechaFin);
+        $stmt->execute();
+
+        return $stmt->fetchColumn(); // Retorna el número de reservas en conflicto
+    }    
 }

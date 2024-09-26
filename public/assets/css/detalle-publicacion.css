@@ -332,7 +332,7 @@ estilo para los detalles de la propiedad
 }
 
 .details-depto__comodidades-titulo {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 10px;
 }
 
@@ -374,6 +374,7 @@ estilo para los detalles de la propiedad
   @media (min-width: 780px) {
     .container-reserva {
       grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+      align-items: flex-end;
     }
   }
 
@@ -383,11 +384,13 @@ estilo para los detalles de la propiedad
   }
   
   .titulo-estatico {
-    display: block; /* Hace que el texto sea una línea completa */
+    display: block; 
+    margin-bottom: 2rem;
+    font-size: 20px;
   }
   
   .titulo-dinamico {
-    display: block; /* También lo convierte en una línea completa */
-    font-weight: bold; /* Estilo adicional si es necesario */
+    display: block; 
+    font-weight: bold; 
   }
   

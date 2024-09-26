@@ -7,50 +7,89 @@
 <ul>
     <p>{{ publicaciones|length }} de {{ cantidadTotalPublicaciones }}</p>
     {% for publicacion in publicaciones %}
-        {% if publicacion is not null %}
-            <li class="publicacion-item" itemscope itemtype="https://schema.org/LodgingBusiness">
-                <nav class="nav-destacados">
-                    <ul class="destacados">
-                        {% for imagen in publicacion.imagenes %}
-                            <li class="destacado-item">
-                                <img class="destacado-img" src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" alt="{{ imagen.nombre_imagen }}" itemprop="photo">
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <section class="info_publicacion">
-                        <h3 class="publicacion-precio">${{ publicacion.precio|number_format(0, ',', '.') }}</h3>
-                        <h3 class="publicacion-titulo" itemprop="name">{{ publicacion.nombre_alojamiento|e }}</h3>
-                        <p class="publicacion-datos" itemprop="description">{{ publicacion.descripcion_alojamiento|nl2br|e }}</p>
-                        <p class="publicacion-datos">Direccion: <span itemprop="address">{{ publicacion.direccion|e }}</span></p>
-                        <p class="publicacion-datos">Capacidad: <span itemprop="occupancy">{{ publicacion.capacidad_maxima|e }}</span></p>
-                        <p class="publicacion-datos">Tipo: <span itemprop="category">{{ publicacion.descripcion_tipo|capitalize }}</span></p>
-                        <p class="publicacion-datos">Baños: {{ publicacion.cant_banios|e }}</p>
-                        <p class="publicacion-datos">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
-                        <p class="publicacion-datos">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>
-                        <p class="publicacion-datos">
-                            {% if publicacion.cochera %}<span class="instalacion" itemprop="amenityFeature">Cochera</span> {% endif %}
-                            {% if publicacion.pileta %}<span class="instalacion" itemprop="amenityFeature">Pileta</span> {% endif %}
-                            {% if publicacion.aire_acondicionado %}<span class="instalacion" itemprop="amenityFeature">Aire Acondicionado</span> {% endif %}
-                            {% if publicacion.wifi %}<span class="instalacion" itemprop="amenityFeature">Wi-Fi</span> {% endif %}
-                        </p>
-                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas" itemprop="url">Reservar ></a>
-                        <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}" target="_blank">
-                            <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp" itemprop="contactPoint">
-                        </a>
-                        <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
-                            <img src="/assets/imgs/svg/email_green.png" alt="Email" itemprop="email">
-                        </a>
-                    </section>
-                </nav>
-            </li>
-        {% endif %}
+    {% if publicacion is not null %}
+    <li class="publicacion-item" itemscope itemtype="https://schema.org/LodgingBusiness">
+        <nav class="nav-destacados">
+            <ul class="destacados">
+                {% for imagen in publicacion.imagenes %}
+                <li class="destacado-item">
+                    <img class="destacado-img"
+                        src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
+                        alt="{{ imagen.nombre_imagen }}" itemprop="photo">
+                </li>
+                {% endfor %}
+            </ul>
+            <section class="info_publicacion">
+                <h3 class="publicacion-precio">USD {{ publicacion.precio|number_format(0, ',', '.') }}/noche</h3>
+                <h3 class="publicacion-titulo" itemprop="name">{{ publicacion.nombre_alojamiento|e }}</h3>
+                <p class="publicacion-datos descripcion" itemprop="description">{{ publicacion.descripcion_alojamiento|nl2br|e }}
+                </p>
+                <p class="publicacion-datos mobile-hidden">Dirección: <span itemprop="address">{{ publicacion.direccion|e }}</span>
+                </p>
+                <p class="publicacion-datos mobile-hidden">Capacidad: <span itemprop="occupancy">{{ publicacion.capacidad_maxima|e
+                        }} Adultos</span></p>
+                <p class="publicacion-datos mobile-hidden">Tipo: <span itemprop="category">{{ publicacion.descripcion_tipo|capitalize
+                        }}</span></p>
+                <p class="publicacion-datos mobile-hidden">Baños: {{ publicacion.cant_banios|e }}</p>
+                <p class="publicacion-datos mobile-hidden">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
+                <p class="publicacion-datos mobile-hidden">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>
+                <p class="publicacion-datos">
+                    {% if publicacion.cochera %}
+                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                        <i class="fas fa-car comodidades-item__icon"></i>
+                        Cochera
+                    </span>
+                    <span class="instalacion mobile-show">
+                        <i class="fas fa-car comodidades-item__icon"></i>
+                    </span>
+                    {% endif %}
+                    {% if publicacion.pileta %}
+                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                        <i class="fas fa-swimming-pool comodidades-item__icon"></i>
+                        Pileta
+                    </span>
+                    <span class="instalacion mobile-show">
+                        <i class="fas fa-swimming-pool comodidades-item__icon"></i>
+                    </span>
+                    {%endif %}
+                    {% if publicacion.aire_acondicionado %}
+                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                        <i class="fas fa-temperature-high comodidades-item__icon"></i>
+                        Aire Acondicionado
+                    </span>
+                    <span class="instalacion mobile-show">
+                        <i class="fas fa-temperature-high comodidades-item__icon"></i>
+                    </span>
+                    {% endif %}
+                    {% if publicacion.wifi %}
+                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                        <i class="fas fa-wifi comodidades-item__icon"></i>
+                        Wi-Fi
+                    </span>
+                    <span class="instalacion mobile-show">
+                        <i class="fas fa-wifi comodidades-item__icon"></i>
+                    </span>
+                    {% endif %}
+                </p>
+                <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas" itemprop="url">Reservar ></a>
+                <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}"
+                    target="_blank">
+                    <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp" itemprop="contactPoint">
+                </a>
+                <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
+                    <img src="/assets/imgs/svg/email_green.png" alt="Email" itemprop="email">
+                </a>
+            </section>
+        </nav>
+    </li>
+    {% endif %}
     {% endfor %}
 </ul>
 
 
 {% if publicaciones is empty %}
-    <section class="no-resultados">
-        <h2>No se encontraron resultados</h2>
-        <p>Intenta ajustar los filtros!</p>
-    </section>
+<section class="no-resultados">
+    <h2>No se encontraron resultados</h2>
+    <p>Intenta ajustar los filtros!</p>
+</section>
 {% endif %}

@@ -10,76 +10,84 @@
     {% include 'parts/header.view.html' %}
 
     <main>
-        <section class="reservas-container">
-            <h1 class="reservas-titulo">Lista de Reservas</h1>
-            <p>Solicitudes a propiedades que publicaste, de las cuales solicitaron reserva.</p>
-            <table class="reservas-tabla">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Alojamiento</th>
-                        <th>Desde</th>
-                        <th>Hasta</th>
-                        <th>Estado</th>
-                        <th>Nota</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for reserva in reservas %}
-                        <tr>
-                            <td>{{ reserva.id_reserva | e }}</td>
-                            <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.nombre_alojamiento }}</a></td>
-                            <td>{{ reserva.desde | e }}</td>
-                            <td>{{ reserva.hasta | e }}</td>
-                            <td>{{ reserva.estado_reserva | e }}</td>
-                            <td>{{ reserva.nota | e }}</td>
-                            <td>
-                                <a class="reservas-accion" href="/mis_publicaciones/reserva/aceptar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Aceptar</a> |
-                                <a class="reservas-accion" href="/mis_publicaciones/reserva/cancelar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Cancelar</a> |
-                                <a class="reservas-accion" href="/mis_publicaciones/reserva/rechazar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Rechazar</a> |
-                                <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_pub }}">Ver</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-        <section class="reservas-container">
-            <h1 class="reservas-titulo">Lista de Reservas</h1>
-            <p>Solicitudes de reserva que tu realizaste.</p>
-            <table class="reservas-tabla">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Id Alojamiento</th>
-                        <th>Desde</th>
-                        <th>Hasta</th>
-                        <th>Estado</th>
-                        <th>Nota</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for reserva in reservasSolicitadasPorUserSesion %}
-                        {% if reserva.id_usuario_reserva == idUserSesion %}                        
+        <section class="container-general-reservas">
+            <section class="reservas-container">
+                <details class="detalles-reservas">
+                    <summary class="reservas-titulo">Lista de Reservas Publicadas</summary>
+                    <p>Solicitudes a propiedades que publicaste, de las cuales solicitaron reserva.</p>
+                    <table class="reservas-tabla">
+                        <thead>
                             <tr>
-                                <td>{{ reserva.id_publicacion | e }}</td>
-                                <td><a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">{{ reserva.id_publicacion }}</a></td>
-                                <td>{{ reserva.fecha_inicio | e }}</td>
-                                <td>{{ reserva.fecha_fin | e }}</td>
-                                <td>{{ reserva.estado_reserva | e }}</td>
-                                <td>{{ reserva.notas | e }}</td>
-                                <td>
-                                    <a class="reservas-accion" href="/mis_publicaciones/reserva/cancelar?id_pub={{ reserva.id_publicacion }}&id_reserva={{ reserva.id }}">Cancelar</a> |
-                                    <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">Ver</a>
-                                </td>
+                                <th>#</th>
+                                <th>Alojamiento</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                                <th>Estado</th>
+                                <th>Nota</th>
+                                <th>Acción</th>
                             </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {% for reserva in reservas %}
+                                <tr>
+                                    <td>{{ reserva.id_reserva | e }}</td>
+                                    <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.nombre_alojamiento }}</a></td>
+                                    <td>{{ reserva.desde | e }}</td>
+                                    <td>{{ reserva.hasta | e }}</td>
+                                    <td>{{ reserva.estado_reserva | e }}</td>
+                                    <td>{{ reserva.nota | e }}</td>
+                                    <td>
+                                        <a class="reservas-accion" href="/mis_publicaciones/reserva/aceptar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Aceptar</a> |
+                                        <a class="reservas-accion" href="/mis_publicaciones/reserva/cancelar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Cancelar</a> |
+                                        <a class="reservas-accion" href="/mis_publicaciones/reserva/rechazar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Rechazar</a> |
+                                        <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_pub }}">Ver</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
+            </section>
+    
+            <section class="reservas-container">
+                <details class="detalles-reservas">
+                    <summary class="reservas-titulo">Lista de Reservas Solicitadas</summary>
+                    <p>Solicitudes de reserva que tu realizaste.</p>
+                    <table class="reservas-tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Id Alojamiento</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                                <th>Estado</th>
+                                <th>Nota</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reserva in reservasSolicitadasPorUserSesion %}
+                                {% if reserva.id_usuario_reserva == idUserSesion %}
+                                    <tr>
+                                        <td>{{ reserva.id_publicacion | e }}</td>
+                                        <td><a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">{{ reserva.id_publicacion }}</a></td>
+                                        <td>{{ reserva.fecha_inicio | e }}</td>
+                                        <td>{{ reserva.fecha_fin | e }}</td>
+                                        <td>{{ reserva.estado_reserva | e }}</td>
+                                        <td>{{ reserva.notas | e }}</td>
+                                        <td>
+                                            <a class="reservas-accion" href="/mis_publicaciones/reserva/cancelar?id_pub={{ reserva.id_publicacion }}&id_reserva={{ reserva.id }}">Cancelar</a> |
+                                            <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">Ver</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
+            </section>
         </section>
+
     </main>
 
     {% include 'parts/footer.view.html' %}

@@ -6,15 +6,12 @@ use Paw\Core\Controller;
 use Paw\App\Utils\Uploader;
 use Paw\App\Utils\Utils;
 use Paw\App\Models\PublicacionCollection;
+use Paw\App\Models\ReservasCollection;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Mailer;
 use Paw\App\Models\Publicacion;
 use Paw\App\Models\Imagen;
 use Paw\App\Models\ImagenCollection;
-use Paw\Core\Exceptions\PostVacioException;
-
-use Paw\Core\Exceptions\FallaEnCargaDeImagenesException;
-use Paw\Core\Exceptions\PublicacionFailException;
 
 use PDOException;
 use Throwable;
@@ -29,33 +26,24 @@ class PublicacionController extends Controller
     public $utils;
     public $mailer;
     public $menuAndSession;
+    public ReservasCollection $ReservasCollection;
 
     public function __construct()
     {
         global $config;
+        parent::__construct();
 
         $this->uploader = new Uploader;
         $this->verificador = new Verificador;
         $this->utils = new  Utils();
         $this->mailer = new Mailer();
-
-        parent::__construct();
+        $this->ReservasCollection = new ReservasCollection();
+        $this->ReservasCollection->setQueryBuilder($this->qb);
 
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
-    }
-
-    public function index()
-    {
-        $datos = ['titulo' => "PAWPERTIES | HOME"];
-
-        view('home.view', array_merge(
-            $this->menuAndSession,
-            $datos,
-            $this->model->traerTipos()
-        ));
     }
 
     public function list()
@@ -70,11 +58,14 @@ class PublicacionController extends Controller
             // Verificación de tipos
             if (is_array($tipo)) {
                 $tipo = $tipo ?? [];
+                $this->logger->debug("tipo ES ARRAY", [$tipo]);
             } elseif (is_string($tipo)) {
-                if (empty($tipo)) {
+                if (empty($tipo) || $tipo == "" || is_null($tipo)) {
                     $tipo = [];
+                    $this->logger->debug("tipo ES string y es null o empty ", [$tipo]);
                 } else {
                     $tipo = [$tipo];
+                    $this->logger->debug("tipo ES string pero tiene valor", [$tipo]);
                 }
             } else {
                 $tipo = [];
@@ -87,6 +78,7 @@ class PublicacionController extends Controller
             $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
             // Preparar datos para la vista
@@ -140,7 +132,7 @@ class PublicacionController extends Controller
         }
 
         // Aca se obtienen las reservas usando el modelo
-        $reservas = $this->model->getReservas($id_publicacion);
+        $reservas = $this->ReservasCollection->getReservas($id_publicacion);
 
         // se codifican las reservas a JSON para su uso en JavaScript
         $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
@@ -151,8 +143,11 @@ class PublicacionController extends Controller
             'idUserSesion' => $this->usuario->getUserId(),
             'periodos_json' => $periodos_json,
             'reservas' => $reservas,
-            'titulo' => "PAWPERTIES | PROPIEDAD"
+            'titulo' => "PAWPERTIES | PROPIEDAD",
+            'resultadoReserva' => $this->request->getResultadoGuardardo('resultadoReserva')
         ];
+
+        $this->request->setResultadoEnSesion('resultadoReserva', null);
 
         // Mostrar la vista de detalles de la publicación
         view('publicacion.details.view', array_merge(
@@ -182,25 +177,7 @@ class PublicacionController extends Controller
             $id_publicacion
         ]);
 
-        /**
-         * aca lo que se busca es usar las plantilla para redactar un
-         * correo con estilos en linea guardarlos en el body y enviarlo
-         * aqui evitamos mezclar html con php y combinamos 
-         * el poder del motor de plantillas con php
-         *  */
-        $body = view('correoAlDuenioDeLaPublicacion', [
-            'emailInteresado' => $emailInteresado,
-            'telefonoDelInteresado' => $telefonoDelInteresado,
-            'textoConsultaDelInteresado' => $textoConsultaDelInteresado,
-            'fullUrl' => $fullUrl
-        ], true);
-
-        // Aca enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send(
-            $emailDuenio,
-            "Consulta sobre publicacion: ",
-            $body
-        );
+        $resultadoSend = $this->mailer->enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio);
 
         if ($resultadoSend) {
             $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
@@ -241,12 +218,15 @@ class PublicacionController extends Controller
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
+            $mayorPrecio = $this->model->getPublicacionMayorPrecio($idUser);
+
             // Datos para pasar a la vista
             $datos = [
                 'idUser' => $idUser,
                 'zona' => $zona,
                 'tipos' => $tipo,
                 'precio' => $precio,
+                'mayorPrecio' => $mayorPrecio,
                 'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
@@ -479,52 +459,6 @@ class PublicacionController extends Controller
 
             view('errors/internal_error.view', [
                 'error_message' => "Error en el proceso: " . $e->getMessage()
-            ]);
-        }
-    }
-
-
-    public function verReservas()
-    {
-
-        try {
-            // Asumiendo que tienes una forma de obtener el id del usuario
-            if (!$this->usuario->isUserLoggedIn()) {
-                $resultado = [
-                    "success" => false,
-                    "message" => "Debe iniciar sesión para ver las reservas."
-                ];
-                $this->logger->info("Intento de ver pedido sin sesión iniciada.");
-
-                $this->usuario->setRedirectTo($this->request->uri(true));
-
-                redirect('iniciar-sesion');
-            }
-
-
-            // Obtener las reservas pendientes y confirmadas
-            $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-
-            $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
-
-            $datos = [
-                'reservas' => $reservas,
-                'reservasSolicitadasPorUserSesion' => $reservasSolicitadasPorUserSesion,
-                'titulo' => "PAWPERTIES | RESERVAS"
-            ];
-
-            $this->logger->info("RESERVAS : ", [$reservas]);
-
-            view('publicaciones.reservas.view', array_merge(
-                $datos,
-                ['idUserSesion' => $this->usuario->getUserId()],
-                $this->menuAndSession
-            ));
-        } catch (Exception $e) {
-            $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
-
-            view('errors/internal_error.view', [
-                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
             ]);
         }
     }

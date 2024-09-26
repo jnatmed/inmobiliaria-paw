@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Paw\App\Models;
 
@@ -8,40 +8,59 @@ use Exception;
 use PDOException;
 
 
-class ReservasCollection extends Model 
+class ReservasCollection extends Model
 {
-    
-    public function obtenerReservasPendientesYConfirmadas($id_usuario) {
+    public $table = 'reservas_publicacion';
+
+    public function getReservas($id_publicacion)
+    {
+        // Utilizamos el QueryBuilder para obtener las reservas
+        $result = $this->queryBuilder->select('reservas_publicacion', ['id_publicacion' => $id_publicacion]);
+
+        // Formatear los resultados según el formato requerido
+        $reservas = [];
+        foreach ($result as $row) {
+            $fecha_inicio = (new \DateTime($row['fecha_inicio']))->format('d/m/Y');
+            $fecha_fin = (new \DateTime($row['fecha_fin']))->format('d/m/Y');
+            $reservas[] = [$fecha_inicio, $fecha_fin];
+        }
+
+        return $reservas;
+    }
+
+    public function obtenerReservasPendientesYConfirmadas($id_usuario)
+    {
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
 
-    public function getSolicitudesDeReserva($id_usuario) {
-        try{
+    public function getSolicitudesDeReserva($id_usuario)
+    {
+        try {
             $params = ['id_usuario_reserva' => $id_usuario];
             $result = $this->queryBuilder->select('reservas_publicacion', $params);
 
             if (!empty($result)) {
                 return $result;
             } else {
-                return []; 
+                return [];
             }
         } catch (Exception $e) {
 
             return false;
         }
-    }    
+    }
 
     public function actualizarEstadoReserva($idReserva, $accion)
     {
         try {
 
-            if($accion === 'aceptar'){
+            if ($accion === 'aceptar') {
                 $nuevoEstado = 'confirmada';
             }
-            if($accion === 'cancelar'){
+            if ($accion === 'cancelar') {
                 $nuevoEstado = 'cancelada';
             }
-            if($accion === 'rechazar'){
+            if ($accion === 'rechazar') {
                 $nuevoEstado = 'rechazada';
             }
 
@@ -53,32 +72,44 @@ class ReservasCollection extends Model
         } catch (Exception $e) {
             throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
         }
-    }    
+    }
 
-    public function reservarAlojamiento($id_publicacion, $id_usuario_reserva, $desde, $hasta, $precio_x_noche, $estado_reserva, $notas)
+    public function reservarAlojamiento(Reserva $reserva)
     {
-        $data = [
-            'id_publicacion' => $id_publicacion,
-            'id_usuario_reserva' => $id_usuario_reserva,
-            'fecha_inicio' => $desde,
-            'fecha_fin' => $hasta,
-            'precio_por_noche' => $precio_x_noche,
-            'estado_reserva' => $estado_reserva,
-            'notas' => $notas
-        ];
-
         try {
-            $result = $this->queryBuilder->insert('reservas_publicacion', $data);
-            if ($result[1]) {
+            $data = $reserva->getAll();
+            $this->logger->info("data : ", [$data]);
+
+            // Obtener los datos relevantes de la reserva
+            $idPublicacion = $reserva->getIdPublicacion();
+            $fechaInicio = $reserva->getFechaInicio();
+            $fechaFin = $reserva->getFechaFin();
+
+            // Utilizar el nuevo método para buscar conflictos de reservas
+            $reservasEnConflicto = $this->queryBuilder->buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin);
+
+            if ($reservasEnConflicto > 0) {
+                // Si hay reservas que se solapan, lanzar un error
+                return [
+                    "exito" => false,
+                    "mensaje" => "El intervalo de fechas ya está reservado para esta publicación."
+                ];
+            }
+
+            list($idReservaGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
+
+            $this->logger->info("Info Reserva (Method - create): " , [$idReservaGenerado, $resultado]);
+
+            if ($idReservaGenerado) {
                 return [
                     "exito" => true,
-                    "mensaje" => "Reserva realizada con éxito.",
-                    "nro_reserva" =>$result[0] // es el id_generado
+                    "mensaje" => "Reserva realizada con éxito",
+                    "nro_reserva" => $idReservaGenerado // es el id_generado
                 ];
             } else {
                 return [
                     "exito" => false,
-                    "mensaje" => "No se pudo realizar la reserva."
+                    "mensaje" => "No se pudo realizar la reserva, error: " . $resultado 
                 ];
             }
         } catch (PDOException $e) {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 namespace Paw\App\Models;
@@ -11,7 +11,7 @@ use PDOException;
 use Paw\App\Utils\Verificador;
 use Paw\App\Models\Publicacion;
 
-class PublicacionCollection extends Model 
+class PublicacionCollection extends Model
 {
     public $table = 'publicaciones';
 
@@ -21,11 +21,11 @@ class PublicacionCollection extends Model
     ];
 
     public static $fields_requires = [
-        'nombre',     
+        'nombre',
     ];
 
-    public function __construct($datosPublicacion=[])
-    {   
+    public function __construct($datosPublicacion = [])
+    {
         if (!is_null($datosPublicacion) && is_array($datosPublicacion)) {
             try {
                 $verificador = new Verificador();
@@ -33,22 +33,20 @@ class PublicacionCollection extends Model
                     throw new Exception("Faltan datos para crear el objeto Publicacion ");
                 }
                 foreach ($datosPublicacion as $key => $value) {
-                    if(!key_exists($key, $this->fields)){
+                    if (!key_exists($key, $this->fields)) {
                         throw new Exception("No existe le key: $key");
                     }
                     $this->fields[$key] = $value;
                 }
-    
             } catch (Exception $e) {
                 echo "Error al crear el objeto Publicacion: " . $e->getMessage();
             }
         } else {
             echo "Error: Los datos de la publicacion no son válidos.";
         }
-
     }
 
-    
+
     public function getOne($id_publicacion)
     {
         try {
@@ -59,12 +57,12 @@ class PublicacionCollection extends Model
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
                 $id_publicacion // El identificador de la publicación que queremos obtener
             );
-    
+
             // Verificar si se encontraron resultados
             if (empty($result)) {
                 return null; // O lanzar una excepción personalizada si prefieres
             }
-    
+
             // Estructurar el resultado
             $publicacion = [];
             foreach ($result as $row) {
@@ -82,7 +80,7 @@ class PublicacionCollection extends Model
                     ];
                 }
             }
-    
+
             return $publicacion;
         } catch (PDOException $e) {
             global $log;
@@ -100,7 +98,7 @@ class PublicacionCollection extends Model
 
             list($idPublicacionGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
 
-            $this->logger->info("Info Publicacion (Method - create): " , [$idPublicacionGenerado, $resultado]);
+            $this->logger->info("Info Publicacion (Method - create): ", [$idPublicacionGenerado, $resultado]);
 
             return [$idPublicacionGenerado, $resultado];
         } catch (PDOException $e) {
@@ -110,18 +108,19 @@ class PublicacionCollection extends Model
         }
     }
 
-    public function getImg($idPublicacion, $idImagen) {
-        
+    public function getImg($idPublicacion, $idImagen)
+    {
+
 
         try {
             $pathImagen = $this->queryBuilder->getImagePath('imagenes_publicacion', $idPublicacion, $idImagen);
-            
+
             $this->logger->debug("pathImagen : ", [$pathImagen]);
             // Si no se encuentra la imagen, devuelve false
             if (!$pathImagen) {
                 return false;
             }
-    
+
             // Devuelve el path de la imagen encontrada
             return $pathImagen;
         } catch (Exception $e) {
@@ -148,7 +147,7 @@ class PublicacionCollection extends Model
             // Puedes registrar el error utilizando un logger
             return false;
         }
-    }    
+    }
 
     public function getAllWithImages()
     {
@@ -159,7 +158,7 @@ class PublicacionCollection extends Model
                 'id', // Nombre de la clave primaria en la tabla principal
                 'id_publicacion' // Nombre de la clave foránea que relaciona las dos tablas
             );
-    
+
             // Estructurar los resultados
             $publicaciones = [];
             foreach ($result as $row) {
@@ -179,7 +178,7 @@ class PublicacionCollection extends Model
                     ];
                 }
             }
-    
+
             return array_values($publicaciones);
         } catch (PDOException $e) {
             global $log;
@@ -207,14 +206,13 @@ class PublicacionCollection extends Model
                 }
             }
             return array_values($publicaciones);
-
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());
-            return false; 
+            return false;
         }
     }
-    
+
     public function getAllbyUser($idUser)
     {
         try {
@@ -225,7 +223,7 @@ class PublicacionCollection extends Model
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
                 $idUser // ID del usuario
             );
-    
+
             // Estructurar los resultados
             $publicaciones = [];
             foreach ($result as $row) {
@@ -245,22 +243,22 @@ class PublicacionCollection extends Model
                     ];
                 }
             }
-    
+
             return array_values($publicaciones);
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());
             return false; // O lanzar una excepción personalizada si prefieres
         }
-    } 
+    }
 
-    public function getPublicacionMayorPrecio()
+    public function getPublicacionMayorPrecio($id_user = null)
     {
-        return $this->queryBuilder->selectMaxPrice('publicaciones');
+        return $this->queryBuilder->selectMaxPrice('publicaciones', $id_user);
     }
 
 
-    public function getPublicacionesTotales() 
+    public function getPublicacionesTotales()
     {
         return $this->queryBuilder->countRows('publicaciones');
     }
@@ -271,21 +269,25 @@ class PublicacionCollection extends Model
 
 
             $tipos_alojamiento = $this->queryBuilder->traerTipos();
-     
+
             // Extraer solo los IDs usando array_map
-            $allowedTipos = array_map(function($tipo) {
+            $allowedTipos = array_map(function ($tipo) {
                 return $tipo['id'];
-            }, $tipos_alojamiento);            
+            }, $tipos_alojamiento);
 
             $result = $this->queryBuilder->getFilterWithImages(
                 $this->table, // Nombre de la tabla principal (publicaciones)
                 'imagenes_publicacion', // Nombre de la tabla de imágenes
                 'id', // Nombre de la clave primaria en la tabla principal
                 'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
-                $zona, $tipo, $allowedTipos, $precio, $instalaciones, // Filtros
+                $zona,
+                $tipo,
+                $allowedTipos,
+                $precio,
+                $instalaciones, // Filtros
                 $idUser
             );
-    
+
             // Estructurar los resultados
             $publicaciones = [];
             if (!empty($result)) {
@@ -312,8 +314,6 @@ class PublicacionCollection extends Model
             } else {
                 return [];
             }
-    
-            
         } catch (PDOException $e) {
             global $log;
             $log->error("Error al obtener las publicaciones: " . $e->getMessage());
@@ -321,7 +321,7 @@ class PublicacionCollection extends Model
         }
     }
 
-    
+
 
     public function insertMany($table, $imagenesCollection)
     {
@@ -330,15 +330,15 @@ class PublicacionCollection extends Model
 
             global $log;
 
-            $imagenesData = array_map(function($imagen){
+            $imagenesData = array_map(function ($imagen) {
                 return $imagen->load();
             }, $imagenesCollection);
 
-            $log->info("data en capa model: ",$imagenesData);
+            $log->info("data en capa model: ", $imagenesData);
 
             // Realizar la inserción utilizando el método de queryBuilder
             $result = $this->queryBuilder->insertMany($table, $imagenesData);
-    
+
             // Retornar el resultado de la operación de inserción
             return $result;
         } catch (PDOException $e) {
@@ -346,22 +346,6 @@ class PublicacionCollection extends Model
             $this->logger->error("Error al insertar múltiples imágenes: " . $e->getMessage());
             return false;
         }
-    }    
-
-    public function getReservas($id_publicacion)
-    {
-        // Utilizamos el QueryBuilder para obtener las reservas
-        $result = $this->queryBuilder->select('reservas_publicacion', ['id_publicacion' => $id_publicacion]);
-
-        // Formatear los resultados según el formato requerido
-        $reservas = [];
-        foreach ($result as $row) {
-            $fecha_inicio = (new \DateTime($row['fecha_inicio']))->format('d/m/Y');
-            $fecha_fin = (new \DateTime($row['fecha_fin']))->format('d/m/Y');
-            $reservas[] = [$fecha_inicio, $fecha_fin];
-        }
-
-        return $reservas;
     }
 
     public function traerPublicaciones()
@@ -397,11 +381,11 @@ class PublicacionCollection extends Model
     {
         try {
 
-            if($accion === 'aceptar'){
+            if ($accion === 'aceptar') {
                 $nuevoEstado = 2;
             }
 
-            if($accion === 'rechazar'){
+            if ($accion === 'rechazar') {
                 $nuevoEstado = 3;
             }
 
@@ -412,23 +396,22 @@ class PublicacionCollection extends Model
             );
         } catch (Exception $e) {
             throw new Exception("Error al actualizar la publicacion: " . $e->getMessage());
-        }        
+        }
     }
- 
-    
+
+
     public function traerTipos()
     {
-        try{
+        try {
             return $result = [
                 'exito' => true,
                 'tipos_alojamiento' => $this->queryBuilder->traerTipos()
             ];
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return $result = [
                 'exito' => false,
                 'message' => "Error al traer Tipos: " . $e->getMessage()
             ];
         }
     }
-
 }

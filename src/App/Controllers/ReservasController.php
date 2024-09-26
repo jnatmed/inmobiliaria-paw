@@ -7,7 +7,10 @@ use Paw\App\Utils\Uploader;
 use Paw\App\Models\Mailer;
 
 use Paw\Core\Controller;
+use Paw\App\Models\Reserva;
 use Paw\App\Models\ReservasCollection;
+use Paw\App\Models\PublicacionCollection;
+use Paw\Core\Database\QueryBuilder;
 use Exception;
 
 class ReservasController extends Controller
@@ -22,20 +25,20 @@ class ReservasController extends Controller
 
     public function __construct()
     {
+        global $log, $connection;
         parent::__construct();
 
         $this->uploader = new Uploader;
         $this->usuario = new UsuarioController();
         $this->verificador = new Verificador;
         $this->mailer = new Mailer();
-
+        $this->mailer->setLogger($log);
+        $this->publicationCollection = new PublicacionCollection();
+        $this->publicationCollection->setQueryBuilder(new QueryBuilder($connection, $log));
         $this->usuario = new UsuarioController();
         $this->menu = $this->usuario->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = $this->usuario->menuAndSession;
-
-        $this->publicationCollection = new PublicacionCollection();
-
     }
 
     public function verReservas()
@@ -58,7 +61,7 @@ class ReservasController extends Controller
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
-            
+
             $reservasSolicitadasPorUserSesion = $this->model->getSolicitudesDeReserva($this->usuario->getUserId());
 
             $datos = [
@@ -139,7 +142,6 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento()
     {
-
         // Verificar si hay sesión iniciada
         if (!$this->usuario->isUserLoggedIn()) {
             $resultado = [
@@ -149,7 +151,7 @@ class ReservasController extends Controller
             $this->logger->info("Intento de ver pedido sin sesión iniciada.");
 
             $this->usuario->setRedirectTo($this->request->uri(true));
-            
+
             redirect('iniciar-sesion');
         }
 
@@ -157,65 +159,47 @@ class ReservasController extends Controller
         $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));
         $desde = htmlspecialchars($this->request->get('input-desde'));
         $hasta = htmlspecialchars($this->request->get('input-hasta'));
-        $precio_x_noche = 800;
+        $precio_x_noche = 0;
         $estado_reserva = 'pendiente';
         $notas = 'ninguna';
 
-        $alojamientoReservado = $this->model->reservarAlojamiento(
-            $id_publicacion,
-            $this->usuario->getUserId(),
-            $desde,
-            $hasta,
-            $precio_x_noche,
-            $estado_reserva,
-            $notas
-        );
+        $reserva = [
+            'id_publicacion' => $id_publicacion,
+            'id_usuario_reserva' => $this->usuario->getUserId(),
+            'fecha_inicio' => $desde,
+            'fecha_fin' => $hasta,
+            'precio_por_noche' => $precio_x_noche,
+            'estado_reserva' => $estado_reserva,
+        ];
 
-        // Datos dinámicos
-        $nroReserva = $alojamientoReservado['nro_reserva'];
-        $userName = $this->usuario->getUserName();
-        $emailAddress = $this->usuario->getEmailAddress();
+        $ObjReserva = new Reserva($reserva, $this->logger);
+        $resultadoObjReserva = $ObjReserva->getEstadoConstructor();
 
-        // Mensaje de correo con estilos en línea
-        $body = view('solicitudDeReservaAlojamiento', [
-            'nroReserva' => $nroReserva,
-            'userName' => $userName,
-            'desde' => $desde,
-            'hasta' => $hasta,
-            'destino' => 'interesado'
-        ], true);
+        if ($resultadoObjReserva['exito']) {
+            $alojamientoReservado = $this->model->reservarAlojamiento($ObjReserva);
 
-        // Mensaje de correo con estilos en línea
-        $bodyPropietario = view('solicitudDeReservaAlojamiento', [
-            'nroReserva' => $nroReserva,
-            'userName' => $userName,
-            'desde' => $desde,
-            'hasta' => $hasta,
-            'destino' => 'propietario'
-        ], true);
+            if ($alojamientoReservado['exito']) {
+                $this->mailer->comunicarAlInteresadoYalPropietario(
+                    $ObjReserva,
+                    $alojamientoReservado['nro_reserva'],
+                    $this->usuario->getUsername(),
+                    $this->usuario->getEmailAddress(),
+                    $correo_duenio
+                );
+            }
 
-        // aca deberia enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->mailer->send($emailAddress,
-                            "Solicitud de Reserva Enviada para el usuario: $userName ",
-                            $body,
-                            );
-                      
-        if($resultadoSend){
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario] );
-        }else{
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario] );
-        }                
-        // Limpia la lista de destinatarios antes de enviar el siguiente correo
-        $this->mailer->clearAddresses();
+            $this->request->setResultadoEnSesion("resultadoReserva", $alojamientoReservado);
 
-        $resultadoSendPropietario = $this->mailer->send($correo_duenio,
-                            "Solicitud de Reserva del usuario: $userName ",
-                            $body,
-                            );
-        
+            $this->logger->debug("info resultadoReserva: ", [$alojamientoReservado]);
 
-        $this->logger->info("resultado reservar alojamiento: ", [$alojamientoReservado]);                                                            
+            redirect('publicacion/ver?id_pub=' . $id_publicacion);
+        } else {
 
-        redirect('publicacion/ver?id_pub='.$id_publicacion);
+            $this->request->setResultadoEnSesion("resultadoReserva", $resultadoObjReserva);
+
+            $this->logger->debug("info resultadoReserva: ", [$resultadoObjReserva]);
+
+            redirect('publicacion/ver?id_pub=' . $id_publicacion);
+        }
     }
 }
