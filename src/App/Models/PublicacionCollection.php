@@ -456,5 +456,45 @@ class PublicacionCollection extends Model
             ];
         }
     }
+
+    public function getComentarios($id_publicacion)
+    {
+        try {
+            // Verificar que se haya proporcionado el ID de la publicación
+            if (!$id_publicacion) {
+                throw new Exception("ID de publicación no proporcionado.");
+            }
+    
+            // Definir los parámetros de la consulta
+            $params = [
+                'id_publicacion' => $id_publicacion
+            ];
+    
+            // Ejecutar la consulta usando el QueryBuilder
+            $comentarios = $this->queryBuilder->select('calificaciones', $params);
+    
+            // Verificar si se encontraron comentarios
+            if ($comentarios) {
+                return [
+                    'exito' => true,
+                    'comentarios' => $comentarios
+                ];
+            } else {
+                return [
+                    'exito' => false,
+                    'mensaje' => 'No se encontraron comentarios para esta publicación.'
+                ];
+            }
+        } catch (Exception $e) {
+            // Manejar cualquier error
+            $this->logger->error('Error al obtener comentarios: ' . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    
     
 }
