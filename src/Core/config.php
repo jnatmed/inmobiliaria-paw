@@ -27,6 +27,7 @@ class Config
         $this->configs['MAIL_NAME']= getenv('MAIL_NAME');
         $this->configs['MAIL_PASS']= getenv('MAIL_PASS');
         $this->configs['MAIL_HOST']= getenv('MAIL_HOST');
+        $this->configs['COMPANY_MAIL']= getenv('COMPANY_MAIL');
     }
 
     public function joinPaths()

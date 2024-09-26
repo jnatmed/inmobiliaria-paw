@@ -35,12 +35,16 @@ class Mailer extends Model
         $this->mail->clearAddresses();
     }
 
-    public function send($to, $subject, $body, $altBody = '')
+    public function send($to, $subject, $body, $altBody = '', $from = null, $name = null)
     {
         global $config;
         try {
             // Configuración del correo electrónico
-            $this->mail->setFrom($config->get('MAIL_FROM'), $config->get('MAIL_NAME'));
+            if (!isset($from) || !isset($name)) {
+                $this->mail->setFrom($config->get('MAIL_FROM'), $config->get('MAIL_NAME'));
+            } else {
+                $this->mail->setFrom($from, $name);
+            }
             $this->mail->addAddress($to);
 
             // Contenido del correo electrónico
@@ -52,7 +56,7 @@ class Mailer extends Model
             $this->mail->send();
             return true;
         } catch (Exception $e) {
-
+            $this->logger->info("Error al enviar Mailer", [$e]);
             return false;
         }
     }
@@ -104,26 +108,54 @@ class Mailer extends Model
         ], true);
 
         // aca deberia enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->send($emailAddress,
-                            "Solicitud de Reserva Enviada para el usuario: $userName ",
-                            $body,
-                            );
-                      
-        if($resultadoSend){
+        $resultadoSend = $this->send(
+            $emailAddress,
+            "Solicitud de Reserva Enviada para el usuario: $userName ",
+            $body,
+        );
+
+        if ($resultadoSend) {
             $this->logger->info("Correo enviado con exito ");
-        }else{
+        } else {
             $this->logger->info("ERROR al enviar el Correo ");
-        }                
+        }
         // Limpia la lista de destinatarios antes de enviar el siguiente correo
         $this->clearAddresses();
 
-        $resultadoSendPropietario = $this->send($correo_duenio,
-                            "Solicitud de Reserva del usuario: $userName ",
-                            $body,
-                            );
-        
+        $resultadoSendPropietario = $this->send(
+            $correo_duenio,
+            "Solicitud de Reserva del usuario: $userName ",
+            $bodyPropietario,
+        );
 
-        $this->logger->info("resultado reservar alojamiento: ", [$resultadoSendPropietario]);                                   
+
+        $this->logger->info("resultado reservar alojamiento: ", [$resultadoSendPropietario]);
     }
 
+
+    // Este es el formulario de contacto del home
+    public function enviarFormContacto($nombre, $apellido, $telefono, $emailOrigen, $consulta)
+    {
+        global $config;
+
+        $body = view('correoContacto', [
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'telefono' => $telefono,
+            'emailOrigen' => $emailOrigen,
+            'consulta' => $consulta
+        ], true);
+
+        $emailEmpresa = $config->get('COMPANY_MAIL');
+
+        $resultadoSend = $this->send(
+            $emailEmpresa,
+            "Consulta",
+            $body,
+            from: $emailOrigen,
+            name: ($nombre . " " . $apellido)
+        );
+
+        return $resultadoSend;
+    }
 }

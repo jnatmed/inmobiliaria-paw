@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    {% include 'parts/head.view.html' %}    
+    {% include 'parts/head.view.html' %}
     <script src="/assets/js/home.js"></script>
 </head>
 
@@ -18,19 +18,20 @@
                 Encontra el lugar perfecto para tu proximo destino
             </h2>
             {% if usuario.isUserLoggedIn %}
-                <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
+            <a href="/publicacion/new" class="enlace-publicar">Quiero Publicar Lugar</a>
             {% else %}
-                <a href="/publicacion/new" class="enlace-publicar-disable">Quiero Publicar Lugar</a>
+            <a href="/publicacion/new" class="enlace-publicar-disable">Quiero Publicar Lugar</a>
             {% endif %}
 
             <form method="GET" action="/publicaciones/list" class="form-busqueda-propiedad">
                 <label for="zona" class="label-form">Zona</label>
-                <input type="text" class="input-form-busqueda" placeholder="Buscar por palabra clave..." id="zona" name="zona">
+                <input type="text" class="input-form-busqueda" placeholder="Buscar por palabra clave..." id="zona"
+                    name="zona">
                 <label for="tipo" class="label-form">Tipo</label>
                 <select type="text" class="input-form-busqueda" id="tipo" placeholder="Tipo" name="tipo">
                     <option selected value="">Tipo Alojamiento...</option>
                     {% for tipo in tipos_alojamiento %}
-                        <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
+                    <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" value="Buscar" class="btn-form-busqueda">
@@ -46,10 +47,14 @@
                     ¡Bienvenido/a!
                 </h3>
                 <p class="descripcion-pawperties">
-                    Descubre destinos inspiradores, reserva tu refugio ideal y prepárate para desconectar del mundo y recargar energías en lugares que exudan frescura y buena vibra. ¡Tu escapada perfecta comienza aquí!
+                    Descubre destinos inspiradores, reserva tu refugio ideal y prepárate para desconectar del mundo y
+                    recargar energías en lugares que exudan frescura y buena vibra. ¡Tu escapada perfecta comienza aquí!
                 </p>
                 <p class="descripcion-pawperties">
-                    Si eres propietario de un alojamiento único y deseas compartirlo con viajeros en busca de experiencias auténticas, ¡estás en el lugar adecuado! En nuestra plataforma, ofrecemos la oportunidad de dar a conocer tu espacio y conectar con una audiencia global que valora la originalidad y la hospitalidad.
+                    Si eres propietario de un alojamiento único y deseas compartirlo con viajeros en busca de
+                    experiencias auténticas, ¡estás en el lugar adecuado! En nuestra plataforma, ofrecemos la
+                    oportunidad de dar a conocer tu espacio y conectar con una audiencia global que valora la
+                    originalidad y la hospitalidad.
                 </p>
             </article>
         </section>
@@ -59,7 +64,10 @@
                 Alojamientos Destacados
             </h2>
             <p class="p-descripcion-alojamientos">
-                Descubre los alojamientos mejor calificados y altamente recomendados por nuestro sitio por su excepcional servicio. Estas opciones han sido elogiadas por su calidad, atención al detalle y la satisfacción de sus huéspedes. Sumérgete en una experiencia inolvidable con nuestros alojamientos destacados, donde la excelencia es una garantía.
+                Descubre los alojamientos mejor calificados y altamente recomendados por nuestro sitio por su
+                excepcional servicio. Estas opciones han sido elogiadas por su calidad, atención al detalle y la
+                satisfacción de sus huéspedes. Sumérgete en una experiencia inolvidable con nuestros alojamientos
+                destacados, donde la excelencia es una garantía.
             </p>
         </section>
 
@@ -74,28 +82,39 @@
                     <fieldset class="form-group">
                         <label for="input-nombre">Nombre:</label>
                         <label for="input-apellido">Apellido:</label>
-                        <input type="text" id="input-nombre" name="nombre">
-                        <input type="text" id="input-apellido" name="apellido">
+                        <input type="text" id="input-nombre" name="nombre" required>
+                        <input type="text" id="input-apellido" name="apellido" required>
                     </fieldset>
 
                     <label for="input-telefono">Teléfono:</label>
-                    <input type="tel" id="input-telefono" name="telefono">
+                    <input type="tel" id="input-telefono" name="telefono" required>
 
                     <label for="input-email">Email:</label>
-                    <input type="email" id="input-email" name="email">
+                    {% if usuario.isUserLoggedIn %}
+                        <input type="email" id="input-email" name="email" value="{{ usuario.email_usuario }}" required readonly>
+                    {% else %}
+                        <input type="email" id="input-email" name="email" required>
+                    {% endif %}
 
                     <label for="input-descripcion">Descripción:</label>
-                    <textarea type="text" id="input-descripcion" name="descripcion" rows="10"></textarea>
+                    <textarea type="text" id="input-descripcion" name="descripcion" rows="10" required></textarea>
                 </section>
                 <section class="form_info">
-                    <h3>Ubicacion</h3>
+                    <h3>Ubicación</h3>
                     <p>[Domicilio]</p>
-                    <p>Lujan - Buenos Aires</p>
-                    <h3>telefono</h3>
-                    <p>[Numero de telefono]</p>
+                    <p>Luján - Buenos Aires - Argentina</p>
+                    <h3>Teléfono</h3>
+                    <p>[Número de teléfono]</p>
                     <input type="submit" id="input-submit-enviar" value="Enviar">
                 </section>
             </form>
+            {% if resultadoContacto is not null %}
+                {% if resultadoContacto %}
+                    <p class="alerta alerta-exito">Consulta enviada con éxito!</p>
+                {% else %}
+                    <p class="alerta alerta-error">Ha ocurrido un error al enviar la consulta. Inténtelo nuevamente</p>
+                {% endif %}
+            {% endif %}
         </section>
     </main>
 

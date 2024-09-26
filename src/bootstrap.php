@@ -141,6 +141,7 @@ $router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
 
 $router->get('/mapa', 'PageController@mostrarMapa');
+$router->post('/enviar-msj-contactanos', 'PageController@contacto');
 
 
 /**

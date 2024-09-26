@@ -175,14 +175,17 @@ class ReservasController extends Controller
         $ObjReserva = new Reserva($reserva, $this->logger);
         $resultadoObjReserva = $ObjReserva->getEstadoConstructor();
 
-        if($resultadoObjReserva['exito']){
+        if ($resultadoObjReserva['exito']) {
             $alojamientoReservado = $this->model->reservarAlojamiento($ObjReserva);
 
-            if($alojamientoReservado['exito']){
+            if ($alojamientoReservado['exito']) {
                 $this->mailer->comunicarAlInteresadoYalPropietario(
-                     $ObjReserva, 
-                     $alojamientoReservado['nro_reserva'], $this->usuario->getUsername(), 
-                     $this->usuario->getEmailAddress(), $correo_duenio);               
+                    $ObjReserva,
+                    $alojamientoReservado['nro_reserva'],
+                    $this->usuario->getUsername(),
+                    $this->usuario->getEmailAddress(),
+                    $correo_duenio
+                );
             }
 
             $this->request->setResultadoEnSesion("resultadoReserva", $alojamientoReservado);
@@ -190,14 +193,13 @@ class ReservasController extends Controller
             $this->logger->debug("info resultadoReserva: ", [$alojamientoReservado]);
 
             redirect('publicacion/ver?id_pub=' . $id_publicacion);
+        } else {
 
-        }else{
-
-            $this->request->setResultadoEnSesion("resultadoReserva", $resultadoObjReserva); 
+            $this->request->setResultadoEnSesion("resultadoReserva", $resultadoObjReserva);
 
             $this->logger->debug("info resultadoReserva: ", [$resultadoObjReserva]);
 
-            redirect('publicacion/ver?id_pub=' . $id_publicacion);        }                         
-
+            redirect('publicacion/ver?id_pub=' . $id_publicacion);
+        }
     }
 }
