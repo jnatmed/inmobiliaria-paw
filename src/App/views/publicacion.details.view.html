@@ -4,6 +4,7 @@
 <head>
     {% include 'parts/head.view.html' %}
     <link rel="stylesheet" href="/assets/css/reservas-calendario.css">
+    <link rel="stylesheet" href="/assets/css/comentarios.css">
     <script src="/assets/js/reservas-calendario.js"></script>
     <script src="/assets/js/publicacion.details.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -155,6 +156,42 @@
                 <div id="mapid"></div>
             </article>
         </section>
+        
+        <!-- 5) sector de comentarios -->
+        {% if isUserLoggedIn %}
+            <form class="rating-form" action="/publicacion/guardarComentario" method="POST">
+                <fieldset class="rating">
+                    <legend>Califica esta propiedad:</legend>
+                    <input type="radio" id="star5" name="rating" value="5" />
+                    <label for="star5" title="5 estrellas">&#9733;</label>
+            
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4" title="4 estrellas">&#9733;</label>
+            
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3" title="3 estrellas">&#9733;</label>
+            
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2" title="2 estrellas">&#9733;</label>
+            
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1" title="1 estrella">&#9733;</label>
+                </fieldset>
+
+                <input type="text" name="id_pub" value="{{ publicacion.id }}" hidden>
+                <input type="text" name="id_user" value="{{ id_usuario }}" hidden>
+            
+                <fieldset class="comment-section">
+                    <label for="comment">Deja un comentario:</label>
+                    <textarea id="comment" name="comment" rows="4" cols="50" placeholder="Escribe tu opinión aquí..." required></textarea>
+                </fieldset>
+            
+                <button type="submit" class="submit-button">Enviar calificación</button>
+            </form>
+            
+        {% endif %}        
+        
+
         
     </main>
 

@@ -507,4 +507,20 @@ class PublicacionController extends Controller
         header('Content-Type: application/json');
         echo json_encode(array_values($publicaciones));
     }
+
+    public function guardarComentario()
+    {
+        $id_publicacion = $this->request->get('id_pub');
+        $comentario = [
+            'id_publicacion' => $id_publicacion,
+            'id_user' => $this->request->get('id_user'),
+            'rating' => $this->request->get('rating'),
+            'comment' => $this->request->get('comment')
+        ];
+        
+        $resultado = $this->model->insertarComentario($comentario);
+
+        redirect('publicacion/ver?id_pub=' . $id_publicacion);
+    }
+
 }

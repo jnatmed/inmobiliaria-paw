@@ -414,4 +414,47 @@ class PublicacionCollection extends Model
             ];
         }
     }
+
+    public function insertarComentario($comentario)
+    {
+        try {
+            // Asegurarse de que todos los campos requeridos estén presentes en el arreglo
+            if (!isset($comentario['id_publicacion']) || !isset($comentario['id_user']) || 
+                !isset($comentario['rating']) || !isset($comentario['comment'])) {
+                throw new Exception("Datos incompletos para insertar comentario.");
+            }
+    
+            // Definir los datos que se insertarán
+            $data = [
+                'id_publicacion' => $comentario['id_publicacion'],
+                'id_usuario' => $comentario['id_user'],  // asegúrate de que el campo coincida con el esquema de la tabla
+                'calificacion' => $comentario['rating'],
+                'comentario' => $comentario['comment']
+            ];
+    
+            // Insertar los datos en la tabla 'calificaciones' usando el QueryBuilder
+            list($idGenerado, $resultado) = $this->queryBuilder->insert('calificaciones', $data);
+    
+            // Validar si la inserción fue exitosa
+            if ($resultado) {
+                return [
+                    'exito' => true,
+                    'mensaje' => 'Comentario guardado exitosamente.'
+                ];
+            } else {
+                return [
+                    'exito' => false,
+                    'mensaje' => 'Error al guardar el comentario.'
+                ];
+            }
+        } catch (Exception $e) {
+            // Manejar cualquier error
+            $this->logger->error('Error al insertar comentario: ' . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
+    
 }

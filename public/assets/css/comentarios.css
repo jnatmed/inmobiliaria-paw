@@ -1,0 +1,70 @@
+.rating-form {
+    width: 90%;
+    margin: auto; /* Centra el formulario en la página */
+    padding: 20px; /* Espacio interno */
+    background-color: #f9f9f9; /* Color de fondo */
+    border: 1px solid #ddd; /* Borde del formulario */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra del formulario */
+}
+
+.rating {
+    display: inline-flex;
+    direction: rtl; /* Para que las estrellas funcionen de derecha a izquierda */
+    margin-bottom: 15px;
+}
+
+.rating input {
+    display: none; /* Ocultar los inputs de radio */
+}
+
+.rating label {
+    font-size: 30px; /* Tamaño de las estrellas */
+    color: lightgray; /* Color por defecto de las estrellas */
+    cursor: pointer; /* Mostrar que son clicables */
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+    color: gold; /* Color dorado para la calificación */
+}
+
+.comment-section {
+    margin-bottom: 15px;
+}
+
+.comment-section label {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.comment-section textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 14px;
+    resize: vertical; /* Permite cambiar el tamaño vertical del textarea */
+    transition: border-color 0.3s; /* Transición suave para el cambio de color */
+}
+
+.comment-section textarea:focus {
+    border-color: #66afe9; /* Color del borde al enfocar */
+    outline: none; /* Sin contorno al enfocar */
+}
+
+.submit-button {
+    padding: 10px 20px; /* Espaciado del botón */
+    background-color: #5cb85c; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.submit-button:hover {
+    background-color: #4cae4c; /* Color de fondo al pasar el ratón */
+}
