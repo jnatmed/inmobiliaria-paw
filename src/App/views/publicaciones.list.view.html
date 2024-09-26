@@ -5,6 +5,63 @@
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/publicaciones-list.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% if publicaciones is defined and publicaciones|length > 0 %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {% for publicacion in publicaciones %}
+            {
+                "@type": "LodgingBusiness",
+                "name": {{ publicacion.nombre_alojamiento|json_encode|raw }},
+                "description": {{ publicacion.descripcion_alojamiento|json_encode|raw }},
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": {{ publicacion.direccion|json_encode|raw }},
+                    "addressLocality": "Buenos Aires",
+                    "addressCountry": "AR"
+                },
+                "priceRange": "${{ publicacion.precio|number_format(0, ',', '.') }} por noche",
+                
+                {% if publicacion.telefono is defined and publicacion.telefono is not empty %}
+                "telephone": {{ publicacion.telefono|json_encode|raw }},
+                {% endif %}
+    
+                {% if publicacion.email is defined and publicacion.email is not empty %}
+                "email": {{ publicacion.email|json_encode|raw }},
+                {% endif %}
+    
+                "amenityFeature": [
+                    {% set amenities = [] %}
+                    {% if publicacion.cochera %}
+                        {% set amenities = amenities|merge([{ "@type": "LocationFeatureSpecification", "name": "Cochera" }]) %}
+                    {% endif %}
+                    {% if publicacion.pileta %}
+                        {% set amenities = amenities|merge([{ "@type": "LocationFeatureSpecification", "name": "Pileta" }]) %}
+                    {% endif %}
+                    {% if publicacion.aire_acondicionado %}
+                        {% set amenities = amenities|merge([{ "@type": "LocationFeatureSpecification", "name": "Aire Acondicionado" }]) %}
+                    {% endif %}
+                    {% if publicacion.wifi %}
+                        {% set amenities = amenities|merge([{ "@type": "LocationFeatureSpecification", "name": "Wi-Fi" }]) %}
+                    {% endif %}
+                    {{ amenities|json_encode|raw }}
+                ],
+                "url": "/publicacion/ver?id_pub={{ publicacion.id }}",
+    
+                "image": [
+                    {% for imagen in publicacion.imagenes %}
+                        "{{ '/publicacion?id_pub=' ~ publicacion.id ~ '&id_img=' ~ imagen.id_imagen }}"{{ loop.last ? '' : ',' }}
+                    {% endfor %}
+                ]
+            }{{ not loop.last ? ',' : '' }}
+            {% endfor %}
+        ]
+    }
+    </script>
+    {% endif %}
+    
+
 </head>
 
 <body class="home">
