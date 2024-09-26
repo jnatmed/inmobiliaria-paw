@@ -38,7 +38,10 @@ class UsuarioController extends Controller
             'urlPublicacion' => $this->request->fullUrl(),
             'id_usuario' => $this->getUserId(),
             'tipo_usuario' => $this->getUserType(),
-            'email' => $this->isUserLoggedIn() ? $this->getEmailAddress() : null
+            'email' => $this->getEmailAddress(),
+            'nombre' => $this->getUserName(),
+            'apellido' =>$this->getApellido(),
+            'telefono' =>$this->getTelefono()
         ];
     }
 
@@ -101,17 +104,27 @@ class UsuarioController extends Controller
 
     public function isUserLoggedIn()
     {
-        return isset($_SESSION['email']);
+        return isset($_SESSION['email']) ?? null;
     }
 
     public function getUserName()
     {
-        return $_SESSION['nombre'];
+        return $_SESSION['nombre'] ?? null;
+    }
+
+    public function getApellido()
+    {
+        return $_SESSION['apellido'] ?? null;
+    }
+
+    public function getTelefono()
+    {
+        return $_SESSION['telefono'] ?? null;
     }
 
     public function getEmailAddress()
     {
-        return $_SESSION['email'];
+        return $_SESSION['email'] ?? null;
     }
 
     public function getUserId()
@@ -150,6 +163,8 @@ class UsuarioController extends Controller
                 $_SESSION['email'] = $usuarioAutenticado['email'];
                 $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario_id'];
                 $_SESSION['nombre'] = $usuarioAutenticado['nombre'];
+                $_SESSION['apellido'] = $usuarioAutenticado['apellido'];
+                $_SESSION['telefono'] = $usuarioAutenticado['telefono'];
                 $this->tipoUsuario = $_SESSION['tipo'];
                 $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
                 // Redirigir al usuario a la página principal

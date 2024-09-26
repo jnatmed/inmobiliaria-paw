@@ -83,12 +83,23 @@
                     <fieldset class="form-group">
                         <label for="input-nombre">Nombre:</label>
                         <label for="input-apellido">Apellido:</label>
-                        <input type="text" id="input-nombre" name="nombre" required>
-                        <input type="text" id="input-apellido" name="apellido" required>
+                        {% if isUserLoggedIn %}
+                            <input type="text" id="input-nombre" name="nombre" value="{{ nombre }}" required readonly>
+                            <input type="text" id="input-apellido" name="apellido" value="{{ apellido }}" required readonly>
+                        {% else %}
+                            <input type="text" id="input-nombre" name="nombre" required>
+                            <input type="text" id="input-apellido" name="apellido" required>
+                        {% endif %}
+                        
                     </fieldset>
 
                     <label for="input-telefono">Teléfono:</label>
-                    <input type="tel" id="input-telefono" name="telefono" required>
+                    {% if isUserLoggedIn %}
+                        <input type="tel" id="input-telefono" name="telefono" value="{{ telefono }}" required readonly>
+                    {% else %}
+                        <input type="tel" id="input-telefono" name="telefono" required>
+                    {% endif %}
+                    
 
                     <label for="input-email">Email:</label>
                     {% if isUserLoggedIn %}
