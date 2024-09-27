@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	Promise.all([promiseFiltro, promiseSliderPrecio, promiseCarrouselPausa])
 		.then(function () {
-			new SliderPrecio();
-			new filtrarPublicaciones();
 			document.querySelectorAll('.publicacion-item').forEach(publicacion => {
 				new CarrouselPausa(publicacion);
 			});
+			new SliderPrecio();
+			new filtrarPublicaciones();
 		})
 		.catch(function (error) {
 			console.error("Error loading one or more scripts:", error);

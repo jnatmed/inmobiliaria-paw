@@ -267,8 +267,11 @@ textarea {
 
 
 .destacado-item.show {
+    width: 100%;
     display: block; 
     opacity: 1; 
+    object-fit: cover;
+    transition: opacity 0.5s ease;
 }
 
 .destacado-img {

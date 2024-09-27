@@ -18,6 +18,9 @@ class filtrarPublicaciones {
                     .then(response => response.text())
                     .then(html => {
                         document.querySelector('.publicaciones-list').innerHTML = html;
+                        document.querySelectorAll('.publicacion-item').forEach(publicacion => {
+                            new CarrouselPausa(publicacion);
+                        });
                     })
                     .catch(error => {
                         console.error('Error en la solicitud AJAX', error);

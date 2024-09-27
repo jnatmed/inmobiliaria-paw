@@ -10,26 +10,17 @@ class CarrouselPausa {
     }
 
     init() {
-        // Mostrar la primera imagen
         this.showImage(this.index);
-
-        // Agregar evento al botón de reproducción/pausa
         this.playButton.addEventListener('click', () => this.togglePlayPause());
-
-        // Asegurarse de que el carrusel esté detenido al iniciar
         this.stopCarousel();
-
-        // Establecer el icono del botón de inicio en "play"
-        this.playButton.innerHTML = '&#9658;'; // Icono de "play"
+        this.playButton.innerHTML = '&#9658;';
     }
 
     showImage(index) {
-        // Ocultar todas las imágenes
         this.items.forEach(item => {
-            item.classList.remove('show'); // Quitar clase de animación
+            item.classList.remove('show');
         });
-        
-        // Mostrar la imagen actual con la clase de animación
+
         this.items[index].classList.add('show');
     }
 
@@ -56,6 +47,6 @@ class CarrouselPausa {
             this.startCarousel();
             this.playButton.innerHTML = '&#10074;&#10074;'; // Icono de "pausa"
         }
-        this.isPlaying = !this.isPlaying; // Cambiar estado
+        this.isPlaying = !this.isPlaying;
     }
 }
