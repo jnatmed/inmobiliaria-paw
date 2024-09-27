@@ -9,7 +9,7 @@ footer {
     height: 18rem;
     background-color:var(--color-negro-boton);
     flex-direction: column;
-
+    z-index: 2000;
 }
 
 .footer_secciones {
@@ -20,6 +20,7 @@ footer {
     align-items: center;
     padding-bottom: 15px;
     padding-top: 15px;
+    z-index: 2001;
 }
 
 .footer_redes {
@@ -29,6 +30,7 @@ footer {
     width: 100%;
     height: 20%;
     background-color: #2e2e2e;
+    z-index: 5000;
 }
 
 .footer_secciones nav {

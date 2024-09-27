@@ -33,5 +33,7 @@ class filtrarPublicaciones {
                 window.location.href = '/publicaciones/list';
             });
         });
+
+       
     }
 }

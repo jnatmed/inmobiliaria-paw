@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 			new SliderPrecio();
 			new filtrarPublicaciones();
+			document.getElementById("loader-publicaciones").style.display = "none";
 		})
 		.catch(function (error) {
 			console.error("Error loading one or more scripts:", error);
