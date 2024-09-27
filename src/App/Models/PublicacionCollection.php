@@ -108,13 +108,18 @@ class PublicacionCollection extends Model
         }
     }
 
-    public function getImg($idPublicacion, $idImagen)
+    public function getImg($idPublicacion, $idImagen = null)
     {
-
-
         try {
-            $pathImagen = $this->queryBuilder->getImagePath('imagenes_publicacion', $idPublicacion, $idImagen);
-
+            // Si $idImagen es null, obtener la primera imagen asociada a la publicación
+            $this->logger->debug("valor de idImagen : ", [$idImagen]);
+            if ($idImagen === null || $idImagen === '') {
+                $pathImagen = $this->queryBuilder->getFirstImagePath('imagenes_publicacion', $idPublicacion);
+                $this->logger->debug("sin id_img : ", [$idPublicacion]);
+            } else {
+                $pathImagen = $this->queryBuilder->getImagePath('imagenes_publicacion', $idPublicacion, $idImagen);
+                $this->logger->debug("con id_img : ", [$idPublicacion, $idImagen]);
+            }
             $this->logger->debug("pathImagen : ", [$pathImagen]);
             // Si no se encuentra la imagen, devuelve false
             if (!$pathImagen) {
@@ -490,6 +495,9 @@ class PublicacionCollection extends Model
         }
     }
     
-    
+    public function traerDestacados()
+    {
+        return $this->queryBuilder->traerDestacados();
+    }
     
 }

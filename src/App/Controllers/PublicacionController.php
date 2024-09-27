@@ -268,6 +268,7 @@ class PublicacionController extends Controller
                 // exit;
             }
 
+            $this->logger->info("VALOR DE imagenPublicacion", [$imagenPublicacion]);
 
             $mime_type = Imagen::getMimeType($imagenPublicacion['path_imagen']);
 

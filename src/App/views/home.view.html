@@ -72,6 +72,25 @@
             </p>
         </section>
 
+        <!-- imagenes del publicaciones destacadas-->
+        <section class="container-imagenes-publicacion">
+            <h2 class="titulo-imagenes-detail">Publicaciones Destacadas</h2>
+
+            <article class="slider">
+                {% for publicacion in publicaciones_destacadas %}
+                <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
+                    <img class="carousel-img" 
+                    src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" 
+                </a>
+                {% endfor %}
+            </article>
+            <ul class="puntos">
+                {% for i in range(0, publicaciones_destacadas | length - 1) %}
+                <li class="punto {% if i == 0 %}activo{% endif %}"></li>
+                {% endfor %}
+            </ul>
+        </section>
+
         <section class="seccion-contactanos">
             <section class="titulo-contactanos">
                 <h2>Contactanos</h2>

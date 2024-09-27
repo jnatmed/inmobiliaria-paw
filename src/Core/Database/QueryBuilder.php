@@ -289,6 +289,37 @@ class QueryBuilder
         }
     }
 
+    public function getFirstImagePath($tableName, $idPublicacion)
+    {
+        $sql = "
+            SELECT path_imagen, nombre_imagen
+            FROM $tableName
+            WHERE id_publicacion = :id_publicacion
+            ORDER BY id_publicacion ASC
+            LIMIT 1
+        ";
+    
+        $stmt = $this->pdo->prepare($sql);
+
+        $this->logger->info("stmt: ", [$stmt]);
+
+        $stmt->bindValue(':id_publicacion', $idPublicacion, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Registrar el éxito utilizando el logger
+
+        if ($result) {
+            $this->logger->info("path_imagen recuperada: ", [$result]);
+            return $result;
+        } else {
+            // Si no se encuentra la imagen, devuelve false
+            $this->logger->info("No se encontró ninguna imagen con los IDs proporcionados.", [$result]);
+            return false;
+        }
+}
+        
+
     public function getAllWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey)
     {
         try {
@@ -646,4 +677,24 @@ class QueryBuilder
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }    
+
+    public function traerDestacados()
+    {
+        $sql = "
+            SELECT c1.*
+            FROM calificaciones c1
+            JOIN (
+                SELECT id_publicacion, MAX(calificacion) AS max_calificacion
+                FROM calificaciones
+                GROUP BY id_publicacion
+            ) c2 ON c1.id_publicacion = c2.id_publicacion AND c1.calificacion = c2.max_calificacion
+            ORDER BY c1.calificacion DESC
+            LIMIT 5
+        ";
+    
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

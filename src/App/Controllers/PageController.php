@@ -46,9 +46,13 @@ class PageController extends Controller
 
     public function index()
     {
+
+        $destacados = $this->publicacionCollection->traerDestacados();
+
         $datos = [
               'titulo' => "PAWPERTIES | HOME",
-              'resultadoContacto' => $this->request->getResultadoGuardardo('resultadoContacto')
+              'resultadoContacto' => $this->request->getResultadoGuardardo('resultadoContacto'),
+              'publicaciones_destacadas' => $destacados
             ];
             
         $this->request->setResultadoEnSesion('resultadoContacto', null);
