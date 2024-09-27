@@ -19,24 +19,24 @@ class PublicacionesSeeder extends AbstractSeed
 
         $usuariosData = [
             [
-                'nombre' => 'Usuario 1',
-                'apellido' => 'Apellido 1',
+                'nombre' => 'Lucas',
+                'apellido' => 'Rueda',
                 'contrasenia' => password_hash('password1', PASSWORD_DEFAULT),
                 'email' => 'usuario1@example.com',
                 'telefono' => '541134387233',
                 'tipo_usuario_id' => 1
             ],
             [
-                'nombre' => 'Usuario 2',
-                'apellido' => 'Apellido 2',
+                'nombre' => 'Juan',
+                'apellido' => 'Natello',
                 'contrasenia' => password_hash('password2', PASSWORD_DEFAULT),
                 'email' => 'usuario2@example.com',
                 'telefono' => '541134387233',
                 'tipo_usuario_id' => 2
             ],
             [
-                'nombre' => 'Usuario 3',
-                'apellido' => 'Apellido 3',
+                'nombre' => 'Matias',
+                'apellido' => 'Cosentino',
                 'contrasenia' => password_hash('password3', PASSWORD_DEFAULT),
                 'email' => 'usuario3@example.com',
                 'telefono' => '541134387233',
@@ -51,7 +51,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.603722,
                 'longitud' => -58.381592,
-                'precio' => 7500,
+                'precio' => 75,
                 'provincia' => 'Buenos Aires',
                 'codigo_postal' => '1001',
                 'direccion' => 'Av. Libertador 2345',
@@ -72,7 +72,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -32.889458,
                 'longitud' => -68.845839,
-                'precio' => 5800,
+                'precio' => 50,
                 'provincia' => 'Mendoza',
                 'codigo_postal' => '5500',
                 'direccion' => 'Calle San Martín 1500',
@@ -93,7 +93,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -31.420083,
                 'longitud' => -64.188776,
-                'precio' => 4100,
+                'precio' => 41,
                 'provincia' => 'Córdoba',
                 'codigo_postal' => '5000',
                 'direccion' => 'Bv. Chacabuco 899',
@@ -114,7 +114,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.921452,
                 'longitud' => -57.954464,
-                'precio' => 2900,
+                'precio' => 29,
                 'provincia' => 'La Plata',
                 'codigo_postal' => '1900',
                 'direccion' => 'Calle 50 N°123',
@@ -135,7 +135,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -38.939200,
                 'longitud' => -62.232500,
-                'precio' => 6700,
+                'precio' => 67,
                 'provincia' => 'Bahía Blanca',
                 'codigo_postal' => '8000',
                 'direccion' => 'Av. Colón 1234',
@@ -156,7 +156,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.522300,
                 'longitud' => -58.700900,
-                'precio' => 5100,
+                'precio' => 51,
                 'provincia' => 'Tigre',
                 'codigo_postal' => '1648',
                 'direccion' => 'Rio Luján 4321',
@@ -177,7 +177,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -26.827067,
                 'longitud' => -65.203662,
-                'precio' => 4200,
+                'precio' => 42,
                 'provincia' => 'Tucumán',
                 'codigo_postal' => '4000',
                 'direccion' => 'Av. Sarmiento 567',
@@ -198,7 +198,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -32.950742,
                 'longitud' => -60.647345,
-                'precio' => 3300,
+                'precio' => 33,
                 'provincia' => 'Santa Fe',
                 'codigo_postal' => '2000',
                 'direccion' => 'Bv. Oroño 1001',
@@ -219,7 +219,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -27.468930,
                 'longitud' => -58.834096,
-                'precio' => 2800,
+                'precio' => 28,
                 'provincia' => 'Corrientes',
                 'codigo_postal' => '3400',
                 'direccion' => 'Calle Junín 789',
@@ -240,7 +240,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -24.786450,
                 'longitud' => -65.410292,
-                'precio' => 4700,
+                'precio' => 47,
                 'provincia' => 'Salta',
                 'codigo_postal' => '4400',
                 'direccion' => 'Calle Balcarce 245',
@@ -261,7 +261,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -36.623204,
                 'longitud' => -64.290047,
-                'precio' => 3700,
+                'precio' => 90,
                 'provincia' => 'La Pampa',
                 'codigo_postal' => '6300',
                 'direccion' => 'Av. San Martín 234',
@@ -282,7 +282,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -34.920292,
                 'longitud' => -57.953565,
-                'precio' => 6800,
+                'precio' => 68,
                 'provincia' => 'Buenos Aires',
                 'codigo_postal' => '1900',
                 'direccion' => 'Calle 51 N°1020',
@@ -303,7 +303,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -31.741319,
                 'longitud' => -60.511547,
-                'precio' => 6200,
+                'precio' => 62,
                 'provincia' => 'Entre Ríos',
                 'codigo_postal' => '3100',
                 'direccion' => 'Ruta 12, Km 450',
@@ -324,7 +324,7 @@ class PublicacionesSeeder extends AbstractSeed
             [
                 'latitud' => -39.031778,
                 'longitud' => -67.591215,
-                'precio' => 4900,
+                'precio' => 49,
                 'provincia' => 'Río Negro',
                 'codigo_postal' => '8332',
                 'direccion' => 'Camino a Valle Grande 455',
