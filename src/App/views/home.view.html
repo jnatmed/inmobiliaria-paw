@@ -73,6 +73,7 @@
         </section>
 
         <!-- imagenes del publicaciones destacadas-->
+
         <section class="container-imagenes-publicacion">
             <h2 class="titulo-imagenes-detail">Publicaciones Destacadas</h2>
 
@@ -80,7 +81,7 @@
                 {% for publicacion in publicaciones_destacadas %}
                 <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
                     <img class="carousel-img" 
-                    src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" 
+                    src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" >
                 </a>
                 {% endfor %}
             </article>
