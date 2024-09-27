@@ -252,8 +252,8 @@ class PublicacionController extends Controller
 
     public function getImgPublicacion()
     {
-        $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
-        $idImagen = htmlspecialchars($this->request->get('id_img'));
+        $idPublicacion = $this->request->get('id_pub');
+        $idImagen = $this->request->get('id_img');
 
         try {
 

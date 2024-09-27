@@ -5,6 +5,7 @@
     {% include 'parts/head.view.html' %}
     <script src="/assets/js/home.js"></script>
     <link rel="stylesheet" href="/assets/css/reservas-calendario.css">
+    <link rel="stylesheet" href="/assets/css/carrousel_home.css">
 </head>
 
 <body class="home">
@@ -73,24 +74,38 @@
         </section>
 
         <!-- imagenes del publicaciones destacadas-->
+        {% if publicaciones_destacadas is not empty %}
+        <!-- Mostrar publicaciones destacadas -->
+            <section class="home-carousel-container">
+                <h2 class="titulo-imagenes-detail">Publicaciones Destacadas</h2>
+                
+                <article class="home-carousel-slider">
+                    <div class="home-carousel-wrapper">
+                        {% for publicacion in publicaciones_destacadas %}
+                        <figure class="home-carousel-figure">
+                            <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
+                                <picture>
+                                    <source srcset="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}&format=webp" type="image/webp">
+                                    <img class="home-carousel-image carousel-img" 
+                                        src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" 
+                                </picture>
+                            </a>
+                            <figcaption>{{ publicacion.comentario|capitalize }}</figcaption>
+                        </figure>
+                        {% endfor %}
+                    </div>
+                    
+                    <ul class="puntos">
+                        {% for i in range(0, publicaciones_destacadas | length -1 ) %}
+                        <li class="punto {% if i == 0 %}activo{% endif %}"></li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            </section>
+        
 
-        <section class="container-imagenes-publicacion">
-            <h2 class="titulo-imagenes-detail">Publicaciones Destacadas</h2>
-
-            <article class="slider">
-                {% for publicacion in publicaciones_destacadas %}
-                <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
-                    <img class="carousel-img" 
-                    src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" >
-                </a>
-                {% endfor %}
-            </article>
-            <ul class="puntos">
-                {% for i in range(0, publicaciones_destacadas | length - 1) %}
-                <li class="punto {% if i == 0 %}activo{% endif %}"></li>
-                {% endfor %}
-            </ul>
-        </section>
+        {% endif %}
+        
 
         <section class="seccion-contactanos">
             <section class="titulo-contactanos">

@@ -1,0 +1,67 @@
+.home-carousel-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; 
+}
+
+.home-carousel-slider {
+    display: flex;
+    flex-direction: column; /* El título está encima del slider */
+    overflow: hidden; 
+    align-items: center;
+    width: 60%; /* Asegúrate de que este ancho sea el que deseas */
+    max-width: 921.578px;
+}
+
+.home-carousel-wrapper {
+    display: flex; /* Alinea las imágenes horizontalmente */
+    transition: transform 0.5s ease; /* Transición suave al mover las imágenes */
+}
+
+.home-carousel-image {
+    width: 100%; /* Cada imagen ocupa el 100% del ancho del contenedor */
+    height: 90%; 
+    object-fit: cover; /* Cubre el contenedor sin distorsionar la imagen */
+}
+
+.home-carousel-figure {
+    position: relative; /* Permite posicionar el epígrafe relativo a la imagen */
+}
+
+figcaption {
+    text-align: center; /* Centra el epígrafe */
+    margin-top: 10px; /* Espacio entre la imagen y el epígrafe */
+    font-size: 1.5rem;
+}
+
+.puntos {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.punto {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: gray;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.punto.activo {
+    background: black; /* Color del punto activo */
+}
+    
+
+.titulo-imagenes-detail {
+    text-align: center;
+    letter-spacing: 1rem;
+    text-transform: uppercase;
+    padding: 1rem;
+    margin: 2rem;
+    border-bottom: 30px solid var(--color-amarillo);
+    font-size: 24px;
+}
