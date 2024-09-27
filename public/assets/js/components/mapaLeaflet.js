@@ -123,7 +123,7 @@ class MapaLeaflet {
                     <a href="${url_pub}" target="_blank">
                         <img src="${url_imagen}" alt="${nombre}" style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;" />
                     </a>
-                    <h1 style="font-size: 1.5rem; font-weight: bold;">$${precio} / noche</h1>
+                    <h1 style="font-size: 1.5rem; font-weight: bold;">USD ${precio} / noche</h1>
                     <h2 style="font-size: 1.25rem;">${nombre}</h2>
                     <h3 style="font-size: 1rem;">${direccion}</h3>
                 </div>
