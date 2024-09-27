@@ -465,13 +465,8 @@ class PublicacionCollection extends Model
                 throw new Exception("ID de publicación no proporcionado.");
             }
     
-            // Definir los parámetros de la consulta
-            $params = [
-                'id_publicacion' => $id_publicacion
-            ];
-    
             // Ejecutar la consulta usando el QueryBuilder
-            $comentarios = $this->queryBuilder->select('calificaciones', $params);
+            $comentarios = $this->queryBuilder->traerComentariosYUsuarios($id_publicacion);
     
             // Verificar si se encontraron comentarios
             if ($comentarios) {

@@ -197,8 +197,9 @@
         
                 {% for comentario in comentarios.comentarios %}
                     <section class="comentario">
+                        <p>Fecha: {{ comentario.created_at|date('d/m/Y, H:i') }}</p>
                         <article class="comentario-header">
-                            <span class="comentario-usuario">Usuario ID: {{ comentario.id_usuario }}</span>
+                            <span class="comentario-usuario">{{ comentario.nombre_usuario }}:</span>
                             <article class="comentario-rating">
                                 {# Mostrar estrellas según la calificación #}
                                 {% for i in 1..5 %}

@@ -631,4 +631,19 @@ class QueryBuilder
 
         return $stmt->fetchColumn(); // Retorna el número de reservas en conflicto
     }    
+
+    public function traerComentariosYUsuarios($idPublicacion)
+    {
+        $sql = "
+            SELECT calificaciones.*, usuarios.nombre AS nombre_usuario, usuarios.email AS email_usuario
+            FROM calificaciones
+            JOIN usuarios ON calificaciones.id_usuario = usuarios.id
+            WHERE calificaciones.id_publicacion = :idPublicacion
+        ";
+    
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindParam(':idPublicacion', $idPublicacion, PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }    
 }
