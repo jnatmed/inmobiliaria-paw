@@ -40,7 +40,7 @@ class PublicacionesSeeder extends AbstractSeed
                 'contrasenia' => password_hash('password3', PASSWORD_DEFAULT),
                 'email' => 'usuario3@example.com',
                 'telefono' => '541134387233',
-                'tipo_usuario_id' => 3
+                'tipo_usuario_id' => 1
             ],
         ];
 

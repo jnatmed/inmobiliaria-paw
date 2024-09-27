@@ -48,13 +48,13 @@ class UsuarioController extends Controller
     {
         global $log;
         if (isset($_SESSION['email'])) {
-            // Si el usuario es de tipo "cliente"
+            // Si el usuario es de tipo "inquilino"
             $log->info("hay sesion: ", [$_SESSION]);
             if ($this->getUserType() === 1) {
 
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
-                    '/publicaciones/gestionar'
+                    '/publicaciones/gestionar',
                 ]);
             }
             // Si el usuario es de tipo "empleado"            

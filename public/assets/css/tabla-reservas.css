@@ -134,9 +134,6 @@
     transition: color 0.3s ease;
 }
 
-.reservas-titulo:hover {
-    color: white;
-}
 
 /* Estilos para la tabla */
 .reservas-tabla {
