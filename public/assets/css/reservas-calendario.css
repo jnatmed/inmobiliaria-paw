@@ -83,7 +83,7 @@ table.greenTable tfoot .links a {
 .calendarContainer {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
 }
 
@@ -94,6 +94,7 @@ table.greenTable tfoot .links a {
     height: 80%;
     flex-direction: column;
     margin: 1rem;
+    align-items: flex-end;
 }
 
 .img-destacada{
@@ -106,6 +107,7 @@ table.greenTable tfoot .links a {
     display: flex;
     flex-direction: column;
     padding: 4px;
+    width: 50%;
 }
 
 .btn-form{

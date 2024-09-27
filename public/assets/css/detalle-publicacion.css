@@ -376,6 +376,18 @@ estilo para los detalles de la propiedad
       grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
       align-items: flex-end;
     }
+
+    .container-reserva.sin-formulario {
+        grid-template-columns: 1fr; /* Una columna cuando no hay formulario */
+    }
+
+    .calendarContainer {
+        align-items: center;
+    }
+
+    #calendarTable {
+        width: 50%;
+    }
   }
 
 

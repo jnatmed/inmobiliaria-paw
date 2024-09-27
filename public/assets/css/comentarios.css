@@ -71,8 +71,9 @@
 
 
 .comentarios-container {
-    max-width: 90%;
-    margin: 0 auto;
+    width: 93%;
+    margin: auto;
+    padding: 20px;
 }
 
 .comentario {

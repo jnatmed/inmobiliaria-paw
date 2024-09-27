@@ -10,7 +10,7 @@ class CarrouselHome {
 
         this.inicializarCarrousel();
         this.selectImage();
-        // this.startAutomaticSlider(); // Llama al método para el desplazamiento automático
+        this.startAutomaticSlider(); // Llama al método para el desplazamiento automático
     }
 
     inicializarCarrousel() { 
@@ -43,7 +43,7 @@ class CarrouselHome {
         slider.style.transform = `translateX(-${desplazamientoInicial}%)`;
         this.moverSlider(this.imagenActual); // Mueve el slider a la posición inicial
     }
-    
+
     moverSlider(posicion) {
         let slider = this._seccionCarrousel.querySelector('.home-carousel-wrapper');
 
