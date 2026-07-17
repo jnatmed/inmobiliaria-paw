@@ -43,6 +43,6 @@
         "psr-4": {
             "Paw\\": "src/"
         },
-        "files": ["src/core/helpers.php"]
+        "files": ["src/Core/helpers.php"]
     }
 }
