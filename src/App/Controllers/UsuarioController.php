@@ -21,7 +21,12 @@ class UsuarioController extends Controller
 
     public function __construct()
     {
+        global $log;
+
         parent::__construct();
+
+        $this->setLogger($log);
+
         $this->mailer = new Mailer();
 
         if (session_status() == PHP_SESSION_NONE) {
@@ -108,6 +113,8 @@ class UsuarioController extends Controller
             $this->setRedirectTo($this->request->uri(true));
 
             redirect('iniciar-sesion');
+
+            exit;
         }        
     }
 
@@ -180,12 +187,23 @@ class UsuarioController extends Controller
 
                 $this->logger->info("sesion: ", [$_SESSION]);
 
-                // Redirigir al usuario a la URL de referencia o a la página principal si no hay ninguna
-                if ($referer && $this->request->isUrlSafe($referer)) { // Verificar que la URL es segura
+                $redirectTo = $this->getRedirectTo();
+
+                if (!empty($redirectTo)){
+
+                    $this->setRedirectTo(null, true);
+                    redirect($redirectTo);
+
+                } elseif ($referer && $this->request->isUrlSafe($referer)) {
+
                     redirect($referer);
-                } else {
-                    redirect(''); // Redirigir a la página principal
+                
+                    } else {
+
+                    redirect('');
+
                 }
+
             } else {
                 $this->tipoUsuario = 'anonimo';
                 $resultado = [

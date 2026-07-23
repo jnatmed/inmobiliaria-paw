@@ -50,24 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       button.classList.remove("falling");
                       updateButtonState(button, "default");
 
-                      // Realizar la solicitud GET al finalizar la animación
-                      fetch("/cerrar-sesion")
-                        .then(response => {
-                          if (!response.ok) {
-                            throw new Error('Network response was not ok ' + response.statusText);
-                          }
-                          return response.json();
-                        })
-                        .then(data => {
-                          console.log("Request successful", data);
-                          // Recargar la página
-                          window.location.reload();
-                        })
-                        .catch(error => {
-                          console.error("There was a problem with the fetch operation:", error);
-                          // Recargar la página incluso si hay un error
-                          window.location.reload();
-                        });                          
+                      window.location.href = "/cerrar-sesion";                       
 
 
                     }, 50);
