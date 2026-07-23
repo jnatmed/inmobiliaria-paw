@@ -32,6 +32,7 @@ function view($name, $data = [], $returnView = false)
 
 }
 
+
 /**
  * Redirect to a new page.
  *
