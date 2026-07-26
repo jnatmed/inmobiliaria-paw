@@ -28,10 +28,21 @@ class Request
         return $_POST[$key] ?? $_GET[$key] ?? null;
     }
 
+    public function post($key, $default = null)
+    {
+        return array_key_exists($key, $_POST) ? $_POST[$key] : $default;
+    }
+
+    public function query($key, $default = null)
+    {
+        return array_key_exists($key, $_GET) ? $_GET[$key] : $default;
+    }
+
     public function all()
     {
         return $_POST;
     }
+
     public function getSegments($numeroSegmento)
     {
         // Obtener la URL sin los parámetros de consulta

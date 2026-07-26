@@ -11,8 +11,7 @@ function view($name, $data = [], $returnView = false)
     global $log, $twig;
 
     try {
-        // depurando data
-        $log->debug('Datos antes de renderizar', ['data' => $data]);
+        
         /**
          * si returnView esta en verdadero 
          * se devuelve la vista en vez de mostrarla
@@ -27,7 +26,10 @@ function view($name, $data = [], $returnView = false)
         }
     } catch (\Twig\Error\Error $e) {
         $log->error('Error al renderizar la plantilla', ['exception' => $e]);
-        echo 'Error al renderizar la plantilla: ' . $e->getMessage();
+
+        http_response_code(500);
+
+        echo 'Ocurrio un erro al mostrar la pagina';
     }
 
 }
@@ -40,7 +42,10 @@ function view($name, $data = [], $returnView = false)
  */
 function redirect($path)
 {
+    $path = ltrim($path, '/');
+
     header("Location: /{$path}");
+    exit;
 }
 
 

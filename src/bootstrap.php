@@ -81,9 +81,9 @@ try {
 
 try {
     $twig = new \Twig\Environment($loader, [
-        'cache' => $cacheDir, 
-        // 'cache' => false, 
+        'cache' => $cacheDir,
         'debug' => true,
+        'autoescape' => 'html'
     ]);
 } catch (Exception $e) {
     $log->error('Error al crear el entorno de Twig: ' . $e->getMessage());

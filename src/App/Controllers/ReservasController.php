@@ -121,55 +121,142 @@ class ReservasController extends Controller
         }
     }
 
-    public function reservarAlojamiento()
-    {
+    public function reservarAlojamiento(){
+
         $this->usuario->chequearSesion();
 
-        $correo_duenio = htmlspecialchars($this->request->get('email_duenio'));
-        $id_publicacion = htmlspecialchars($this->request->get('id_publicacion'));
-        $desde = htmlspecialchars($this->request->get('input-desde'));
-        $hasta = htmlspecialchars($this->request->get('input-hasta'));
-        $precio_x_noche = 0;
-        $estado_reserva = 'pendiente';
-        $notas = 'ninguna';
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero(
+            $this->request->post('id_publicacion'),
+            'id_publicacion',
+            $errores,
+            1
+        );
+
+        $desde = $this->verificador->fecha(
+            $this->request->post('input-desde'),
+            'input-desde',
+            $errores
+        );
+
+        $hasta = $this->verificador->fecha(
+            $this->request->post('input-hasta'),
+            'input-hasta',
+            $errores
+        );
+
+        if ($desde !== null && $hasta !== null && $desde >= $hasta){
+            $errores['rango'] = 'La fecha desde debe ser anterior a la fecha hasta.';
+        }
+
+        if ($desde !== null && $desde < date('Y-m-d')){
+            $errores['fecha_desde'] = 'No se puede reservar una fecha pasada.';
+        }
+
+        if (!empty($errores)){
+            $this->request->setResultadoEnSesion(
+                'resultadoReserva',
+                [
+                    'exito' => false,
+                    'mensaje' => implode(' ', $errores)
+                ]
+            );
+
+            redirect('publicacion/ver?id_pub=' . (int) $idPublicacion);
+
+            return;
+        }
+
+        //Recuperar desde la base la propiedad real
+        $publicacion = $this->publicationCollection->getOne($idPublicacion);
+
+        if (!$publicacion){
+            http_response_code(404);
+
+            view('errors/not-found.view', [
+                'error_message' => "La publicación no existe."
+            ]);
+
+            return;
+        }
+
+        $usuarioActual = (int) $this->usuario->getUserId();
+
+        $propietario = (int) $publicacion['id_usuario'];
+
+        //Regla de autorizacion del servidor
+        if ($usuarioActual === $propietario){
+            $this->logger->warning(
+                'Intento de reservar una propiedad propia',
+                [
+                    'usuario_id' => $usuarioActual,
+                    'publicacion_id' => $idPublicacion
+                ]
+            );
+
+            $this->request->setResultadoEnSesion(
+                'resultadoReserva',
+                [
+                    'exito' => false,
+                    'mensaje' => 'No podes reservar una propiedad propia.'
+                ]
+            );
+
+            redirect('publicacion/ver?id_pub=' . $idPublicacion);
+
+            return;
+        }
+
+        //El correo y el precio se obtienen de la bd. No se confia en campos ocultos
+        $correoDuenio = $publicacion['email'];
+        $precioPorNoche = $publicacion['precio'];
 
         $reserva = [
-            'id_publicacion' => $id_publicacion,
-            'id_usuario_reserva' => $this->usuario->getUserId(),
+            'id_publicacion' => $idPublicacion,
+            'id_usuario_reserva' => $usuarioActual,
             'fecha_inicio' => $desde,
             'fecha_fin' => $hasta,
-            'precio_por_noche' => $precio_x_noche,
-            'estado_reserva' => $estado_reserva,
+            'precio_por_noche' => $precioPorNoche,
+            'estado_reserva' => 'pendiente'
         ];
 
-        $ObjReserva = new Reserva($reserva, $this->logger);
-        $resultadoObjReserva = $ObjReserva->getEstadoConstructor();
+        $objReserva = new Reserva(
+            $reserva,
+            $this->logger
+        );
 
-        if ($resultadoObjReserva['exito']) {
-            $alojamientoReservado = $this->model->reservarAlojamiento($ObjReserva);
+        $resultadoObjReserva = $objReserva->getEstadoConstructor();
 
-            if ($alojamientoReservado['exito']) {
-                $this->mailer->comunicarAlInteresadoYalPropietario(
-                    $ObjReserva,
-                    $alojamientoReservado['nro_reserva'],
-                    $this->usuario->getUsername(),
-                    $this->usuario->getEmailAddress(),
-                    $correo_duenio
-                );
-            }
+        if (!$resultadoObjReserva['exito']){
+            $this->request->setResultadoEnSesion(
+                'resultadoReserva',
+                $resultadoObjReserva
+            );
 
-            $this->request->setResultadoEnSesion("resultadoReserva", $alojamientoReservado);
+            redirect('publicacion/ver?id_pub=' . $idPublicacion);
 
-            $this->logger->debug("info resultadoReserva: ", [$alojamientoReservado]);
-
-            redirect('publicacion/ver?id_pub=' . $id_publicacion);
-        } else {
-
-            $this->request->setResultadoEnSesion("resultadoReserva", $resultadoObjReserva);
-
-            $this->logger->debug("info resultadoReserva: ", [$resultadoObjReserva]);
-
-            redirect('publicacion/ver?id_pub=' . $id_publicacion);
+            return;
         }
+
+        $alojamientoReservado = $this->model->reservarAlojamiento($objReserva);
+
+        if ($alojamientoReservado['exito']){
+            $this->mailer->comunicarAlInteresadoYalPropietario(
+                $objReserva,
+                $alojamientoReservado['nro_reserva'],
+                $this->usuario->getUserName(),
+                $this->usuario->getEmailAddress(),
+                $correoDuenio
+            );
+        }
+
+        $this->request->setResultadoEnSesion(
+            'resultadoReserva',
+            $alojamientoReservado
+        );
+
+        redirect('publicacion/ver?id_pub=' . $idPublicacion);
+
     }
 }

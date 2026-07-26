@@ -198,7 +198,6 @@ class PublicacionController extends Controller
             $this->usuario->chequearSesion();
 
             // Obtener el ID del usuario desde la sesión
-            $this->logger->info("sesion: ", [$_SESSION]);
 
             $idUser = $this->usuario->getUserId();
             $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
@@ -301,29 +300,127 @@ class PublicacionController extends Controller
             if ($this->request->method() == 'POST') {
 
                 $errors = [];
-
+                
                 $idUser = $this->usuario->getUserId();
-                $this->logger->info("idUser: ", [$idUser]);
 
-                $this->logger->info("POST: ", [$this->request->all()]);
-                $this->logger->info("FILES: ", [$_FILES]);
+                $tiposResultado = $this->model->traerTipos();
 
-                $provincia = sanitize($this->request->get('provincia'), $errors, 'provincia');
-                $codigo_postal = sanitize($this->request->get('codigo_postal'), $errors, 'codigo_postal');
-                $direccion = sanitize($this->request->get('direccion'), $errors, 'direccion');
-                $direccion_completa = sanitize($this->request->get('direccion_completa'), $errors, 'direccion_completa');
-                $precio = sanitize($this->request->get('precio'), $errors, 'precio');
-                $nombreAlojamiento = sanitize($this->request->get('nombre-alojamiento'), $errors, 'nombre-alojamiento');
-                $tipoAlojamiento = sanitize($this->request->get('tipo-alojamiento'), $errors, 'tipo-alojamiento');
-                $capacidadMaxima = sanitize($this->request->get('capacidad-maxima'), $errors, 'capacidad-maxima');
-                $cantBanios = sanitize($this->request->get('cant-banios'), $errors, 'cant-banios');
-                $cantidadDormitorios = sanitize($this->request->get('cantidad-dormitorios'), $errors, 'cantidad-dormitorios');
-                $cochera = sanitize($this->request->get('cochera')) ? 1 : 0; //
-                $pileta = sanitize($this->request->get('pileta')) ? 1 : 0; //
-                $aireAcondicionado = sanitize($this->request->get('aire-acondicionado')) ? 1 : 0; //
-                $wifi = sanitize($this->request->get('wifi')) ? 1 : 0; //
-                $normasAlojamiento = sanitize($this->request->get('normas-alojamiento'), $errors, 'normas-alojamiento');
-                $descripcionAlojamiento = sanitize($this->request->get('descripcion-alojamiento'), $errors, 'descripcion-alojamiento');
+                $tiposDisponibles = $tiposResultado['tipos_alojamiento'] ?? [];
+
+                $tiposPermitidos = is_array($tiposDisponibles) ? array_column($tiposDisponibles, 'id') : [];
+
+                $provincia = $this->verificador->texto(
+                    $this->request->post('provincia'),
+                    'provincia',
+                    $errors,
+                    true,
+                    2,
+                    100
+                );
+
+                $codigo_postal = $this->verificador->texto(
+                    $this->request->post('codigo_postal'),
+                    'codigo_postal',
+                    $errors,
+                    true,
+                    2,
+                    20
+                );
+
+                $direccion = $this->verificador->coordenadas(
+                    $this->request->post('direccion'),
+                    'direccion',
+                    $errors
+                );
+
+                $direccion_completa = $this->verificador->texto(
+                    $this->request->post('direccion_completa'),
+                    'direccion_completa',
+                    $errors,
+                    true,
+                    3,
+                    255
+                );
+
+                $precio = $this->verificador->precioEntero(
+                    $this->request->post('precio'),
+                    'precio',
+                    $errors
+                );
+
+                $nombreAlojamiento = $this->verificador->texto(
+                    $this->request->post('nombre-alojamiento'),
+                    'nombre-alojamiento',
+                    $errors,
+                    true,
+                    3,
+                    255
+                );
+
+                $tipoAlojamiento = $this->verificador->opcionEntera(
+                    $this->request->post('tipo-alojamiento'),
+                    'tipo-alojamiento',
+                    $errors,
+                    $tiposPermitidos
+                );
+
+                $capacidadMaxima = $this->verificador->entero(
+                    $this->request->post('capacidad-maxima'),
+                    'capacidad-maxima',
+                    $errors,
+                    1,
+                    100
+                );
+
+                $cantBanios = $this->verificador->entero(
+                    $this->request->post('cant-banios'),
+                    'cant-banios',
+                    $errors,
+                    1,
+                    50
+                );
+
+                $cantidadDormitorios = $this->verificador->entero(
+                    $this->request->post('cantidad-dormitorios'),
+                    'cantidad-dormitorios',
+                    $errors,
+                    1,
+                    100
+                );
+
+                $cochera = $this->verificador->checkbox(
+                    $this->request->post('cochera')
+                );
+
+                $pileta = $this->verificador->checkbox(
+                    $this->request->post('pileta')
+                );
+
+                $aireAcondicionado = $this->verificador->checkbox(
+                    $this->request->post('aire-acondicionado')
+                );
+
+                $wifi = $this->verificador->checkbox(
+                    $this->request->post('wifi')
+                );
+
+                $normasAlojamiento = $this->verificador->texto(
+                    $this->request->post('normas-alojamiento'),
+                    'normas-alojamiento',
+                    $errors,
+                    true,
+                    3,
+                    5000
+                );
+
+                $descripcionAlojamiento = $this->verificador->texto(
+                    $this->request->post('descripcion-alojamiento'),
+                    'descripcion-alojamiento',
+                    $errors,
+                    true,
+                    3,
+                    5000
+                );
 
                 // Verifica si hay errores
                 if (empty($errors)) {
@@ -359,8 +456,15 @@ class PublicacionController extends Controller
                         $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
 
                         if (empty($_FILES['imagenes'])) {
-                            // throw new FallaEnCargaDeImagenesException("Error: No se han subido archivos.");
-                            $errors[] = '$files vacio';
+                            view('publicacion.new.view', array_merge(
+                                $this->menuAndSession,
+                                [
+                                    'errors' => ['imagenes' => 'Debe subir al menos una imagen.']
+                                ],
+                                $this->model->traerTipos()
+                            ));
+                            
+                            return;
                         }
 
                         $imagenesPublicacion = [];
@@ -513,19 +617,71 @@ class PublicacionController extends Controller
         echo json_encode(array_values($publicaciones));
     }
 
-    public function guardarComentario()
-    {
-        $id_publicacion = $this->request->get('id_pub');
-        $comentario = [
-            'id_publicacion' => $id_publicacion,
-            'id_user' => $this->request->get('id_user'),
-            'rating' => $this->request->get('rating'),
-            'comment' => $this->request->get('comment')
-        ];
-        
-        $resultado = $this->model->insertarComentario($comentario);
+    public function guardarComentario(){
 
-        redirect('publicacion/ver?id_pub=' . $id_publicacion);
+        //El comentario solamente puede pertenecer a un usuario autenticado
+        $this->usuario->chequearSesion();
+
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero(
+            $this->request->post('id_pub'),
+            'id_pub',
+            $errores,
+            1
+        );
+
+        $rating = $this->verificador->entero(
+            $this->request->post('rating'),
+            'rating',
+            $errores,
+            1,
+            5
+        );
+
+        $textoComentario = $this->verificador->texto(
+            $this->request->post('comment'),
+            'comment',
+            $errores,
+            true,
+            1,
+            2000
+        );
+
+        if (!empty($errores)){
+            http_response_code(400);
+
+            view('errors/internal_error.view', [
+                'error_message' => implode(" ", $errores)
+            ]);
+
+            return;
+        }
+
+        $publicacion = $this->model->getOne($idPublicacion);
+
+        if (!$publicacion){
+            http_response_code(404);
+
+            view('errors/not-found.view', [
+                'error_message' => "La publicación no existe."
+            ]);
+
+            return;
+        }
+
+        $comentario = [
+            'id_publicacion' => $idPublicacion,
+            //El id confiable sale de la sesion, no del formulario
+            'id_user' => $this->usuario->getUserId(),
+            'rating' => $rating,
+            'comment' => $textoComentario
+        ];
+
+        $this->model->insertarComentario($comentario);
+
+        redirect('publicacion/ver?id_pub=' . $idPublicacion);
+        
     }
 
 }

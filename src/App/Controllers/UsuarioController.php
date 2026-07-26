@@ -30,6 +30,17 @@ class UsuarioController extends Controller
         $this->mailer = new Mailer();
 
         if (session_status() == PHP_SESSION_NONE) {
+            $usaHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+
+            session_set_cookie_params([
+                'lifetime' => 0, //dura hasta cerrar el navegador
+                'path' => '/',
+                'domain' => '',
+                'secure' => $usaHttps, //cuando se usa HTTPS, la cookie solamente viaja mediante HTTPS
+                'httponly' => true, //JavaScript no puede leer facilmente la cookie de sesion
+                'samesite' => 'Lax' //limita el envio de la cookie desde otros sitios
+            ]);
+
             session_start();  // Inicia la sesión si no está iniciada
         }
 
@@ -53,8 +64,8 @@ class UsuarioController extends Controller
     {
         global $log;
         if (isset($_SESSION['email'])) {
-            // Si el usuario es de tipo "inquilino"
-            $log->info("hay sesion: ", [$_SESSION]);
+            // Si el usuario es de tipo "propietario"
+            
             if ($this->getUserType() === 1) {
 
                 $menu = sacarDelMenu($menu, [
@@ -71,7 +82,7 @@ class UsuarioController extends Controller
                     '/mis_publicaciones/reservas'
                 ]);
             }
-            // Si el usuario es de tipo "propietario"
+            // Si el usuario es de tipo "inquilino"
             if ($this->getUserType() === 3) {
 
                 $menu = sacarDelMenu($menu, [
@@ -83,12 +94,12 @@ class UsuarioController extends Controller
             }
 
             $this->tipoUsuario = $_SESSION['tipo'];
-            setcookie('tipo_usuario', $this->tipoUsuario, time() + (86400 * 30), "/"); // La cookie expira en 30 días
 
         } else {
             $log->info("no existe sesion: ", [$_SESSION]);
 
             $menu = sacarDelMenu($menu, [
+                '/publicacion/new',
                 '/mis_publicaciones',
                 '/usuario/mi_perfil',
                 '/mis_publicaciones/reservas',
@@ -106,21 +117,30 @@ class UsuarioController extends Controller
 
     public function chequearSesion()
     {
-        if (!$this->isUserLoggedIn()) {
-            
-            $this->logger->info("Intento de ver pedido sin sesión iniciada.");
+        if ($this->isUserLoggedIn()){
+            return;
+        }
 
-            $this->setRedirectTo($this->request->uri(true));
+        $this->logger->info('Intento de acceder sin sesión iniciada.');
 
-            redirect('iniciar-sesion');
+        if ($this->request->method() === 'GET'){
+            $redirectTo = ltrim(
+                $_SERVER['REQUEST_URI'] ?? '',
+                '/'
+            );
 
-            exit;
-        }        
+            $this->setRedirectTo($redirectTo);
+        } else {
+            //No se vuelve automaticamente a una accion POST.
+            $this->setRedirectTo(null, true);
+        }
+
+        redirect('iniciar-sesion');        
     }
 
     public function isUserLoggedIn()
     {
-        return isset($_SESSION['email']) ?? null;
+        return isset($_SESSION['email'], $_SESSION['usuario_id']);
     }
 
     public function getUserName()
@@ -150,75 +170,125 @@ class UsuarioController extends Controller
 
     public function getUserType()
     {
-        return $_SESSION['tipo'] ?? 'anonimo';
+        return isset($_SESSION['tipo']) ? (int) $_SESSION['tipo'] : null;
     }
 
-    public function login()
-    {
-        $titulo = 'PAWPERTIES | LOGIN';
+    public function login(){
 
-        // Captura el Referer usando el nuevo método en Request
+        $titulo = 'PAWPERTIES | LOGIN';
         $referer = $this->request->referer();
 
-        if ($this->request->method() == 'POST') {
-            $email = htmlspecialchars(strtolower($this->request->get('email')));
-            $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
+        if ($this->request->method() === 'POST') {
+            $errores = [];
+            $email = $this->verificador->email($this->request->post('email'), 'email', $errores);
+
+            //Se usa minimo 1 en login para no bloquear cuentas antiguas que tengan contraseñas cortas.
+            $contrasenia = $this->verificador->password(
+            $this->request->post('contrasenia'),
+                'contrasenia',
+                $errores,
+                1
+            );
+
+            if (!empty($errores)) {
+                view('login.view', array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'resultado' => ['error' => 'Los datos ingresados no son válidos.']
+                    ],
+                    $this->menuAndSession
+                ));
+
+                return;
+            }
 
             $user = new User($email, $contrasenia);
 
             $usuarioAutenticado = $this->model->findByEmailAndPassword($user->getEmail(), $user->getContrasenia());
 
-            $this->logger->info("usuarioAutenticado: ", [$usuarioAutenticado]);
-
             if ($usuarioAutenticado) {
-                if (session_status() == PHP_SESSION_NONE) {
-                    session_start();  // Inicia la sesión si no está iniciada
-                }
-                $this->sesion_en_curso = true;
-                // Guardar los datos del usuario en la sesión
-                $_SESSION['email'] = $usuarioAutenticado['email'];
-                $_SESSION['tipo'] = $usuarioAutenticado['tipo_usuario_id'];
-                $_SESSION['nombre'] = $usuarioAutenticado['nombre'];
-                $_SESSION['apellido'] = $usuarioAutenticado['apellido'];
-                $_SESSION['telefono'] = $usuarioAutenticado['telefono'];
-                $this->tipoUsuario = $_SESSION['tipo'];
-                $_SESSION['usuario_id'] = $usuarioAutenticado['id'];
-                // Redirigir al usuario a la página principal
+                
+                //Se camie el identificador de la sesion despues del login para evitar fijacion de sesion
+                session_regenerate_id(true);
 
-                $this->logger->info("sesion: ", [$_SESSION]);
+                $this->sesion_en_curso = true;
+
+                $_SESSION['email'] = $usuarioAutenticado['email'];
+
+                $_SESSION['tipo'] = (int) $usuarioAutenticado['tipo_usuario_id'];
+
+                $_SESSION['nombre'] = $usuarioAutenticado['nombre'];
+
+                $_SESSION['apellido'] = $usuarioAutenticado['apellido'];
+
+                $_SESSION['telefono'] = $usuarioAutenticado['telefono'];
+
+                $_SESSION['usuario_id'] = (int) $usuarioAutenticado['id'];
+
+                $this->tipoUsuario = $_SESSION['tipo'];
+
+                $this->logger->info(
+                    'Inicio de sesión exitoso.',
+                    ['usuario_id' => $_SESSION['usuario_id']]
+                );
 
                 $redirectTo = $this->getRedirectTo();
 
-                if (!empty($redirectTo)){
-
+                if (!empty($redirectTo)) {
                     $this->setRedirectTo(null, true);
                     redirect($redirectTo);
-
-                } elseif ($referer && $this->request->isUrlSafe($referer)) {
-
-                    redirect($referer);
-                
-                    } else {
-
-                    redirect('');
-
+                    return;
                 }
 
-            } else {
-                $this->tipoUsuario = 'anonimo';
-                $resultado = [
-                    'resultado' => [
-                        'error' => 'Usuario o contraseña incorrectos'
-                    ],
-                    'tipoUsuario' => $this->tipoUsuario
-                ];
-                view('login.view', $resultado);
+                if ($referer && $this->request->isUrlSafe($referer)){
+                    $path = ltrim(
+                        (string) parse_url(
+                            $referer,
+                            PHP_URL_PATH
+                        ),
+                        '/'
+                    );
+
+                    $query = parse_url(
+                        $referer,
+                        PHP_URL_QUERY
+                    );
+
+                    if (!empty($query)){
+                        $path .= '?' . $query;
+                    }
+
+                    redirect($path);
+
+                    return;
+                }
+
+                redirect('');
+                return;
             }
-        } else {
-            view('login.view', ['titulo' => $titulo]);
+
+            $this->tipoUsuario = 'anonimo';
+
+            view('login.view', array_merge(
+                [
+                    'titulo' => $titulo,
+                    'resultado' => ['error' => 'Usuario o contraseña incorrectos'],
+                    'tipoUsuario' => $this->tipoUsuario
+                ],
+                $this->menuAndSession
+            ));
+
+            return;
         }
+
+        view('login.view', array_merge(
+            ['titulo' => $titulo],
+            $this->menuAndSession
+        ));
     }
 
+
+    
     public function setRedirectTo($redirectUrl = null, $unset = false)
     {
         if (!$unset) {
@@ -233,92 +303,151 @@ class UsuarioController extends Controller
         return $_SESSION['redirect_to'] ?? null;
     }
 
-    public function register()
-    {
+    public function register(){
+    
         $titulo = 'PAWPERTIES | REGISTRO';
 
         global $log;
 
-        if ($this->request->method() == 'POST') {
-            // Obtener los datos del formulario
-            $email = htmlspecialchars($this->request->get('email'));
-            $nombre = htmlspecialchars($this->request->get('nombre'));
-            $apellido = htmlspecialchars($this->request->get('apellido'));
-            $contrasenia = htmlspecialchars($this->request->get('contrasenia'));
-            $contrasenia_repetida = htmlspecialchars($this->request->get('contrasenia-check'));
-            $telefono = htmlspecialchars($this->request->get('telefono'));
+        if ($this->request->method() === 'POST') {
+            $errores = [];
 
-            // Verificar si las contraseñas coinciden
-            if ($contrasenia !== $contrasenia_repetida) {
-                $resultado['error'] = 'Las contraseñas no coinciden';
+            $email = $this->verificador->email(
+                $this->request->post('email'),
+                'email',
+                $errores
+            );
 
-                redirect('registrarse');
+            $nombre = $this->verificador->texto(
+                $this->request->post('nombre'),
+                'nombre',
+                $errores,
+                true,
+                2,
+                100
+            );
+
+            $apellido = $this->verificador->texto(
+                $this->request->post('apellido'),
+                'apellido',
+                $errores,
+                true,
+                2,
+                100
+            );
+
+            $telefono = $this->verificador->telefono(
+                $this->request->post('telefono'),
+                'telefono',
+                $errores
+            );
+
+            $contrasenia = $this->verificador->password(
+                $this->request->post('contrasenia'),
+                'contrasenia',
+                $errores,
+                8
+            );
+
+            $contraseniaRepetida = $this->verificador->password(
+                $this->request->post('contrasenia-check'),
+                'contrasenia-check',
+                $errores,
+                8
+            );
+
+            if ($contrasenia !== null && $contraseniaRepetida !== null && $contrasenia !== $contraseniaRepetida){
+                $errores['contrasenia-check'] = 'Las contraseñas no coinciden.';
+            }
+
+            if (!empty($errores)) {
+                view('register.view', array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'error' => implode(' ', $errores)
+                    ],
+                    $this->menuAndSession
+                ));
+
+                return;
             }
 
             try {
-                // Crear un nuevo usuario
+
                 $nuevoUsuario = [
                     'nombre' => $nombre,
                     'apellido' => $apellido,
                     'email' => $email,
-                    'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT), // Hashear la contraseña con salt
+                    'contrasenia' => password_hash($contrasenia, PASSWORD_DEFAULT),
                     'telefono' => $telefono,
                     'tipo_usuario_id' => 1
                 ];
 
-                // Insertar el nuevo usuario en la base de datos
-                list($idUsuario, $resultado) = $this->model->insert('usuarios', $nuevoUsuario);
+                list($idUsuario, $resultado) =$this->model->insert('usuarios', $nuevoUsuario);
 
                 if (!is_null($idUsuario)) {
-                    $log->info("registro exitoso del usuario {$nombre}");
-                    $resultado = [];
-                    $resultado['exito'] = "Registro exitoso del usuario: {$nombre} {$apellido}";
-                    $datos = [
-                        'exito' => $resultado['exito'],
-                        'titulo' => $titulo
-                    ];
+                    $log->info(
+                        'Registro exitoso.',
+                        ['usuario_id' => $idUsuario]
+                    );
 
                     redirect('');
-                } else {
-                    $error = 'Error al registrar el usuario';
-                    $log->error("(UsuarioController) error: ", [$resultado]);
-
-                    $datos = [
-                        'error' => $resultado,
-                        'titulo' => $titulo
-                    ];
-
-                    view('register.view', array_merge(
-                        $datos,
-                        $this->menuAndSession
-                    ));
+                    return;
                 }
+
+                view('register.view', array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'error' => 'No se pudo completar el registro.'
+                    ],
+                    $this->menuAndSession
+                ));
+
+                return;
+
             } catch (PDOException $e) {
 
-                $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
+                $log->error(
+                    'Error al registrar el usuario.',
+                    ['exception' => $e]
+                );
 
                 view('register.view', array_merge(
-                    ['error' => "Error al registrar el usuario: " . $e->getMessage()],
+                    [
+                        'titulo' => $titulo,
+                        'error' => 'No se pudo completar el registro.'
+                    ],
                     $this->menuAndSession
                 ));
+
+                return;
+
             } catch (Exception $e) {
 
-                $log->error("error: ", ["Error al registrar el usuario: " . $e->getMessage()]);
+                $log->error(
+                    'Error al registrar el usuario.',
+                    ['exception' => $e]
+                );
 
                 view('register.view', array_merge(
-                    ['error' => "Error al registrar el usuario: " . $e->getMessage()],
+                    [
+                        'titulo' => $titulo,
+                        'error' => 'No se pudo completar el registro.'
+                    ],
                     $this->menuAndSession
                 ));
+
+                return;
             }
-        } else {
-            $datos = ['titulo' => $titulo];
-            view('register.view', array_merge(
-                $this->menuAndSession,
-                $datos
-            ));
         }
+
+        view('register.view', array_merge(
+            ['titulo' => $titulo],
+            $this->menuAndSession
+        ));
     }
 
+    
     public function logout()
     {
         // Iniciar la sesión si no está iniciada
