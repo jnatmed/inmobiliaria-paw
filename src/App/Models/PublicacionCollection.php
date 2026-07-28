@@ -441,7 +441,7 @@ class PublicacionCollection extends Model
             list($idGenerado, $resultado) = $this->queryBuilder->insert('calificaciones', $data);
     
             // Validar si la inserción fue exitosa
-            if ($resultado) {
+            if ($resultado === true) {
                 return [
                     'exito' => true,
                     'mensaje' => 'Comentario guardado exitosamente.'

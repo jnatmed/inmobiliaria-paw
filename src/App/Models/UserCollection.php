@@ -150,7 +150,6 @@ class UserCollection extends Model
             $log->info("findById id: ", [$id]);
             $result = $this->queryBuilder->selectUserAndTipo($id);
             if ($result && count($result) > 0) {
-                $log->info("result: ", [$result[0]]);
                 return $result[0];
             }
             return null;

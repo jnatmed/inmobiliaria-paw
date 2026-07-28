@@ -122,7 +122,6 @@ class QueryBuilder
 
             $this->logger->info("SQL Query: ", [$sql]);
             $this->logger->info("ID Value: ", [$idUser]);
-            $this->logger->info("resultado selectUserAndTipo: ", [$resultado]);
 
             return $resultado;
         } catch (PDOException $e) {
@@ -136,9 +135,7 @@ class QueryBuilder
 
     public function insert($table, $data, $uniqs = []) 
     { 
-        try { 
-            // Log de los datos
-            $this->logger->info("Data -> ", [$data]);
+        try {
 
             $result['hay_repetidos'] = false;
             // Validación de claves únicas
@@ -148,11 +145,9 @@ class QueryBuilder
     
             if (!$result['hay_repetidos']){
                 // Preparar columnas y valores
-                $columnas = implode(', ', array_keys($data)); 
-                $this->logger->info("Columnas -> ", [$columnas]);
+                $columnas = implode(', ', array_keys($data));
                 
-                $valores = ':' . implode(', :', array_keys($data)); 
-                $this->logger->info("Valores -> ", [$valores]);
+                $valores = ':' . implode(', :', array_keys($data));
                 
                 // Construir la consulta
                 $query = "INSERT INTO $table ($columnas) VALUES ($valores)"; 
@@ -569,8 +564,6 @@ class QueryBuilder
     {
         $set = [];
         $bindings = [];
-
-        $this->logger->info("data, where", [$data, $where]);
         
         foreach ($data as $column => $value) {
             $set[] = "$column = :$column";

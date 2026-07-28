@@ -28,6 +28,7 @@ class UsuarioController extends Controller
         $this->setLogger($log);
 
         $this->mailer = new Mailer();
+        $this->mailer->setLogger($log);
 
         if (session_status() == PHP_SESSION_NONE) {
             $usaHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
@@ -96,7 +97,6 @@ class UsuarioController extends Controller
             $this->tipoUsuario = $_SESSION['tipo'];
 
         } else {
-            $log->info("no existe sesion: ", [$_SESSION]);
 
             $menu = sacarDelMenu($menu, [
                 '/publicacion/new',
@@ -105,8 +105,6 @@ class UsuarioController extends Controller
                 '/mis_publicaciones/reservas',
                 '/publicaciones/gestionar'
             ]);
-
-            $log->info("DATOS THIS->MENU: ", [$menu]);
         }
 
         // Reindexar el array para que no tenga índices numéricos adicionales
@@ -312,6 +310,28 @@ class UsuarioController extends Controller
         if ($this->request->method() === 'POST') {
             $errores = [];
 
+            $valoresFormulario = [
+                'email' =>
+                    is_string($this->request->post('email'))
+                        ? trim($this->request->post('email'))
+                        : '',
+
+                'nombre' =>
+                    is_string($this->request->post('nombre'))
+                        ? trim($this->request->post('nombre'))
+                        : '',
+
+                'apellido' =>
+                    is_string($this->request->post('apellido'))
+                        ? trim($this->request->post('apellido'))
+                        : '',
+
+                'telefono' =>
+                    is_string($this->request->post('telefono'))
+                        ? trim($this->request->post('telefono'))
+                        : ''
+            ];
+
             $email = $this->verificador->email(
                 $this->request->post('email'),
                 'email',
@@ -364,7 +384,8 @@ class UsuarioController extends Controller
                 view('register.view', array_merge(
                     [
                         'titulo' => $titulo,
-                        'error' => implode(' ', $errores)
+                        'error' => implode(' ', $errores),
+                        'valores' => $valoresFormulario
                     ],
                     $this->menuAndSession
                 ));
@@ -495,7 +516,6 @@ class UsuarioController extends Controller
             $this->logger->info("UserId $userId");
             $usuario = $this->model->findById($userId);
 
-            $this->logger->info("datos de usuario: ", [$usuario]);
             // Pasar los datos del usuario a la vista
             view('mi_perfil.view', array_merge(
                 [

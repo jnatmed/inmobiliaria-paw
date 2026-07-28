@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    {% include 'parts/head.view.html' %}
+</head>
+
+<body>
+
+    {% include 'parts/header.view.html' %}
+
+    <main>
+        <div class="error-container">
+            <div class="error-404-bg"></div>
+
+            <p class="h1">
+                Error 400
+            </p>
+
+            <p class="error-lead">
+                La solicitud no es válida.
+            </p>
+
+            {% if error_message is defined %}
+                <p>
+                    {{ error_message | default(
+                        'Algunos de los datos enviados no tienen el formato esperado.'
+                    )}}
+                </p>
+            {% endif %}
+
+            <div class="center">
+                <a
+                    href="/publicaciones/list"
+                    class="btn btn-primary"
+                >
+                    Volver a propiedades
+                </a>
+            </div>
+        </div>
+    </main>
+
+    {% include 'parts/footer.view.html' %}
+
+</body>
+</html>

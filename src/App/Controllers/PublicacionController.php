@@ -30,13 +30,14 @@ class PublicacionController extends Controller
 
     public function __construct()
     {
-        global $config;
+        global $config, $log;
         parent::__construct();
 
         $this->uploader = new Uploader;
         $this->verificador = new Verificador;
         $this->utils = new  Utils();
         $this->mailer = new Mailer();
+        $this->mailer->setLogger($log);
         $this->ReservasCollection = new ReservasCollection();
         $this->ReservasCollection->setQueryBuilder($this->qb);
 
@@ -108,56 +109,101 @@ class PublicacionController extends Controller
     }
 
 
-    public function verPublicacion()
-    {
+    public function verPublicacion(){
 
-        // Obtener el ID de la publicación de la solicitud
-        $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
+        $errores = [];
 
-        // Obtener los datos de la publicación y sus imágenes
-        $publicacion = $this->model->getOne($id_publicacion);
+        //El ID llega por la URL: /publicacion/ver?id_pub=2 Por eso se usa query() y se comprueba que sea un entero positivo
+        
+        $idPublicacion = $this->verificador->entero(
+            $this->request->query('id_pub'),
+            'id_pub',
+            $errores,
+            1
+        );
 
-        // Verificar si se encontró la publicación
-        if (!$publicacion) {
-            $resultado = [
-                "success" => false,
-                "message" => "Publicación no encontrada."
-            ];
-            $this->logger->info("Publicación no encontrada: ID $id_publicacion.");
-            view('errors/not-found.view', array_merge(
-                ['error_message' => "Publicación no encontrada: ID $id_publicacion"],
-                $this->menuAndSession
-            ));
-            exit();
+
+        if ($idPublicacion === null) {
+            http_response_code(400);
+
+            view(
+                'errors/bads-request.view',
+                array_merge(
+                    ['error_message' => 'El identificador de la publicación no es válido.'],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
         }
 
-        // Aca se obtienen las reservas usando el modelo
-        $reservas = $this->ReservasCollection->getReservas($id_publicacion);
-        $comentarios = $this->model->getComentarios($id_publicacion);
+        $publicacion = $this->model->getOne($idPublicacion);
 
-        $this->logger->info("comentarios :", [$comentarios]);
+        //El ID tiene formato válido, pero la publicación no existe
 
-        // se codifican las reservas a JSON para su uso en JavaScript
-        $periodos_json = json_encode($reservas, JSON_UNESCAPED_SLASHES);
+        if (!$publicacion) {
+            http_response_code(404);
 
-        // Preparar los datos para la vista
+            $this->logger->info(
+                'Publicación no encontrada.',
+                ['publicacion_id' => $idPublicacion]
+            );
+
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    ['error_message' => 'La publicación solicitada no existe.'],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        $reservas = $this->ReservasCollection->getReservas($idPublicacion);
+
+        $comentarios = $this->model->getComentarios($idPublicacion);
+
+        $periodosJson = json_encode(
+            $reservas,
+            JSON_UNESCAPED_SLASHES
+        );
+
+        //Recuperar los mensajes temporales antes de eliminarlos de la sesión
+        
+        $resultadoReserva = $this->request->getResultadoGuardado('resultadoReserva');
+
+        $resultadoComentario = $this->request->getResultadoGuardado('resultadoComentario');
+
+        $resultadoContacto = $this->request->getResultadoGuardado('resultadoContacto');
+
         $datos = [
             'publicacion' => $publicacion,
             'idUserSesion' => $this->usuario->getUserId(),
-            'periodos_json' => $periodos_json,
+            'periodos_json' => $periodosJson,
             'reservas' => $reservas,
-            'titulo' => "PAWPERTIES | PROPIEDAD",
+            'titulo' => 'PAWPERTIES | PROPIEDAD',
             'comentarios' => $comentarios,
-            'resultadoReserva' => $this->request->getResultadoGuardardo('resultadoReserva')
+            'resultadoReserva' => $resultadoReserva,
+            'resultadoComentario' => $resultadoComentario,
+            'resultadoContacto' => $resultadoContacto
         ];
 
-        $this->request->setResultadoEnSesion('resultadoReserva', null);
+        //Los mensajes se muestran una sola vez
 
-        // Mostrar la vista de detalles de la publicación
-        view('publicacion.details.view', array_merge(
-            $datos,
-            $this->menuAndSession,
-        ));
+        $this->request->eliminarResultadoEnSesion('resultadoReserva');
+
+        $this->request->eliminarResultadoEnSesion('resultadoComentario');
+
+        $this->request->eliminarResultadoEnSesion('resultadoContacto');
+
+        view(
+            'publicacion.details.view',
+            array_merge(
+                $datos,
+                $this->menuAndSession
+            )
+        );
     }
 
 
@@ -172,24 +218,38 @@ class PublicacionController extends Controller
         $fullUrl = htmlspecialchars($this->request->get('urlPublicacion'));
         $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
 
-        $this->logger->debug("datos entrada ContactarAlDuenio: ", [
-            $emailInteresado,
-            $telefonoDelInteresado,
-            $textoConsultaDelInteresado,
-            $emailDuenio,
-            $fullUrl,
-            $id_publicacion
-        ]);
-
         $resultadoSend = $this->mailer->enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio);
 
         if ($resultadoSend) {
-            $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+            $this->request->setResultadoEnSesion(
+                'resultadoContacto',
+                [
+                    'exito' => true,
+                    'mensaje' => 'La consulta fue enviada correctamente.'
+                ]
+            );
+
+            $this->logger->info(
+                'Consulta enviada por correo.',
+                ['publicacion_id' => $id_publicacion]
+            );
         } else {
-            $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+            $this->request->setResultadoEnSesion(
+                'resultadoContacto',
+                [
+                    'exito' => false,
+                    'mensaje' => 'No se pudo enviar la consulta. Intentá nuevamente más tarde.'
+                ]
+            );
+
+            $this->logger->warning(
+                'No se pudo enviar la consulta por correo.',
+                ['publicacion_id' => $id_publicacion]
+            );
         }
 
         redirect('publicacion/ver?id_pub=' . $id_publicacion);
+
     }
 
     public function listaPublicacionesPropietario()
@@ -618,9 +678,8 @@ class PublicacionController extends Controller
     }
 
     public function guardarComentario(){
-
-        //El comentario solamente puede pertenecer a un usuario autenticado
-        $this->usuario->chequearSesion();
+        
+    $this->usuario->chequearSesion();
 
         $errores = [];
 
@@ -640,48 +699,92 @@ class PublicacionController extends Controller
         );
 
         $textoComentario = $this->verificador->texto(
-            $this->request->post('comment'),
-            'comment',
-            $errores,
-            true,
-            1,
-            2000
-        );
+                $this->request->post('comment'),
+                'comment',
+                $errores,
+                true,
+                1,
+                2000
+            );
 
-        if (!empty($errores)){
+        //Si el ID de publicación es válido, se regresa al detalle y se muestran los errores.
+        
+        if (!empty($errores)) {
+            if ($idPublicacion !== null) {
+                $this->request->setResultadoEnSesion(
+                    'resultadoComentario',
+                    [
+                        'exito' => false,
+                        'mensaje' => implode(' ', $errores)
+                    ]
+                );
+
+                redirect('publicacion/ver?id_pub=' . $idPublicacion);
+
+                return;
+            }
+
+            //No se puede volver al detalle porque el propio ID de la publicación es inválido
+
             http_response_code(400);
 
-            view('errors/internal_error.view', [
-                'error_message' => implode(" ", $errores)
-            ]);
+            view(
+                'errors/bad-request.view',
+                array_merge(
+                    ['error_message' => 'El identificador de la publicación no es válido.'],
+                    $this->menuAndSession
+                )
+            );
 
             return;
         }
 
         $publicacion = $this->model->getOne($idPublicacion);
 
-        if (!$publicacion){
+        if (!$publicacion) {
             http_response_code(404);
 
-            view('errors/not-found.view', [
-                'error_message' => "La publicación no existe."
-            ]);
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    ['error_message' => 'La publicación no existe.'],
+                    $this->menuAndSession
+                )
+            );
 
             return;
         }
 
         $comentario = [
             'id_publicacion' => $idPublicacion,
-            //El id confiable sale de la sesion, no del formulario
+
+            //El autor sale de la sesión.
             'id_user' => $this->usuario->getUserId(),
+
             'rating' => $rating,
             'comment' => $textoComentario
         ];
 
-        $this->model->insertarComentario($comentario);
+        $resultadoComentario = $this->model->insertarComentario($comentario);
+
+
+        if (!$resultadoComentario['exito']) {
+            $resultadoComentario = [
+                'exito' => false,
+                'mensaje' =>
+                    'No se pudo guardar el comentario. '
+                    . 'Si ya calificaste esta publicación, '
+                    . 'no podés volver a calificarla.'
+            ];
+        }
+
+        $this->request->setResultadoEnSesion(
+            'resultadoComentario',
+            $resultadoComentario
+        );
 
         redirect('publicacion/ver?id_pub=' . $idPublicacion);
-        
+
     }
 
 }

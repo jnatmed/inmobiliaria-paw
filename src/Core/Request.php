@@ -104,8 +104,18 @@ class Request
         $_SESSION[$key] = $datos;
     }
 
-    public function getResultadoGuardardo($key)
-    {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
+    //Devuelve un resultado guardado temporalmente dentro de la sesion
+    public function getResultadoGuardado($key){
+        return $_SESSION[$key] ?? null;
+    }
+
+    //Se mantiene metodo para no romper codigo
+    public function getResultadoGuardardo($key){
+        return $this->getResultadoGuardado($key);
+    }
+
+    //Elimina un resultado temporal de la sesion despues de haberlo mostrado
+    public function eliminarResultadoEnSesion($key){
+        unset($_SESSION[$key]);
     }
 }
