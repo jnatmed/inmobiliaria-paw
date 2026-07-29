@@ -154,19 +154,39 @@ class ReservasController extends Controller
             $errores['fecha_desde'] = 'No se puede reservar una fecha pasada.';
         }
 
-        if (!empty($errores)){
-            $this->request->setResultadoEnSesion(
-                'resultadoReserva',
-                [
-                    'exito' => false,
-                    'mensaje' => implode(' ', $errores)
-                ]
-            );
+        //Si el ID no es un entero valido no existe una publicacion a la cual volver
+        if ($idPublicacion === null){
+            //Eliminar cualquier mensaje anterior para que no aparezca despues en otra publicacion
+            $this->request->eliminarResultadoEnSesion('resultadoReserva');
 
-            redirect('publicacion/ver?id_pub=' . (int) $idPublicacion);
+            http_response_code(400);
+
+            view(
+                'errors/bads-request.view',
+                array_merge(
+                    ['error_message' => 'El identificador de la publicacion no es valido'],
+                    $this->menuAndSession
+                )
+            );
 
             return;
         }
+
+
+        if (!empty($errores)){
+            $this->request->setResultadoEnSesion(
+                    'resultadoReserva',
+                    [
+                        'exito' => false,
+                        'mensaje' => implode(' ', $errores)
+                    ]
+                );
+
+                redirect('publicacion/ver?id_pub=' . $idPublicacion);
+
+                return;
+        }
+
 
         //Recuperar desde la base la propiedad real
         $publicacion = $this->publicationCollection->getOne($idPublicacion);

@@ -36,17 +36,17 @@ class MapaLeaflet {
                     document.querySelector('#direccion').value = coordenadasJSON;
                     document.querySelector('#direccion_completa').value = data[0].display_name;
 
-                    marker.on('dragend', async function (event) {
-                        const marker = event.target;
-                        const position = marker.getLatLng();
-                        const coordenadasJSON = JSON.stringify(position);
+                    marker.on(
+                        'dragend',
+                        async function (event){
+                            const marker = event.target;
+                            const position = marker.getLatLng();
 
-                        document.querySelector('#direccion').value = coordenadasJSON;
-                        document.querySelector('#direccion_completa').value = position.display_name;
+                            document.querySelector('#direccion').value = JSON.stringify(position);
 
-                        // Actualizar Codigo Postal y provincia después de arrastrar el marcador
-                        await this.actualizarCodigoPostalProvincia(position.lat, position.lng);
-                    }.bind(this)); // Bind 'this' to maintain context
+                            await this.actualizarCodigoPostalProvincia(position.lat, position.lng);
+                        }.bind(this)
+                    );
                 }
 
                 // Actualizar localidad y provincia después de buscar
@@ -76,17 +76,32 @@ class MapaLeaflet {
     }
 
     async actualizarCodigoPostalProvincia(lat, lon) {
-        const data = await this.obtenerDireccion(lat, lon);
+
+        const data = await this.obtenerDireccion(lat,lon);
+
         const displayName = data.display_name || '';
+
+        document.querySelector('#direccion_completa').value = displayName;
+
         const addressParts = displayName.split(',').map(part => part.trim());
 
-        console.log(data.display_name)
+        const codigoPostal =
+            addressParts.length > 1
+                ? addressParts[
+                    addressParts.length - 2
+                ]
+                : '';
 
-        const codigo_postal = addressParts.length > 1 ? addressParts[addressParts.length - 2] : '';
-        const provincia = addressParts.length > 2 ? addressParts[addressParts.length - 3] : '';
+        const provincia =
+            addressParts.length > 2
+                ? addressParts[
+                    addressParts.length - 3
+                ]
+                : '';
 
-        document.querySelector('#codigo_postal').value = codigo_postal || '';
-        document.querySelector('#provincia').value = provincia || '';
+        document.querySelector('#codigo_postal').value = codigoPostal;
+
+        document.querySelector('#provincia').value = provincia;
     }
 
     async buscarPorLatitudyLongitud(lat, lon) {

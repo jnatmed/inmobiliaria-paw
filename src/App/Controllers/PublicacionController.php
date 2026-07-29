@@ -652,9 +652,23 @@ class PublicacionController extends Controller
                 );
 
                 if ($resultadoSend) {
-                    $this->logger->info("Correo enviado con exito: ", [$this->usuario]);
+                    $this->logger->info(
+                            'Estado de publicación actualizado y notificado.',
+                            [
+                                'publicacion_id' => $idPublicacion,
+                                'accion' => $accion,
+                                'empleado_id' => $this->usuario->getUserId()
+                            ]
+                        );
                 } else {
-                    $this->logger->info("ERROR al enviar el Correo: ", [$this->usuario]);
+                    $this->logger->warning(
+                            'El estado se actualizó, pero no se pudo enviar el correo.',
+                            [
+                                'publicacion_id' => $idPublicacion,
+                                'accion' => $accion,
+                                'empleado_id' => $this->usuario->getUserId()
+                            ]
+                        );
                 }
 
                 redirect('publicaciones/gestionar');
