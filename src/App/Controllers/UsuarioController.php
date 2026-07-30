@@ -61,43 +61,42 @@ class UsuarioController extends Controller
         ];
     }
 
-    public function adjustMenuForSession($menu)
-    {
-        global $log;
-        if (isset($_SESSION['email'])) {
-            // Si el usuario es de tipo "propietario"
-            
-            if ($this->getUserType() === 1) {
+    public function adjustMenuForSession($menu){
 
+        if (isset($_SESSION['email'], $_SESSION['usuario_id'])) {
+            $tipoUsuario = $this->getUserType();
+
+            //Tipo 1 y 3: usuarios comunes: pueden buscar propiedades, publicar, ver sus propiedades, sus reservas y reservar propiedades ajenas. No moderan la pagina
+            if (in_array($tipoUsuario, [1, 3], true)) {
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
-                    '/publicaciones/gestionar',
+                    '/publicaciones/gestionar'
                 ]);
             }
-            // Si el usuario es de tipo "empleado"            
-            if ($this->getUserType() === 2) {
 
+            //Tipo 2: empleado moderador: puede gestionar publicaciones pendientes pero no publica ni administra reservas propias
+            elseif ($tipoUsuario === 2) {
                 $menu = sacarDelMenu($menu, [
                     '/menu_empleado',
-                    '/mis_publicaciones',
-                    '/mis_publicaciones/reservas'
-                ]);
-            }
-            // Si el usuario es de tipo "inquilino"
-            if ($this->getUserType() === 3) {
-
-                $menu = sacarDelMenu($menu, [
-                    '/menu_empleado',
-                    '/publicaciones/gestionar',
+                    '/publicacion/new',
                     '/mis_publicaciones',
                     '/mis_publicaciones/reservas'
                 ]);
             }
 
-            $this->tipoUsuario = $_SESSION['tipo'];
+            //Tipo desconocido
+            else {
+                $menu = sacarDelMenu($menu, [
+                    '/publicacion/new',
+                    '/mis_publicaciones',
+                    '/mis_publicaciones/reservas',
+                    '/publicaciones/gestionar'
+                ]);
+            }
+
+            $this->tipoUsuario = $tipoUsuario;
 
         } else {
-
             $menu = sacarDelMenu($menu, [
                 '/publicacion/new',
                 '/mis_publicaciones',
@@ -107,10 +106,7 @@ class UsuarioController extends Controller
             ]);
         }
 
-        // Reindexar el array para que no tenga índices numéricos adicionales
-        $menu = array_values($menu);
-
-        return $menu;
+        return array_values($menu);
     }
 
     public function chequearSesion()
@@ -134,6 +130,8 @@ class UsuarioController extends Controller
         }
 
         redirect('iniciar-sesion');        
+
+        exit;
     }
 
     public function isUserLoggedIn()
@@ -169,6 +167,42 @@ class UsuarioController extends Controller
     public function getUserType()
     {
         return isset($_SESSION['tipo']) ? (int) $_SESSION['tipo'] : null;
+    }
+
+    public function chequearTiposPermitidos(array $tiposPermitidos): void{
+
+        //Primero se verifica que exista una sesión. Si no existe, chequearSesion() redirige al login.
+        $this->chequearSesion();
+
+        $tipoActual = $this->getUserType();
+
+        if (in_array($tipoActual, $tiposPermitidos, true)) {
+            return;
+        }
+
+        $this->logger->warning(
+            'Intento de acceder a una función sin autorización.',
+            [
+                'usuario_id' => $this->getUserId(),
+                'tipo_usuario' => $tipoActual,
+                'tipos_permitidos' => $tiposPermitidos,
+                'ruta' => $this->request->uri()
+            ]
+        );
+
+        http_response_code(403);
+
+        view(
+            'errors/forbidden.view',
+            array_merge(
+                [
+                    'error_message' => 'Tu usuario no tiene permiso para realizar esta acción.'
+                ],
+                $this->menuAndSession
+            )
+        );
+
+        exit;
     }
 
     public function login(){

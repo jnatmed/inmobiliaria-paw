@@ -382,26 +382,24 @@ class PublicacionCollection extends Model
 
 
 
-    public function actualizarEstadoPublicacion($idPublicacion, $accion)
-    {
-        try {
+    public function actualizarEstadoPublicacion($idPublicacion, $accion) {
+        
+        $estadosPermitidos = [
+            'aceptar' => 2,
+            'rechazar' => 3
+        ];
 
-            if ($accion === 'aceptar') {
-                $nuevoEstado = 2;
-            }
-
-            if ($accion === 'rechazar') {
-                $nuevoEstado = 3;
-            }
-
-            $this->queryBuilder->update(
-                'publicaciones',
-                ['estado_id' => $nuevoEstado],
-                ['id' => $idPublicacion]
-            );
-        } catch (Exception $e) {
-            throw new Exception("Error al actualizar la publicacion: " . $e->getMessage());
+        if (!array_key_exists($accion, $estadosPermitidos)) {
+            throw new Exception('La acción indicada no es válida.');
         }
+
+        $nuevoEstado = $estadosPermitidos[$accion];
+
+        return $this->queryBuilder->update(
+            'publicaciones',
+            ['estado_id' => $nuevoEstado],
+            ['id' => $idPublicacion]
+        );
     }
 
 

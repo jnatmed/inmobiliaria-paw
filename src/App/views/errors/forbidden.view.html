@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    {% include 'parts/head.view.html' %}
+</head>
+
+<body>
+
+    {% include 'parts/header.view.html' %}
+
+    <main>
+        <div class="error-container">
+            <div class="error-404-bg"></div>
+
+            <p class="h1">
+                Error 403
+            </p>
+
+            <p class="error-lead">
+                No tenés permiso para realizar esta acción.
+            </p>
+
+            <p>
+                {{ error_message | default(
+                    'El recurso solicitado no está disponible para tu usuario.'
+                ) }}
+            </p>
+
+            <div class="center">
+                <a
+                    href="/"
+                    class="btn btn-primary"
+                >
+                    Volver al inicio
+                </a>
+            </div>
+        </div>
+    </main>
+
+    {% include 'parts/footer.view.html' %}
+
+</body>
+
+</html>

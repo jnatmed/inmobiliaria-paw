@@ -1,24 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     {% include 'parts/headReserva.view.html' %}
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h4>Reserva Realizada con Éxito</h4>
+
+            {% if destino == 'propietario' %}
+                <h4>
+                    Recibiste una nueva solicitud de reserva
+                </h4>
+            {% else %}
+                <h4>
+                    Solicitud de reserva registrada
+                </h4>
+            {% endif %}
+
         </div>
+
         <div class="content">
             <p>
                 Reserva Nro: {{ nroReserva }}<br>
-                Reserva para el usuario: {{ userName }}<br>
+                Usuario: {{ userName }}<br>
                 Desde: {{ desde }}<br>
                 Hasta: {{ hasta }}
             </p>
-            <p>Te avisaremos cuando el propietario acepte tu reserva</p>
+
+            {% if destino == 'propietario' %}
+                <p>
+                    Ingresá a Mis reservas para aceptar
+                    o rechazar esta solicitud.
+                </p>
+            {% else %}
+                <p>
+                    Te avisaremos cuando el propietario
+                    acepte o rechace tu solicitud.
+                </p>
+            {% endif %}
         </div>
     </div>
 </body>
+
 </html>

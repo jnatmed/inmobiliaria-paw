@@ -37,9 +37,50 @@
                                 <td>{{ publicacion.capacidad_maxima | e }}</td>
                                 <td>{{ publicacion.estado | e }}</td>
                                 <td>
-                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/aceptar?id_pub={{ publicacion.id }}">Aceptar</a> |
-                                    <a class="publicaciones-accion" href="/publicaciones/gestionar/rechazar?id_pub={{ publicacion.id }}">Rechazar</a> | 
-                                    <a class="publicaciones-accion" href="/publicacion/ver?id_pub={{ publicacion.id }}">Ver</a>
+                                    <form
+                                            action="/publicaciones/gestionar/aceptar"
+                                            method="POST"
+                                            class="form-accion-inline"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="id_pub"
+                                                value="{{ publicacion.id }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="publicaciones-accion"
+                                            >
+                                                Aceptar
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            action="/publicaciones/gestionar/rechazar"
+                                            method="POST"
+                                            class="form-accion-inline"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="id_pub"
+                                                value="{{ publicacion.id }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="publicaciones-accion"
+                                            >
+                                                Rechazar
+                                            </button>
+                                        </form>
+
+                                        <a
+                                            class="publicaciones-accion"
+                                            href="/publicacion/ver?id_pub={{ publicacion.id }}"
+                                        >
+                                            Ver
+                                        </a>
                                 </td>
                             </tr>
                         {% endfor %}                        

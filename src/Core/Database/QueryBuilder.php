@@ -45,6 +45,11 @@ class QueryBuilder
                 $whereClauses[] = "id_publicacion = :id_publicacion";
                 $bindings[':id_publicacion'] = $params['id_publicacion'];
             }
+        
+            if (isset($params['id_usuario_reserva'])) {
+                $whereClauses[] = "id_usuario_reserva = :id_usuario_reserva";
+                $bindings[':id_usuario_reserva'] = $params['id_usuario_reserva'];
+            }
 
             if (isset($params['id_imagen'])) {
                 $whereClauses[] = "id_imagen = :id_imagen";
@@ -346,12 +351,17 @@ class QueryBuilder
     public function getAll($mainTable)
     {
         try {
-            // Modificar la consulta para incluir un INNER JOIN con la tabla imagenes_publicacion
             $query = "
-                SELECT main.*, MIN(img.id_imagen) as id_imagen 
+                SELECT
+                    main.*,
+                    MIN(img.id_imagen) AS id_imagen
                 FROM {$mainTable} main
-                INNER JOIN imagenes_publicacion img 
+
+                INNER JOIN imagenes_publicacion img
                     ON main.id = img.id_publicacion
+
+                WHERE main.estado_id = 2
+
                 GROUP BY main.id
             ";
 
@@ -384,6 +394,12 @@ class QueryBuilder
             WHERE 1=1
             ";
             $params = [];
+
+            //El listado público solo debe mostrar publicaciones aceptadas.
+
+            if ($idUser === null) {
+                $sql .= " AND main.estado_id = 2";
+            }
     
             if ($precio) {
                 $sql .= " AND main.precio <= :precio";
@@ -443,13 +459,24 @@ class QueryBuilder
     public function traerPublicacionesConEstado()
     {
         $sql = "
-            SELECT publicaciones.*, estado_publicaciones.estado as estado
+            SELECT
+                publicaciones.*,
+                estado_publicaciones.estado AS estado
             FROM publicaciones
-            JOIN estado_publicaciones ON publicaciones.estado_id = estado_publicaciones.id
+
+            INNER JOIN estado_publicaciones
+                ON publicaciones.estado_id =
+                    estado_publicaciones.id
+
+            WHERE publicaciones.estado_id = 1
+
+            ORDER BY publicaciones.id ASC
         ";
 
         $statement = $this->pdo->prepare($sql);
+
         $statement->execute();
+
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -639,22 +666,62 @@ class QueryBuilder
         }
     }
 
-    public function buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin)
-    {
-        $sql = "SELECT COUNT(*) FROM reservas_publicacion 
-                WHERE id_publicacion = :id_publicacion 
-                AND (
-                    (fecha_inicio <= :fecha_fin AND fecha_fin >= :fecha_inicio)
-                )";
+    public function getReservasActivasPorPublicacion(int $idPublicacion): array {
+        $sql = "
+            SELECT
+                fecha_inicio,
+                fecha_fin,
+                estado_reserva
+            FROM reservas_publicacion
+            WHERE id_publicacion = :id_publicacion
+            AND estado_reserva IN (
+                'pendiente',
+                'confirmada'
+            )
+            ORDER BY fecha_inicio ASC
+        ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':id_publicacion', $idPublicacion);
-        $stmt->bindParam(':fecha_inicio', $fechaInicio);
-        $stmt->bindParam(':fecha_fin', $fechaFin);
+
+        $stmt->bindValue(
+            ':id_publicacion',
+            $idPublicacion,
+            PDO::PARAM_INT
+        );
+
         $stmt->execute();
 
-        return $stmt->fetchColumn(); // Retorna el número de reservas en conflicto
-    }    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function buscarReservasEnConflicto($idPublicacion, $fechaInicio, $fechaFin) {
+        
+    $sql = "
+            SELECT COUNT(*)
+            FROM reservas_publicacion
+            WHERE id_publicacion = :id_publicacion
+
+            AND estado_reserva IN (
+                'pendiente',
+                'confirmada'
+            )
+
+            AND fecha_inicio < :fecha_fin
+            AND fecha_fin > :fecha_inicio
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->bindValue(':id_publicacion', $idPublicacion, PDO::PARAM_INT);
+
+        $stmt->bindValue(':fecha_inicio',$fechaInicio);
+
+        $stmt->bindValue(':fecha_fin',$fechaFin);
+
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }   
 
     public function traerComentariosYUsuarios($idPublicacion)
     {
@@ -671,22 +738,36 @@ class QueryBuilder
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }    
 
-    public function traerDestacados()
-    {
+    public function traerDestacados(){
+        
         $sql = "
             SELECT c1.*
             FROM calificaciones c1
-            JOIN (
-                SELECT id_publicacion, MAX(calificacion) AS max_calificacion
+
+            INNER JOIN publicaciones
+                ON publicaciones.id = c1.id_publicacion
+
+            INNER JOIN (
+                SELECT
+                    id_publicacion,
+                    MAX(calificacion) AS max_calificacion
                 FROM calificaciones
                 GROUP BY id_publicacion
-            ) c2 ON c1.id_publicacion = c2.id_publicacion AND c1.calificacion = c2.max_calificacion
+            ) c2
+                ON c1.id_publicacion = c2.id_publicacion
+                AND c1.calificacion = c2.max_calificacion
+
+            WHERE publicaciones.estado_id = 2
+
             ORDER BY c1.calificacion DESC
+
             LIMIT 5
         ";
-    
+
         $statement = $this->pdo->prepare($sql);
+
         $statement->execute();
+
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
     

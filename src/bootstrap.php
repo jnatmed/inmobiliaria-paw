@@ -130,9 +130,8 @@ $router->get('/publicacion/imagen_destacada', 'PublicacionController@getImgPubli
 $router->post('/publicacion/guardarComentario', 'PublicacionController@guardarComentario');
 $router->post('/publicacion/contactar-al-duenio-form', 'PublicacionController@contactarAlDuenio');
 $router->get('/publicaciones/gestionar', 'PublicacionController@gestionarPublicaciones');
-$router->get('/publicaciones/gestionar/aceptar', 'PublicacionController@actualizarEstadoPublicacion');
-$router->get('/publicaciones/gestionar/cancelar', 'PublicacionController@actualizarEstadoPublicacion');
-$router->get('/publicaciones/gestionar/rechazar', 'PublicacionController@actualizarEstadoPublicacion');
+$router->post('/publicaciones/gestionar/aceptar', 'PublicacionController@actualizarEstadoPublicacion');
+$router->post('/publicaciones/gestionar/rechazar', 'PublicacionController@actualizarEstadoPublicacion');
 
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 $router->get('/mis_publicaciones/reservas', 'ReservasController@verReservas'); // hecha

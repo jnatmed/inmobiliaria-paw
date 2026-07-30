@@ -46,7 +46,7 @@ class ReservasController extends Controller
 
         try {
 
-            $this->usuario->chequearSesion();
+            $this->usuario->chequearTiposPermitidos([1, 3]);
 
             // Obtener las reservas pendientes y confirmadas
             $reservas = $this->model->obtenerReservasPendientesYConfirmadas($this->usuario->getUserId());
@@ -123,7 +123,7 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento(){
 
-        $this->usuario->chequearSesion();
+        $this->usuario->chequearTiposPermitidos([1, 3]);
 
         $errores = [];
 
@@ -197,6 +197,30 @@ class ReservasController extends Controller
             view('errors/not-found.view', [
                 'error_message' => "La publicación no existe."
             ]);
+
+            return;
+        }
+
+
+        if ((int) $publicacion['estado_id'] !== 2) {
+            $this->logger->warning(
+                'Intento de reservar una publicación no habilitada.',
+                [
+                    'usuario_id' => $this->usuario->getUserId(),
+                    'publicacion_id' => $idPublicacion,
+                    'estado_id' => (int) $publicacion['estado_id']
+                ]
+            );
+
+            http_response_code(404);
+
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    ['error_message' =>'La publicación no está disponible para reservas.'],
+                    $this->menuAndSession
+                )
+            );
 
             return;
         }

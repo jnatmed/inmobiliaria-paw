@@ -59,3 +59,16 @@
     font-size: 18px;
     font-style: italic;
 }
+
+.form-accion-inline {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.form-accion-inline button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+}

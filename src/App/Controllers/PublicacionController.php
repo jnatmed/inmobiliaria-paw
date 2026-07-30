@@ -160,6 +160,32 @@ class PublicacionController extends Controller
             return;
         }
 
+        //Una publicacion pendiente o rechazada solo puede ser vista por el usaurio que la creo o un empleado moderador
+
+        $usuarioActual = (int) ($this->usuario->getUserId() ?? 0);
+
+        $tipoUsuario = $this->usuario->getUserType();
+
+        $esDuenio = $usuarioActual > 0 && $usuarioActual === (int) $publicacion['id_usuario'];
+
+        $esEmpleado = $tipoUsuario === 2;
+
+        $estaAceptada = (int) $publicacion['estado_id'] === 2;
+
+        if (!$estaAceptada && !$esDuenio && !$esEmpleado) {
+            http_response_code(404);
+
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    ['error_message' =>'La publicación solicitada no está disponible.'],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
         $reservas = $this->ReservasCollection->getReservas($idPublicacion);
 
         $comentarios = $this->model->getComentarios($idPublicacion);
@@ -255,7 +281,7 @@ class PublicacionController extends Controller
     public function listaPublicacionesPropietario()
     {
         try {
-            $this->usuario->chequearSesion();
+            $this->usuario->chequearTiposPermitidos([1, 3]);
 
             // Obtener el ID del usuario desde la sesión
 
@@ -355,7 +381,7 @@ class PublicacionController extends Controller
     {
         try {
 
-            $this->usuario->chequearSesion();
+            $this->usuario->chequearTiposPermitidos([1, 3]);
 
             if ($this->request->method() == 'POST') {
 
@@ -401,6 +427,24 @@ class PublicacionController extends Controller
                     3,
                     255
                 );
+
+                
+                if ($direccion_completa !== null) {
+                    $direccionNormalizada = strtolower(trim($direccion_completa));
+
+                    $valoresInvalidos = [
+                        'undefined',
+                        'null',
+                        'direccion no disponible',
+                        'dirección no disponible'
+                    ];
+
+                    if (in_array($direccionNormalizada, $valoresInvalidos, true)) {
+                        $errors['direccion_completa'] = 'No se pudo determinar la dirección seleccionada.';
+
+                        $direccion_completa = null;
+                    }
+                }
 
                 $precio = $this->verificador->precioEntero(
                     $this->request->post('precio'),
@@ -607,81 +651,164 @@ class PublicacionController extends Controller
 
     public function gestionarPublicaciones()
     {
-        $this->usuario->chequearSesion();
+        //Solamente el empleado puede moderar publicaciones
+        $this->usuario->chequearTiposPermitidos([2]);
 
-        $listaPublicaciones = $this->model->traerPublicaciones($this->usuario->getUserId());
+        $listaPublicaciones = $this->model->traerPublicaciones();
 
         $datos = [
-            'titulo' => "PAWPERTIES | GESTIONAR",
-            "exito" => true
+            'titulo' => 'PAWPERTIES | GESTIONAR PUBLICACIONES',
+            'exito' => true
         ];
 
-        view('publicaciones.gestionar.view', array_merge(
-            $listaPublicaciones,
-            $datos,
-            $this->menuAndSession
-        ));
+        view(
+            'publicaciones.gestionar.view',
+            array_merge(
+                $listaPublicaciones,
+                $datos,
+                $this->menuAndSession
+            )
+        );
     }
 
-    public function actualizarEstadoPublicacion()
-    {
+    public function actualizarEstadoPublicacion(){
 
         try {
-            $this->usuario->chequearSesion();
+            
+            $this->usuario->chequearTiposPermitidos([2]);
 
-            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
             $accion = $this->request->getSegments(2);
-            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
 
-            if (!is_null($idPublicacion)) {
+            if (!in_array($accion, ['aceptar', 'rechazar'],true)) {
 
-                $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
+                http_response_code(400);
 
-                /**
-                 * enviar comunicacion a interesado 
-                 */
-                $body = view('correoDeCambioEstadoPublicacion', [
-                    'fullUrl' => $this->request->host() . "/mis_publicaciones/reservas"
-                ], true);
+                view(
+                    'errors/bads-request.view',
+                    array_merge(
+                        ['error_message' => 'La acción solicitada no es válida.'],
+                        $this->menuAndSession
+                    )
+                );
 
-                // Aca enviar un correo al usuario que esta logueado       
-                $resultadoSend = $this->mailer->send(
-                    $this->usuario->getEmailAddress(),
-                    "Cambio el estado de la publicacion: ",
+                return;
+            }
+
+            $errores = [];
+
+            $idPublicacion =
+                $this->verificador->entero(
+                    $this->request->post('id_pub'),
+                    'id_pub',
+                    $errores,
+                    1
+                );
+
+            if (!empty($errores)) {
+
+                http_response_code(400);
+
+                view(
+                    'errors/bads-request.view',
+                    array_merge(
+                        ['error_message' => implode(' ', $errores)],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            $publicacion = $this->model->getOne($idPublicacion);
+
+            if (!$publicacion) {
+                http_response_code(404);
+
+                view(
+                    'errors/not-found.view',
+                    array_merge(
+                        ['error_message' => 'La publicación no existe.'],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            
+            if ((int) $publicacion['estado_id'] !== 1) {
+
+                http_response_code(400);
+
+                view(
+                    'errors/bads-request.view',
+                    array_merge(
+                        ['error_message' => 'La publicación ya fue procesada.'],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            $this->model->actualizarEstadoPublicacion($idPublicacion, $accion);
+
+        
+            $body = view(
+                'correoDeCambioEstadoPublicacion',
+                [
+                    'fullUrl' => $this->request->host() . '/mis_publicaciones',
+                    'accion' => $accion
+                ],
+                true
+            );
+
+            $resultadoSend =
+                $this->mailer->send(
+                    $publicacion['email'],
+                    'Estado de tu publicación: ' . $accion,
                     $body
                 );
 
-                if ($resultadoSend) {
-                    $this->logger->info(
-                            'Estado de publicación actualizado y notificado.',
-                            [
-                                'publicacion_id' => $idPublicacion,
-                                'accion' => $accion,
-                                'empleado_id' => $this->usuario->getUserId()
-                            ]
-                        );
-                } else {
-                    $this->logger->warning(
-                            'El estado se actualizó, pero no se pudo enviar el correo.',
-                            [
-                                'publicacion_id' => $idPublicacion,
-                                'accion' => $accion,
-                                'empleado_id' => $this->usuario->getUserId()
-                            ]
-                        );
-                }
-
-                redirect('publicaciones/gestionar');
+            if ($resultadoSend) {
+                $this->logger->info(
+                    'Publicación procesada y correo enviado.',
+                    [
+                        'publicacion_id' => $idPublicacion,
+                        'accion' => $accion,
+                        'empleado_id' => $this->usuario->getUserId()
+                    ]
+                );
             } else {
-                throw new Exception("ID de publicación no proporcionado");
+                $this->logger->warning(
+                    'Publicación procesada, pero falló el correo.',
+                    [
+                        'publicacion_id' => $idPublicacion,
+                        'accion' => $accion,
+                        'empleado_id' => $this->usuario->getUserId()
+                    ]
+                );
             }
-        } catch (Exception $e) {
-            $this->logger->error("Error General al actualizar el estado de la publicacion: " . $e->getMessage());
 
-            view('errors/internal_error.view', [
-                'error_message' => "Error General al actualizar el estado de la publicacion: " . $e->getMessage()
-            ]);
+            redirect('publicaciones/gestionar');
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                'Error al actualizar una publicación.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo actualizar la publicación.'],
+                    $this->menuAndSession
+                )
+            );
         }
+
     }
 
     public function apiPublicaciones()
