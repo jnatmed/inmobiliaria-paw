@@ -67,15 +67,15 @@ Class Router
         try {
             list($path, $http_method) = $request->route();
             list($controller, $method) = $this->getController($path, $http_method);
-            $this->logger
-                ->info(
-                    "Status Code: 200",
-                    [
-                        "Path" => $path,
-                        "Controller" => $controller,
-                        "Method" => $method
-                    ]
-                );
+            $this->logger->debug(
+                'Ruta resuelta.',
+                [
+                    'path' => $path,
+                    'http_method' => $http_method,
+                    'controller' => $controller,
+                    'method' => $method
+                ]
+            );
                 
             } catch (RouteNotFoundException $e) {
                 list($controller, $method) = $this->getController($this->notFound, "GET");

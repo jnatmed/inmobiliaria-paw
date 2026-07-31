@@ -348,21 +348,13 @@ class PublicacionController extends Controller
             // Obtener la imagen de la publicación
             $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
 
-            $this->logger->info("(method- getImgPublicacion) - imagenPublicacion:", [$imagenPublicacion]);
-
             if ($imagenPublicacion === false) {
                 // Si no se encuentra la imagen, devolver un código de error 404
                 http_response_code(404);
                 // exit;
             }
 
-            $this->logger->info("VALOR DE imagenPublicacion", [$imagenPublicacion]);
-
             $mime_type = Imagen::getMimeType($imagenPublicacion['path_imagen']);
-
-            $this->logger->info("(method- getImgPublicacion) - mime_type: ", [$mime_type]);
-
-            $this->logger->info("imagenPublicacion: -- ", [Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']]);
 
 
             // Establecer el tipo MIME de la imagen y enviarla al cliente

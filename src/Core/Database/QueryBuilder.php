@@ -125,8 +125,8 @@ class QueryBuilder
 
             $resultado = $stmt->fetchAll();
 
-            $this->logger->info("SQL Query: ", [$sql]);
-            $this->logger->info("ID Value: ", [$idUser]);
+            $this->logger->debug("SQL Query: ", [$sql]);
+            $this->logger->debug("ID Value: ", [$idUser]);
 
             return $resultado;
         } catch (PDOException $e) {
@@ -218,7 +218,7 @@ class QueryBuilder
     public function insertMany($table, $data)
     {
         try {
-            $this->logger->info("data en capa DB: ", [$data]);
+            $this->logger->debug("data en capa DB: ", [$data]);
 
             // Preparar las columnas
             $columns = ['id_publicacion', 'path_imagen', 'nombre_imagen', 'id_usuario'];
@@ -254,7 +254,7 @@ class QueryBuilder
     {
         try {
 
-            $this->logger->info("imagesTable, id_publicacion, id_imagen ", [$imagesTable, $id_publicacion, $id_imagen]);
+            $this->logger->debug("imagesTable, id_publicacion, id_imagen ", [$imagesTable, $id_publicacion, $id_imagen]);
             $sql = "
                 SELECT path_imagen, nombre_imagen
                 FROM $imagesTable
@@ -263,7 +263,7 @@ class QueryBuilder
 
             $stmt = $this->pdo->prepare($sql);
 
-            $this->logger->info("stmt: ", [$stmt]);
+            $this->logger->debug("stmt: ", [$stmt]);
 
             $stmt->bindValue(':id_publicacion', $id_publicacion, PDO::PARAM_INT);
             $stmt->bindValue(':id_imagen', $id_imagen, PDO::PARAM_INT);
@@ -273,7 +273,7 @@ class QueryBuilder
             // Registrar el éxito utilizando el logger
 
             if ($result) {
-                $this->logger->info("path_imagen recuperada: ", [$result]);
+                $this->logger->debug("path_imagen recuperada: ", [$result]);
                 return $result;
             } else {
                 // Si no se encuentra la imagen, devuelve false
@@ -301,7 +301,7 @@ class QueryBuilder
     
         $stmt = $this->pdo->prepare($sql);
 
-        $this->logger->info("stmt: ", [$stmt]);
+        $this->logger->debug("stmt: ", [$stmt]);
 
         $stmt->bindValue(':id_publicacion', $idPublicacion, PDO::PARAM_INT);
 
@@ -310,7 +310,7 @@ class QueryBuilder
         // Registrar el éxito utilizando el logger
 
         if ($result) {
-            $this->logger->info("path_imagen recuperada: ", [$result]);
+            $this->logger->debug("path_imagen recuperada: ", [$result]);
             return $result;
         } else {
             // Si no se encuentra la imagen, devuelve false
@@ -521,7 +521,7 @@ class QueryBuilder
     {
         try {
 
-            $this->logger->info("parametors: ", [$mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser]);
+            $this->logger->debug("parametors: ", [$mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser]);
             $query = "
                 SELECT 
                     main.*, 
@@ -576,7 +576,7 @@ class QueryBuilder
                     
             ";
 
-            $this->logger->info("id usuario: $id_usuario");
+            $this->logger->debug("id usuario: $id_usuario");
             $statement = $this->pdo->prepare($query);
             $statement->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
             $statement->execute();
@@ -704,8 +704,8 @@ class QueryBuilder
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             
             // Registrar la consulta y el resultado
-            $this->logger->info("Consulta SQL: ", [$query]);
-            $this->logger->info("Resultado selectMaxPrice: ", [$result]);
+            $this->logger->debug("Consulta SQL: ", [$query]);
+            $this->logger->debug("Resultado selectMaxPrice: ", [$result]);
             
             // Retornar el valor máximo
             return $result['max_precio'];

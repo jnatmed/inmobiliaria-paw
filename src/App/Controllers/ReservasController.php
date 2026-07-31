@@ -59,19 +59,35 @@ class ReservasController extends Controller
                 'titulo' => "PAWPERTIES | RESERVAS"
             ];
 
-            $this->logger->info("RESERVAS : ", [$reservas]);
+            $this->logger->debug(
+                'Reservas cargadas.',
+                [
+                    'usuario_id' => $this->usuario->getUserId(),
+
+                    'reservas_publicadas' => is_array($reservas) ? count($reservas) : 0,
+
+                    'reservas_solicitadas' => is_array($reservasSolicitadasPorUserSesion) ? count($reservasSolicitadasPorUserSesion) : 0
+                ]
+            );
 
             view('publicaciones.reservas.view', array_merge(
                 $datos,
                 ['idUserSesion' => $this->usuario->getUserId()],
                 $this->menuAndSession
             ));
+
         } catch (Exception $e) {
             $this->logger->error("Error al obtener la lista de reservas: " . $e->getMessage());
 
-            view('errors/internal_error.view', [
-                'error_message' => "Error al obtener la lista de reservas: " . $e->getMessage()
-            ]);
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo obtener la lista de reservas.'],
+                    $this->menuAndSession
+                )
+            );
         }
     }
 

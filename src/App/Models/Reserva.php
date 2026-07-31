@@ -113,19 +113,16 @@ class Reserva extends Model
 
             // Genera el nombre del método getter
             $method = 'get' . str_replace('_', '', ucwords($key, '_'));
-            $this->logger->info("method : " . $method);
 
             if (method_exists($this, $method) && !in_array($method, ['getExito', 'getErroresCollection'])) {
                 $value = $this->$method();
                 // Transformar el nombre del método en snake_case para la clave
                 $transformedKey = lcfirst(str_replace(' ', '_', preg_replace('/([a-z])([A-Z])/', '$1 $2', str_replace('get', '', $method))));
-                $values[$transformedKey] = $value;                
-                $this->logger->info("existe el metodo -> " . $method);
+                $values[$transformedKey] = $value;
             } else {
                 if (!in_array($key, ['exito', 'erroresCollection'])) {
                     $values[$key] = $property->getValue($this);
                 }
-                $this->logger->info("NO existe el metodo -> " . $method);
             }
         }
 

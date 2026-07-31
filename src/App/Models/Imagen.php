@@ -38,7 +38,6 @@ class Imagen extends Model
 
         $log->debug("this->name: " . $this->fileName);
         $log->debug("this->type: " . $this->fileType);
-        $log->debug("this->tmpname: " . $this->fileTmpName);
         $log->debug("this->size: " . $this->fileSize);
         $log->debug("this->error: " . $this->error);
     }
@@ -172,10 +171,9 @@ class Imagen extends Model
         $newFileName = uniqid() . "." . pathinfo($this->fileName, PATHINFO_EXTENSION);
         $uploadPath = self::UPLOADDIRECTORY . $newFileName;
 
-        $log->info("fileName: ", [$this->fileName]);
-        $log->info("uploadPath: ", [$uploadPath]);
-        $log->info("newFileName: ", [$newFileName]);
-        $log->info("fileTmpName: ", [$this->fileTmpName]);
+        $log->debug("fileName: ", [$this->fileName]);
+        $log->debug("uploadPath: ", [$uploadPath]);
+        $log->debug("newFileName: ", [$newFileName]);
 
         // Verificar si el archivo temporal existe
         if (!file_exists($this->fileTmpName)) {

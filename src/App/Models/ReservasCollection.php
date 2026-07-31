@@ -84,7 +84,6 @@ class ReservasCollection extends Model
     {
         try {
             $data = $reserva->getAll();
-            $this->logger->info("data : ", [$data]);
 
             // Obtener los datos relevantes de la reserva
             $idPublicacion = $reserva->getIdPublicacion();
@@ -104,7 +103,13 @@ class ReservasCollection extends Model
 
             list($idReservaGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
 
-            $this->logger->info("Info Reserva (Method - create): " , [$idReservaGenerado, $resultado]);
+            $this->logger->info(
+                'Reserva creada.',
+                [
+                    'reserva_id' => $idReservaGenerado,
+                    'publicacion_id' => $idPublicacion
+                ]
+            );
 
             if ($idReservaGenerado) {
                 return [
@@ -123,7 +128,7 @@ class ReservasCollection extends Model
             $log->error("Error al reservar el alojamiento: " . $e->getMessage());
             return [
                 "exito" => false,
-                "mensaje" => "Error al reservar el alojamiento: " . $e->getMessage()
+                "mensaje" => 'No se pudo realizar la reserva.'
             ];
         }
     }

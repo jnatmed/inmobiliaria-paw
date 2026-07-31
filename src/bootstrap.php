@@ -4,7 +4,6 @@ require __DIR__.'/../vendor/autoload.php';
 
 // librerias de terceros
 use Monolog\Logger;
-use Monolog\Level;
 use Monolog\Handler\StreamHandler;
 use Dotenv\Dotenv;
 
@@ -39,7 +38,6 @@ $config = new Config;
 $log = new Logger('mvc-app');
 $handler = new StreamHandler(getenv('LOG_PATH'));
 $handler->setLevel($config->get("LOG_LEVEL"));
-$handler->setLevel(Level::Debug);
 $log->pushHandler($handler);
 
 /**
@@ -70,7 +68,7 @@ $request = new Request;
 $templateDir = __DIR__ . $config->get('TEMPLATE_DIR');
 $cacheDir = __DIR__ . $config->get('TEMPLATE_CACHE_DIR');
 
-$log->info('Loading template engine...', [$templateDir, $cacheDir]);
+$log->debug('Moton de plantillas inicializando.');
 
 try {
     $loader = new \Twig\Loader\FilesystemLoader($templateDir);

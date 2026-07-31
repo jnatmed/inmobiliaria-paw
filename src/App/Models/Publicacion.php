@@ -130,17 +130,14 @@ class Publicacion extends Model
 
             // Genera el nombre del método getter
             $method = 'get' . str_replace('_', '', ucwords($key, '_'));
-            $this->logger->info("method : " . $method);
 
             if (method_exists($this, $method)) {
                 $value = $this->$method();
                 $values[$key] = $value;
-                $this->logger->info("existe el metodo -> " . $method);
             } else {
                 if (!in_array($key, ['exito', 'erroresCollection'])) {
                     $values[$key] = $property->getValue($this);
                 }
-                $this->logger->info("NO existe el metodo -> " . $method);
             }
         }
 
