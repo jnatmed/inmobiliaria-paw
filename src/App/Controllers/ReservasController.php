@@ -75,31 +75,184 @@ class ReservasController extends Controller
         }
     }
 
-    public function actualizarEstadoReserva()
-    {
+    public function actualizarEstadoReserva(){
+
         try {
-            $this->usuario->chequearSesion();
 
-            $this->logger->info("Segmento 2: " . $this->request->getSegments(2));
+            // Solamente usuarios normales
+            $this->usuario->chequearTiposPermitidos([1, 3]);
+
             $accion = $this->request->getSegments(2);
-            $idPublicacion = htmlspecialchars($this->request->get('id_pub'));
-            $idReserva = htmlspecialchars($this->request->get('id_reserva'));
 
-            if ($idPublicacion && $idReserva) {
+            if (!in_array($accion,['aceptar', 'rechazar', 'cancelar'], true)) {
 
-                $this->model->actualizarEstadoReserva($idReserva, $accion);
+                http_response_code(400);
 
-                redirect('mis_publicaciones/reservas');
+                view(
+                    'errors/bads-request.view',
+                    array_merge(
+                        ['error_message' => 'La acción solicitada no es válida.'],
+                        $this->menuAndSession
+                    )
+                );
 
-            } else {
-                throw new Exception("ID de publicación o reserva no proporcionado: ");
+                return;
             }
-        } catch (Exception $e) {
-            $this->logger->error("Error General al cancelar la reserva: " . $e->getMessage());
 
-            view('errors/internal_error.view', [
-                'error_message' => "Error General al cancelar la reserva: " . $e->getMessage()
-            ]);
+            //Validar el ID enviado mediante post
+            $errores = [];
+
+            $idReserva =
+                $this->verificador->entero(
+                    $this->request->post('id_reserva'),
+                    'id_reserva',
+                    $errores,
+                    1
+                );
+
+            if (!empty($errores)) {
+
+                http_response_code(400);
+
+                view(
+                    'errors/bads-request.view',
+                    array_merge(
+                        ['error_message' => implode(' ', $errores)],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            //La reserva real, junto con el dueño y el solicitante, se obtiene de la base de datso.
+            $reserva = $this->model->getReservaConDatos($idReserva);
+
+            if (!$reserva) {
+
+                http_response_code(404);
+
+                view(
+                    'errors/not-found.view',
+                    array_merge(
+                        ['error_message' => 'La reserva no existe.'],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            $usuarioActual = (int) $this->usuario->getUserId();
+
+            $estadoActual = $reserva['estado_reserva'];
+
+            $esPropietario = $usuarioActual === (int) $reserva['id_propietario'];
+
+            $esSolicitante = $usuarioActual === (int) $reserva['id_usuario_reserva'];
+
+            //Solamente el duenio de la publicacion puede aceptar o rechazar, y solamente si esta pendiente
+            if (in_array($accion, ['aceptar', 'rechazar'], true)) {
+
+                if (!$esPropietario) {
+
+                    http_response_code(403);
+
+                    view(
+                        'errors/forbidden.view',
+                        array_merge(
+                            ['error_message' => 'Solo el dueño de la publicación puede aceptar o rechazar esta reserva.'],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                if ($estadoActual !== 'pendiente') {
+
+                    http_response_code(400);
+
+                    view(
+                        'errors/bads-request.view',
+                        array_merge(
+                            ['error_message' => 'La reserva ya fue procesada y no puede aceptarse ni rechazarse nuevamente.'],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                $nuevoEstado = $accion === 'aceptar' ? 'confirmada' : 'rechazada';
+            }
+
+            //Solamente al solicitante se le permite cancelar una reserva pendiente o confirmada
+            else {
+                if (!$esSolicitante) {
+
+                    http_response_code(403);
+
+                    view(
+                        'errors/forbidden.view',
+                        array_merge(
+                            ['error_message' => 'Solo el usuario que solicitó la reserva puede cancelarla.'],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                if (!in_array($estadoActual, ['pendiente', 'confirmada'], true)) {
+
+                    http_response_code(400);
+
+                    view(
+                        'errors/bads-request.view',
+                        array_merge(
+                            ['error_message' => 'La reserva ya fue cancelada o rechazada y no puede cancelarse nuevamente.'],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                $nuevoEstado = 'cancelada';
+            }
+
+            //Despues de todas las verificaciones es modifica la base de datos
+            $this->model->actualizarEstadoReserva($idReserva, $nuevoEstado);
+
+            $this->logger->info(
+                'Estado de reserva actualizado.',
+                [
+                    'reserva_id' => $idReserva,
+                    'estado_anterior' => $estadoActual,
+                    'estado_nuevo' => $nuevoEstado,
+                    'usuario_id' => $usuarioActual
+                ]
+            );
+
+            redirect('mis_publicaciones/reservas');
+
+        } catch (Exception $e) {
+
+            $this->logger->error(
+                'Error al actualizar el estado de una reserva.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo actualizar el estado de la reserva.'],
+                    $this->menuAndSession
+                )
+            );
         }
     }
 

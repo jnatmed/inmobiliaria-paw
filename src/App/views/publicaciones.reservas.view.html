@@ -37,9 +37,23 @@
                                     <td>{{ reserva.estado_reserva | e }}</td>
                                     <td>{{ reserva.nota | e }}</td>
                                     <td>
-                                        <a class="reservas-accion" href="/mis_publicaciones/reserva/aceptar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Aceptar</a> |
-                                        <a class="reservas-accion" href="/mis_publicaciones/reserva/rechazar?id_pub={{ reserva.id_pub }}&id_reserva={{ reserva.id_reserva }}">Rechazar</a> |
-                                        <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_pub }}">Ver</a>
+                                        {% if reserva.estado_reserva == 'pendiente' %}
+
+                                            <form action="/mis_publicaciones/reserva/aceptar" method="POST" class="form-accion-inline">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+
+                                                <button type="submit" class="reservas-accion"> Aceptar </button>
+                                            </form>
+
+                                            <form action="/mis_publicaciones/reserva/rechazar" method="POST" class="form-accion-inline">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+
+                                                <button type="submit"class="reservas-accion"> Rechazar </button>
+                                            </form>
+
+                                        {% endif %}
+
+                                        <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_pub }}"> Ver </a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -75,8 +89,16 @@
                                         <td>{{ reserva.estado_reserva | e }}</td>
                                         <td>{{ reserva.notas | e }}</td>
                                         <td>
-                                            <a class="reservas-accion" href="/mis_publicaciones/reserva/cancelar?id_pub={{ reserva.id_publicacion }}&id_reserva={{ reserva.id }}">Cancelar</a> |
-                                            <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">Ver</a>
+                                            {% if reserva.estado_reserva in ['pendiente', 'confirmada'] %}
+
+                                                <form action="/mis_publicaciones/reserva/cancelar" method="POST" class="form-accion-inline">
+                                                    <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                    <button type="submit" class="reservas-accion"> Cancelar </button>
+                                                </form>
+
+                                            {% endif %}
+
+                                            <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}"> Ver </a>
                                         </td>
                                     </tr>
                                 {% endif %}

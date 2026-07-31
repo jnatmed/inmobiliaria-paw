@@ -135,9 +135,9 @@ $router->post('/publicaciones/gestionar/rechazar', 'PublicacionController@actual
 
 $router->post('/publicacion/reservar', 'ReservasController@reservarAlojamiento');
 $router->get('/mis_publicaciones/reservas', 'ReservasController@verReservas'); // hecha
-$router->get('/mis_publicaciones/reserva/aceptar', 'ReservasController@actualizarEstadoReserva'); // hecha
-$router->get('/mis_publicaciones/reserva/cancelar', 'ReservasController@actualizarEstadoReserva'); // hecha
-$router->get('/mis_publicaciones/reserva/rechazar', 'ReservasController@actualizarEstadoReserva'); // hecha
+$router->post('/mis_publicaciones/reserva/aceptar','ReservasController@actualizarEstadoReserva');
+$router->post('/mis_publicaciones/reserva/cancelar','ReservasController@actualizarEstadoReserva');
+$router->post('/mis_publicaciones/reserva/rechazar','ReservasController@actualizarEstadoReserva');
 $router->get('/api/publicaciones', 'PublicacionController@apiPublicaciones');
 $router->get('/reservas/intervalos', 'ReservasController@obtenerIntervalosReserva');
 

@@ -587,6 +587,56 @@ class QueryBuilder
         }
     }
 
+    public function getReservaConDatos(int $idReserva): ?array{
+        
+        $sql = "
+            SELECT
+                reserva.id,
+                reserva.id_publicacion,
+                reserva.id_usuario_reserva,
+                reserva.fecha_inicio,
+                reserva.fecha_fin,
+                reserva.precio_por_noche,
+                reserva.estado_reserva,
+                reserva.notas,
+
+                publicacion.id_usuario AS id_propietario,
+                publicacion.nombre_alojamiento,
+
+                propietario.email AS email_propietario,
+                propietario.nombre AS nombre_propietario,
+
+                solicitante.email AS email_solicitante,
+                solicitante.nombre AS nombre_solicitante
+
+            FROM reservas_publicacion reserva
+
+            INNER JOIN publicaciones publicacion
+                ON publicacion.id = reserva.id_publicacion
+
+            INNER JOIN usuarios propietario
+                ON propietario.id = publicacion.id_usuario
+
+            LEFT JOIN usuarios solicitante
+                ON solicitante.id = reserva.id_usuario_reserva
+
+            WHERE reserva.id = :id_reserva
+
+            LIMIT 1
+        ";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindValue(':id_reserva', $idReserva, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        $reserva = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $reserva ?: null;
+    }
+
+
     public function update($table, $data, $where)
     {
         $set = [];

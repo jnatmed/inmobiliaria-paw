@@ -55,28 +55,29 @@ class ReservasCollection extends Model
         }
     }
 
-    public function actualizarEstadoReserva($idReserva, $accion)
-    {
-        try {
+    public function getReservaConDatos(int $idReserva): ?array{
 
-            if ($accion === 'aceptar') {
-                $nuevoEstado = 'confirmada';
-            }
-            if ($accion === 'cancelar') {
-                $nuevoEstado = 'cancelada';
-            }
-            if ($accion === 'rechazar') {
-                $nuevoEstado = 'rechazada';
-            }
+        return $this->queryBuilder->getReservaConDatos($idReserva);
 
-            $this->queryBuilder->update(
-                'reservas_publicacion',
-                ['estado_reserva' => $nuevoEstado],
-                ['id' => $idReserva]
-            );
-        } catch (Exception $e) {
-            throw new Exception("Error al aceptar la reserva: " . $e->getMessage());
+    }
+
+    public function actualizarEstadoReserva(int $idReserva, string $nuevoEstado): void {
+        
+        $estadosPermitidos = [
+            'confirmada',
+            'cancelada',
+            'rechazada'
+        ];
+
+        if (!in_array($nuevoEstado, $estadosPermitidos, true)) {
+            throw new Exception('El nuevo estado de la reserva no es válido.');
         }
+
+        $this->queryBuilder->update(
+            'reservas_publicacion',
+            ['estado_reserva' => $nuevoEstado],
+            ['id' => $idReserva]
+        );
     }
 
     public function reservarAlojamiento(Reserva $reserva)
