@@ -156,6 +156,8 @@
                 </section>
             </form>
 
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             {% if resultadoContacto is not null %}
                 <div class="overlay">
                     <article class="msj_reserva">

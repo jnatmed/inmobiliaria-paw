@@ -20,6 +20,9 @@
             <form action="/iniciar-sesion" method="post">
                 <label>{{ exito }}</label>
                 <input type="submit" value="INICIAR SESIÓN">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             </form>
         </section>
 

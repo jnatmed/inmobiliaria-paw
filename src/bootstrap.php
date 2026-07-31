@@ -150,7 +150,7 @@ $router->post('/enviar-msj-contactanos', 'PageController@contacto');
  */
 $router->get('/iniciar-sesion', 'UsuarioController@login');
 $router->post('/iniciar-sesion', 'UsuarioController@login');
-$router->get('/cerrar-sesion', 'UsuarioController@logout');
+$router->post('/cerrar-sesion', 'UsuarioController@logout');
 $router->get('/recuperar-contrasenia', 'UsuarioController@resetPassword');
 $router->post('/recuperar-contrasenia', 'UsuarioController@resetPassword');
 

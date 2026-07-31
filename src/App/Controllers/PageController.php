@@ -74,6 +74,9 @@ class PageController extends Controller
     // Para el form de contacto del home
     public function contacto()
     {
+
+        $this->usuario->chequearCsrf();
+
         $nombre = sanitize($this->request->get('nombre'), inputName: 'nombre');
         $apellido = sanitize($this->request->get('apellido'), inputName: 'apellido');
         $telefono = sanitize($this->request->get('telefono'), inputName: 'telefono');

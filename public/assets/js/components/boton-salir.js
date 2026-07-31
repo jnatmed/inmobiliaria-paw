@@ -50,7 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
                       button.classList.remove("falling");
                       updateButtonState(button, "default");
 
-                      window.location.href = "/cerrar-sesion";                       
+                      const form = button.closest(".form-logout");
+                      
+                      if (form){
+                        form.submit();
+                      }
 
 
                     }, 50);

@@ -42,6 +42,9 @@
                                             method="POST"
                                             class="form-accion-inline"
                                         >
+
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                                             <input
                                                 type="hidden"
                                                 name="id_pub"
@@ -61,6 +64,9 @@
                                             method="POST"
                                             class="form-accion-inline"
                                         >
+
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                                             <input
                                                 type="hidden"
                                                 name="id_pub"

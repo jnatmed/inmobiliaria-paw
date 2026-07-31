@@ -27,6 +27,9 @@
                     <input type="email" class="input-form-busqueda" id="cambiar-mail" name="email" value="{{ usuario.email|escape }}">
                     <input type="submit" id="actualizar-mail" value="Actualizar">
                 </form>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             </section>    
         </section>
     </main>

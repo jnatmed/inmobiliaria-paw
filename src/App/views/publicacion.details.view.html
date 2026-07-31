@@ -136,6 +136,9 @@
                 {% endif %}
 
                 <form action="/publicacion/contactar-al-duenio-form?id_pub={{ publicacion.id }}" method="post">
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                     <input type="text" value="{{ urlPublicacion }}" name="urlPublicacion" hidden>
                     <input type="text" value="{{ publicacion.email }}" name="emailDuenio" hidden>
                     <input type="email" class="input-form" placeholder="Email: *" name="email-interesado" required>
@@ -143,6 +146,9 @@
                     <textarea name="texto-consulta" placeholder="Hola, vi esta propiedad en Pawperties y quiero que me contacten. Gracias." ></textarea>
                     <input type="submit" value="Contactar" class="btn-contactar">
                 </form>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                 <a class="whatsapp-link" href="https://wa.me/{{ publicacion.telefono | e }}/?text=Hola, vi esta propiedad en Pawproperties y quiero más información por WhatsApp. {{ urlPublicacion }}" target="_blank">
                     <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                 </a>
@@ -214,6 +220,8 @@
             
                 <button type="submit" class="submit-button">Enviar calificación</button>
             </form>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             
         {% endif %}        
         

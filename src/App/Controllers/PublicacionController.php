@@ -235,6 +235,9 @@ class PublicacionController extends Controller
 
     public function contactarAlDuenio()
     {
+
+        $this->usuario->chequearCsrf();
+
         global $config;
 
         $emailInteresado = htmlspecialchars($this->request->get('email-interesado'));
@@ -384,6 +387,8 @@ class PublicacionController extends Controller
             $this->usuario->chequearTiposPermitidos([1, 3]);
 
             if ($this->request->method() == 'POST') {
+
+                $this->usuario->chequearCsrf();
 
                 $errors = [];
                 
@@ -677,6 +682,8 @@ class PublicacionController extends Controller
             
             $this->usuario->chequearTiposPermitidos([2]);
 
+            $this->usuario->chequearCsrf();
+
             $accion = $this->request->getSegments(2);
 
             if (!in_array($accion, ['aceptar', 'rechazar'],true)) {
@@ -820,7 +827,9 @@ class PublicacionController extends Controller
 
     public function guardarComentario(){
         
-    $this->usuario->chequearSesion();
+        $this->usuario->chequearSesion();
+
+        $this->usuario->chequearCsrf();
 
         $errores = [];
 

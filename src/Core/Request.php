@@ -43,6 +43,24 @@ class Request
         return $_POST;
     }
 
+    public function csrfToken(): string
+    {
+        if (empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        return $_SESSION['csrf_token'];
+    }
+
+    public function csrfTokenEsValido(): bool
+    {
+        $tokenSesion = $_SESSION['csrf_token'] ?? null;
+
+        $tokenRecibido = $this->post('csrf_token');
+
+        return is_string($tokenSesion) && is_string($tokenRecibido) && hash_equals($tokenSesion, $tokenRecibido);
+    }
+
     public function getSegments($numeroSegmento)
     {
         // Obtener la URL sin los parámetros de consulta

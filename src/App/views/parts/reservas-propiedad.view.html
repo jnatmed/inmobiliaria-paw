@@ -11,6 +11,9 @@
                     <input required type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
                     <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
                 </form>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             </article>
         {% endif %}
 

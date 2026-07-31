@@ -152,6 +152,9 @@
                 <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>
         </form>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
     </main>
 
     {% include 'parts/footer.view.html' %}

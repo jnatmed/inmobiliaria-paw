@@ -21,7 +21,7 @@ class UsuarioController extends Controller
 
     public function __construct()
     {
-        global $log;
+        global $log, $twig;
 
         parent::__construct();
 
@@ -46,6 +46,10 @@ class UsuarioController extends Controller
         }
 
         $this->verificador = new Verificador;
+
+        $csrfToken = $this->request->csrfToken();
+        $twig->addGlobal('csrf_token', $csrfToken);
+
         $this->menu = $this->adjustMenuForSession($this->menu);
 
         $this->menuAndSession = [
@@ -56,8 +60,9 @@ class UsuarioController extends Controller
             'tipo_usuario' => $this->getUserType(),
             'email' => $this->getEmailAddress(),
             'nombre' => $this->getUserName(),
-            'apellido' =>$this->getApellido(),
-            'telefono' =>$this->getTelefono()
+            'apellido' => $this->getApellido(),
+            'telefono' => $this->getTelefono(),
+            'csrf_token' => $csrfToken
         ];
     }
 
@@ -169,6 +174,40 @@ class UsuarioController extends Controller
         return isset($_SESSION['tipo']) ? (int) $_SESSION['tipo'] : null;
     }
 
+    public function chequearCsrf(): void{
+
+        if ($this->request->method() !== 'POST') {
+            return;
+        }
+
+        if ($this->request->csrfTokenEsValido()) {
+            return;
+        }
+
+        $this->logger->warning(
+            'Solicitud POST rechazada por token CSRF inválido.',
+            [
+                'usuario_id' => $this->getUserId(),
+
+                'ruta' => $this->request->uri()
+            ]
+        );
+
+        http_response_code(403);
+
+        view(
+            'errors/forbidden.view',
+            array_merge(
+                [
+                    'error_message' => 'La solicitud no es válida o expiró. ' . 'Recargá la página e intentá nuevamente.'
+                ],
+                $this->menuAndSession
+            )
+        );
+
+        exit;
+    }
+
     public function chequearTiposPermitidos(array $tiposPermitidos): void{
 
         //Primero se verifica que exista una sesión. Si no existe, chequearSesion() redirige al login.
@@ -211,6 +250,9 @@ class UsuarioController extends Controller
         $referer = $this->request->referer();
 
         if ($this->request->method() === 'POST') {
+
+            $this->chequearCsrf();
+
             $errores = [];
             $email = $this->verificador->email($this->request->post('email'), 'email', $errores);
 
@@ -342,6 +384,9 @@ class UsuarioController extends Controller
         global $log;
 
         if ($this->request->method() === 'POST') {
+
+            $this->chequearCsrf();
+
             $errores = [];
 
             $valoresFormulario = [
@@ -505,6 +550,9 @@ class UsuarioController extends Controller
     
     public function logout()
     {
+
+        $this->chequearCsrf();
+
         // Iniciar la sesión si no está iniciada
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -582,6 +630,8 @@ class UsuarioController extends Controller
     public function resetPassword()
     {
         if ($this->request->method() == 'POST') {
+
+            $this->chequearCsrf();
 
             if ($this->request->get('user_id') !== null) {
 
@@ -717,6 +767,10 @@ class UsuarioController extends Controller
 
     public function update()
     {
+
+        $this->chequearSesion();
+        $this->chequearCsrf();
+
         $email = $this->request->get('email');
 
         $resultUpdate = $this->model->updateEmail($this->getUserId(), $email);

@@ -82,6 +82,8 @@ class ReservasController extends Controller
             // Solamente usuarios normales
             $this->usuario->chequearTiposPermitidos([1, 3]);
 
+            $this->usuario->chequearCsrf();
+
             $accion = $this->request->getSegments(2);
 
             if (!in_array($accion,['aceptar', 'rechazar', 'cancelar'], true)) {
@@ -298,6 +300,8 @@ class ReservasController extends Controller
     public function reservarAlojamiento(){
 
         $this->usuario->chequearTiposPermitidos([1, 3]);
+
+        $this->usuario->chequearCsrf();
 
         $errores = [];
 

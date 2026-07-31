@@ -43,6 +43,9 @@
                     <p class="error-registro">{{ error|escape }}</p>
                 {% endif %}
             </form>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
         </section>
 
     </main>

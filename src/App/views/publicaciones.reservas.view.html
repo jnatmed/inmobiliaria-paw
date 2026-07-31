@@ -40,12 +40,19 @@
                                         {% if reserva.estado_reserva == 'pendiente' %}
 
                                             <form action="/mis_publicaciones/reserva/aceptar" method="POST" class="form-accion-inline">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                                                 <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
 
                                                 <button type="submit" class="reservas-accion"> Aceptar </button>
+                                                
                                             </form>
 
                                             <form action="/mis_publicaciones/reserva/rechazar" method="POST" class="form-accion-inline">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                                                 <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
 
                                                 <button type="submit" class="reservas-accion"> Rechazar </button>
@@ -92,6 +99,9 @@
                                             {% if reserva.estado_reserva in ['pendiente', 'confirmada'] %}
 
                                                 <form action="/mis_publicaciones/reserva/cancelar" method="POST" class="form-accion-inline">
+
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                                    
                                                     <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
                                                     <button type="submit" class="reservas-accion"> Cancelar </button>
                                                 </form>
