@@ -19,6 +19,8 @@
         <section class="login_form">
             <form action="/registrarse" method="post" novalidate>
 
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                 <label for="email">Email (*)</label>
                 <input required type="email" name="email" id="email" value="{{ valores.email|default('') }}" placeholder="Ingrese su correo electrónico">
 
@@ -43,8 +45,6 @@
                     <p class="error-registro">{{ error|escape }}</p>
                 {% endif %}
             </form>
-
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
         </section>
 

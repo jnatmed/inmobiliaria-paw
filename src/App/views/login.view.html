@@ -16,6 +16,9 @@
 
         <section class="login_form">
             <form action="/iniciar-sesion" method="post">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                 <label for="email">Email</label>
                 <input required type="email" name="email" id="email" placeholder="Ingrese su correo electrónico">
                 
@@ -24,8 +27,6 @@
                 
                 <input type="submit" value="INICIAR SESION">
             </form>
-
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
             <form action="/registrarse" method="get">
                 <input type="submit" value="REGISTRARSE">

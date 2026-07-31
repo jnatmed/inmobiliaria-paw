@@ -4,6 +4,9 @@
         {% if publicacion.id_usuario != idUserSesion and isUserLoggedIn and tipo_usuario in [1, 3]  %}  
             <article class="container-form">       
                 <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                     <input type="hidden" name="id_publicacion" value="{{ publicacion.id }}">
                     <label for="input-desde" class="lbl-desde">Desde</label>
                     <input required type="date" name="input-desde" id="input-desde" class="input-form-reserva">
@@ -11,8 +14,6 @@
                     <input required type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
                     <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
                 </form>
-
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
             </article>
         {% endif %}

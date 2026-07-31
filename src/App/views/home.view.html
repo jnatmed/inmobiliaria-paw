@@ -114,6 +114,9 @@
             </section>
 
             <form action="/enviar-msj-contactanos" class="form-contactanos" method="post">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                 <section class="form_campos">
                     <fieldset class="form-group">
                         <label for="input-nombre">Nombre:</label>
@@ -155,8 +158,6 @@
                     <input type="submit" id="input-submit-enviar" value="Enviar">
                 </section>
             </form>
-
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
             {% if resultadoContacto is not null %}
                 <div class="overlay">

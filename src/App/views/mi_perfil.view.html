@@ -23,13 +23,13 @@
                 <p><strong>Apellido:</strong> {{ usuario.apellido|escape }}</p>
                 <p><strong>Teléfono:</strong> {{ usuario.telefono|escape }}</p>
                 <form action="/perfil/update" method="post">
-                    <label for="email"><strong>Email:</strong></label>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <label for="cambiar-mail"><strong>Email:</strong></label>
                     <input type="email" class="input-form-busqueda" id="cambiar-mail" name="email" value="{{ usuario.email|escape }}">
                     <input type="submit" id="actualizar-mail" value="Actualizar">
                 </form>
-
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
             </section>    
         </section>
     </main>

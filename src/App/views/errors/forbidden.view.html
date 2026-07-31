@@ -19,7 +19,7 @@
             </p>
 
             <p class="error-lead">
-                No tenés permiso para realizar esta acción.
+                {{ error_lead | default('No tenés permiso para realizar esta acción.') }}
             </p>
 
             <p>

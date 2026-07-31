@@ -199,6 +199,7 @@ class UsuarioController extends Controller
             'errors/forbidden.view',
             array_merge(
                 [
+                    'error_lead' => 'La solicitud fue rechazada',
                     'error_message' => 'La solicitud no es válida o expiró. ' . 'Recargá la página e intentá nuevamente.'
                 ],
                 $this->menuAndSession
@@ -235,7 +236,7 @@ class UsuarioController extends Controller
             'errors/forbidden.view',
             array_merge(
                 [
-                    'error_message' => 'Tu usuario no tiene permiso para realizar esta acción.'
+                    'error_message' => 'No tenés permiso para realizar esta acción.'
                 ],
                 $this->menuAndSession
             )

@@ -147,8 +147,6 @@
                     <input type="submit" value="Contactar" class="btn-contactar">
                 </form>
 
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
                 <a class="whatsapp-link" href="https://wa.me/{{ publicacion.telefono | e }}/?text=Hola, vi esta propiedad en Pawproperties y quiero más información por WhatsApp. {{ urlPublicacion }}" target="_blank">
                     <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                 </a>
@@ -193,6 +191,9 @@
 
         {% if isUserLoggedIn %}
             <form class="rating-form" action="/publicacion/guardarComentario" method="POST">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
                 <fieldset class="rating">
                     <legend>Califica esta propiedad:</legend>
                     <input type="radio" id="star5" name="rating" value="5" required />
@@ -220,8 +221,6 @@
             
                 <button type="submit" class="submit-button">Enviar calificación</button>
             </form>
-
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             
         {% endif %}        
         

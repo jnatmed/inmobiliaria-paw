@@ -299,7 +299,10 @@ class ReservasController extends Controller
     {
         try {
             $id_publicacion = $this->request->get('id_pub');
-            $this->logger->info("id_publicacion: $id_publicacion");
+            $this->logger->debg(
+                'Intervalos de reserva solicitados.',
+                ['publicacion_id' => (int) $id_publicacion]
+            );
 
             // Obtén las reservas usando el modelo
             $periodos = $this->model->getReservas($id_publicacion);

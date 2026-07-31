@@ -19,6 +19,8 @@
 
         <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data">
 
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             {% if errors is defined and errors is not empty %}
             <article>
                     <ul>
@@ -152,8 +154,6 @@
                 <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
             </fieldset>
         </form>
-
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
     </main>
 
