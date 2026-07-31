@@ -94,11 +94,8 @@ class PublicacionCollection extends Model
     {
         try {
             $data = $Publicacion->getAll();
-            $this->logger->info("data : ", [$data]);
 
             list($idPublicacionGenerado, $resultado) = $this->queryBuilder->insert($this->table, $data);
-
-            $this->logger->info("Info Publicacion (Method - create): ", [$idPublicacionGenerado, $resultado]);
 
             return [$idPublicacionGenerado, $resultado];
         } catch (PDOException $e) {

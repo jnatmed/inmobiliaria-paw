@@ -553,9 +553,8 @@ class PublicacionController extends Controller
                     $publicacionObj = $ObjPublicacion->getEstadoConstructor();
 
                     if ($publicacionObj['exito']) {
-                        // Verificar si $_FILES está vacío
-                        $this->logger->info("Objeto publicacion instanciado con exito: ", [$publicacionObj]);
 
+                        // Verificar si $_FILES está vacío
                         if (empty($_FILES['imagenes'])) {
                             view('publicacion.new.view', array_merge(
                                 $this->menuAndSession,
@@ -579,14 +578,19 @@ class PublicacionController extends Controller
                             // Manejar la inserción de datos
                             [$idPublicacionGenerado, $resultado] = $this->model->create($ObjPublicacion);
 
-                            $this->logger->info("Info Publicacion: (method - new)", [$idPublicacionGenerado, $resultado]);
+                            $this->logger->info(
+                                'Publicacion creada.',
+                                [
+                                    'publicacion_id' => $idPublicacionGenerado,
+                                    'usuario_id' => $idUser
+                                ]
+                            );
 
 
                             $resultadoSubidaImagenes = $imagenesCollection->guardarImagenes($idPublicacionGenerado, $idUser);
 
                             if ($resultadoSubidaImagenes['exito']) {
 
-                                $this->logger->info("imagenesPublicacion: ", [$imagenesCollection->getImagenesCollection()]);
                                 // Inserta todas las imágenes en la base de datos en una única operación
                                 $this->model->insertMany('imagenes_publicacion', $imagenesCollection->getImagenesCollection());
 
