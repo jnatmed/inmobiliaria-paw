@@ -164,17 +164,6 @@
     color: white;
 }
 
-/* Estilos para las acciones */
-.reservas-accion {
-    color: #e74c3c;
-    text-decoration: none;
-    margin-right: 10px;
-}
-
-.reservas-accion:hover {
-    color: #c0392b;
-}
-
 /* Transiciones */
 details[open] .detalles-reservas {
     background-color: #ecf0f1;
@@ -188,6 +177,19 @@ details[open] .detalles-reservas {
 }
 
 .form-accion-inline button.reservas-accion {
+    font: inherit;
+    cursor: pointer;
+}
+
+/*Estilo acciones*/
+.form-accion-inline {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.form-accion-inline button.reservas-accion {
+    background-color: transparent;
     font: inherit;
     cursor: pointer;
 }

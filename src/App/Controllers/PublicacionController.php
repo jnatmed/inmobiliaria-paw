@@ -870,7 +870,7 @@ class PublicacionController extends Controller
             http_response_code(400);
 
             view(
-                'errors/bad-request.view',
+                'errors/bads-request.view',
                 array_merge(
                     ['error_message' => 'El identificador de la publicación no es válido.'],
                     $this->menuAndSession

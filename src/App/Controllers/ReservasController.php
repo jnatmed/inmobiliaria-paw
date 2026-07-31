@@ -225,6 +225,27 @@ class ReservasController extends Controller
             //Despues de todas las verificaciones es modifica la base de datos
             $this->model->actualizarEstadoReserva($idReserva, $nuevoEstado);
 
+            $correoEnviado = $this->mailer->comunicarCambioEstadoReserva($reserva, $nuevoEstado);
+
+            if ($correoEnviado) {
+                $this->logger->info(
+                    'Correo de cambio de estado de reserva enviado.',
+                    [
+                        'reserva_id' => $idReserva,
+                        'estado_nuevo' => $nuevoEstado
+                    ]
+                );
+            } else {
+                //La reserva ya fue actualizada
+                $this->logger->warning(
+                    'El estado de la reserva cambió, pero el correo no pudo enviarse.',
+                    [
+                        'reserva_id' => $idReserva,
+                        'estado_nuevo' => $nuevoEstado
+                    ]
+                );
+            }
+
             $this->logger->info(
                 'Estado de reserva actualizado.',
                 [
