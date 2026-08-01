@@ -277,7 +277,13 @@ class QueryBuilder
                 return $result;
             } else {
                 // Si no se encuentra la imagen, devuelve false
-                $this->logger->info("No se encontró ninguna imagen con los IDs proporcionados.", [$result]);
+                $this->logger->debug(
+                    'No se la imagen solicitada.', 
+                    [
+                        'publicacion_id' => $id_publicacion,
+                        'imagen_id' => (int)$id_imagen
+                    ]
+                );
                 return false;
             }
         } catch (PDOException $e) {
@@ -314,7 +320,10 @@ class QueryBuilder
             return $result;
         } else {
             // Si no se encuentra la imagen, devuelve false
-            $this->logger->info("No se encontró ninguna imagen con los IDs proporcionados.", [$result]);
+            $this->logger->debug(
+                'No se encontró ninguna imagen con los IDs proporcionados.', 
+                ['publicacion_id' => (int) $idPublicacion]
+            );
             return false;
         }
 }
