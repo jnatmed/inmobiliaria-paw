@@ -108,50 +108,64 @@ class Mailer extends Model
         return $resultadoSend;
     }
 
-    public function comunicarAlInteresadoYalPropietario(Reserva $reserva, $nroReserva, $userName, $emailAddress, $correo_duenio)
-    {
+    public function comunicarAlInteresadoYalPropietario(Reserva $reserva, $nroReserva, $userName, $emailAddress, $correoDuenio) {
 
-        // Mensaje de correo con estilos en línea
-        $body = view('solicitudDeReservaAlojamiento', [
-            'nroReserva' => $nroReserva,
-            'userName' => $userName,
-            'desde' => $reserva->getFechaInicio(),
-            'hasta' => $reserva->getFechaFin(),
-            'destino' => 'interesado'
-        ], true);
-
-        // Mensaje de correo con estilos en línea
-        $bodyPropietario = view('solicitudDeReservaAlojamiento', [
-            'nroReserva' => $nroReserva,
-            'userName' => $userName,
-            'desde' => $reserva->getFechaInicio(),
-            'hasta' => $reserva->getFechaFin(),
-            'destino' => 'propietario'
-        ], true);
-
-        // aca deberia enviar un correo al usuario que esta logueado       
-        $resultadoSend = $this->send(
-            $emailAddress,
-            "Solicitud de Reserva Enviada para el usuario: $userName ",
-            $body,
+        $bodyInteresado = view(
+            'solicitudDeReservaAlojamiento',
+            [
+                'nroReserva' => $nroReserva,
+                'userName' => $userName,
+                'desde' => $reserva->getFechaInicio(),
+                'hasta' => $reserva->getFechaFin(),
+                'destino' => 'interesado'
+            ],
+            true
         );
 
-        if ($resultadoSend) {
-            $this->logger->info("Correo enviado con exito ");
+        $bodyPropietario = view(
+            'solicitudDeReservaAlojamiento',
+            [
+                'nroReserva' => $nroReserva,
+                'userName' => $userName,
+                'desde' => $reserva->getFechaInicio(),
+                'hasta' => $reserva->getFechaFin(),
+                'destino' => 'propietario'
+            ],
+            true
+        );
+
+        $correoInteresadoEnviado =
+            $this->send(
+                $emailAddress,
+                'Solicitud de reserva enviada ' . "para el usuario: $userName",
+                $bodyInteresado
+            );
+
+        $correoPropietarioEnviado =
+            $this->send(
+                $correoDuenio,
+                'Solicitud de reserva del usuario: ' . $userName,
+                $bodyPropietario
+            );
+
+        if ($correoInteresadoEnviado && $correoPropietarioEnviado) {
+
+            $this->logger->info(
+                'Correos de solicitud de reserva enviados.',
+                ['reserva_id' => $nroReserva]
+            );
         } else {
-            $this->logger->info("ERROR al enviar el Correo ");
+            $this->logger->warning(
+                'Uno o más correos de solicitud de reserva no pudieron enviarse.',
+                [
+                    'reserva_id' => $nroReserva,
+                    'correo_solicitante' => $correoInteresadoEnviado,
+                    'correo_propietario' => $correoPropietarioEnviado
+                ]
+            );
         }
-        // Limpia la lista de destinatarios antes de enviar el siguiente correo
-        $this->clearAddresses();
 
-        $resultadoSendPropietario = $this->send(
-            $correo_duenio,
-            "Solicitud de Reserva del usuario: $userName ",
-            $bodyPropietario,
-        );
-
-
-        $this->logger->info("resultado reservar alojamiento: ", [$resultadoSendPropietario]);
+        return $correoInteresadoEnviado && $correoPropietarioEnviado;
     }
 
 

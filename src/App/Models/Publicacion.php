@@ -74,7 +74,6 @@ class Publicacion extends Model
                 } elseif (isset($direccionArray['lat']) && isset($direccionArray['lng'])) {
                     $this->setLatitud($direccionArray['lat'] ?? null);
                     $this->setLongitud($direccionArray['lng'] ?? null);
-                    $this->logger->info("Latitud y longitud seteados..", [$this->getLongitud(), $this->getLatitud()]);
                 } else {
                     $this->erroresCollection[] = "Error al decodificar JSON o faltan claves 'lat' o 'lng'.";
                     $this->exito = false;

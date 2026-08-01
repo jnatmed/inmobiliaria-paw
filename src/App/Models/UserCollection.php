@@ -145,9 +145,7 @@ class UserCollection extends Model
 
     public function findById($id)
     {
-        global $log;
         try {
-            $log->info("findById id: ", [$id]);
             $result = $this->queryBuilder->selectUserAndTipo($id);
             if ($result && count($result) > 0) {
                 return $result[0];

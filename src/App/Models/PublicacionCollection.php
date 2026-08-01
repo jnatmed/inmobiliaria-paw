@@ -336,8 +336,6 @@ class PublicacionCollection extends Model
                 return $imagen->load();
             }, $imagenesCollection);
 
-            $log->info("data en capa model: ", $imagenesData);
-
             // Realizar la inserción utilizando el método de queryBuilder
             $result = $this->queryBuilder->insertMany($table, $imagenesData);
 
