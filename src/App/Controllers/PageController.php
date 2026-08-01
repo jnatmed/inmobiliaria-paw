@@ -44,6 +44,7 @@ class PageController extends Controller
         $this->mailer->setLogger($log);
     }
 
+    
     public function index()
     {
 
