@@ -22,6 +22,19 @@
                 <p><strong>Nombre:</strong> {{ usuario.nombre|escape }}</p>
                 <p><strong>Apellido:</strong> {{ usuario.apellido|escape }}</p>
                 <p><strong>Teléfono:</strong> {{ usuario.telefono|escape }}</p>
+
+                {% if resultadoPerfil is not null %}
+                    {% if resultadoPerfil.exito %}
+                        <p class="msj_exito">
+                            {{ resultadoPerfil.mensaje }}
+                        </p>
+                    {% else %}
+                        <p class="msj_error">
+                            {{ resultadoPerfil.mensaje }}
+                        </p>
+                    {% endif %}
+                {% endif %}
+
                 <form action="/perfil/update" method="post">
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">

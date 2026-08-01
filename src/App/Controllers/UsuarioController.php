@@ -583,34 +583,49 @@ class UsuarioController extends Controller
         redirect('');
     }
 
-    public function perfil()
-    {
+    public function perfil(){
+
+        $this->chequearSesion();
 
         $titulo = 'PAWPERTIES | PERFIL';
 
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();  // Inicia la sesión si no está iniciada
+        $userId = (int) $this->getUserId();
+
+        $usuario = $this->model->findById($userId);
+
+        if (!$usuario) {
+
+            http_response_code(404);
+
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'error_message' => 'El usuario no existe.'
+                    ],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
         }
 
-        $userId = $this->getUserId(); // Ajusta esto según cómo manejes la sesión
+        $resultadoPerfil = $this->request->getResultadoGuardado('resultadoPerfil');
 
-        if ($userId !== null) {
-            // Obtener los datos del usuario
-            $usuario = $this->model->findById($userId);
+        $this->request->eliminarResultadoEnSesion('resultadoPerfil');
 
-            // Pasar los datos del usuario a la vista
-            view('mi_perfil.view', array_merge(
+        view(
+            'mi_perfil.view',
+            array_merge(
                 [
                     'usuario' => $usuario,
-                    'titulo' => $titulo
+                    'titulo' => $titulo,
+                    'resultadoPerfil' => $resultadoPerfil
                 ],
                 $this->menuAndSession
-            ));
-        } else {
-            // Redirigir a la página de inicio si no está logueado
-
-            redirect('iniciar-sesion');
-        }
+            )
+        );
     }
 
 
@@ -932,15 +947,97 @@ class UsuarioController extends Controller
         );
     }
 
-    public function update()
-    {
+    public function update(){
 
         $this->chequearSesion();
         $this->chequearCsrf();
 
-        $email = $this->request->get('email');
+        $errores = [];
 
-        $resultUpdate = $this->model->updateEmail($this->getUserId(), $email);
+        $email = $this->verificador->email(
+            $this->request->post('email'),
+            'email',
+            $errores
+        );
+
+        if (!empty($errores)) {
+            $this->request->setResultadoEnSesion(
+                'resultadoPerfil',
+                [
+                    'exito' => false,
+                    'mensaje' => implode(' ', $errores)
+                ]
+            );
+
+            redirect('usuario/mi_perfil');
+        }
+
+        try {
+            $usuarioConEseCorreo = $this->model->buscarCorreoEnUsuarios($email);
+
+            if ($usuarioConEseCorreo['exito'] && ((int) $usuarioConEseCorreo['usuario']['id'] !== (int) $this->getUserId())) {
+
+                $this->request->setResultadoEnSesion(
+                    'resultadoPerfil',
+                    [
+                        'exito' => false,
+                        'mensaje' => 'Ese correo ya está utilizado por otro usuario.'
+                    ]
+                );
+
+                redirect('usuario/mi_perfil');
+            }
+
+            $resultado = $this->model->updateEmail(
+                (int) $this->getUserId(),
+                $email
+            );
+
+            if ($resultado['exito']) {
+                
+                //Sincronizar sesion y base de datos
+                $_SESSION['email'] = $email;
+
+                $this->request->setResultadoEnSesion(
+                    'resultadoPerfil',
+                    [
+                        'exito' => true,
+                        'mensaje' => 'El correo se actualizó correctamente.'
+                    ]
+                );
+
+                $this->logger->info(
+                    'Correo del perfil actualizado.',
+                    ['usuario_id' => $this->getUserId()]
+                );
+
+            } else {
+                $this->request->setResultadoEnSesion(
+                    'resultadoPerfil',
+                    [
+                        'exito' => false,
+                        'mensaje' => 'No se pudo actualizar el correo.'
+                    ]
+                );
+            }
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                'Error al actualizar el correo del perfil.',
+                [
+                    'usuario_id' => $this->getUserId(),
+                    'mensaje' => $e->getMessage()
+                ]
+            );
+
+            $this->request->setResultadoEnSesion(
+                'resultadoPerfil',
+                [
+                    'exito' => false,
+                    'mensaje' => 'No se pudo actualizar el correo.'
+                ]
+            );
+        }
 
         redirect('usuario/mi_perfil');
     }
