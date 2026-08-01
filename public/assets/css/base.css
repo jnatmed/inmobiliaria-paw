@@ -495,5 +495,20 @@ textarea {
     color: greenyellow;
 }
 
+/*Mensajes generales de exito y error. Se utilizan en perfil, recuperacion, reservas y otros formularios.*/
 
+.msj_exito {
+    color: white;
+    background-color: #28a745;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+}
 
+.msj_error {
+    color: white;
+    background-color: #dc3545;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+}
