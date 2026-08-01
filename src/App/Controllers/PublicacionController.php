@@ -233,23 +233,99 @@ class PublicacionController extends Controller
     }
 
 
-    public function contactarAlDuenio()
-    {
+    public function contactarAlDuenio(){
 
         $this->usuario->chequearCsrf();
 
-        global $config;
+        $errores = [];
 
-        $emailInteresado = htmlspecialchars($this->request->get('email-interesado'));
-        $telefonoDelInteresado = htmlspecialchars($this->request->get('telefono-interesado'));
-        $textoConsultaDelInteresado = limpiarEntrada($this->request->get('texto-consulta'), true);
-        $emailDuenio = htmlspecialchars($this->request->get('emailDuenio'));
-        $fullUrl = htmlspecialchars($this->request->get('urlPublicacion'));
-        $id_publicacion = htmlspecialchars($this->request->get('id_pub'));
+        $idPublicacion = $this->verificador->entero(
+            $this->request->post('id_publicacion'),
+            'id_publicacion',
+            $errores,
+            1
+        );
 
-        $resultadoSend = $this->mailer->enviarMailAlDuenio($emailInteresado, $telefonoDelInteresado, $textoConsultaDelInteresado, $fullUrl, $emailDuenio);
+        if ($idPublicacion === null) {
+
+            http_response_code(400);
+
+            view(
+                'errors/bads-request.view',
+                array_merge(
+                    ['error_message' => 'El identificador de la publicación no es válido.'],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        $publicacion = $this->model->getOne($idPublicacion);
+
+        if (!$publicacion || (int) $publicacion['estado_id'] !== 2) {
+
+            http_response_code(404);
+
+            view(
+                'errors/not-found.view',
+                array_merge(
+                    ['error_message' => 'La publicación no está disponible.'],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        $emailInteresado = $this->verificador->email(
+            $this->request->post('email-interesado'),
+            'email-interesado',
+            $errores
+        );
+
+        $telefonoInteresado = $this->verificador->telefono(
+            $this->request->post('telefono-interesado'),
+            'telefono-interesado',
+            $errores
+        );
+
+        $textoConsulta = $this->verificador->texto(
+            $this->request->post('texto-consulta'),
+            'texto-consulta',
+            $errores,
+            true,
+            3,
+            2000
+        );
+
+        if (!empty($errores)) {
+            $this->request->setResultadoEnSesion(
+                'resultadoContacto',
+                [
+                    'exito' => false,
+                    'mensaje' => implode(' ', $errores)
+                ]
+            );
+
+            redirect('publicacion/ver?id_pub=' . $idPublicacion);
+        }
+
+        //Datos recuperados directamente desde la base de datos para aumentar confiabilidad
+        $emailDuenio = $publicacion['email'];
+
+        $urlPublicacion = $this->request->host() . '/publicacion/ver?id_pub=' . $idPublicacion;
+
+        $resultadoSend = $this->mailer->enviarMailAlDuenio(
+            $emailInteresado,
+            $telefonoInteresado,
+            $textoConsulta,
+            $urlPublicacion,
+            $emailDuenio
+        );
 
         if ($resultadoSend) {
+
             $this->request->setResultadoEnSesion(
                 'resultadoContacto',
                 [
@@ -260,9 +336,11 @@ class PublicacionController extends Controller
 
             $this->logger->info(
                 'Consulta enviada por correo.',
-                ['publicacion_id' => $id_publicacion]
+                ['publicacion_id' => $idPublicacion]
             );
+
         } else {
+
             $this->request->setResultadoEnSesion(
                 'resultadoContacto',
                 [
@@ -273,12 +351,11 @@ class PublicacionController extends Controller
 
             $this->logger->warning(
                 'No se pudo enviar la consulta por correo.',
-                ['publicacion_id' => $id_publicacion]
+                ['publicacion_id' => $idPublicacion]
             );
         }
 
-        redirect('publicacion/ver?id_pub=' . $id_publicacion);
-
+        redirect('publicacion/ver?id_pub=' . $idPublicacion);
     }
 
     public function listaPublicacionesPropietario()
