@@ -309,6 +309,7 @@ class PublicacionController extends Controller
             );
 
             redirect('publicacion/ver?id_pub=' . $idPublicacion);
+            return;
         }
 
         //Datos recuperados directamente desde la base de datos para aumentar confiabilidad

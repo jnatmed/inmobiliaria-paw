@@ -100,9 +100,16 @@ class UserCollection extends Model
         }
     }
 
-    public function actualizarContrasenia($userId, $hashedPassword) {
+    public function actualizarContrasenia($userId, $password) {
+        
         try {
-            $data = ['contrasenia' => password_hash($password, PASSWORD_DEFAULT)];
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+            if ($passwordHash === false) {
+                throw new Exception('No se pudo generar el hash de la contraseña.');
+            }
+
+            $data = ['contrasenia' => $passwordHash];
 
             $where = ['id' => $userId];
 

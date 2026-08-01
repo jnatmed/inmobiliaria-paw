@@ -970,6 +970,7 @@ class UsuarioController extends Controller
             );
 
             redirect('usuario/mi_perfil');
+            return;
         }
 
         try {
@@ -986,6 +987,7 @@ class UsuarioController extends Controller
                 );
 
                 redirect('usuario/mi_perfil');
+                return;
             }
 
             $resultado = $this->model->updateEmail(
