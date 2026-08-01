@@ -311,6 +311,7 @@ class QueryBuilder
 
         $stmt->bindValue(':id_publicacion', $idPublicacion, PDO::PARAM_INT);
 
+        
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         // Registrar el éxito utilizando el logger
