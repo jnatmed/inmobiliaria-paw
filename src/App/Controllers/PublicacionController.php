@@ -414,40 +414,161 @@ class PublicacionController extends Controller
         }
     }
 
+    private function enviarImagenNoEncontrada(int $statusCode = 404): void {
 
-    public function getImgPublicacion()
-    {
-        $idPublicacion = $this->request->get('id_pub');
-        $idImagen = $this->request->get('id_img');
+        http_response_code($statusCode);
 
-        try {
+        header('X-Content-Type-Options: nosniff');
 
-            // Obtener la imagen de la publicación
-            $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
+        header('Cache-Control: no-store');
 
-            if ($imagenPublicacion === false) {
-                // Si no se encuentra la imagen, devolver un código de error 404
-                http_response_code(404);
-                // exit;
-            }
+        $placeholder = realpath(Imagen::UPLOADDIRECTORY . 'image-not-found.png');
 
-            $mime_type = Imagen::getMimeType($imagenPublicacion['path_imagen']);
+        if ($placeholder !== false && is_file($placeholder)) {
 
+            header('Content-Type: image/png');
 
-            // Establecer el tipo MIME de la imagen y enviarla al cliente
-            header("Content-type: " . $mime_type);
-            echo file_get_contents(Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
-        } catch (Exception $e) {
-            // Manejo de la excepción
-            // Registrar el error utilizando el logger
-            $this->logger->error("Error al obtener la imagen de la publicación: " . $e->getMessage());
+            header('Content-Length: ' . filesize($placeholder));
 
-            $mime_type = Imagen::getMimeType('image-not-found.png');
-            header("Content-type: " . $mime_type);
-            echo file_get_contents(Imagen::UPLOADDIRECTORY . 'image-not-found.png');
+            readfile($placeholder);
+
+            return;
+
         }
+
+        header('Content-Type: text/plain; ' . 'charset=UTF-8');
+
+        echo 'Imagen no disponible.';
+
     }
 
+
+    public function getImgPublicacion(){
+        
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero(
+            $this->request->query('id_pub'),
+            'id_pub',
+            $errores,
+            1
+        );
+
+        $idImagen = null;
+
+        $idImagenRecibido = $this->request->query('id_img');
+
+        if ($idImagenRecibido !== null && $idImagenRecibido !== '') {
+
+            $idImagen = $this->verificador->entero(
+                $idImagenRecibido,
+                'id_img',
+                $errores,
+                1
+            );
+
+        }
+
+        if (!empty($errores) || $idPublicacion === null) {
+            
+            $this->enviarImagenNoEncontrada(400);
+            return;
+
+        }
+
+        try {
+            $publicacion = $this->model->getOne($idPublicacion);
+
+            if (!$publicacion) {
+
+                $this->enviarImagenNoEncontrada(404);
+                return;
+
+            }
+
+            $usuarioActual = (int) ($this->usuario->getUserId() ?? 0);
+
+            $tipoUsuario = $this->usuario->getUserType();
+
+            $esDuenio = $usuarioActual > 0 && $usuarioActual === (int) $publicacion['id_usuario'];
+
+            $esEmpleado = $tipoUsuario === 2;
+
+            $estaAceptada = (int) $publicacion['estado_id'] === 2;
+
+            if (!$estaAceptada && !$esDuenio && !$esEmpleado) {
+
+                $this->enviarImagenNoEncontrada(404);
+                return;
+
+            }
+
+            $imagenPublicacion = $this->model->getImg($idPublicacion, $idImagen);
+
+            if (!$imagenPublicacion) {
+
+                $this->enviarImagenNoEncontrada(404);
+                return;
+
+            }
+
+            $directorioBase = realpath(Imagen::UPLOADDIRECTORY);
+
+            $archivo = realpath(Imagen::UPLOADDIRECTORY . $imagenPublicacion['path_imagen']);
+
+            //Impedir que ../ salga del directorio uploads
+            if ($directorioBase === false || $archivo === false || !is_file($archivo) || !str_starts_with($archivo, $directorioBase . DIRECTORY_SEPARATOR)) {
+
+                $this->enviarImagenNoEncontrada(404);
+                return;
+
+            }
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+            $mimeType = $finfo !== false ? finfo_file($finfo, $archivo) : false;
+
+            if ($finfo !== false) {
+                finfo_close($finfo);
+            }
+
+            if (!in_array($mimeType, ['image/jpeg', 'image/png'], true)) {
+                $this->logger->warning(
+                    'Se rechazó una imagen con tipo MIME no permitido.',
+                    ['publicacion_id' => $idPublicacion]
+                );
+
+                $this->enviarImagenNoEncontrada(404);
+                
+                return;
+            }
+
+            header('Content-Type: ' . $mimeType);
+
+            header('Content-Length: ' . filesize($archivo));
+
+            header('X-Content-Type-Options: nosniff');
+
+            if ($estaAceptada) {
+                header('Cache-Control: public, max-age=3600');
+            } else {
+                header('Cache-Control: private, no-store');
+            }
+
+            readfile($archivo);
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                'Error al obtener una imagen de publicación.',
+                [
+                    'publicacion_id' => $idPublicacion,
+                    'mensaje' => $e->getMessage()
+                ]
+            );
+
+            $this->enviarImagenNoEncontrada(500);
+        }
+    }
 
     public function new()
     {
