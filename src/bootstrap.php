@@ -31,6 +31,14 @@ $dotenv->load();
  */
 $config = new Config;
 
+$esDesarrollo = $config->get('APP_ENV') === 'development';
+
+if ($esDesarrollo) {
+    ini_set('display_errors', '1');
+} else {
+    ini_set('display_errors', '0');
+}
+
 /**
  * 3) LOG
  * ahora configuro el logger
@@ -52,7 +60,47 @@ $connection = $connectionBuilder->make($config);
  * configuro el whoops para los errores del servidor
  */
 $whoops = new \Whoops\Run;
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+
+if ($esDesarrollo) { //En desarrollo se muestra la pagina detallada de whoops
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+} else { //En produccion el detalle queda solamente en el log
+    $whoops->pushHandler(
+        function (\Throwable $exception) use ($log) {
+            $log->error(
+                'Excepción no controlada.',
+                [
+                    'tipo' => get_class($exception),
+                    'mensaje' =>$exception->getMessage()
+                ]
+            );
+
+            http_response_code(500);
+
+            header('Content-Type: text/html; ' . 'charset=UTF-8');
+
+            echo '<!DOCTYPE html>'
+                . '<html lang="es">'
+                . '<head>'
+                . '<meta charset="UTF-8">'
+                . '<title>Error interno</title>'
+                . '</head>'
+                . '<body>'
+                . '<main>'
+                . '<h1>Error 500</h1>'
+                . '<p>Ocurrió un error interno. '
+                . 'Intentá nuevamente más tarde.</p>'
+                . '<p><a href="/">'
+                . 'Volver al inicio'
+                . '</a></p>'
+                . '</main>'
+                . '</body>'
+                . '</html>';
+
+            return \Whoops\Handler\Handler::QUIT;
+        }
+    );
+}
+
 $whoops->register();
 
 /**
@@ -78,21 +126,32 @@ try {
 }
 
 try {
-    $twig = new \Twig\Environment($loader, [
-        'cache' => $cacheDir,
-        'debug' => true,
-        'autoescape' => 'html'
-    ]);
+    $twig = new \Twig\Environment(
+        $loader,
+        [
+            'cache' => $cacheDir,
+            'debug' => $esDesarrollo,
+            'autoescape' => 'html'
+        ]
+    );
 } catch (Exception $e) {
     $log->error('Error al crear el entorno de Twig: ' . $e->getMessage());
     exit;
 }
 
-try {
-    $twig->addExtension(new \Twig\Extension\DebugExtension());
-} catch (Exception $e) {
-    $log->error('Error al agregar la extensión de depuración: ' . $e->getMessage());
-    exit;
+if ($esDesarrollo) {
+
+    try {
+
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+
+    } catch (Exception $e) {
+
+        $log->error('Error al agregar la extensión de depuración: ' . $e->getMessage());
+        
+        exit;
+
+    }
 }
 
 /**

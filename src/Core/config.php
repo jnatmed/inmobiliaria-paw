@@ -8,6 +8,9 @@ class Config
 
     public function __construct() 
     {
+
+        $this->configs['APP_ENV'] = strtolower(getenv('APP_ENV')?: 'production');
+
         $this->configs['LOG_LEVEL'] = getenv(("LOG_LEVEL"), "INFO");
         $path = getenv("LOG_PATH", '/logs/app.log');
         $this->configs['LOG_PATH'] = $this->joinPaths('..', $path);
