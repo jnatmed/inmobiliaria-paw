@@ -128,7 +128,7 @@ class Calendario {
     applyMarkedIntervals() {
         const cells = document.querySelectorAll('#calendarContainer td');
         cells.forEach(cell => {
-            cell.classList.remove('ocupado', 'libre', 'past-date');
+            cell.classList.remove('ocupado', 'libre');
         });
 
         const today = new Date();
@@ -151,7 +151,7 @@ class Calendario {
                 (startDate < firstDayCurrentMonth && endDate > lastDayCurrentMonth)) {
 
                 let currentDate = new Date(startDate);
-                while (currentDate < endDate) {
+                while (currentDate <= endDate) {
                     if (currentDate.getFullYear() === this.currentYear && currentDate.getMonth() === this.currentMonth) {
                         occupiedDates.add(currentDate.getDate());
                     }
@@ -162,15 +162,25 @@ class Calendario {
 
         cells.forEach(cell => {
             const cellDay = Number(cell.innerText);
-            if (cellDay) {
-                const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
-                if (cellDate < today) {
-                    cell.classList.add('past-date');
-                } else if (occupiedDates.has(cellDay)) {
-                    cell.classList.add('ocupado');
-                } else {
-                    cell.classList.add('libre');
-                }
+
+            if (!cellDay) {
+                return;
+            }
+
+            const cellDate = new Date(this.currentYear, this.currentMonth, cellDay);
+
+            //Las fechas anteriores a hoy siempre se muestran como pasadas (grises), aunque haya existido una reserva
+            if (cellDate < today) {
+                cell.classList.add('past-date');
+            }
+
+            //Hoy no es una fecha pasada. Si está reservado, se muestra rojo.
+            else if (occupiedDates.has(cellDay)) {
+                cell.classList.add('ocupado');
+            }
+
+            else {
+                cell.classList.add('libre');
             }
         });
     }

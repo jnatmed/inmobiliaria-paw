@@ -785,8 +785,8 @@ class QueryBuilder
                 'confirmada'
             )
 
-            AND fecha_inicio < :fecha_fin
-            AND fecha_fin > :fecha_inicio
+            AND fecha_inicio <= :fecha_fin
+            AND fecha_fin >= :fecha_inicio
         ";
 
         $stmt = $this->pdo->prepare($sql);
