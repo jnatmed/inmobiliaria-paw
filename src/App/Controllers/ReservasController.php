@@ -295,24 +295,73 @@ class ReservasController extends Controller
         }
     }
 
-    public function obtenerIntervalosReserva()
-    {
+    public function obtenerIntervalosReserva(){
+
+        header('Content-Type: application/json; charset=UTF-8');
+
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero(
+            $this->request->query('id_pub'),
+            'id_pub',
+            $errores,
+            1
+        );
+
+        if ($idPublicacion === null) {
+            http_response_code(400);
+            echo json_encode(['error' => 'El identificador de la publicación no es válido.']);
+            return;
+        }
+
         try {
-            $id_publicacion = $this->request->get('id_pub');
-            $this->logger->debg(
+            $publicacion = $this->publicationCollection->getOne($idPublicacion);
+
+            if (!$publicacion) {
+                http_response_code(404);
+
+                echo json_encode(['error' => 'La publicación no existe.']);
+
+                return;
+            }
+
+            $usuarioActual = (int) ($this->usuario->getUserId() ?? 0);
+
+            $tipoUsuario = $this->usuario->getUserType();
+
+            $esDuenio = $usuarioActual > 0 && $usuarioActual === (int) $publicacion['id_usuario'];
+
+            $esEmpleado = $tipoUsuario === 2;
+
+            $estaAceptada = (int) $publicacion['estado_id'] === 2;
+
+            if (!$estaAceptada && !$esDuenio && !$esEmpleado) {
+                
+                http_response_code(404);
+
+                echo json_encode(['error' => 'La publicación no está disponible.']);
+
+                return;
+            }
+
+            $this->logger->debug(
                 'Intervalos de reserva solicitados.',
-                ['publicacion_id' => (int) $id_publicacion]
+                ['publicacion_id' => $idPublicacion]
             );
 
-            // Obtén las reservas usando el modelo
-            $periodos = $this->model->getReservas($id_publicacion);
+            $periodos = $this->model->getReservas($idPublicacion);
 
-            // Devolver los intervalos de reserva como JSON
-            echo json_encode($periodos);
+            echo json_encode($periodos, JSON_UNESCAPED_SLASHES);
+
         } catch (Exception $e) {
-            $this->logger->error('Error al obtener los intervalos de reserva: ' . $e->getMessage());
-            // Devolver un mensaje de error como JSON
-            echo json_encode(['error' => 'Ocurrió un error al obtener los intervalos de reserva.']);
+            $this->logger->error(
+                'Error al obtener los intervalos de reserva.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            http_response_code(500);
+
+            echo json_encode(['error' => 'No se pudieron obtener los intervalos de reserva.']);
         }
     }
 

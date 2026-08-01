@@ -128,10 +128,12 @@ class Calendario {
     applyMarkedIntervals() {
         const cells = document.querySelectorAll('#calendarContainer td');
         cells.forEach(cell => {
-            cell.classList.remove('ocupado', 'libre');
+            cell.classList.remove('ocupado', 'libre', 'past-date');
         });
 
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const firstDayCurrentMonth = new Date(this.currentYear, this.currentMonth, 1);
         const lastDayCurrentMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
 
@@ -148,8 +150,8 @@ class Calendario {
                 (toYear === this.currentYear && toMonth - 1 === this.currentMonth) ||
                 (startDate < firstDayCurrentMonth && endDate > lastDayCurrentMonth)) {
 
-                let currentDate = startDate;
-                while (currentDate <= endDate) {
+                let currentDate = new Date(startDate);
+                while (currentDate < endDate) {
                     if (currentDate.getFullYear() === this.currentYear && currentDate.getMonth() === this.currentMonth) {
                         occupiedDates.add(currentDate.getDate());
                     }

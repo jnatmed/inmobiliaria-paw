@@ -61,7 +61,7 @@
                                     {% set start = intervalo[0]|date_create('d/m/Y') %}
                                     {% set end = intervalo[1]|date_create('d/m/Y') %}
                                     {% set current = currentYear ~ '-' ~ (currentMonth + 1) ~ '-' ~ day|date_create %}
-                                    {% if current >= start and current <= end %}
+                                    {% if current >= start and current < end %}
                                         {% set highlight = 'highlight' %}
                                     {% endif %}
                                 {% endfor %}
