@@ -666,7 +666,36 @@ class QueryBuilder
         $statement->execute();
     }
 
-    public function delete() {}
+    public function deleteWhere(string $table, array $where): bool {
+
+        if (empty($where)) {
+            throw new Exception('No se puede eliminar sin condiciones.');
+        }
+
+        $whereClauses = [];
+        $bindings = [];
+
+        foreach ($where as $column => $value) {
+            $parameter = ':where_' . $column;
+
+            $whereClauses[] = "$column = $parameter";
+
+            $bindings[$parameter] = $value;
+        }
+
+        $query = "DELETE FROM $table WHERE " . implode(' AND ', $whereClauses);
+
+        $statement = $this->pdo->prepare($query);
+
+        foreach ($bindings as $parameter => $value) {
+            $statement->bindValue(
+                $parameter,
+                $value
+            );
+        }
+
+        return $statement->execute();
+    }
 
     public function traerTipos()
     {

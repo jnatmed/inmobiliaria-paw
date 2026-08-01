@@ -31,30 +31,45 @@ class UserCollection extends Model
         return null;
     }
 
-    public function buscarToken($token)
-    {
+    public function buscarToken($token){
         try {
-            // Utiliza el método select del QueryBuilder para buscar por email
-            $result = $this->queryBuilder->select('password_resets', ['token' => $token]);
+            if (!is_string($token) || !preg_match('/\A[a-f0-9]{64}\z/i', $token)) {
+                return [
+                    'exito' => false,
+                    'message' => 'El token no es válido.'
+                ];
+            }
 
-            // Verifica si se encontró algún resultado
+            //La bd almacena el hash del token, no el token
+            $tokenHash = hash('sha256', $token);
+
+            $result = $this->queryBuilder->select(
+                'password_resets',
+                ['token' => $tokenHash]
+            );
+
             if (empty($result)) {
                 return [
                     'exito' => false,
-                    'message' => 'No se encontró el token'
-                ]; // No se encontró ningún usuario con ese email
+                    'message' => 'El token no fue encontrado.'
+                ];
             }
 
             return [
                 'exito' => true,
                 'token' => $result[0]
             ];
-        } catch (PDOException $e) {
-            // Manejar la excepción de la base de datos
-            throw new Exception('Error al buscar el token en la base de datos: ' . $e->getMessage());
+
         } catch (Exception $e) {
-            // Manejar otras excepciones
-            throw new Exception('[BuscarToken] Ocurrió un error inesperado: ' . $e->getMessage());
+            $this->logger->error(
+                'Error al buscar un token de recuperación.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            return [
+                'exito' => false,
+                'message' => 'No se pudo validar el token.'
+            ];
         }
     }
 
@@ -85,37 +100,56 @@ class UserCollection extends Model
         }
     }
 
-    public function actualizarContrasenia($userId, $password)
-    {
+    public function actualizarContrasenia($userId, $hashedPassword) {
         try {
-            $data = [
-                'contrasenia' => password_hash($password, PASSWORD_BCRYPT)
-            ];
-            $where = [
-                'id' => $userId
-            ];
-            $this->queryBuilder->update('usuarios', $data, $where);
+            $data = ['contrasenia' => password_hash($password, PASSWORD_DEFAULT)];
+
+            $where = ['id' => $userId];
+
+            $this->queryBuilder->update(
+                'usuarios',
+                $data,
+                $where
+            );
+
             return ['exito' => true];
-        } catch (\Exception $e) {
-            $this->logger->error('Error al actualizar la contraseña: ' . $e->getMessage());
-            return ['exito' => false, 'message' => $e->getMessage()];
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                'Error al actualizar la contraseña.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            return ['exito' => false];
         }
     }
 
-    public function insertResetToken($userId, $token)
-    {
+    public function insertResetToken($userId, $token) {
+
         try {
             $data = [
                 'user_id' => $userId,
-                'token' => $token,
+                'token' => hash('sha256', $token),
                 'created_at' => date('Y-m-d H:i:s')
             ];
-            $result = $this->queryBuilder->insert('password_resets', $data);
-            return $result;
-        } catch (\Exception $e) {
-            $this->logger->error('Error al insertar el token de restablecimiento de contraseña: ' . $e->getMessage());
-            return false;
+
+            return $this->queryBuilder->insert('password_resets', $data);
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                'Error al guardar un token de recuperación.',
+                ['mensaje' => $e->getMessage()]
+            );
+
+            return [null, false];
         }
+    }
+
+    public function eliminarResetTokensPorUsuario(int $userId): bool {
+        return $this->queryBuilder->deleteWhere(
+            'password_resets',
+            ['user_id' => $userId]
+        );
     }
 
     public function insert($table, $data)

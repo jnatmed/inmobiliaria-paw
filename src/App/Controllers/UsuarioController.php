@@ -627,142 +627,309 @@ class UsuarioController extends Controller
         }
     }
 
-    public function resetPassword()
-    {
-        if ($this->request->method() == 'POST') {
+    public function resetPassword(){
+        
+        $titulo = 'PAWPERTIES | RECUPERAR CONTRASEÑA';
+
+        $mensajeGenerico = 'Si el correo está registrado, vas a recibir un mensaje con las instrucciones para restablecer la contraseña.';
+
+        if ($this->request->method() === 'POST') {
 
             $this->chequearCsrf();
 
-            if ($this->request->get('user_id') !== null) {
+            $resetToken = $this->request->post('reset_token');
 
-                if ($this->request->get('password') !== null && $this->request->get('password_repeat') !== null) {
+            //Segundo paso, cambiar la contraseña
+            if (is_string($resetToken) && $resetToken !== '') {
+                
+                $errores = [];
 
-                    $id_user = htmlspecialchars($this->request->get('user_id'));
-                    $password = htmlspecialchars($this->request->get('password'));
-                    $password_repeat = htmlspecialchars($this->request->get('password_repeat'));
-
-                    if ($password === $password_repeat) {
-
-                        $resultado_insert = $this->model->actualizarContrasenia($id_user, $password);
-
-                        if ($resultado_insert['exito']) {
-                            view('login.view', [
-                                'exito' => true,
-                                "mensaje" => 'Contraseña reseteada. Ya puede iniciar sesion con la nueva contraseña.',
-                            ]);
-                        } else {
-                            view('login.view', [
-                                'exito' => false,
-                                "mensaje" => 'Error al resetear la Contraseña.',
-                            ]);
-                        }
-                    } else {
-                        view('password_reset_request.view', array_merge(
-                            ['exito' => false, "mensaje" => 'Error Cliente: las contraseñas no coinciden. Vuelva a intertarlo porfavor'],
-                            $this->menuAndSession
-                        ));
-                    }
-                } else {
-                    $this->logger->error('Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo');
-                    view('login.view', [
-                        'exito' => false,
-                        "mensaje" => 'Error al Resetar Contraseña. Unos de los parametros [contrasenia] no fue enviado. Porfavor, vuelva a intentarlo',
-                    ]);
+                if (!preg_match('/\A[a-f0-9]{64}\z/i', $resetToken)) {
+                    $errores['reset_token'] = 'El enlace de recuperación no es válido o expiró.';
                 }
-            } else {
-                $email = htmlspecialchars($this->request->get('email'));
-                /**
-                 * 1) buscar email en la tabla usuarios
-                 */
+
+                $password = $this->verificador->password(
+                    $this->request->post('password'),
+                    'password',
+                    $errores,
+                    8,
+                    255
+                );
+
+                $passwordRepeat = $this->verificador->password(
+                    $this->request->post('password_repeat'),
+                    'password_repeat',
+                    $errores,
+                    8,
+                    255
+                );
+
+                if ($password !== null && $passwordRepeat !== null && $password !== $passwordRepeat) {
+                    $errores['password_repeat'] = 'Las contraseñas no coinciden.';
+                }
+
+                if (!empty($errores)) {
+                    view(
+                        'password_reset_request.view',
+                        array_merge(
+                            [
+                                'titulo' => $titulo,
+                                'resetear_de_contrasenia_solicitado' => true,
+                                'reset_token' => $resetToken,
+                                'exito' => false,
+                                'mensaje' => implode(' ', $errores)
+                            ],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                //Se vuelve a buscar el token, no alcanza con haberl validado cuuando se abrio el enlace
+                $resultadoToken = $this->model->buscarToken($resetToken);
+
+                $registroToken = $resultadoToken['exito'] ? ($resultadoToken['token'] ?? null) : null;
+
+                $creadoEn = is_array($registroToken) ? strtotime($registroToken['created_at'] ?? '') : false;
+
+                $segundosTranscurridos = $creadoEn !== false ? time() - $creadoEn : null;
+
+                $tokenVigente = is_array($registroToken) && $segundosTranscurridos !== null && $segundosTranscurridos >= 0 && $segundosTranscurridos < 3600;
+
+                if (!$tokenVigente) {
+                    view(
+                        'password_reset_request.view',
+                        array_merge(
+                            [
+                                'titulo' => $titulo,
+                                'exito' => false,
+                                'mensaje' => 'El enlace de recuperación no es válido o expiró.'
+                            ],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                //El id se toma del token validado
+                $userId = (int) $registroToken['user_id'];
+
+                $resultadoActualizacion = $this->model->actualizarContrasenia($userId, $password);
+
+                if (!$resultadoActualizacion['exito']) {
+
+                    http_response_code(500);
+
+                    view(
+                        'password_reset_request.view',
+                        array_merge(
+                            [
+                                'titulo' => $titulo,
+                                'exito' => false,
+                                'mensaje' => 'No se pudo actualizar la contraseña.'
+                            ],
+                            $this->menuAndSession
+                        )
+                    );
+
+                    return;
+                }
+
+                //Token de un solo uso
+                $this->model->eliminarResetTokensPorUsuario($userId);
+
+                $this->logger->info(
+                    'Contraseña restablecida.',
+                    ['usuario_id' => $userId]
+                );
+
+                view(
+                    'login.view',
+                    array_merge(
+                        [
+                            'titulo' => 'PAWPERTIES | LOGIN',
+                            'exito' => true,
+                            'mensaje' => 'Contraseña actualizada. Ya podés iniciar sesión.'
+                        ],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            //Primer paso, solicitar recuperacion por mail
+            $errores = [];
+
+            $email = $this->verificador->email(
+                $this->request->post('email'),
+                'email',
+                $errores
+            );
+
+            if (!empty($errores)) {
+                view(
+                    'password_reset_request.view',
+                    array_merge(
+                        [
+                            'titulo' => $titulo,
+                            'exito' => false,
+                            'mensaje' => implode(' ', $errores)
+                        ],
+                        $this->menuAndSession
+                    )
+                );
+
+                return;
+            }
+
+            try {
                 $busquedaCorreo = $this->model->buscarCorreoEnUsuarios($email);
-                /**
-                 * 2) si exite, creo un token
-                 * e inserto en la tabla password_resets
-                 * (id_user, token_password) 
-                 */
+
+                //Solo se genera un correo si existe la cuenta. La respuesta visual será igual en ambos casos.
                 if ($busquedaCorreo['exito']) {
-                    // Creación de token
+                    $userId = (int) $busquedaCorreo['usuario']['id'];
+
+                    //Invalidar solicitudes anteriores
+                    $this->model->eliminarResetTokensPorUsuario($userId);
+
                     $token = bin2hex(random_bytes(32));
 
-                    // Insertar el token en la tabla password_resets
-                    $insertTokenResult = $this->model->insertResetToken($busquedaCorreo['usuario']['id'], $token);
+                    [$idToken, $tokenGuardado] = $this->model->insertResetToken($userId, $token);
 
-                    // Verificar si la inserción del token fue exitosa
-                    if ($insertTokenResult[1]) {
-                        /**
-                         * 3) envio un correo con este token al 
-                         * email enviado
-                         */
-                        $body = view('correoDeResetPassword.view', [
-                            'url' => $this->request->fullUrl(),
-                            'token' => $token
-                        ], true);
-                        // Aca enviar un correo al usuario 
-                        $resultadoSend = $this->mailer->send(
+                    if ($idToken !== null && $tokenGuardado === true) {
+                        $body = view(
+                            'correoDeResetPassword.view',
+                            [
+                                'url' =>$this->request->host() . '/recuperar-contrasenia',
+                                'token' => $token
+                            ],
+                            true
+                        );
+
+                        $correoEnviado = $this->mailer->send(
                             $email,
-                            "Pawproperties - Recuperar contraseña: ",
+                            'Pawproperties - Recuperar contraseña',
                             $body
                         );
 
-                        if ($resultadoSend) {
-                            $this->logger->error("Correo enviado con exito: ", [$resultadoSend]);
-                            view('password_reset_request.view', array_merge(
-                                ['exito' => true, "mensaje" => 'El mensaje de reseteo se envio con exito. Por favor, revise su casilla de correo'],
-                                $this->menuAndSession
-                            ));
+                        if ($correoEnviado) {
+                            $this->logger->info(
+                                'Correo de recuperación procesado.',
+                                ['usuario_id' => $userId]
+                            );
                         } else {
-                            $this->logger->error("ERROR al enviar el Correo: ", [$resultadoSend]);
-                            view('password_reset_request.view', array_merge(
-                                ['exito' => false, "mensaje" => 'Error Interno: no se pudo enviar el correo, debido a un problema del servidor'],
-                                $this->menuAndSession
-                            ));
+                            //Si falla el correo, el token no queda activo
+                            $this->model->eliminarResetTokensPorUsuario($userId);
+
+                            $this->logger->warning(
+                                'No se pudo enviar el correo de recuperación.',
+                                ['usuario_id' => $userId]
+                            );
                         }
+
                     } else {
-                        $this->logger->error("ERROR al guardar el token: ", [$insertTokenResult]);
+                        $this->logger->error(
+                            'No se pudo guardar un token de recuperación.',
+                            ['usuario_id' => $userId]
+                        );
                     }
-                } else {
-                    $this->logger->error("ERROR no se encontro el correo: ", [$busquedaCorreo]);
-                    view('password_reset_request.view', array_merge(
-                        ['exito' => false, "mensaje" => 'Error Cliente: no se encontro el correo proporcionado'],
-                        $this->menuAndSession
-                    ));
                 }
+
+            } catch (Exception $e) {
+                $this->logger->error(
+                    'Error al procesar una recuperación de contraseña.',
+                    ['mensaje' => $e->getMessage()]
+                );
             }
-        } else {
-            if ($this->request->get('token') !== null) {
 
-                $token = htmlspecialchars($this->request->get('token'));
-
-                $resultadoBusquedaToken = $this->model->buscarToken($token);
-
-                if ($resultadoBusquedaToken['exito']) {
-
-                    $tokenCreado = strtotime($resultadoBusquedaToken['token']['created_at']);
-                    $tiempoActual = time();
-
-                    if ($tokenCreado && ($tiempoActual - $tokenCreado) < 3600) {
-                        view('password_reset_request.view', array_merge(
-                            ['resetear_de_contrasenia_solicitado' => true, 'user_id' => $resultadoBusquedaToken['token']['user_id']],
-                            $this->menuAndSession
-                        ));
-                    } else {
-                        view('password_reset_request.view', array_merge(
-                            ['exito' => false, "mensaje" => 'Token expirado. Vuelva a solicitar un nuevo reseteo de contraseña'],
-                            $this->menuAndSession
-                        ));
-                    }
-                } else {
-                    view('password_reset_request.view', array_merge(
-                        ['exito' => false, "mensaje" => 'Token no encontrado'],
-                        $this->menuAndSession
-                    ));
-                }
-            } else {
-                view('password_reset_request.view', array_merge(
+            //No revelar si el mail exizste
+            view(
+                'password_reset_request.view',
+                array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'exito' => true,
+                        'mensaje' => $mensajeGenerico
+                    ],
                     $this->menuAndSession
-                ));
-            }
+                )
+            );
+
+            return;
         }
+
+        //get sin token, mostrar solicitud de correo
+        $token = $this->request->query('token');
+
+        if ($token === null) {
+            view(
+                'password_reset_request.view',
+                array_merge(
+                    ['titulo' => $titulo],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        //get con token, validar antes de motrar el formulario de la contra
+        if (!is_string($token) || !preg_match('/\A[a-f0-9]{64}\z/i', $token)) {
+            view(
+                'password_reset_request.view',
+                array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'exito' => false,
+                        'mensaje' =>'El enlace de recuperación no es válido o expiró.'
+                    ],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        $resultadoToken = $this->model->buscarToken($token);
+
+        $registroToken = $resultadoToken['exito'] ? ($resultadoToken['token'] ?? null) : null;
+
+        $creadoEn = is_array($registroToken) ? strtotime($registroToken['created_at'] ?? ''): false;
+
+        $segundosTranscurridos = $creadoEn !== false ? time() - $creadoEn : null;
+
+        $tokenVigente = is_array($registroToken) && $segundosTranscurridos !== null && $segundosTranscurridos >= 0 && $segundosTranscurridos < 3600;
+
+        if (!$tokenVigente) {
+            view(
+                'password_reset_request.view',
+                array_merge(
+                    [
+                        'titulo' => $titulo,
+                        'exito' => false,
+                        'mensaje' => 'El enlace de recuperación no es válido o expiró.'
+                    ],
+                    $this->menuAndSession
+                )
+            );
+
+            return;
+        }
+
+        view(
+            'password_reset_request.view',
+            array_merge(
+                [
+                    'titulo' => $titulo,
+                    'resetear_de_contrasenia_solicitado' => true,
+                    'reset_token' => $token
+                ],
+                $this->menuAndSession
+            )
+        );
     }
 
     public function update()
