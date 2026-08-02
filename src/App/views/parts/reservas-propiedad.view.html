@@ -1,71 +1,197 @@
+{% set puedeReservar = publicacion.id_usuario != idUserSesion
+    and isUserLoggedIn
+    and tipo_usuario in [1, 3]
+%}
 
-<section class="container-reserva {% if not (publicacion.id_usuario != idUserSesion and isUserLoggedIn and tipo_usuario in [1, 3]) %}sin-formulario{% endif %}">
-   
-        {% if publicacion.id_usuario != idUserSesion and isUserLoggedIn and tipo_usuario in [1, 3]  %}  
-            <article class="container-form">       
-                <form action="/publicacion/reservar" class="form-reserva" method="POST"> 
+<section class="container-reserva {% if not puedeReservar %}sin-formulario{% endif %}">
 
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    {% if puedeReservar %}
+        <article class="container-form">
+            <form action="/publicacion/reservar" class="form-reserva" method="POST">
 
-                    <input type="hidden" name="id_publicacion" value="{{ publicacion.id }}">
-                    <label for="input-desde" class="lbl-desde">Desde</label>
-                    <input required type="date" name="input-desde" id="input-desde" class="input-form-reserva">
-                    <label for="input-hasta" class="lbl-hasta">Hasta</label>
-                    <input required type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
-                    <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
-                </form>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
-            </article>
-        {% endif %}
+                <input type="hidden" name="id_publicacion" value="{{ publicacion.id }}">
+
+                <small class="calendar-form-help">
+                    Elegí primero la fecha de inicio y después la fecha
+                    de finalización desde el calendario. Los campos se
+                    completarán automáticamente.
+                </small>
+
+                <label for="input-desde" class="lbl-desde">
+                    Desde
+                </label>
+
+                <input required type="date" name="input-desde" id="input-desde" class="input-form-reserva">
+
+                <label for="input-hasta" class="lbl-hasta">
+                    Hasta
+                </label>
+
+                <input required type="date" name="input-hasta" id="input-hasta" class="input-form-reserva">
+
+                <button type="button" id="clearCalendarSelectionButton" class="btn-form limpiar-seleccion">
+                    Limpiar selección
+                </button>
+
+                <input type="submit" value="Solicitar Reserva" class="btn-form reservar">
+            </form>
+        </article>
+    {% endif %}
 
     <article id="calendarContainer" class="calendarContainer">
+
         <input type="text" id="periodos" value="{{ periodos_json }}" hidden>
+
         <input type="text" id="monthInput" placeholder="Introduce el mes (ej: marzo)" hidden>
-        <button id="showCalendarButton" hidden>Mostrar Calendario</button>
+
+        <button id="showCalendarButton" type="button" hidden>
+            Mostrar Calendario
+        </button>
+
         <div id="calendarNavigation" class="calendarNavigation">
-            <button id="prevMonthButton" class="btnNavCalendar" disabled>←</button>
+
+            <button id="prevMonthButton" type="button" class="btnNavCalendar" aria-label="Ver mes anterior" disabled>
+                ←
+            </button>
+
             <h3 id="calendarTitle" class="calendarTitle"></h3>
-            <button id="nextMonthButton" class="btnNavCalendar">→</button>
+
+            <button id="nextMonthButton" type="button" class="btnNavCalendar" aria-label="Ver mes siguiente">
+                →
+            </button>
+
         </div>
-        
+
+        <p id="calendarSelectionMessage" class="calendar-selection-message" aria-live="polite">
+            Cargando disponibilidad del calendario...
+        </p>
+
+        <ul class="calendar-legend" aria-label="Referencias del calendario">
+            <li>
+                <span class="calendar-legend-color libre"></span>
+                Libre
+            </li>
+
+            <li>
+                <span class="calendar-legend-color ocupado"></span>
+                Ocupada
+            </li>
+
+            <li>
+                <span class="calendar-legend-color past-date"></span>
+                Pasada
+            </li>
+
+            {% if puedeReservar %}
+                <li>
+                    <span class="calendar-legend-color fecha-inicio"></span>
+                    Inicio
+                </li>
+
+                <li>
+                    <span class="calendar-legend-color fecha-rango"></span>
+                    Rango
+                </li>
+
+                <li>
+                    <span class="calendar-legend-color fecha-fin"></span>
+                    Final
+                </li>
+            {% endif %}
+        </ul>
+
         <table id="calendarTable" class="greenTable">
+            
             <thead>
                 <tr>
-                    <th data-abbr="Lun"><span>Lunes</span></th>
-                    <th data-abbr="Mar"><span>Martes</span></th>
-                    <th data-abbr="Mié"><span>Miércoles</span></th>
-                    <th data-abbr="Jue"><span>Jueves</span></th>
-                    <th data-abbr="Vie"><span>Viernes</span></th>
-                    <th data-abbr="Sáb"><span>Sábado</span></th>
-                    <th data-abbr="Dom"><span>Domingo</span></th>
+                    <th data-abbr="Lun">
+                        <span>Lunes</span>
+                    </th>
+
+                    <th data-abbr="Mar">
+                        <span>Martes</span>
+                    </th>
+
+                    <th data-abbr="Mié">
+                        <span>Miércoles</span>
+                    </th>
+
+                    <th data-abbr="Jue">
+                        <span>Jueves</span>
+                    </th>
+
+                    <th data-abbr="Vie">
+                        <span>Viernes</span>
+                    </th>
+
+                    <th data-abbr="Sáb">
+                        <span>Sábado</span>
+                    </th>
+
+                    <th data-abbr="Dom">
+                        <span>Domingo</span>
+                    </th>
                 </tr>
             </thead>
+
             <tbody>
                 {% set currentYear = "now"|date("Y") %}
                 {% set currentMonth = "now"|date("m")|int - 1 %}
-                
-                {# Crear el primer día del mes para el cálculo #}
-                {% set firstDay = (currentYear ~ '-' ~ (currentMonth + 1)|format('%02d') ~ '-01')|date_create %}
-                {% set firstDayOfWeek = firstDay|date("N")|int - 1 %}
-                {% set daysInMonth = firstDay|date("t") %}
+
+                {% set firstDay = (
+                    currentYear
+                    ~ '-'
+                    ~ (currentMonth + 1)|format('%02d')
+                    ~ '-01'
+                )|date_create %}
+
+                {% set firstDayOfWeek =
+                    firstDay|date("N")|int - 1
+                %}
+
+                {% set daysInMonth =
+                    firstDay|date("t")
+                %}
 
                 {% set day = 1 %}
+
                 {% for i in 0..5 %}
                     <tr>
                         {% for j in 0..6 %}
                             {% if i == 0 and j < firstDayOfWeek %}
                                 <td></td>
+
                             {% elseif day <= daysInMonth %}
                                 {% set highlight = '' %}
+
                                 {% for intervalo in reservas %}
-                                    {% set start = intervalo[0]|date_create('d/m/Y') %}
-                                    {% set end = intervalo[1]|date_create('d/m/Y') %}
-                                    {% set current = currentYear ~ '-' ~ (currentMonth + 1) ~ '-' ~ day|date_create %}
+                                    {% set start =
+                                        intervalo[0]|date_create('d/m/Y')
+                                    %}
+
+                                    {% set end =
+                                        intervalo[1]|date_create('d/m/Y')
+                                    %}
+
+                                    {% set current =
+                                        currentYear
+                                        ~ '-'
+                                        ~ (currentMonth + 1)
+                                        ~ '-'
+                                        ~ day|date_create
+                                    %}
+
                                     {% if current >= start and current <= end %}
                                         {% set highlight = 'highlight' %}
                                     {% endif %}
                                 {% endfor %}
-                                <td class="{{ highlight }}">{{ day }}</td>
+
+                                <td class="{{ highlight }}">
+                                    {{ day }}
+                                </td>
+
                                 {% set day = day + 1 %}
                             {% else %}
                                 <td></td>
