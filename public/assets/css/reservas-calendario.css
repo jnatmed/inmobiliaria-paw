@@ -166,7 +166,7 @@ table.greenTable tfoot .links a {
 
 
 #calendarTable td.fecha-inicio {
-    background-color: #616B70;
+    background-color: #3F6178;
     color: white;
     font-weight: bold;
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.16);
@@ -179,7 +179,7 @@ table.greenTable tfoot .links a {
 }
 
 #calendarTable td.fecha-fin {
-    background-color: #687A4E;
+    background-color: #8A6544;
     color: white;
     font-weight: bold;
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.16);

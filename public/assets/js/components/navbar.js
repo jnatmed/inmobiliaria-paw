@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-      document.querySelector('.nav-index').classList.toggle('active');
-    });
+  const menuToggle = document.querySelector('.menu-toggle');
 
-  });
+  const navIndex = document.querySelector('.nav-index');
+
+  if (!menuToggle || !navIndex) {
+    return;
+  }
+
+  menuToggle.addEventListener(
+    'click',
+    () => {navIndex.classList.toggle('active');}
+  );
+
+});

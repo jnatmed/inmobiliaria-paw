@@ -29,10 +29,16 @@ class publicacionDetails {
 
         })
 
-        const btn_close = document.querySelector('.close-btn')
-        btn_close.addEventListener('click', function(e) {
-          document.querySelector('.overlay').style.display = 'none';
-        })
+        const btn_close = document.querySelector('.close-btn');
+        const overlay = document.querySelector('.overlay');
+
+        if (btn_close && overlay) {
+
+          btn_close.addEventListener('click', function() {
+            overlay.style.display = 'none';
+          });
+
+        }
         
       })
     }
