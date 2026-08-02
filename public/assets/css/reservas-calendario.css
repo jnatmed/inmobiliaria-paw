@@ -65,12 +65,21 @@ table.greenTable tfoot .links a {
     color: gray;
 }
 
-.ocupado {
-    background-color: red;
+#calendarTable td.ocupado,
+.calendar-legend-color.ocupado {
+    background-color: #dc3545;
+    color: white;
 }
 
-.libre {
+#calendarTable td.libre,
+.calendar-legend-color.libre {
     background-color: white;
+    color: black;
+}
+
+#calendarTable td.calendar-loading-date {
+    background-color: #d1d5db;
+    color: #4b5563;
 }
 
 .calendarTitle {
@@ -158,11 +167,27 @@ table.greenTable tfoot .links a {
 }
 
 
-.selected {
-    background-color: #007bff; /* Color de fondo azul */
-    color: white; /* Texto blanco */
-    font-weight: bold; /* Texto en negrita */
+#calendarTable td.fecha-inicio,
+.calendar-legend-color.fecha-inicio {
+    background-color: #1d4ed8;
+    color: white;
+    font-weight: bold;
 }
+
+#calendarTable td.fecha-rango,
+.calendar-legend-color.fecha-rango {
+    background-color: #bfdbfe;
+    color: #111827;
+    font-weight: bold;
+}
+
+#calendarTable td.fecha-fin,
+.calendar-legend-color.fecha-fin {
+    background-color: #0f766e;
+    color: white;
+    font-weight: bold;
+}
+
 
 /* Ajustar el ancho de la tabla al 90% del ancho de la ventana */
 #calendarTable {
@@ -215,6 +240,115 @@ table.greenTable tfoot .links a {
     display: flex;
     align-items: center;
 }
+
+
+.calendar-form-help {
+    display: block;
+    margin: 0.75rem 1rem 0;
+    line-height: 1.4;
+}
+
+.limpiar-seleccion {
+    background-color: #5f6b73;
+    cursor: pointer;
+}
+
+.calendar-selection-message {
+    width: 100%;
+    min-height: 1.5rem;
+    margin: 0.25rem 0 0.75rem;
+    text-align: center;
+    font-family: var(--font-principal);
+}
+
+.calendar-selection-message--error {
+    color: #b42318;
+    font-weight: bold;
+}
+
+.calendar-selection-message--success {
+    color: #157347;
+    font-weight: bold;
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    width: 100%;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-principal);
+    font-size: 0.9rem;
+}
+
+.calendar-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.calendar-legend-color {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #4b5563;
+    border-radius: 0.2rem;
+    flex: 0 0 auto;
+}
+
+.calendar-legend-color.past-date {
+    background-color: grey;
+    color: white;
+}
+
+#calendarTable td[data-date] {
+    height: 2.75rem;
+    min-height: 44px;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+#calendarTable td.calendar-day-selectable {
+    cursor: pointer;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease;
+}
+
+#calendarTable td.calendar-day-selectable:hover,
+#calendarTable td.calendar-day-selectable:focus-visible {
+    box-shadow: inset 0 0 0 3px #111827;
+    outline: none;
+}
+
+#calendarTable td.calendar-day-selectable:active {
+    transform: scale(0.96);
+}
+
+#calendarTable td.ocupado,
+#calendarTable td.past-date,
+#calendarTable td.calendar-loading-date {
+    cursor: not-allowed;
+}
+
+#calendarTable td.calendar-empty-day {
+    background-color: var(--color-verde-header);
+}
+
+.btnNavCalendar {
+    cursor: pointer;
+}
+
+.btnNavCalendar:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+
+
 
 
 /*
@@ -282,4 +416,52 @@ table.greenTable tfoot .links a {
 .lista-errores li {
     color: #dc3545;
     text-align: left;
+}
+
+
+@media (max-width: 780px) {
+    .container-form {
+        width: 100%;
+        height: auto;
+        margin: 0;
+        align-items: stretch;
+    }
+
+    .form-reserva {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .calendarContainer {
+        width: 100%;
+        align-items: center;
+    }
+
+    .calendarTitle {
+        font-size: 2rem;
+    }
+
+    #calendarTable {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #calendarTable th,
+    #calendarTable td {
+        padding: 0.5rem 0.15rem;
+    }
+
+    #calendarTable td[data-date] {
+        height: 2.75rem;
+        min-height: 44px;
+        font-size: 0.95rem;
+    }
+
+    .calendar-legend {
+        justify-content: flex-start;
+    }
+
+    .btn-form {
+        width: auto;
+    }
 }
