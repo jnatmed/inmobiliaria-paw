@@ -417,11 +417,27 @@ class Calendario {
 
         }
 
-        //Si el usuario elige el mismo dia o uno anterior, se toma como nuevo comienzo
-        if (selectedDate <= this.startDate) {
+        //Si vuelve a elegir el mismo dia, se informa que el final debe ser posterior
+        if (selectedDate === this.startDate) {
+
+            this.setMessage(
+                `La fecha de finalización debe ser posterior al ${this.toDisplay(this.startDate)}.`,
+                'error'
+            );
+
+            return;
+
+        }
+
+        //Si elige un dia anterior, ese dia pasa a ser el nuevo inicio
+        if (selectedDate < this.startDate) {
 
             this.selectStartDate(selectedDate);
-            this.setMessage(`Cambiaste el inicio al ${this.toDisplay(selectedDate)}. Elegí una fecha posterior.`);
+
+            this.setMessage(
+                `Cambiaste el inicio al ${this.toDisplay(selectedDate)}. Elegí una fecha posterior.`
+            );
+
             return;
 
         }

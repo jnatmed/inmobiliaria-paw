@@ -13,12 +13,6 @@
 
                 <input type="hidden" name="id_publicacion" value="{{ publicacion.id }}">
 
-                <small class="calendar-form-help">
-                    Elegí primero la fecha de inicio y después la fecha
-                    de finalización desde el calendario. Los campos se
-                    completarán automáticamente.
-                </small>
-
                 <label for="input-desde" class="lbl-desde">
                     Desde
                 </label>
@@ -68,39 +62,6 @@
             Cargando disponibilidad del calendario...
         </p>
 
-        <ul class="calendar-legend" aria-label="Referencias del calendario">
-            <li>
-                <span class="calendar-legend-color libre"></span>
-                Libre
-            </li>
-
-            <li>
-                <span class="calendar-legend-color ocupado"></span>
-                Ocupada
-            </li>
-
-            <li>
-                <span class="calendar-legend-color past-date"></span>
-                Pasada
-            </li>
-
-            {% if puedeReservar %}
-                <li>
-                    <span class="calendar-legend-color fecha-inicio"></span>
-                    Inicio
-                </li>
-
-                <li>
-                    <span class="calendar-legend-color fecha-rango"></span>
-                    Rango
-                </li>
-
-                <li>
-                    <span class="calendar-legend-color fecha-fin"></span>
-                    Final
-                </li>
-            {% endif %}
-        </ul>
 
         <table id="calendarTable" class="greenTable">
             
