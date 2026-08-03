@@ -11,6 +11,9 @@ class MapaLeaflet {
 
         //Guarda el unico marcador utilizado en el formulario de alta
         this.marcadorActivo = null;
+
+        //Permite ignorar respuestas viejas si el usuario cambia de ubicación
+        this.numeroSeleccion = 0;
     }
 
     /*Busca varias coincidencias en Nominatim. Solamente obtiene resultados. No coloca un marcador*/
@@ -79,7 +82,7 @@ class MapaLeaflet {
             this.mapa.setView([lat, lon], 13);
 
             if (marcar) {
-                this.seleccionarResultado(primerResultado);
+                await this.seleccionarResultado(primerResultado);
             }
 
             return resultados;
@@ -93,7 +96,7 @@ class MapaLeaflet {
     }
 
     /*Recibe la opción elegida por el usuario. Actualiza el mapa, el marcador y los campos del formulario*/
-    seleccionarResultado(resultado) {
+    async seleccionarResultado(resultado) {
 
         if (!resultado || typeof resultado !== 'object') {
             throw new Error('El resultado seleccionado no es válido.');
@@ -112,14 +115,52 @@ class MapaLeaflet {
             throw new Error('El resultado seleccionado no tiene una dirección válida.');
         }
 
+        /*Cada selección recibe un número propio. Si el usuario cambia de búsqueda antes de que termine la consulta inversa, la respuesta anterior se ignora*/
+        const seleccionActual = ++this.numeroSeleccion;
+
         this.mapa.setView([lat, lon], 16);
 
         this.actualizarMarcadorActivo(lat, lon, direccionCompleta);
 
         this.actualizarCoordenadas(lat, lon);
 
-        return this.actualizarCamposDesdeResultado(resultado);
+        /*Primero se usan los datos que ya vinieron en el resultado seleccionado*/
+        let estado = this.construirEstadoDesdeResultado(resultado);
 
+        this.aplicarEstadoUbicacion(estado);
+
+        /*Si dirección, provincia y código postal ya están completos, no se necesita realizar otra consulta*/
+        if (estado.exito) {
+            return {
+                ...estado,
+                obsoleto: false
+            };
+        }
+
+        /*Algunas ciudades o localidades no traen codigo postal en el resultado de busqueda. 
+        Por lo que se repute la consulta en la misma posicion para intentar obtener los datos faltantes*/
+        const resultadoInverso = await this.obtenerDireccion(lat, lon);
+
+        /*Mientras esperamos, el usuario puede haber cambiado de ubicación. En ese caso se descarta esta respuesta*/
+        if (seleccionActual !== this.numeroSeleccion) {
+            return {
+                ...estado,
+                obsoleto: true
+            };
+        }
+
+        if (resultadoInverso !== null) {
+            const resultadoCompletado = this.combinarResultados(resultado, resultadoInverso);
+
+            estado = this.construirEstadoDesdeResultado(resultadoCompletado);
+
+            this.aplicarEstadoUbicacion(estado);
+        }
+
+        return {
+            ...estado,
+            obsoleto: false
+        };
     }
 
     /*Crea el marcador solamente la primera vez. En las selecciones siguientes mueve el mismo marcador*/
@@ -136,14 +177,32 @@ class MapaLeaflet {
                 'dragend',
 
                 async event => {
+
                     const marcador = event.target;
                     const posicion = marcador.getLatLng();
+
+                    const seleccionActual = ++this.numeroSeleccion;
 
                     this.actualizarCoordenadas(posicion.lat, posicion.lng);
 
                     marcador.bindPopup('Actualizando dirección...').openPopup();
 
-                    const estado = await this.actualizarCodigoPostalProvincia(posicion.lat, posicion.lng);
+                    const resultadoInverso = await this.obtenerDireccion(posicion.lat, posicion.lng);
+
+                    /*Si el usuario cambia de busqueda antes de que termine la consulta inversa, la respuesta anterior se ignora*/
+                    if (seleccionActual !== this.numeroSeleccion
+                    ) {
+                        return;
+                    }
+
+                    const estado =
+                        resultadoInverso !== null
+                            ? this.actualizarCamposDesdeResultado(
+                                resultadoInverso
+                            )
+                            : this.aplicarEstadoUbicacion(
+                                this.crearEstadoUbicacionVacio()
+                            );
 
                     const textoActualizado =
                         estado.direccionCompleta !== ''
@@ -152,10 +211,15 @@ class MapaLeaflet {
 
                     marcador.bindPopup(textoActualizado).openPopup();
 
-                    document.dispatchEvent(new CustomEvent('mapa:ubicacion-actualizada', {detail: estado}));
-
+                    document.dispatchEvent(
+                        new CustomEvent(
+                            'mapa:ubicacion-actualizada',
+                            {detail: estado}
+                        )
+                    );
                 }
             );
+
         } else {
             this.marcadorActivo.setLatLng([lat, lon]);
         }
@@ -163,8 +227,10 @@ class MapaLeaflet {
         this.marcadorActivo.bindPopup(textoPopup).openPopup();
     }
 
-    /*Limpia los datos que podrian enviarse al backend*/
+    /*Cancela cualquier consulta pendiente perteneciente a una ubicacion anterior*/
     limpiarDatosUbicacion() {
+
+        this.numeroSeleccion++;
 
         this.asignarValor('#direccion', '');
         this.asignarValor('#direccion_completa', '');
@@ -174,7 +240,7 @@ class MapaLeaflet {
         if (this.marcadorActivo !== null) {
             this.marcadorActivo.closePopup();
         }
-
+        
     }
 
     /*Guarda las coordenadas en el formato esperado por PHP: {"lat":-39.03,"lng":-67.58}*/

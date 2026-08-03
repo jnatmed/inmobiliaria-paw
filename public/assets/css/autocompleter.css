@@ -1,12 +1,29 @@
 /* Estilos para el autocompletado */
 
-/* Contenedor de los controles de búsqueda del mapa */
+/* Estilos para el selector de resultados de ubicacion */
+
+/* Agrupa el input, el botón y el indicador de carga */
 .busqueda-ubicacion-controles {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+}
+
+/*Este contenedor funciona como referencia para posicionar la lista de opciones de ubicacion exactamente debajo del input*/
+.busqueda-ubicacion-campo {
+    position: relative;
+    flex: 0 1 32rem;
+    width: min(70vw, 32rem);
+}
+
+/* Sobrescribe el ancho general de los inputs del formulario */
+.busqueda-ubicacion-campo #ubicacion {
+    display: block;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 /* Mensaje que informa el resultado de la búsqueda o un error */
@@ -30,11 +47,14 @@
     color: #444444;
 }
 
-/* El contenedor queda debajo del buscador y sobre el mapa */
+/*La lista se despliega como la sugerencia de un buscador normal*/
 .autocomplete-results-container {
-    position: relative;
-    width: min(100%, 46rem);
-    margin: 0 auto;
+    position: absolute;
+    top: calc(100% + 0.15rem);
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
     z-index: 1100;
 }
 
@@ -43,10 +63,6 @@
 }
 
 .autocomplete-list {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     max-height: 18rem;
     overflow-y: auto;
     list-style: none;
@@ -102,11 +118,15 @@
 }
 
 @media (max-width: 700px) {
-    .busqueda-ubicacion-controles #ubicacion {
-        width: min(100%, 32rem);
+    .busqueda-ubicacion-controles {
+        flex-wrap: wrap;
     }
 
-    .autocomplete-results-container,
+    .busqueda-ubicacion-campo {
+        flex-basis: 100%;
+        width: 100%;
+    }
+
     .mensaje-busqueda-ubicacion {
         width: 100%;
     }
