@@ -91,15 +91,45 @@ class FormularioMultistep {
                     return;
             }
 
-            if (!input.value.trim() || (input.type === 'number' && parseFloat(input.value) <= 0)) {
+            const valor = input.value.trim();
+
+            const longitudMinima = Number(input.getAttribute('minlength')) || 0;
+
+            if (!valor || (input.type === 'number' && parseFloat(valor) <= 0)) {
+
                 valid = false;
-                console.log("input invalida " + input)
+
+                console.log("input invalida " + input);
+
                 if (!firstInvalidInput) {
                     firstInvalidInput = input;
                 }
+
                 const placeholder = input.placeholder || input.name;
+
                 this.mostrarError(`El campo "${placeholder}" está incompleto o tiene un valor no permitido.`, currentErrorContainer);
+
+                return;
             }
+
+            if (
+                longitudMinima > 0 &&
+                valor.length < longitudMinima
+            ) {
+                valid = false;
+
+                if (!firstInvalidInput) {
+                    firstInvalidInput = input;
+                }
+
+                const nombreCampo =
+                    input.placeholder || input.name;
+
+                this.mostrarError(
+                    `El campo "${nombreCampo}" debe tener al menos ${longitudMinima} caracteres.`,
+                    currentErrorContainer
+                );
+}
         });
 
         // Validar el campo de precio en el último paso si es una validación final
