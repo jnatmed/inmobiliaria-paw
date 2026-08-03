@@ -215,16 +215,16 @@ class MapaLeaflet {
 
                     this.aplicarEstadoUbicacion(estado);
 
-                    /*Este evento actualiza el texto del buscador, el mensaje de ubicación y la tarjeta del popup*/
+                    
+
+                    marcador.closePopup();
+
                     document.dispatchEvent(
                         new CustomEvent(
                             'mapa:ubicacion-actualizada',
                             {detail: estado}
                         )
                     );
-
-                    /*Después de actualizar la tarjeta se cierra el popup para que no tape el mapa*/
-                    marcador.closePopup();
                 }
             );
 

@@ -12,93 +12,118 @@
     <main>
         <section class="publicaciones-container">
             <h1 class="publicaciones-titulo">Lista de Publicaciones</h1>
-            <table class="publicaciones-tabla">
-                <thead>
-                    <tr>
-                        <th>ID Publicación</th>
-                        <th>Nombre Alojamiento</th>
-                        <th>Localidad</th>
-                        <th>Provincia</th>
-                        <th>Precio</th>
-                        <th>Capacidad Máxima</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if publicaciones is not empty %}
-                        {% for publicacion in publicaciones %}
-                            <tr>
-                                <td>{{ publicacion.id | e }}</td>
-                                <td><a href="/publicacion/ver?id_pub={{ publicacion.id }}">{{ publicacion.nombre_alojamiento | e }}</a></td>
-                                <td>{{ publicacion.localidad | e }}</td>
-                                <td>{{ publicacion.provincia | e }}</td>
-                                <td>{{ publicacion.precio | e }}</td>
-                                <td>{{ publicacion.capacidad_maxima | e }}</td>
-                                <td>{{ publicacion.estado | e }}</td>
-                                <td>
-                                    <form
-                                            action="/publicaciones/gestionar/aceptar"
-                                            method="POST"
-                                            class="form-accion-inline"
-                                        >
 
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div class="publicaciones-tabla-scroll">
+                <table class="publicaciones-tabla">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre del alojamiento</th>
+                            <th>Localidad</th>
+                            <th>Provincia</th>
+                            <th>Precio</th>
+                            <th>Capacidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
 
-                                            <input
-                                                type="hidden"
-                                                name="id_pub"
-                                                value="{{ publicacion.id }}"
-                                            >
+                    <tbody>
+                        {% if publicaciones is not empty %}
+                            {% for publicacion in publicaciones %}
+                                <tr>
+                                    <td>
+                                        {{ publicacion.id | e }}
+                                    </td>
 
-                                            <button
-                                                type="submit"
-                                                class="publicaciones-accion"
-                                            >
-                                                Aceptar
-                                            </button>
-                                        </form>
-
-                                        <form
-                                            action="/publicaciones/gestionar/rechazar"
-                                            method="POST"
-                                            class="form-accion-inline"
-                                        >
-
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-                                            <input
-                                                type="hidden"
-                                                name="id_pub"
-                                                value="{{ publicacion.id }}"
-                                            >
-
-                                            <button
-                                                type="submit"
-                                                class="publicaciones-accion"
-                                            >
-                                                Rechazar
-                                            </button>
-                                        </form>
-
-                                        <a
-                                            class="publicaciones-accion"
-                                            href="/publicacion/ver?id_pub={{ publicacion.id }}"
-                                        >
-                                            Ver
+                                    <td>
+                                        <a class="publicaciones-nombre" href="/publicacion/ver?id_pub={{ publicacion.id }}">
+                                            {{ publicacion.nombre_alojamiento | e }}
                                         </a>
+                                    </td>
+
+                                    <td>
+                                        {{ publicacion.localidad | e }}
+                                    </td>
+
+                                    <td>
+                                        {{ publicacion.provincia | e }}
+                                    </td>
+
+                                    <td class="publicaciones-numero">
+                                        {{ publicacion.precio | e }}
+                                    </td>
+
+                                    <td class="publicaciones-numero">
+                                        {{ publicacion.capacidad_maxima | e }}
+                                    </td>
+
+                                    <td class="publicaciones-estado-celda">
+                                        {% if publicacion.estado == 'pendiente-de-aceptacion' %}
+                                            <span class="publicaciones-estado publicaciones-estado--pendiente">
+                                                Pendiente
+                                            </span>
+
+                                        {% elseif publicacion.estado == 'aceptado' %}
+                                            <span class="publicaciones-estado publicaciones-estado--aceptada">
+                                                Aceptada
+                                            </span>
+
+                                        {% elseif publicacion.estado == 'rechazado' %}
+                                            <span class="publicaciones-estado publicaciones-estado--rechazada">
+                                                Rechazada
+                                            </span>
+
+                                        {% else %}
+                                            <span class="publicaciones-estado">
+                                                {{ publicacion.estado | replace({'-': ' '}) | capitalize | e }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="publicaciones-acciones-celda">
+                                        <div class="publicaciones-acciones-grupo">
+                                            <form action="/publicaciones/gestionar/aceptar" method="POST" class="form-accion-inline">
+
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                                <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                                <button type="submit" class="publicaciones-accion publicaciones-accion--aceptar">
+                                                    Aceptar
+                                                </button>
+                                            </form>
+
+                                            <form action="/publicaciones/gestionar/rechazar" method="POST" class="form-accion-inline">
+                                                
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                                <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                                <button type="submit" class="publicaciones-accion publicaciones-accion--rechazar">
+                                                    Rechazar
+                                                </button>
+
+                                            </form>
+
+                                            <a class="publicaciones-accion publicaciones-accion--ver" href="/publicacion/ver?id_pub={{ publicacion.id }}">
+                                                Ver
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="no-result">
+                                    No hay resultados para mostrar.
                                 </td>
                             </tr>
-                        {% endfor %}                        
-                    {% else %}
-                        <tr>
-                            <td colspan="8" class="no-result">
-                                No hay resultados para mostrar.
-                            </td>
-                        </tr>                      
-                    {% endif %}
-                </tbody>
-            </table>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 

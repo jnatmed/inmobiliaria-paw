@@ -1,81 +1,228 @@
 .publicaciones-container {
-    max-width: 70vw;
-    width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
+    width: min(96vw, 1250px);
+    margin: 2rem auto;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .publicaciones-titulo {
+    margin: 0 0 1.25rem;
+    color: #333333;
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+}
+
+/* En pantallas angostas la tabla puede desplazarse horizontalmente en lugar de comprimir sus columnas */
+.publicaciones-tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
 }
 
 .publicaciones-tabla {
     width: 100%;
+    min-width: 1050px;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin: 0;
+    font-size: 0.9rem;
 }
 
 .publicaciones-tabla th,
 .publicaciones-tabla td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+    padding: 0.7rem 0.6rem;
+    border-bottom: 1px solid #dddddd;
+    vertical-align: middle;
 }
 
 .publicaciones-tabla th {
-    background-color: #f9f9f9;
-    color: #333;
-    font-weight: bold;
-}
-
-.publicaciones-tabla tr:hover {
-    background-color: #f1f1f1;
-}
-
-.publicaciones-accion {
-    color: #007bff;
-    text-decoration: none;
-    padding: 5px 10px;
-    border: 1px solid #007bff;
-    border-radius: 5px;
-    margin: 0 5px;
-    display: inline-block;
-}
-
-.publicaciones-accion:hover {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.no-result {
-    text-align: center;
-    padding: 20px;
-    color: #777;
-    font-size: 18px;
-    font-style: italic;
-}
-
-
-
-
-.publicaciones-tabla td:last-child {
+    background-color: #f5f5f5;
+    color: #333333;
+    font-weight: 700;
+    text-align: left;
     white-space: nowrap;
 }
 
+.publicaciones-tabla tbody tr:hover {
+    background-color: #f7f7f7;
+}
+
+/* ID */
+.publicaciones-tabla th:nth-child(1),
+.publicaciones-tabla td:nth-child(1) {
+    width: 4rem;
+    text-align: center;
+}
+
+/* Nombre */
+.publicaciones-tabla th:nth-child(2),
+.publicaciones-tabla td:nth-child(2) {
+    min-width: 11rem;
+}
+
+/* Localidad y provincia */
+.publicaciones-tabla th:nth-child(3),
+.publicaciones-tabla td:nth-child(3),
+.publicaciones-tabla th:nth-child(4),
+.publicaciones-tabla td:nth-child(4) {
+    min-width: 7rem;
+}
+
+/* Precio y capacidad */
+.publicaciones-tabla th:nth-child(5),
+.publicaciones-tabla td:nth-child(5),
+.publicaciones-tabla th:nth-child(6),
+.publicaciones-tabla td:nth-child(6) {
+    width: 6rem;
+    text-align: center;
+}
+
+/* Estado */
+.publicaciones-tabla th:nth-child(7),
+.publicaciones-tabla td:nth-child(7) {
+    width: 8rem;
+    text-align: center;
+}
+
+/* Acciones */
+.publicaciones-tabla th:nth-child(8),
+.publicaciones-tabla td:nth-child(8) {
+    min-width: 15rem;
+}
+
+.publicaciones-nombre {
+    color: #222222;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.publicaciones-nombre:hover,
+.publicaciones-nombre:focus-visible {
+    text-decoration: underline;
+}
+
+.publicaciones-numero {
+    white-space: nowrap;
+}
+
+/* Etiqueta visual del estado */
+.publicaciones-estado {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 5.5rem;
+    padding: 0.3rem 0.55rem;
+    box-sizing: border-box;
+    border: 1px solid #bdbdbd;
+    border-radius: 999px;
+    background-color: #eeeeee;
+    color: #333333;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.publicaciones-estado--pendiente {
+    border-color: #d9b94e;
+    background-color: #fff4c2;
+    color: #654d00;
+}
+
+.publicaciones-estado--aceptada {
+    border-color: #7aae7d;
+    background-color: #dff1df;
+    color: #205c24;
+}
+
+.publicaciones-estado--rechazada {
+    border-color: #cc7c7c;
+    background-color: #f7dddd;
+    color: #7d1e1e;
+}
+
+.publicaciones-acciones-celda {
+    white-space: nowrap;
+}
+
+.publicaciones-acciones-grupo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+}
+
 .form-accion-inline {
-    display: inline-block;
+    display: block;
     margin: 0;
     padding: 0;
 }
 
-.form-accion-inline button.publicaciones-accion {
+.publicaciones-accion {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 4.3rem;
+    min-height: 2rem;
+    margin: 0;
+    padding: 0.35rem 0.55rem;
+    box-sizing: border-box;
+    border: 1px solid #007bff;
+    border-radius: 5px;
     background-color: transparent;
-    cursor: pointer;
+    color: #007bff;
     font: inherit;
-    line-height: normal;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+/* Boton aceptar */
+.publicaciones-accion--aceptar:hover,
+.publicaciones-accion--aceptar:focus-visible {
+    border-color: #2e7d32;
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+/* Boton rechazar */
+.publicaciones-accion--rechazar:hover,
+.publicaciones-accion--rechazar:focus-visible {
+    border-color: #c62828;
+    background-color: #c62828;
+    color: #ffffff;
+}
+
+/* Boton ver */
+.publicaciones-accion--ver:hover,
+.publicaciones-accion--ver:focus-visible {
+    border-color: #0069d9;
+    background-color: #0069d9;
+    color: #ffffff;
+}
+
+.publicaciones-accion:focus-visible {
+    outline: 2px solid #222222;
+    outline-offset: 2px;
+}
+
+.no-result {
+    padding: 1.25rem;
+    color: #777777;
+    font-size: 1rem;
+    font-style: italic;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .publicaciones-container {
+        width: 96vw;
+        margin: 1rem auto;
+        padding: 0.75rem;
+    }
 }

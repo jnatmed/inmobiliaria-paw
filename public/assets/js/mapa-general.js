@@ -6,9 +6,6 @@ class MapaGeneral {
             // Promesa para cargar el script de Leaflet
             const promiseMapaLeafLet = PAW.cargarScriptPromise('MapaLeaflet', '/assets/js/components/mapaLeaflet.js');
             
-            const promiseCookier = PAW.cargarScriptPromise("Cookier", "/assets/js/components/cookier.js")
-
-            
             // Función para obtener publicaciones
             const fetchPublicaciones = async () => {
                 try {
@@ -25,8 +22,11 @@ class MapaGeneral {
             };
 
             // Ejecutar ambas promesas
-            Promise.all([promiseCookier, promiseMapaLeafLet, fetchPublicaciones()])
-                .then(([_, __, publicaciones]) => {
+            Promise.all([
+                promiseMapaLeafLet,
+                fetchPublicaciones()
+            ])
+            .then(([_, publicaciones]) => {
         
                     // Inicializar el mapa después de cargar el script y obtener las publicaciones
                     const mapaLeaf = new MapaLeaflet();
@@ -35,19 +35,13 @@ class MapaGeneral {
 
                     document.querySelector('#buscarUbicacion').addEventListener('click', async (e) => {
                         e.preventDefault();
-                        const address = document.querySelector('#ubicacion').value;
-
-                        // Guardar la dirección en la cookie
-                        Cookier.setCookie('ubicacion', address, 7); // Guardar por 7 días                        
+                        const address = document.querySelector('#ubicacion').value;                      
 
                         const loading = document.querySelector('.loader');
                         loading.classList.add('activo');
                         await mapaLeaf.buscar(address, false);
                         loading.classList.remove('activo');
-                    });
-
-                    // Usar Cookier para restaurar el valor de la cookie en el campo de búsqueda
-                    Cookier.restoreCookieToField('ubicacion', 'ubicacion');                
+                    });             
 
                 })
                 .catch(error => {
