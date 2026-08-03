@@ -22,9 +22,17 @@ class DragDrop {
         this.inputFile.addEventListener('change', this.handleFileSelect.bind(this));
     }
 
+
     handleFileSelect(e) {
-        this.addFilesToList(e.target.files);
-        this.previewFiles(e.target.files);
+
+        const archivosSeleccionados = Array.from(e.target.files);
+
+        /*addFilesToList() devuelve únicamente los archivos que realmente fueron agregados y que no estaban duplicados*/
+        const archivosNuevos = this.addFilesToList(archivosSeleccionados);
+
+        /*Crea previews solamente para los archivos nuevos*/
+        this.previewFiles(archivosNuevos);
+
     }
 
     highlightDropArea(e) {
@@ -38,21 +46,61 @@ class DragDrop {
     }
 
     handleDrop(e) {
+
         this.dropArea.classList.remove("highlight");
         e.preventDefault();
 
-        if (e.dataTransfer.files) {
-            this.addFilesToList(e.dataTransfer.files);
-            this.previewFiles(e.dataTransfer.files);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        
+            const archivosSoltados = Array.from(e.dataTransfer.files);
+
+            /*Se agregan solamente los que todavia no estaban seleccionados*/
+            const archivosNuevos = this.addFilesToList(archivosSoltados);
+
+            /*Se muestran solamente las previews nuevas*/
+            this.previewFiles(archivosNuevos);
         }
+
     }
 
     addFilesToList(files) {
-        for (let file of files) {
-            this.filesList.push(file);
+
+        /*Esta lista contendra solamente los archivos aceptados durante la seleccion actual*/
+        const archivosNuevos = [];
+
+        for (const file of files) {
+            
+            /*Comprueba si el archivo ya estaba en la lista de selecciones anteriores y si ya apareció dentro de la seleccion actual*/
+            const yaFueSeleccionado =
+                this.filesList.some(archivoGuardado => this.isSameFile(archivoGuardado, file))
+                ||
+                archivosNuevos.some(archivoNuevo => this.isSameFile(archivoNuevo, file));
+
+            if (yaFueSeleccionado) {
+                this.mostrarError(`La imagen "${file.name}" ya fue seleccionada y no se agregó nuevamente.`);
+                continue;
+            }
+
+            archivosNuevos.push(file);
         }
+
+        /*Agrega a la lista general solamente los archivos no repetidos*/
+        this.filesList.push(...archivosNuevos);
+
+        /*Actualiza el verdadero input type="file" que se envia al servidor*/
         this.updateInputFiles();
+
+        /*Devuelve solamente los archivos nuevos para que handleFileSelect() o handleDrop() creen sus previews*/
+        return archivosNuevos;
     }
+
+    /*Dos archivos se consideran iguales cuando coinciden el nomobre, el tamaño en bytes y la ultima fecha de modificiacion*/
+    isSameFile(fileA, fileB) {
+        return fileA.name === fileB.name &&
+            fileA.size === fileB.size &&
+            fileA.lastModified === fileB.lastModified;
+    }
+
 
     updateInputFiles() {
         let dataTransfer = new DataTransfer();
@@ -138,8 +186,15 @@ class DragDrop {
         contenedorImagen.appendChild(nombreImagen);
 
         let botonEliminar = document.createElement("button");
+
+        botonEliminar.type = "button";
+
         botonEliminar.setAttribute('class', 'remove-button');
+
+        botonEliminar.setAttribute('aria-label', `Quitar ${file.name}`);
+
         botonEliminar.innerText = "Eliminar imagen";
+        
         botonEliminar.onclick = () => {
             this.removeImage(contenedorImagen, file);
         };
