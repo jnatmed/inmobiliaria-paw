@@ -22,7 +22,7 @@
 
 .publicaciones-tabla {
     width: 100%;
-    min-width: 1050px;
+    min-width: 930px;
     border-collapse: collapse;
     margin: 0;
     font-size: 0.9rem;
@@ -54,41 +54,41 @@
     text-align: center;
 }
 
-/* Nombre */
+/* Nombre del alojamiento */
 .publicaciones-tabla th:nth-child(2),
 .publicaciones-tabla td:nth-child(2) {
-    min-width: 11rem;
+    min-width: 14rem;
 }
 
-/* Localidad y provincia */
+/* Provincia */
 .publicaciones-tabla th:nth-child(3),
-.publicaciones-tabla td:nth-child(3),
-.publicaciones-tabla th:nth-child(4),
-.publicaciones-tabla td:nth-child(4) {
-    min-width: 7rem;
+.publicaciones-tabla td:nth-child(3) {
+    min-width: 8rem;
 }
 
 /* Precio y capacidad */
+.publicaciones-tabla th:nth-child(4),
+.publicaciones-tabla td:nth-child(4),
 .publicaciones-tabla th:nth-child(5),
-.publicaciones-tabla td:nth-child(5),
-.publicaciones-tabla th:nth-child(6),
-.publicaciones-tabla td:nth-child(6) {
+.publicaciones-tabla td:nth-child(5) {
     width: 6rem;
     text-align: center;
 }
 
 /* Estado */
-.publicaciones-tabla th:nth-child(7),
-.publicaciones-tabla td:nth-child(7) {
+.publicaciones-tabla th:nth-child(6),
+.publicaciones-tabla td:nth-child(6) {
     width: 8rem;
     text-align: center;
 }
 
 /* Acciones */
-.publicaciones-tabla th:nth-child(8),
-.publicaciones-tabla td:nth-child(8) {
+.publicaciones-tabla th:nth-child(7),
+.publicaciones-tabla td:nth-child(7) {
     min-width: 15rem;
+    text-align: center;
 }
+
 
 .publicaciones-nombre {
     color: #222222;
@@ -148,7 +148,7 @@
 .publicaciones-acciones-grupo {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 0.4rem;
     flex-wrap: nowrap;
 }

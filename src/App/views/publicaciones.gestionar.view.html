@@ -19,7 +19,6 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre del alojamiento</th>
-                            <th>Localidad</th>
                             <th>Provincia</th>
                             <th>Precio</th>
                             <th>Capacidad</th>
@@ -40,10 +39,6 @@
                                         <a class="publicaciones-nombre" href="/publicacion/ver?id_pub={{ publicacion.id }}">
                                             {{ publicacion.nombre_alojamiento | e }}
                                         </a>
-                                    </td>
-
-                                    <td>
-                                        {{ publicacion.localidad | e }}
                                     </td>
 
                                     <td>
@@ -116,7 +111,7 @@
 
                         {% else %}
                             <tr>
-                                <td colspan="8" class="no-result">
+                                <td colspan="7" class="no-result">
                                     No hay resultados para mostrar.
                                 </td>
                             </tr>
