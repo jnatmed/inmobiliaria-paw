@@ -1,7 +1,28 @@
 <section class="input-busqueda">
-    <input type="text" id="ubicacion" class="input-form-publicacion" placeholder="Ingrese su Direccion" required>
-    <button id="buscarUbicacion">🔍︎</button>
-    <div class="loader"></div>
+    <div class="busqueda-ubicacion-controles">
+        <input type="text" id="ubicacion" class="input-form-publicacion" placeholder="Ingrese su dirección" autocomplete="off" required>
+
+        <button type="button" id="buscarUbicacion" aria-label="Buscar ubicación">
+            🔍︎
+        </button>
+
+        <div class="loader" aria-hidden="true"></div>
+    </div>
+
+    <p
+        id="mensaje-busqueda-ubicacion"
+        class="mensaje-busqueda-ubicacion"
+        role="status"
+        aria-live="polite"
+    ></p>
+
+    <div id="resultados-ubicacion" class="autocomplete-results-container" hidden>
+        <ul
+            id="lista-resultados-ubicacion"
+            class="autocomplete-list"
+        ></ul>
+    </div>
 </section>
+
 <div id="location"></div>
 <div id="mapid"></div>
