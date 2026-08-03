@@ -269,7 +269,7 @@ class UsuarioController extends Controller
                 view('login.view', array_merge(
                     [
                         'titulo' => $titulo,
-                        'resultado' => ['error' => 'Los datos ingresados no son válidos.']
+                        'resultado' => ['error' => implode(' ', $errores)]
                     ],
                     $this->menuAndSession
                 ));
