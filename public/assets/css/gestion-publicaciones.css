@@ -60,15 +60,22 @@
     font-style: italic;
 }
 
+
+
+
+.publicaciones-tabla td:last-child {
+    white-space: nowrap;
+}
+
 .form-accion-inline {
-    display: inline;
+    display: inline-block;
     margin: 0;
     padding: 0;
 }
 
-.form-accion-inline button {
-    border: 0;
-    background: transparent;
+.form-accion-inline button.publicaciones-accion {
+    background-color: transparent;
     cursor: pointer;
     font: inherit;
+    line-height: normal;
 }
