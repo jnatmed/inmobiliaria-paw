@@ -245,10 +245,13 @@ class MapaLeaflet {
         this.asignarValor('#provincia', '');
         this.asignarValor('#codigo_postal', '');
 
+        this.asignarPlaceholder('#codigo_postal', '');
+
+        this.limpiarPreviewAlta();
+
         if (this.marcadorActivo !== null) {
             this.marcadorActivo.closePopup();
         }
-
     }
 
     /*Guarda las coordenadas en el formato esperado por PHP: {"lat":-39.03,"lng":-67.58}*/
@@ -337,10 +340,21 @@ class MapaLeaflet {
 
         this.asignarValor('#direccion_completa', estado.direccionCompleta);
         this.asignarValor('#provincia', estado.provincia);
+
         this.asignarValor('#codigo_postal', estado.codigoPostal);
 
-        return estado;
+        /*El placeholder se muestra solamente despues de terminar la busqueda directa e inversa. Antes de seleccionar una ubicacion queda vacio*/
+        const codigoPostalNoDisponible = Array.isArray(estado.advertencias) && estado.advertencias.includes('código postal no disponible');
 
+        this.asignarPlaceholder(
+            '#codigo_postal',
+
+            codigoPostalNoDisponible
+                ? 'No se pudo encontrar el código postal'
+                : ''
+        );
+
+        return estado;
     }
 
 
@@ -453,7 +467,7 @@ class MapaLeaflet {
         estado = this.normalizarEstadoFinal(estado);
 
         return this.aplicarEstadoUbicacion(estado);
-        
+
     }
 
     /*Convierte un valor en texto válido. Rechaza valores invalidos*/
@@ -498,6 +512,201 @@ class MapaLeaflet {
 
     }
 
+    /*Cambia el placeholder solamente si el campo existe en la pagina actual*/
+    asignarPlaceholder(selector, valor) {
+        const elemento = document.querySelector(selector);
+
+        if (elemento) {
+            elemento.placeholder = valor;
+        }
+    }
+
+    /*Devuelve el texto que se muestra como precio*/
+    obtenerPrecioPreview(valor) {
+
+        if (valor === null || valor === undefined) {
+            return 'Precio pendiente';
+        }
+
+        const texto = String(valor).trim();
+
+        /*Se quitan los puntos de miles y se cambia la coma decimal solamente para comprobar si representa un precio mayor que cero*/
+        const numero = Number(texto.replace(/\./g, '').replace(',', '.'));
+
+        if (texto === '' || !Number.isFinite(numero) || numero <= 0) {
+            return 'Precio pendiente';
+        }
+
+        return `USD ${texto} / noche`;
+    }
+
+    /*Construye la tarjeta compartida por el mapa general, el popup del alta y la preview visible del alta*/
+    crearContenidoPreview(datos = {}) {
+
+        const nombre = this.obtenerTextoSeguro(datos.nombre) || 'Nombre pendiente';
+
+        const direccion = this.obtenerTextoSeguro(datos.direccion) || 'Seleccioná una ubicación para completar la dirección.';
+
+        const urlPublicacion = this.obtenerTextoSeguro(datos.urlPublicacion);
+
+        const urlImagen = this.obtenerTextoSeguro(datos.urlImagen);
+
+
+
+        const tarjeta = document.createElement('article');
+
+        tarjeta.classList.add('mapa-preview-card');
+
+        if (datos.modoAlta === true) {
+            tarjeta.classList.add(
+                'mapa-preview-card--alta'
+            );
+        }
+
+        /*En el mapa general la imagen funciona como enlace. En el alta todavia no existe una publicacion por lo que se utiliza un div comun*/
+        const contenedorImagen =
+            document.createElement(
+                urlPublicacion !== ''
+                    ? 'a'
+                    : 'div'
+            );
+
+        contenedorImagen.classList.add('mapa-preview-imagen-contenedor');
+
+        if (urlPublicacion !== '') {
+            contenedorImagen.href = urlPublicacion;
+
+            contenedorImagen.target = '_blank';
+
+            contenedorImagen.rel = 'noopener noreferrer';
+        }
+
+        /*Imagen del mapa general*/
+        if (urlImagen !== '') {
+
+            const imagen = document.createElement('img');
+
+            imagen.classList.add('mapa-preview-imagen');
+
+            imagen.src = urlImagen;
+
+            imagen.alt = `Imagen de ${nombre}`;
+
+            imagen.loading = 'lazy';
+
+            contenedorImagen.appendChild(imagen);
+
+        } else {
+
+            /*En el alta las imágenes se agregan  en el paso 2*/
+            const imagenPendiente = document.createElement('div');
+
+            imagenPendiente.classList.add('mapa-preview-imagen-pendiente');
+
+            imagenPendiente.textContent =
+                datos.imagenPendiente === true
+                    ? 'Imagen pendiente: se agrega en el paso 2.'
+                    : 'Imagen no disponible.';
+
+            contenedorImagen.appendChild(imagenPendiente);
+        }
+
+        const informacion = document.createElement('div');
+
+        informacion.classList.add('mapa-preview-informacion');
+
+        const precio = document.createElement('p');
+
+        precio.classList.add('mapa-preview-precio');
+
+        precio.textContent = this.obtenerPrecioPreview(datos.precio);
+
+        const titulo = document.createElement('h3');
+
+        titulo.classList.add('mapa-preview-nombre');
+
+        titulo.textContent = nombre;
+
+        const textoDireccion = document.createElement('p');
+
+        textoDireccion.classList.add('mapa-preview-direccion');
+
+        textoDireccion.textContent = direccion;
+
+        informacion.appendChild(precio);
+        informacion.appendChild(titulo);
+        informacion.appendChild(textoDireccion);
+
+        tarjeta.appendChild(contenedorImagen);
+
+        tarjeta.appendChild(informacion);
+
+        return tarjeta;
+    }
+
+    /*Muestra la misma tarjeta en el contenedor #location y dentro del popup del marcador activo*/
+    actualizarPreviewAlta(datos) {
+
+        const contenedor = document.querySelector('#location');
+
+        if (!contenedor) {
+            return;
+        }
+
+        const titulo = document.createElement('h3');
+
+        titulo.classList.add('mapa-preview-titulo');
+
+        titulo.textContent = 'Vista previa de la publicación';
+
+        /*Esta tarjeta se coloca fuera del mapa*/
+        const tarjetaFormulario =
+            this.crearContenidoPreview({
+                ...datos,
+                modoAlta: true,
+                imagenPendiente: true
+            });
+
+        contenedor.replaceChildren(titulo, tarjetaFormulario);
+
+        contenedor.classList.add('location-preview-activa');
+
+        /*Se crea otro elemento porque un mismo elemento html no puede estar en dos lugares simultáneamente*/
+        if (this.marcadorActivo !== null) {
+
+            const tarjetaPopup =
+                this.crearContenidoPreview({
+                    ...datos,
+                    modoAlta: true,
+                    imagenPendiente: true
+                });
+
+            if (this.marcadorActivo.getPopup()) {
+
+                this.marcadorActivo.setPopupContent(tarjetaPopup);
+
+            } else {
+
+                this.marcadorActivo.bindPopup(tarjetaPopup);
+
+            }
+        }
+    }
+
+    /*Oculta la preview cuando cambia el texto de búsqueda y la ubicación anterior deja de ser válida*/
+    limpiarPreviewAlta() {
+
+        const contenedor = document.querySelector('#location');
+
+        if (!contenedor) {
+            return;
+        }
+
+        contenedor.replaceChildren();
+
+        contenedor.classList.remove('location-preview-activa');
+    }
+
     /*Metodo utilizado por el mapa del detalle de la publicacion*/
     async buscarPorLatitudyLongitud(lat, lon) {
 
@@ -525,65 +734,51 @@ class MapaLeaflet {
     /*Método utilizado por el mapa general*/
     agregarPublicacionesAlMapa(publicaciones) {
 
-        publicaciones.forEach(publicacion => {
+        publicaciones.forEach(
 
-            const lat = publicacion.latitud;
-            const lon = publicacion.longitud;
-            const nombre = publicacion.nombre_alojamiento;
-            const precio = publicacion.precio;
+            publicacion => {
 
-            const url_pub = `${window.location.origin}${publicacion.url_pub}`;
+                const lat = publicacion.latitud;
+                const lon = publicacion.longitud;
+                const urlPublicacion = `${window.location.origin}${publicacion.url_pub}`;
+                const urlImagen = `${window.location.origin}${publicacion.img_principal}`;
 
-            const url_imagen = `${window.location.origin}${publicacion.img_principal}`;
+                /*Se utiliza el mismo componente que utilizará el formulario de alta*/
+                const contenido =
+                    this.crearContenidoPreview({
+                        nombre: publicacion.nombre_alojamiento,
+                        precio: publicacion.precio,
+                        direccion: publicacion.direccion,
+                        urlPublicacion,
+                        urlImagen
+                    });
 
-            const direccion = publicacion.direccion;
+                const marcador = L.marker([lat, lon]).addTo(this.mapa).bindPopup(contenido);
 
-            const contenido = `
-                <div style="text-align: center;">
-                    <a href="${url_pub}" target="_blank">
-                        <img
-                            src="${url_imagen}"
-                            alt="${nombre}"
-                            style="width: 100%; max-width: 300px; height: auto; margin-bottom: 10px;"
-                        />
-                    </a>
+                marcador.on(
+                    'mouseover',
 
-                    <h1 style="font-size: 1.5rem; font-weight: bold;">
-                        USD ${precio} / noche
-                    </h1>
+                    function () {
+                        this.openPopup();
+                    }
+                );
 
-                    <h2 style="font-size: 1.25rem;">
-                        ${nombre}
-                    </h2>
+                marcador.on(
+                    'mouseout',
 
-                    <h3 style="font-size: 1rem;">
-                        ${direccion}
-                    </h3>
-                </div>
-            `;
+                    function () {
+                        this.closePopup();
+                    }
+                );
 
-            const marcador = L.marker([lat, lon]).addTo(this.mapa).bindPopup(contenido);
+                marcador.on(
+                    'click',
 
-            marcador.on(
-                'mouseover',
-                function () {
-                    this.openPopup();
-                }
-            );
-
-            marcador.on(
-                'mouseout',
-                function () {
-                    this.closePopup();
-                }
-            );
-
-            marcador.on(
-                'click',
-                function () {
-                    window.location.href = url_pub;
-                }
-            );
-        });
+                    function () {
+                        window.location.href = urlPublicacion;
+                    }
+                );
+            }
+        );
     }
 }

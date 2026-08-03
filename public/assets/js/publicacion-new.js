@@ -42,6 +42,11 @@ class publicacionNew {
         const resultadosLista = document.querySelector('#lista-resultados-ubicacion');
         const mensajeBusqueda = document.querySelector('#mensaje-busqueda-ubicacion');
 
+        const nombreAlojamientoInput = document.querySelector('#nombre-alojamiento');
+        const precioInput = document.querySelector('#precio');
+        const direccionInput = document.querySelector('#direccion');
+        const direccionCompletaInput = document.querySelector('#direccion_completa');
+
         /*Vacía y oculta la lista de resultados*/
         const limpiarResultados = () => {
           resultadosLista.innerHTML = '';
@@ -71,6 +76,25 @@ class publicacionNew {
 
         };
 
+        /*Actualiza la tarjeta solamente cuando existen coordenadas y direccion seleccionadas*/
+        const actualizarPreviewAlta = () => {
+
+            const hayUbicacionSeleccionada = direccionInput.value.trim() !== '' && direccionCompletaInput.value.trim() !== '';
+
+            if (!hayUbicacionSeleccionada) {
+                mapaLeaf.limpiarPreviewAlta();
+                return;
+            }
+
+            mapaLeaf.actualizarPreviewAlta({
+                nombre: nombreAlojamientoInput.value,
+
+                direccion: direccionCompletaInput.value,
+
+                precio: precioInput.value
+            });
+        };
+
         /*Informa el estado de la ubicación seleccionada*/
         const informarEstadoSeleccion = estado => {
 
@@ -79,7 +103,7 @@ class publicacionNew {
             /*La ubicación es válida, pero OpenStreetMap no conoce el código postal de ese punto*/
             if (estado.exito && codigoPostalNoDisponible) {
                 mostrarMensaje(
-                    'Ubicación seleccionada. OpenStreetMap no informó el código postal para este punto, por eso el campo quedará vacío. Las coordenadas, la dirección y la provincia sí son válidas.',
+                    'Ubicación seleccionada. No se pudo encontrar el código postal para este punto. Las coordenadas, la dirección y la provincia sí son válidas.',
                     'informacion'
                 );
 
@@ -123,6 +147,8 @@ class publicacionNew {
                 ubicacionInput.value = estado.direccionCompleta;
 
                 informarEstadoSeleccion(estado);
+
+                actualizarPreviewAlta();
 
             } catch (error) {
 
@@ -267,7 +293,15 @@ class publicacionNew {
 
           informarEstadoSeleccion(estado);
 
+          actualizarPreviewAlta();
+
         });
+
+        /*El nombre se actualiza en vivo cuando el usuario escribe en el paso 1*/
+        nombreAlojamientoInput.addEventListener('input', actualizarPreviewAlta);
+
+        /*El precio está en el paso 3, pero la preview queda actualizada para cuando el usuario vuelva al paso 1*/
+        precioInput.addEventListener('input', actualizarPreviewAlta);
 
         /*Cierra la lista al hacer click fuera del buscador*/
         document.addEventListener('click', event => {
