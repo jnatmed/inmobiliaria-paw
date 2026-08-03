@@ -86,26 +86,33 @@ class publicacionNew {
         };
 
         /*Se ejecuta cuando el usuario elige una opcion*/
-        const seleccionarResultado = resultado => {
-
-          try {
-
-            const estado = mapaLeaf.seleccionarResultado(resultado);
-
-            /*Muestra en el buscador la opcion que realmente eligio el usuario*/
-            ubicacionInput.value = estado.direccionCompleta;
+        const seleccionarResultado = async resultado => {
 
             limpiarResultados();
 
-            informarEstadoSeleccion(estado);
+            mostrarMensaje('Completando los datos de la ubicación...', 'informacion');
 
-          } catch (error) {
+            try {
 
-            console.error('No se pudo seleccionar la ubicación:', error);
+                const estado = await mapaLeaf.seleccionarResultado(resultado);
 
-            mostrarMensaje('No se pudo utilizar esa ubicación. Elegí otra opción.', 'error');
+                /*Una respuesta vieja no debe modificar una seleccion mas nueva*/
+                if (estado.obsoleto) {
+                    return;
+                }
 
-          }
+                /*Muestra en el buscador la opcion que realmente eligio el usuario*/
+                ubicacionInput.value = estado.direccionCompleta;
+
+                informarEstadoSeleccion(estado);
+
+            } catch (error) {
+
+                console.error('No se pudo seleccionar la ubicación:', error);
+
+                mostrarMensaje('No se pudo utilizar esa ubicación. Elegí otra opción.', 'error');
+
+            }
         };
 
         /*Construye la lista de resultados sin usar innerHTML con datos obtenidos desde Nominatim*/
@@ -135,11 +142,10 @@ class publicacionNew {
             opcion.appendChild(titulo);
             opcion.appendChild(detalle);
 
-            opcion.addEventListener('click', () => {
-
-              seleccionarResultado(resultado);
-
-            });
+            opcion.addEventListener('click', async () => {
+                    await seleccionarResultado(resultado);
+                }
+            );
 
             item.appendChild(opcion);
             resultadosLista.appendChild(item);

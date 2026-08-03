@@ -240,7 +240,7 @@ class MapaLeaflet {
         if (this.marcadorActivo !== null) {
             this.marcadorActivo.closePopup();
         }
-        
+
     }
 
     /*Guarda las coordenadas en el formato esperado por PHP: {"lat":-39.03,"lng":-67.58}*/
@@ -256,8 +256,8 @@ class MapaLeaflet {
 
     }
 
-    /*Extrae dirección, provincia y código postal de un resultado de Nominatim*/
-    actualizarCamposDesdeResultado(resultado) {
+    /*Extrae direccion, provincia y codigo postal sin modificar el formulario*/
+    construirEstadoDesdeResultado(resultado) {
 
         const direccionCompleta = this.obtenerTextoSeguro(resultado.display_name);
 
@@ -267,20 +267,15 @@ class MapaLeaflet {
                 ? resultado.address
                 : {};
 
-        const provincia = this.obtenerPrimerTextoValido([
-            address.state,
-            address.province,
-            address.region,
-            address.state_district
-        ]);
+        const provincia =
+            this.obtenerPrimerTextoValido([
+                address.state,
+                address.province,
+                address.region,
+                address.state_district
+            ]);
 
         const codigoPostal = this.obtenerTextoSeguro(address.postcode);
-
-        this.asignarValor('#direccion_completa', direccionCompleta);
-
-        this.asignarValor('#provincia', provincia);
-
-        this.asignarValor('#codigo_postal', codigoPostal);
 
         const faltantes = [];
 
@@ -302,6 +297,74 @@ class MapaLeaflet {
             provincia,
             codigoPostal,
             faltantes
+        };
+    }
+
+    /*Escribe en el formulario un estado de ubicación que ya fue revisado*/
+    aplicarEstadoUbicacion(estado) {
+
+        this.asignarValor('#direccion_completa', estado.direccionCompleta);
+        this.asignarValor('#provincia', estado.provincia);
+        this.asignarValor('#codigo_postal', estado.codigoPostal);
+
+        return estado;
+
+    }
+
+
+    /*Mantengo este metodo anterior para otros lugares que lo utilizan y evitar problemas*/
+    actualizarCamposDesdeResultado(resultado) {
+        const estado = this.construirEstadoDesdeResultado(resultado);
+        return this.aplicarEstadoUbicacion(estado);
+    }
+
+    /*Conserva los datos de la opción elegida*/
+    combinarResultados(resultadoBusqueda, resultadoInverso) {
+
+        const addressBusqueda =
+            resultadoBusqueda.address &&
+            typeof resultadoBusqueda.address === 'object'
+                ? resultadoBusqueda.address
+                : {};
+
+        const addressInverso =
+            resultadoInverso.address &&
+            typeof resultadoInverso.address === 'object'
+                ? resultadoInverso.address
+                : {};
+
+        return {
+            ...resultadoInverso,
+            ...resultadoBusqueda,
+
+            display_name:
+                this.obtenerTextoSeguro(
+                    resultadoBusqueda.display_name
+                ) ||
+                this.obtenerTextoSeguro(
+                    resultadoInverso.display_name
+                ),
+
+            address: {
+                ...addressInverso,
+                ...addressBusqueda
+            }
+        };
+    }
+
+    /*Estado utilizado cuando no se pudo obtener ningún dato de dirección*/
+    crearEstadoUbicacionVacio() {
+
+        return {
+            exito: false,
+            direccionCompleta: '',
+            provincia: '',
+            codigoPostal: '',
+            faltantes: [
+                'dirección completa',
+                'provincia',
+                'código postal'
+            ]
         };
     }
 
@@ -342,27 +405,17 @@ class MapaLeaflet {
         }
     }
 
-    /*Actualiza dirección completa, provincia y código postal después de arrastrar el marcador*/
+    /*Actualiza dirección completa, provincia y código postal*/
     async actualizarCodigoPostalProvincia(lat, lon) {
 
         const data = await this.obtenerDireccion(lat, lon);
 
         if (data === null) {
-            this.asignarValor('#direccion_completa', '');
-            this.asignarValor('#provincia', '');
-            this.asignarValor('#codigo_postal', '');
-
-            return {
-                exito: false,
-                direccionCompleta: '',
-                provincia: '',
-                codigoPostal: '',
-                faltantes: ['dirección completa', 'provincia', 'código postal']
-            };
+            return this.aplicarEstadoUbicacion(this.crearEstadoUbicacionVacio());
         }
 
         return this.actualizarCamposDesdeResultado(data);
-
+        
     }
 
     /*Convierte un valor en texto válido. Rechaza valores invalidos*/
