@@ -180,6 +180,7 @@ class MapaLeaflet {
             ).addTo(this.mapa);
 
             this.marcadorActivo.on(
+
                 'dragend',
 
                 async event => {
@@ -195,10 +196,12 @@ class MapaLeaflet {
 
                     const resultadoInverso = await this.obtenerDireccion(posicion.lat, posicion.lng);
 
-                    /*Si el usuario cambia de busqueda antes de que termine la consulta inversa, la respuesta anterior se ignora*/
-                    if (seleccionActual !== this.numeroSeleccion
-                    ) {
+                    /*Si el usuario cambió de ubicación mientras se espera, se ignora esta respuesta*/
+                    if (seleccionActual !== this.numeroSeleccion) {
+
+                        marcador.closePopup();
                         return;
+
                     }
 
                     let estado =
@@ -212,27 +215,36 @@ class MapaLeaflet {
 
                     this.aplicarEstadoUbicacion(estado);
 
-                    const textoActualizado =
-                        estado.direccionCompleta !== ''
-                            ? estado.direccionCompleta
-                            : 'No se pudo determinar la dirección.';
-
-                    marcador.bindPopup(textoActualizado).openPopup();
-
+                    /*Este evento actualiza el texto del buscador, el mensaje de ubicación y la tarjeta del popup*/
                     document.dispatchEvent(
                         new CustomEvent(
                             'mapa:ubicacion-actualizada',
                             {detail: estado}
                         )
                     );
+
+                    /*Después de actualizar la tarjeta se cierra el popup para que no tape el mapa*/
+                    marcador.closePopup();
                 }
             );
 
         } else {
+
+            /*En una nueva selección no se crea otro marcador se mueve el que ya existe*/
             this.marcadorActivo.setLatLng([lat, lon]);
         }
 
-        this.marcadorActivo.bindPopup(textoPopup).openPopup();
+
+        if (this.marcadorActivo.getPopup()) {
+
+            this.marcadorActivo.setPopupContent(textoPopup);
+
+        } else {
+
+            this.marcadorActivo.bindPopup(textoPopup);
+        }
+
+        this.marcadorActivo.closePopup();
     }
 
     /*Cancela cualquier consulta pendiente perteneciente a una ubicacion anterior*/
@@ -644,67 +656,40 @@ class MapaLeaflet {
         return tarjeta;
     }
 
-    /*Muestra la misma tarjeta en el contenedor #location y dentro del popup del marcador activo*/
+    /*Actualiza la tarjeta del popup del marcador*/
     actualizarPreviewAlta(datos) {
 
-        const contenedor = document.querySelector('#location');
-
-        if (!contenedor) {
+        if (this.marcadorActivo === null) {
             return;
         }
 
-        const titulo = document.createElement('h3');
+        const tarjetaPopup = this.crearContenidoPreview({
+            ...datos,
+            modoAlta: true,
+            imagenPendiente: true
+        });
 
-        titulo.classList.add('mapa-preview-titulo');
+        /*Si el marcador ya tiene un popup se reemplaza su contenido*/
+        if (this.marcadorActivo.getPopup()) {
 
-        titulo.textContent = 'Vista previa de la publicación';
+            this.marcadorActivo.setPopupContent(tarjetaPopup);
 
-        /*Esta tarjeta se coloca fuera del mapa*/
-        const tarjetaFormulario =
-            this.crearContenidoPreview({
-                ...datos,
-                modoAlta: true,
-                imagenPendiente: true
-            });
+        } else {
 
-        contenedor.replaceChildren(titulo, tarjetaFormulario);
-
-        contenedor.classList.add('location-preview-activa');
-
-        /*Se crea otro elemento porque un mismo elemento html no puede estar en dos lugares simultáneamente*/
-        if (this.marcadorActivo !== null) {
-
-            const tarjetaPopup =
-                this.crearContenidoPreview({
-                    ...datos,
-                    modoAlta: true,
-                    imagenPendiente: true
-                });
-
-            if (this.marcadorActivo.getPopup()) {
-
-                this.marcadorActivo.setPopupContent(tarjetaPopup);
-
-            } else {
-
-                this.marcadorActivo.bindPopup(tarjetaPopup);
-
-            }
+            /*Si todavía no tenía popup se lo asocia*/
+            this.marcadorActivo.bindPopup(tarjetaPopup);
         }
     }
 
-    /*Oculta la preview cuando cambia el texto de búsqueda y la ubicación anterior deja de ser válida*/
+    /*Cierra y elimina la preview anterior cuandola ubicación deja de ser válida*/
     limpiarPreviewAlta() {
 
-        const contenedor = document.querySelector('#location');
-
-        if (!contenedor) {
+        if (this.marcadorActivo === null) {
             return;
         }
 
-        contenedor.replaceChildren();
-
-        contenedor.classList.remove('location-preview-activa');
+        this.marcadorActivo.closePopup();
+        this.marcadorActivo.unbindPopup();
     }
 
     /*Metodo utilizado por el mapa del detalle de la publicacion*/

@@ -129,25 +129,6 @@
     overflow-wrap: anywhere;
 }
 
-/* El contenedor existe también en el mapa general, pero solamente se muestra cuando el alta agrega la clase location-preview-activa */
-#location {
-    display: none;
-}
-
-#location.location-preview-activa {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    margin: 1.5rem 0;
-}
-
-.mapa-preview-titulo {
-    width: 100%;
-    margin: 0 0 0.75rem;
-    font-size: 1.5rem;
-    text-align: center;
-}
 
 /* Dentro del popup ya existe el marco propio de Leaflet, por eso se quita el segundo borde */
 .leaflet-popup-content .mapa-preview-card {
