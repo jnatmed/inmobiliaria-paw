@@ -71,18 +71,36 @@ class publicacionNew {
 
         };
 
-        /*Informa si la direccion seleccionada está completa*/
+        /*Informa el estado de la ubicación seleccionada*/
         const informarEstadoSeleccion = estado => {
 
-          if (estado.exito) {
-            mostrarMensaje('Ubicación seleccionada. Podés mover el marcador para ajustar el punto exacto.', 'exito');
-            return;
-          }
+            const codigoPostalNoDisponible = Array.isArray(estado.advertencias) && estado.advertencias.includes('código postal no disponible');
 
-          mostrarMensaje(
-            `La ubicación fue encontrada, pero faltan estos datos: ${describirFaltantes(estado.faltantes)}. Elegí otra opción o mové el marcador para intentar completar la dirección.`,
-            'error'
-          );
+            /*La ubicación es válida, pero OpenStreetMap no conoce el código postal de ese punto*/
+            if (estado.exito && codigoPostalNoDisponible) {
+                mostrarMensaje(
+                    'Ubicación seleccionada. OpenStreetMap no informó el código postal para este punto, por eso el campo quedará vacío. Las coordenadas, la dirección y la provincia sí son válidas.',
+                    'informacion'
+                );
+
+                return;
+            }
+
+            /*Todos los datos están disponibles*/
+            if (estado.exito) {
+                mostrarMensaje(
+                    'Ubicación seleccionada. Podés mover el marcador para ajustar el punto exacto.',
+                    'exito'
+                );
+
+                return;
+            }
+
+            /*Faltan datos obligatorios*/
+            mostrarMensaje(
+                `No se pudo completar la ubicación. Faltan estos datos: ${describirFaltantes(estado.faltantes)}. Elegí otra opción o mové el marcador.`,
+                'error'
+            );
         };
 
         /*Se ejecuta cuando el usuario elige una opcion*/

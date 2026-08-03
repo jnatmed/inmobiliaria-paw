@@ -605,7 +605,7 @@ class PublicacionController extends Controller
                     $this->request->post('codigo_postal'),
                     'codigo_postal',
                     $errors,
-                    true,
+                    false,
                     2,
                     20
                 );

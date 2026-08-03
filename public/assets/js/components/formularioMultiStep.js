@@ -83,7 +83,14 @@ class FormularioMultistep {
 
         // Validar todos los campos requeridos en el paso actual
         this.fieldsets[this.currentStep].querySelectorAll('input, input[required], textarea[required], select[required]').forEach((input) => {
+
             console.log("para cada input del paso en curso hacer " + this.currentStep)
+
+            /*Nominatim puede no informar el codigo postal en algunas zonas, la ubicacion sigue siendo valida si tiene direccion, provincia y coordenadas*/
+            if (input.id === 'codigo_postal') {
+                    return;
+            }
+
             if (!input.value.trim() || (input.type === 'number' && parseFloat(input.value) <= 0)) {
                 valid = false;
                 console.log("input invalida " + input)

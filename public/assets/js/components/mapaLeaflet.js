@@ -150,17 +150,23 @@ class MapaLeaflet {
         }
 
         if (resultadoInverso !== null) {
+
             const resultadoCompletado = this.combinarResultados(resultado, resultadoInverso);
 
             estado = this.construirEstadoDesdeResultado(resultadoCompletado);
 
-            this.aplicarEstadoUbicacion(estado);
         }
+
+        /*DespuEs de intentar completar los datos mediante la busqueda inversa, se acepta que el codigo postal pueda no estar dispo*/
+        estado = this.normalizarEstadoFinal(estado);
+
+        this.aplicarEstadoUbicacion(estado);
 
         return {
             ...estado,
             obsoleto: false
         };
+
     }
 
     /*Crea el marcador solamente la primera vez. En las selecciones siguientes mueve el mismo marcador*/
@@ -195,14 +201,16 @@ class MapaLeaflet {
                         return;
                     }
 
-                    const estado =
+                    let estado =
                         resultadoInverso !== null
-                            ? this.actualizarCamposDesdeResultado(
+                            ? this.construirEstadoDesdeResultado(
                                 resultadoInverso
                             )
-                            : this.aplicarEstadoUbicacion(
-                                this.crearEstadoUbicacionVacio()
-                            );
+                            : this.crearEstadoUbicacionVacio();
+
+                    estado = this.normalizarEstadoFinal(estado);
+
+                    this.aplicarEstadoUbicacion(estado);
 
                     const textoActualizado =
                         estado.direccionCompleta !== ''
@@ -296,7 +304,31 @@ class MapaLeaflet {
             direccionCompleta,
             provincia,
             codigoPostal,
-            faltantes
+            faltantes,
+            advertencias: []
+        };
+    }
+
+    /*El codigo postal no siempre esta disponible en OpenStreetMap. Solamente la direccion completa y la provincia se consideran datos obligatorios*/
+    normalizarEstadoFinal(estado) {
+
+        const codigoPostalFaltante = estado.codigoPostal === '';
+
+        const faltantesCriticos = estado.faltantes.filter(campo => campo !== 'código postal');
+
+        return {
+            ...estado,
+
+            exito:
+                faltantesCriticos.length === 0,
+
+            faltantes:
+                faltantesCriticos,
+
+            advertencias:
+                codigoPostalFaltante
+                    ? ['código postal no disponible']
+                    : []
         };
     }
 
@@ -364,7 +396,8 @@ class MapaLeaflet {
                 'dirección completa',
                 'provincia',
                 'código postal'
-            ]
+            ],
+            advertencias: []
         };
     }
 
@@ -410,11 +443,16 @@ class MapaLeaflet {
 
         const data = await this.obtenerDireccion(lat, lon);
 
-        if (data === null) {
-            return this.aplicarEstadoUbicacion(this.crearEstadoUbicacionVacio());
-        }
+        let estado =
+            data === null
+                ? this.crearEstadoUbicacionVacio()
+                : this.construirEstadoDesdeResultado(
+                    data
+                );
 
-        return this.actualizarCamposDesdeResultado(data);
+        estado = this.normalizarEstadoFinal(estado);
+
+        return this.aplicarEstadoUbicacion(estado);
         
     }
 
