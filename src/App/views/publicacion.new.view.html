@@ -59,7 +59,7 @@
             <fieldset class="paso-1">
                 <h2 class="titulo-form-publicacion">PASO 1 de 3</h2>
                 
-                <p id="cartel-errores-paso-1"> </p>
+                <div id="cartel-errores-paso-1" class="step-error-container" aria-live="polite"></div>
                 
                 <p class="paso-titulo">Completá los datos del alojamiento</p>
                 <h3 class="titulo-datos-propietario">Datos del Alojamiento</h3>
@@ -125,7 +125,7 @@
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
                 <p class="paso-titulo">Agrega fotos de tu alojamiento</p>
 
-                <p id="cartel-errores-paso-2" > </p>
+                <div id="cartel-errores-paso-2" class="step-error-container" aria-live="polite"></div>
 
                 <article id="drop-area">
                     <p class="instructions">Arrastra y suelta una o varias imagenes o haz clic para seleccionar</p>
@@ -142,7 +142,8 @@
             <fieldset class="paso-3 hidden">
                 <h2 class="titulo-form-publicacion">PASO 3 de 3</h2>
                 <p class="paso-titulo">Especifica tus condiciones para el alquiler. Recuerda que mientras más flexible seas, más oportunidades tendrás</p>
-                <p id="cartel-errores-paso-3" class="carteles-error"></p>
+
+                <div id="cartel-errores-paso-3" class="step-error-container" aria-live="polite"></div>
             
                 <h3 class="titulo-datos-propietario">Descripción</h3>
                 <textarea name="descripcion-alojamiento" class="descripcion-alojamiento"  placeholder="Excelente ubicación, espaciosa, ..."
