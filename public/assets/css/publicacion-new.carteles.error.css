@@ -19,3 +19,44 @@
 .carteles-error.visible {
     display: block; /* Mostrar cuando haya errores */
 }
+
+
+
+
+/* Carteles de errores */
+
+.form-server-errors,
+.step-error-container {
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 14rem;
+    margin: 1rem 0;
+    overflow-y: auto;
+}
+
+.form-server-errors ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step-error-container {
+    display: none;
+}
+
+.step-error-container.visible,
+#cartel-errores-paso-2.step-error-container.visible {
+    display: block;
+}
+
+.error-message.visible {
+    box-sizing: border-box;
+    width: 100%;
+    gap: 1rem;
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.error-message .close-button {
+    flex-shrink: 0;
+}
