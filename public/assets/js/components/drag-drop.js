@@ -3,7 +3,7 @@ class DragDrop {
         this.dropArea = document.querySelector("#drop-area");
         this.previewContainer = document.querySelector(".preview-container");
         this.error = document.querySelector(".error-drop");
-        this.allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+        this.allowedImageTypes = ["image/jpeg", "image/png"];
         this.maxFileSize = 1 * 1024 * 1024; // 1MB en bytes
         this.inputFile = document.querySelector("#drop-input");
         this.filesList = []; // Lista para almacenar los archivos
@@ -194,7 +194,7 @@ class DragDrop {
         botonEliminar.setAttribute('aria-label', `Quitar ${file.name}`);
 
         botonEliminar.innerText = "Eliminar imagen";
-        
+
         botonEliminar.onclick = () => {
             this.removeImage(contenedorImagen, file);
         };
@@ -204,41 +204,68 @@ class DragDrop {
     }
 
     async getFileType(file) {
+
         return new Promise((resolve) => {
+
             const reader = new FileReader();
-            reader.onloadend = () => {
-                const arr = (new Uint8Array(reader.result)).subarray(0, 4);
-                let header = "";
-                for (let i = 0; i < arr.length; i++) {
-                    header += arr[i].toString(16);
+
+            reader.onload = () => {
+        
+                if (!(reader.result instanceof ArrayBuffer)) {
+                    resolve("unknown");
+                    return;
                 }
-                let fileType = "";
-                switch (header) {
-                    case "89504e47":
-                        fileType = "image/png";
-                        break;
-                    case "ffd8ffe0":
-                    case "ffd8ffe1":
-                    case "ffd8ffe2":
-                    case "ffd8ffe3":
-                    case "ffd8ffe8":
-                        fileType = "image/jpeg";
-                        break;
-                    case "47494638":
-                        fileType = "image/gif";
-                        break;
-                    case "52494646":
-                        fileType = "image/webp";
-                        break;
-                    default:
-                        fileType = "unknown";
-                        break;
+
+                const bytes = new Uint8Array(reader.result);
+
+                /*Comprueba si los primeros bytes coinciden con una firma*/
+                const comienzaCon = (...firma) => {
+                    return firma.every((byte, indice) => bytes[indice] === byte);
+                };
+
+                /*PNG: 89 50 4E 47*/
+                if (comienzaCon(0x89, 0x50, 0x4E, 0x47)) {
+                    resolve("image/png");
+                    return;
                 }
-                resolve(fileType);
+
+                /*Todos los JPEG válidos comienzan con: FF D8 FF*/
+                if (comienzaCon(0xFF, 0xD8, 0xFF)) {
+                    resolve("image/jpeg");
+                    return;
+                }
+
+                /*GIF: 47 49 46 38*/
+                if (comienzaCon(0x47, 0x49, 0x46, 0x38)) {
+                    resolve("image/gif");
+                    return;
+                }
+
+                /*WEBP comienza con RIFF y contiene WEBP entre los bytes 8 y 11*/
+                const esWebp =
+                    comienzaCon(0x52, 0x49, 0x46, 0x46) &&
+                    bytes[8] === 0x57 &&
+                    bytes[9] === 0x45 &&
+                    bytes[10] === 0x42 &&
+                    bytes[11] === 0x50;
+
+                if (esWebp) {
+                    resolve("image/webp");
+                    return;
+                }
+
+                resolve("unknown");
             };
-            reader.readAsArrayBuffer(file.slice(0, 4));
+
+            reader.onerror = () => {
+                resolve("unknown");
+            };
+
+            /*Se leen 12 bytes porque alcanzan para reconocer las firmas utilizadas anteriormente*/
+            reader.readAsArrayBuffer(file.slice(0, 12));
         });
     }
+
 
     formatFileSize(size) {
         const units = ["bytes", "KB", "MB", "GB", "TB"];
