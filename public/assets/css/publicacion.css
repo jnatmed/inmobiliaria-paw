@@ -831,3 +831,31 @@ input#ubicacion {
         width: 100%;
     }
 }
+
+
+/* Ancho de los datos del paso 1 */
+
+#nombre-alojamiento,
+#tipo-alojamiento {
+    width: min(100%, 32rem);
+    min-height: 2.75rem;
+    font-size: 1rem;
+}
+
+#capacidad-maxima,
+#cant-banios,
+#cantidad-dormitorios {
+    width: min(100%, 16rem);
+    min-height: 2.75rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+    #nombre-alojamiento,
+    #tipo-alojamiento,
+    #capacidad-maxima,
+    #cant-banios,
+    #cantidad-dormitorios {
+        width: 100%;
+    }
+}

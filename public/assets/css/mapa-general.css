@@ -170,3 +170,53 @@
         margin: 1.5rem auto;
     }
 }
+
+
+/* Popup del mapa en el alta mas compacto */
+
+@media (max-width: 600px) {
+    .form-publicacion-new
+    .leaflet-popup-content {
+        width: 12.5rem !important;
+        margin: 0.55rem;
+    }
+
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-card--alta {
+        width: 100%;
+        max-height: 15rem;
+        overflow-y: auto;
+    }
+
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-imagen,
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-imagen-pendiente {
+        height: 6rem;
+        min-height: 6rem;
+    }
+
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-informacion {
+        padding: 0.55rem;
+    }
+
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-precio,
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-nombre {
+        font-size: 0.9rem;
+    }
+
+    .form-publicacion-new
+    .leaflet-popup-content
+    .mapa-preview-direccion {
+        font-size: 0.8rem;
+    }
+}
