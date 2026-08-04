@@ -128,25 +128,43 @@
                 <label for="wifi" class="lbl-chekbox">Wi-Fi
                     <input type="checkbox" name="wifi" id="wifi" title="Wi-Fi">
                 </label>
-                <button type="button" class="next-btn">Siguiente</button>
+
+                <div class="form-navigation form-navigation-end">
+                    <button type="button" class="next-btn">Siguiente</button>
+                </div>
+
             </fieldset>
 
             <fieldset class="paso-2 hidden">
-                <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
-                <p class="paso-titulo">Agrega fotos de tu alojamiento</p>
 
+                <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
+                <p class="paso-titulo">Agregá fotos de tu alojamiento</p>
                 <div id="cartel-errores-paso-2" class="step-error-container" aria-live="polite"></div>
 
                 <article id="drop-area">
-                    <p class="instructions">Arrastra y suelta una o varias imagenes o haz clic para seleccionar</p>
-                    <p class="instructions">Solo se permiten imagenes .jpg, .jpeg, .png</p>
-                    <input type="file" name="imagenes[]" multiple id="drop-input">
+                    <label for="drop-input" class="file-input-label">
+                        Imágenes del alojamiento (*)
+                    </label>
+
+                    <small id="image-upload-help" class="form-help image-upload-help">
+                        Arrastrá una o varias imágenes hasta esta zona o utilizá “Examinar”. Se permiten archivos JPG, JPEG y PNG de hasta 1 MB cada uno.
+                    </small>
+
+                    <input type="file" name="imagenes[]" multiple id="drop-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required aria-describedby="image-upload-help preview-status">
                     <p class="error-drop"></p>
-                    <span class="preview-container"></span>
+
+                    <p id="preview-status" class="preview-status" aria-live="polite">
+                        No hay imágenes seleccionadas.
+                    </p>
+
+                    <div class="preview-container" aria-label="Vista previa de imágenes seleccionadas"></div>
                 </article>
 
-                <button type="button" class="prev-btn">Anterior</button>
-                <button type="button" class="next-btn">Siguiente</button>
+                <div class="form-navigation">
+                    <button type="button" class="prev-btn">Anterior</button>
+                    <button type="button" class="next-btn">Siguiente</button>
+                </div>
+                
             </fieldset>
 
             <fieldset class="paso-3 hidden">
