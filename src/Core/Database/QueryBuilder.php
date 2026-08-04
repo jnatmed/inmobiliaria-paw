@@ -385,84 +385,233 @@ class QueryBuilder
         }
     }
 
-    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $allowedTipos, $precio, $instalaciones, $idUser)
-    {
+    private function buildPublicationFilters($zona, $tipo, $precio, $instalaciones, $idUser, &$params) {
+
+        $sql = '';
+
+        /*Publicaciones: solamente muestra publicaciones aceptadas. Mis propiedades: muestra solamente publicaciones del usuario en cualquier estado*/
+        if ($idUser === null) {
+            $sql .= " AND main.estado_id = 2";
+        } else {
+            $sql .= " AND main.id_usuario = :idUser";
+            $params[':idUser'] = (int) $idUser;
+        }
+
+        if ($precio !== null && $precio > 0) {
+            $sql .= " AND main.precio <= :precio";
+            $params[':precio'] = (int) $precio;
+        }
+
+        if (!empty($tipo)) {
+            $placeholdersTipo = [];
+
+            foreach (array_values($tipo) as $indice => $tipoId) {
+                $placeholder = ':tipo_' . $indice;
+
+                $placeholdersTipo[] = $placeholder;
+                $params[$placeholder] = (int) $tipoId;
+            }
+
+            $sql .= " AND main.tipo_alojamiento_id IN ("
+                . implode(', ', $placeholdersTipo)
+                . ")";
+        }
+
+        $instalacionesPermitidas = [
+            'cochera',
+            'pileta',
+            'aire_acondicionado',
+            'wifi'
+        ];
+
+        foreach ($instalaciones as $instalacion) {
+            if (in_array($instalacion, $instalacionesPermitidas, true)) {
+                $sql .= " AND main.{$instalacion} = 1";
+            }
+        }
+
+        if ($zona !== null && $zona !== '') {
+            $sql .= " AND (";
+            $sql .= "main.provincia LIKE :zona_provincia ";
+            $sql .= "OR main.direccion LIKE :zona_direccion ";
+            $sql .= "OR main.nombre_alojamiento LIKE :zona_nombre ";
+            $sql .= "OR main.descripcion_alojamiento LIKE :zona_descripcion ";
+            $sql .= "OR main.normas_alojamiento LIKE :zona_normas";
+            $sql .= ")";
+
+            $zonaBusqueda = '%' . $zona . '%';
+
+            $params[':zona_provincia'] = $zonaBusqueda;
+            $params[':zona_direccion'] = $zonaBusqueda;
+            $params[':zona_nombre'] = $zonaBusqueda;
+            $params[':zona_descripcion'] = $zonaBusqueda;
+            $params[':zona_normas'] = $zonaBusqueda;
+        }
+
+        return $sql;
+    }
+
+    private function bindPublicationParams($stmt, $params) {
+
+        foreach ($params as $param => $value) {
+
+            $tipoParametro = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+
+            $stmt->bindValue($param, $value, $tipoParametro);
+        }
+    }
+
+    public function getFilterWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $zona, $tipo, $precio, $instalaciones, $idUser, $limit, $offset) {
+
         try {
-            $sql = "
-            SELECT 
-                main.*, 
-                img.id_imagen, 
-                img.path_imagen, 
-                img.nombre_imagen,
-                tipo.descripcion_tipo
-            FROM 
-                {$mainTable} main
-            LEFT JOIN 
-                {$imageTable} img ON main.{$mainTableKey} = img.{$foreignKey}
-            LEFT JOIN 
-                tipos_alojamiento tipo ON main.tipo_alojamiento_id = tipo.id
-            WHERE 1=1
-            ";
+
             $params = [];
 
-            //El listado público solo debe mostrar publicaciones aceptadas.
+            $whereSql = $this->buildPublicationFilters($zona, $tipo, $precio, $instalaciones, $idUser, $params);
 
-            if ($idUser === null) {
-                $sql .= " AND main.estado_id = 2";
-            }
-    
-            if ($precio) {
-                $sql .= " AND main.precio <= :precio";
-                $params[':precio'] = $precio;
-            }
-    
-            if ($idUser) {
-                $sql .= " AND main.id_usuario = :idUser";
-                $params[':idUser'] = $idUser;
-            }
-    
-            if (!empty($tipo)) {
-                // $allowedTipos = ['casa', 'departamento', 'quinta'];
-                $condiciones = [];
-                // $this->logger->debug("Tipos Querybuilder:", [$allowedTipos]);
-                foreach ($tipo as $t) {
-                    // $this->logger->debug("Tipo a buscar: $t");
-                    if (in_array($t, $allowedTipos)) {
-                        $condiciones[] = "tipo.id = '{$t}'";
-                        // $this->logger->debug("agrego a filtro: $t");
-                    }
-                }
-                if (!empty($condiciones)) {
-                    $sql .= " AND (" . implode(' OR ', $condiciones) . ")";
-                }
-            }
-    
-            if (!empty($instalaciones)) {
-                $allowedInstalaciones = ['cochera', 'pileta', 'aire_acondicionado', 'wifi'];
-                foreach ($instalaciones as $instalacion) {
-                    if (in_array($instalacion, $allowedInstalaciones)) {
-                        $sql .= " AND main.{$instalacion} = 1";
-                    }
-                }
-            }
-    
-            if ($zona) {
-                $sql .= " AND (main.provincia LIKE :zona OR main.direccion LIKE :zona OR main.nombre_alojamiento LIKE :zona OR main.descripcion_alojamiento LIKE :zona OR main.normas_alojamiento LIKE :zona)";
-                $params[':zona'] = '%' . $zona . '%';
-            }
-    
-            $this->logger->debug("SQL: " , [$sql]);
-    
+            /*Primero se seleccionan y paginan solamente los IDs. Despues se recuperan las propiedades y sus imagenes. Esto evita que se corten las imagenes de un carrusel a la mitad con el LIMIT*/
+            $sql = "
+                SELECT
+                    main.*,
+                    img.id_imagen,
+                    img.path_imagen,
+                    img.nombre_imagen,
+                    tipo.descripcion_tipo
+
+                FROM (
+                    SELECT main.id
+
+                    FROM {$mainTable} main
+
+                    WHERE 1 = 1
+                    {$whereSql}
+
+                    ORDER BY main.id DESC
+
+                    LIMIT :limit
+                    OFFSET :offset
+                ) publicaciones_paginadas
+
+                INNER JOIN {$mainTable} main
+                    ON main.{$mainTableKey}
+                        = publicaciones_paginadas.id
+
+                LEFT JOIN {$imageTable} img
+                    ON main.{$mainTableKey}
+                        = img.{$foreignKey}
+
+                LEFT JOIN tipos_alojamiento tipo
+                    ON main.tipo_alojamiento_id
+                        = tipo.id
+
+                ORDER BY
+                    main.id DESC,
+                    img.id_imagen ASC
+            ";
+
             $stmt = $this->pdo->prepare($sql);
-            foreach ($params as $param => $value) {
-                $stmt->bindValue($param, $value);
-            }
+
+            $this->bindPublicationParams($stmt, $params);
+
+            $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+
+            $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+
             $stmt->execute();
-    
+
+            $this->logger->debug(
+                'Consulta paginada de publicaciones ejecutada.',
+                [
+                    'limite' => (int) $limit,
+                    'offset' => (int) $offset,
+                    'usuario_id' => $idUser
+                ]
+            );
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->logger->error("Error in getFilterWithImages: " . $e->getMessage());
-            return false;
+            $this->logger->error('Error en getFilterWithImages: ' . $e->getMessage()
+            );
+
+            throw new Exception('Error al obtener las publicaciones paginadas');
+        }
+    }
+
+    public function countFilteredPublications($mainTable, $zona, $tipo, $precio, $instalaciones, $idUser) {
+
+        try {
+
+            $params = [];
+
+            $whereSql = $this->buildPublicationFilters($zona, $tipo, $precio, $instalaciones, $idUser, $params);
+
+            $sql = "
+                SELECT COUNT(*) AS total
+
+                FROM {$mainTable} main
+
+                WHERE 1 = 1
+                {$whereSql}
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $this->bindPublicationParams($stmt, $params);
+
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return (int) ($result['total'] ?? 0);
+
+        } catch (PDOException $e) {
+            $this->logger->error('Error en countFilteredPublications: ' . $e->getMessage());
+
+            throw new Exception('Error al contar las publicaciones filtradas');
+        }
+    }
+
+    public function countPublicationsByContext($mainTable, $idUser = null) {
+
+        try {
+
+            /*Si no hay usuario, se cuenta las publicaicones aceptadas*/
+            if ($idUser === null) {
+                $sql = "
+                    SELECT COUNT(*) AS total
+
+                    FROM {$mainTable}
+
+                    WHERE estado_id = 2
+                ";
+
+                $stmt = $this->pdo->prepare($sql);
+            } else {
+                /*Si hay usuario, se cuentan mis propiedades*/
+                $sql = "
+                    SELECT COUNT(*) AS total
+
+                    FROM {$mainTable}
+
+                    WHERE id_usuario = :idUser
+                ";
+
+                $stmt = $this->pdo->prepare($sql);
+
+                $stmt->bindValue(':idUser', (int) $idUser, PDO::PARAM_INT);
+            }
+
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return (int) ($result['total'] ?? 0);
+
+        } catch (PDOException $e) {
+
+            $this->logger->error('Error en countPublicationsByContext: ' . $e->getMessage());
+
+            throw new Exception('Error al contar el total de publicaciones');
         }
     }
 
