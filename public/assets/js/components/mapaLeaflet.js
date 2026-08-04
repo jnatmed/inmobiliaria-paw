@@ -14,6 +14,34 @@ class MapaLeaflet {
 
         //Permite ignorar respuestas viejas si el usuario cambia de ubicación
         this.numeroSeleccion = 0;
+
+        /*Recalcular el tamaño del mapa cuando cambia el ancho*/
+        this.temporizadorAjusteMapa = null;
+
+        window.addEventListener(
+            'resize',
+            () => {
+                window.clearTimeout(this.temporizadorAjusteMapa);
+                this.temporizadorAjusteMapa = window.setTimeout(
+                    () => this.ajustarTamanio(),
+                    100
+                );
+            }
+        );
+
+        window.setTimeout(
+            () => this.ajustarTamanio(),
+            0
+        );
+
+    }
+
+    ajustarTamanio() {
+        if (!this.mapa) {
+            return;
+        }
+
+        this.mapa.invalidateSize({pan: false});
     }
 
     /*Busca varias coincidencias en Nominatim. Solamente obtiene resultados. No coloca un marcador*/
