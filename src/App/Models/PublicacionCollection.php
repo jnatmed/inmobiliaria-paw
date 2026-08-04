@@ -254,56 +254,52 @@ class PublicacionCollection extends Model
         }
     }
 
-    public function getPublicacionMayorPrecio($id_user = null)
-    {
+
+    public function getPublicacionMayorPrecio($id_user = null) {
+
         return $this->queryBuilder->selectMaxPrice('publicaciones', $id_user);
+    
     }
 
 
-    public function getPublicacionesTotales()
-    {
-        return $this->queryBuilder->countRows('publicaciones');
+    public function getPublicacionesTotales($idUser = null) {
+
+        return $this->queryBuilder->countPublicationsByContext($this->table, $idUser);
     }
 
-    public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser)
-    {
+    public function getCantidadPublicacionesFiltradas($zona, $tipo, $precio, $instalaciones, $idUser) {
+
+        return $this->queryBuilder->countFilteredPublications($this->table, $zona, $tipo, $precio, $instalaciones, $idUser);
+
+    }
+
+    public function getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser, $limit, $offset) {
+
         try {
 
+            $result = $this->queryBuilder->getFilterWithImages($this->table, 'imagenes_publicacion', 'id', 'id_publicacion', $zona, $tipo, $precio, $instalaciones, $idUser, $limit, $offset);
 
-            $tipos_alojamiento = $this->queryBuilder->traerTipos();
-
-            // Extraer solo los IDs usando array_map
-            $allowedTipos = array_map(function ($tipo) {
-                return $tipo['id'];
-            }, $tipos_alojamiento);
-
-            $result = $this->queryBuilder->getFilterWithImages(
-                $this->table, // Nombre de la tabla principal (publicaciones)
-                'imagenes_publicacion', // Nombre de la tabla de imágenes
-                'id', // Nombre de la clave primaria en la tabla principal
-                'id_publicacion', // Nombre de la clave foránea que relaciona las dos tablas
-                $zona,
-                $tipo,
-                $allowedTipos,
-                $precio,
-                $instalaciones, // Filtros
-                $idUser
-            );
-
-            // Estructurar los resultados
+            /*La consulta devuelve una fila por cada imagen. Se vuelve a agrupar todas dentro de la publicacion correspondiente*/
             $publicaciones = [];
+
             if (!empty($result)) {
                 foreach ($result as $row) {
                     $id = $row['id'];
+
                     if (!isset($publicaciones[$id])) {
                         $publicaciones[$id] = [];
+
                         foreach ($row as $key => $value) {
                             $publicaciones[$id][$key] = $value;
                         }
+
                         $publicaciones[$id]['imagenes'] = [];
+
                         $estadoPublicacion = $this->getEstadoById($publicaciones[$id]['estado_id']);
+
                         $publicaciones[$id]['estado_publicacion'] = $estadoPublicacion;
                     }
+
                     if (!is_null($row['id_imagen'])) {
                         $publicaciones[$id]['imagenes'][] = [
                             'id_imagen' => $row['id_imagen'],
@@ -312,14 +308,17 @@ class PublicacionCollection extends Model
                         ];
                     }
                 }
-                return array_values($publicaciones);
-            } else {
-                return [];
             }
+
+            return array_values($publicaciones);
+
         } catch (PDOException $e) {
+
             global $log;
-            $log->error("Error al obtener las publicaciones: " . $e->getMessage());
-            return false; // O lanzar una excepción personalizada si prefieres
+
+            $log->error('Error al obtener las publicaciones: ' . $e->getMessage());
+
+            return false;
         }
     }
 

@@ -29,6 +29,8 @@ class PublicacionController extends Controller
     public $menuAndSession;
     public ReservasCollection $ReservasCollection;
 
+    private const PUBLICACIONES_POR_PAGINA = 6;
+
     public function __construct()
     {
         global $config, $log;
@@ -48,67 +50,212 @@ class PublicacionController extends Controller
         $this->menuAndSession = $this->usuario->menuAndSession;
     }
 
-    public function list()
-    {
-        try {
-            // Obtener los filtros del request
-            $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
-            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
+    private function obtenerFiltrosListado(){
 
-            $tipo = $this->request->get('tipo');
+        /*Zona debe ser texto*/
+        $zonaRecibida = $this->request->query('zona');
 
-            // Verificación de tipos
-            if (is_array($tipo)) {
-                $tipo = $tipo ?? [];
-                $this->logger->debug("tipo ES ARRAY", [$tipo]);
-            } elseif (is_string($tipo)) {
-                if (empty($tipo) || $tipo == "" || is_null($tipo)) {
-                    $tipo = [];
-                    $this->logger->debug("tipo ES string y es null o empty ", [$tipo]);
-                } else {
-                    $tipo = [$tipo];
-                    $this->logger->debug("tipo ES string pero tiene valor", [$tipo]);
-                }
-            } else {
-                $tipo = [];
+        $zona = is_string($zonaRecibida) ? trim($zonaRecibida) : null;
+
+        $zona = $zona === '' ? null : $zona;
+
+        /*Los tipos pueden llegar como tipo[]=1, tipo[]=2*/
+        $tiposRecibidos = $this->request->query('tipo', []);
+
+        if (!is_array($tiposRecibidos)) {
+            $tiposRecibidos = [$tiposRecibidos];
+        }
+
+        $tipos = [];
+
+        foreach ($tiposRecibidos as $tipoRecibido) {
+            if (is_array($tipoRecibido)) {
+                continue;
             }
 
-            $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
-            $instalaciones = array_merge($this->request->get('instalaciones') ?? []);
+            $tipoValidado = filter_var(
+                $tipoRecibido,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
 
-            // Obtener publicaciones filtradas
-            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, null);
+            if ($tipoValidado !== false) {
+                $tipos[] = (int) $tipoValidado;
+            }
+        }
+
+        $tipos = array_values(array_unique($tipos));
+
+        /*El precio debe ser un entero positivo*/
+        $precioRecibido = $this->request->query('precio');
+
+        $precio = null;
+
+        if (!is_array($precioRecibido) && $precioRecibido !== null && $precioRecibido !== '') {
+
+            $precioValidado = filter_var(
+                $precioRecibido,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
+
+            if ($precioValidado !== false) {
+                $precio = (int) $precioValidado;
+            }
+        }
+
+        /*Instalaciones usa una lista blanca.Solo se aceptan esos cuatro nombres*/
+        $instalacionesRecibidas = $this->request->query('instalaciones', []);
+
+        if (!is_array($instalacionesRecibidas)) {
+            $instalacionesRecibidas = [$instalacionesRecibidas];
+        }
+
+        $instalacionesPermitidas = [
+            'cochera',
+            'pileta',
+            'aire_acondicionado',
+            'wifi'
+        ];
+
+        $instalacionesRecibidas = array_filter(
+            $instalacionesRecibidas,
+            function ($instalacion) {
+                return is_string($instalacion);
+            }
+        );
+
+        $instalaciones = array_values(array_unique(array_intersect($instalacionesRecibidas, $instalacionesPermitidas)));
+
+        return [
+            'zona' => $zona,
+            'tipos' => $tipos,
+            'precio' => $precio,
+            'instalaciones' => $instalaciones
+        ];
+    }
+
+    private function obtenerPaginaSolicitada(){
+
+        $paginaRecibida = $this->request->query('pagina', 1);
+
+        /*Evita valores como pagina[]=2*/
+        if (is_array($paginaRecibida)) {
+            return 1;
+        }
+
+        $pagina = filter_var(
+            $paginaRecibida,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+
+        /*Si se recibe una pagina invalida se utiliza la pagina 1*/
+        return $pagina === false ? 1 : (int) $pagina;
+    }
+
+    public function list(){
+
+        try {
+            
+            $filtros = $this->obtenerFiltrosListado();
+
+            $paginaSolicitada = $this->obtenerPaginaSolicitada();
+
+            $porPagina = self::PUBLICACIONES_POR_PAGINA;
+
+            /*Primero se cuentan cuantas propiedades cumplen los filtros*/
+            $cantidadResultadosFiltrados = $this->model
+                ->getCantidadPublicacionesFiltradas(
+                    $filtros['zona'],
+                    $filtros['tipos'],
+                    $filtros['precio'],
+                    $filtros['instalaciones'],
+                    null
+                );
+
+            $totalPaginas = max(
+                1,
+                (int) ceil($cantidadResultadosFiltrados / $porPagina)
+            );
+
+            /*Si alguien solicita una pagina que no existe se utiliza la ultima pag existente*/
+            $paginaActual = min($paginaSolicitada, $totalPaginas);
+
+            $offset = ($paginaActual - 1) * $porPagina;
+
+            $publicaciones = $this->model
+                ->getAllFilter(
+                    $filtros['zona'],
+                    $filtros['tipos'],
+                    $filtros['precio'],
+                    $filtros['instalaciones'],
+                    null,
+                    $porPagina,
+                    $offset
+                );
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
-            // Preparar datos para la vista
             $datos = [
-                'zona' => $zona,
-                'tipos' => $tipo,
-                'precio' => $precio,
+
+                'zona' => $filtros['zona'],
+                'tipos' => $filtros['tipos'],
+                'precio' => $filtros['precio'],
+                'instalaciones' => $filtros['instalaciones'],
                 'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
+                'cantidadMostrada' => count($publicaciones),
+                'cantidadResultadosFiltrados' => $cantidadResultadosFiltrados,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
-                'titulo' => "PAWPERTIES | PROPIEDADES",
-                'subtitulo' => "Propiedades en Alquiler"
+                'paginaActual' => $paginaActual,
+                'totalPaginas' => $totalPaginas,
+                'porPagina' => $porPagina,
+                'rutaListado' => '/publicaciones/list',
+
+                'id_usuario' => $this->menuAndSession['id_usuario'] ?? null,
+                'titulo' => 'PAWPERTIES | PROPIEDADES',
+                'subtitulo' => 'Propiedades en Alquiler'
+
             ];
 
             if ($this->request->isAjaxRequest()) {
-                view('parts/lista-publicaciones.view', $datos);
-                $this->logger->debug("REQUEST", ["AJAX"]);
-            } else {
-                view('publicaciones.list.view', array_merge($datos, $this->menuAndSession, $this->model->traerTipos()));
-                $this->logger->debug("REQUEST", ["NO AJAX"]);
+                view(
+                    'parts/lista-publicaciones.view',
+                    $datos
+                );
+
+                return;
             }
-        } catch (PDOException $e) {
-            $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
+
+            view(
+                'publicaciones.list.view',
+                array_merge(
+                    $datos,
+                    $this->menuAndSession,
+                    $this->model->traerTipos()
+                )
+            );
+
+        } catch (Throwable $e) {
+
+            $error_message = 'Error al obtener las publicaciones: ' . $e->getMessage();
+
             $this->logger->error($error_message);
-            require $this->viewsDir . 'errors/not-found.view.php';
+
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo cargar el listado de propiedades.'],
+                    $this->menuAndSession
+                )
+            );
         }
     }
-
 
     public function verPublicacion(){
 
@@ -360,59 +507,108 @@ class PublicacionController extends Controller
         redirect('publicacion/ver?id_pub=' . $idPublicacion);
     }
 
-    public function listaPublicacionesPropietario()
-    {
+    public function listaPublicacionesPropietario(){
+
         try {
+
             $this->usuario->chequearTiposPermitidos([1, 3]);
 
-            // Obtener el ID del usuario desde la sesión
-
             $idUser = $this->usuario->getUserId();
-            $zona = !is_null($this->request->get('zona')) ? htmlspecialchars($this->request->get('zona')) : null;
-            $zona = $zona !== null ? ucwords(strtolower(trim($zona))) : null;
-            $tipo = array_map('htmlspecialchars', $this->request->get('tipo') ?? []); //aplica la funcion a cada elemento del array
-            $precio = !is_null($this->request->get('precio')) ? htmlspecialchars($this->request->get('precio')) : null;
-            $instalaciones = $this->request->get('instalaciones') ?? [];
 
-            $publicaciones = $this->model->getAllFilter($zona, $tipo, $precio, $instalaciones, $idUser);
+            $filtros = $this->obtenerFiltrosListado();
 
-            $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
+            $paginaSolicitada = $this->obtenerPaginaSolicitada();
 
+            $porPagina = self::PUBLICACIONES_POR_PAGINA;
+
+            $cantidadResultadosFiltrados = $this->model
+                ->getCantidadPublicacionesFiltradas(
+                    $filtros['zona'],
+                    $filtros['tipos'],
+                    $filtros['precio'],
+                    $filtros['instalaciones'],
+                    $idUser
+                );
+
+            $totalPaginas = max(
+                1,
+                (int) ceil($cantidadResultadosFiltrados / $porPagina)
+            );
+
+            $paginaActual = min($paginaSolicitada, $totalPaginas);
+
+            $offset = ($paginaActual - 1) * $porPagina;
+
+            $publicaciones = $this->model
+                ->getAllFilter(
+                    $filtros['zona'],
+                    $filtros['tipos'],
+                    $filtros['precio'],
+                    $filtros['instalaciones'],
+                    $idUser,
+                    $porPagina,
+                    $offset
+                );
+
+            /*Cuenta el total de propiedades de este usuario, no las propiedades de toda la plataforma*/
+            $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales($idUser);
+
+            /*Se Obtiene el precio máximo de las propiedades del usuario*/
             $mayorPrecio = $this->model->getPublicacionMayorPrecio($idUser);
 
-            // Datos para pasar a la vista
             $datos = [
                 'idUser' => $idUser,
-                'zona' => $zona,
-                'tipos' => $tipo,
-                'precio' => $precio,
+                'id_usuario' => $idUser,
+                'zona' => $filtros['zona'],
+                'tipos' => $filtros['tipos'],
+                'precio' => $filtros['precio'],
+                'instalaciones' => $filtros['instalaciones'],
                 'mayorPrecio' => $mayorPrecio,
-                'instalaciones' => $instalaciones,
                 'publicaciones' => $publicaciones,
+                'cantidadMostrada' => count($publicaciones),
+                'cantidadResultadosFiltrados' => $cantidadResultadosFiltrados,
                 'cantidadTotalPublicaciones' => $cantidadTotalPublicaciones,
-                'titulo' => "PAWPERTIES | MIS PROPIEDADES",
-                'subtitulo' => "Mis Propiedades"
+                'paginaActual' => $paginaActual,
+                'totalPaginas' => $totalPaginas,
+                'porPagina' => $porPagina,
+
+                'rutaListado' => '/mis_publicaciones',
+                'titulo' => 'PAWPERTIES | MIS PROPIEDADES',
+                'subtitulo' => 'Mis Propiedades'
             ];
 
             if ($this->request->isAjaxRequest()) {
-                return view('parts/lista-publicaciones.view', $datos);
-            } else {
                 view(
-                    'publicaciones.list.view',
-                    array_merge(
-                        $datos,
-                        $this->menuAndSession,
-                        $this->model->traerTipos()
-                    )
+                    'parts/lista-publicaciones.view',
+                    $datos
                 );
+
+                return;
             }
-        } catch (PDOException $e) {
-            $error_message = "Error de base de datos al obtener las publicaciones: " . $e->getMessage();
+
+            view(
+                'publicaciones.list.view',
+                array_merge(
+                    $datos,
+                    $this->menuAndSession,
+                    $this->model->traerTipos()
+                )
+            );
+        } catch (Throwable $e) {
+
+            $error_message = 'Error al obtener las publicaciones: ' . $e->getMessage();
+
             $this->logger->error($error_message);
 
-            view('errors/internal_error.view', [
-                'error_message' => "Error de base de datos al obtener las publicaciones: " . $e->getMessage()
-            ]);
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo cargar el listado de propiedades.'],
+                    $this->menuAndSession
+                )
+            );
         }
     }
 

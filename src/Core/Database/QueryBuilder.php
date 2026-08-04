@@ -869,37 +869,50 @@ class QueryBuilder
         }
     }    
 
-    public function selectMaxPrice($table, $id_user = null)
-    {
+    public function selectMaxPrice($table, $id_user = null) {
+
         try {
-            // Consulta para obtener el mayor valor del campo `precio`
-            $query = $id_user 
-                ? "SELECT MAX(precio) AS max_precio FROM {$table} WHERE id = :id_user" 
-                : "SELECT MAX(precio) AS max_precio FROM {$table}";
 
-            // Preparar la sentencia
-            $stmt = $this->pdo->prepare($query);
+            /*En el catalogo publico el precio max se clacula solo con publicaicones aceptadas*/
+            if ($id_user === null) {
+                $query = "
+                    SELECT
+                        COALESCE(MAX(precio), 0)
+                            AS max_precio
 
-            // Si hay un id de usuario, enlazamos el parámetro
-            if ($id_user) {
-                $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+                    FROM {$table}
+
+                    WHERE estado_id = 2
+                ";
+
+                $stmt = $this->pdo->prepare($query);
+            } else {
+                /*En mis propiedades el precio maximo se calcula solo con las propiedades del usuario*/
+                $query = "
+                    SELECT
+                        COALESCE(MAX(precio), 0)
+                            AS max_precio
+
+                    FROM {$table}
+
+                    WHERE id_usuario = :id_user
+                ";
+
+                $stmt = $this->pdo->prepare($query);
+
+                $stmt->bindValue(':id_user', (int) $id_user, PDO::PARAM_INT);
             }
-            
-            // Ejecutar la consulta
+
             $stmt->execute();
-            
-            // Obtener el resultado
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Registrar la consulta y el resultado
-            $this->logger->debug("Consulta SQL: ", [$query]);
-            $this->logger->debug("Resultado selectMaxPrice: ", [$result]);
-            
-            // Retornar el valor máximo
-            return $result['max_precio'];
+
+            return (int) ($result['max_precio'] ?? 0);
+
         } catch (PDOException $e) {
-            // Manejo de errores
+
             $this->logger->error('Error al obtener el mayor valor del campo precio: ' . $e->getMessage());
+
             throw new Exception('Error al realizar la consulta en la base de datos');
         }
     }
