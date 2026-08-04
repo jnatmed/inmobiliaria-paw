@@ -47,6 +47,10 @@ class publicacionNew {
         const direccionInput = document.querySelector('#direccion');
         const direccionCompletaInput = document.querySelector('#direccion_completa');
 
+        //URL temporal usada para mostrar la primera imagen seleccionada dentro de la preview del popup del mapa
+        let urlImagenPreviewAlta = '';
+        let cantidadImagenesPreviewAlta = 0;
+
         /*Vacía y oculta la lista de resultados*/
         const limpiarResultados = () => {
           resultadosLista.innerHTML = '';
@@ -87,11 +91,13 @@ class publicacionNew {
             }
 
             mapaLeaf.actualizarPreviewAlta({
+
                 nombre: nombreAlojamientoInput.value,
-
                 direccion: direccionCompletaInput.value,
+                precio: precioInput.value,
+                urlImagen: urlImagenPreviewAlta,
+                cantidadImagenes: cantidadImagenesPreviewAlta
 
-                precio: precioInput.value
             });
         };
 
@@ -302,6 +308,55 @@ class publicacionNew {
 
         /*El precio está en el paso 3, pero la preview queda actualizada para cuando el usuario vuelva al paso 1*/
         precioInput.addEventListener('input', actualizarPreviewAlta);
+
+        /*La preview del mapa utiliza la primera imagen seleccionada*/
+        document.addEventListener('imagenes:actualizadas', event => {
+
+          const archivos =
+              event.detail &&
+              Array.isArray(event.detail.archivos)
+                  ? event.detail.archivos
+                  : [];
+
+          /*Se libera la URL temporal anterior*/
+          if (urlImagenPreviewAlta !== '') {
+            URL.revokeObjectURL(urlImagenPreviewAlta);
+            urlImagenPreviewAlta = '';
+          }
+
+          cantidadImagenesPreviewAlta = archivos.length;
+
+          if (archivos.length > 0) {
+            urlImagenPreviewAlta = URL.createObjectURL(archivos[0]);
+          }
+
+          actualizarPreviewAlta();
+
+        });
+
+        /*Se libera la URL temporal cuando el usuario abandona la pagina*/
+        window.addEventListener(
+            'beforeunload',
+            () => {
+                if (urlImagenPreviewAlta !== '') {
+                    URL.revokeObjectURL(urlImagenPreviewAlta);
+                }
+            }
+        );
+
+        /*Cuando el usuario vuelve al paso 1, Leaflet debe recalcular el tamaño del contenedor porque el mapa estuvo oculto*/
+        document.addEventListener(
+            'formulario:paso-cambiado',
+            event => {
+
+                if (event.detail && event.detail.paso === 1) {
+                    window.setTimeout(
+                        () => mapaLeaf.ajustarTamanio(),
+                        0
+                    );
+                }
+            }
+        );
 
         /*Cierra la lista al hacer click fuera del buscador*/
         document.addEventListener('click', event => {
