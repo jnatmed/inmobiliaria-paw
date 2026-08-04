@@ -164,29 +164,54 @@
                     <button type="button" class="prev-btn">Anterior</button>
                     <button type="button" class="next-btn">Siguiente</button>
                 </div>
-                
+
             </fieldset>
 
             <fieldset class="paso-3 hidden">
                 <h2 class="titulo-form-publicacion">PASO 3 de 3</h2>
-                <p class="paso-titulo">Especifica tus condiciones para el alquiler. Recuerda que mientras más flexible seas, más oportunidades tendrás</p>
+
+                <p class="paso-titulo">Especificá las condiciones del alquiler</p>
+
+                <p class="form-help">
+                    <small>Una descripción clara, normas comprensibles y un precio correctamente indicado ayudan a que la publicación sea más útil.</small>
+                </p>
 
                 <div id="cartel-errores-paso-3" class="step-error-container" aria-live="polite"></div>
-            
-                <h3 class="titulo-datos-propietario">Descripción</h3>
-                <textarea name="descripcion-alojamiento" class="descripcion-alojamiento"  placeholder="Excelente ubicación, espaciosa, ..."
-                oninvalid="this.setCustomValidity('')" oninput="this.setCustomValidity('')"></textarea>
-            
-                <h3 class="titulo-datos-propietario">Normas: separar por comas cada regla</h3>
-                <textarea name="normas-alojamiento" class="descripcion-alojamiento"  placeholder="No se aceptan mascotas, ..."
-                    oninvalid="this.setCustomValidity('')" oninput="this.setCustomValidity('')"></textarea>
-            
-            
-                <h3 class="titulo-datos-propietario">Precio/Noche ($)</h3>
-                <input type="text" name="precio" id="precio" class="descripcion-alojamiento" required min="0" value="0" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
-            
-                <button type="button" class="prev-btn">Anterior</button>
-                <input type="submit" value="Enviar Publicación" class="btn-form-enviar-publicacion">
+
+                <label for="descripcion-alojamiento" class="titulo-datos-propietario">
+                    Descripción (*)
+                </label>
+
+                <small id="descripcion-help" class="form-help">
+                    Describí la ubicación, los ambientes, las comodidades y cualquier característica importante del alojamiento.
+                </small>
+
+                <textarea name="descripcion-alojamiento" id="descripcion-alojamiento" class="descripcion-alojamiento" placeholder="Ej.: Excelente ubicación, ambientes amplios y luminosos..." minlength="3" maxlength="5000" required aria-describedby="descripcion-help"></textarea>
+
+                <label for="normas-alojamiento" class="titulo-datos-propietario">
+                    Normas del alojamiento (*)
+                </label>
+
+                <small id="normas-help" class="form-help">Separá cada norma con una coma. Ejemplo: No se aceptan mascotas, no se permite fumar, respetar el horario de descanso.</small>
+
+                <textarea name="normas-alojamiento" id="normas-alojamiento" class="descripcion-alojamiento" placeholder="Ej.: No se aceptan mascotas, no se permite fumar..." minlength="3" maxlength="5000" required aria-describedby="normas-help"></textarea>
+
+                <label for="precio" class="titulo-datos-propietario">
+                    Precio por noche en USD (*)
+                </label>
+
+                <small id="precio-help" class="form-help">Ingresá el importe de una noche en dólares estadounidenses. Debe ser mayor que cero.</small>
+
+                <div class="precio-input-group">
+                    <span class="precio-moneda" aria-hidden="true">USD</span>
+                    <input type="text" name="precio" id="precio" inputmode="numeric" required autocomplete="off" placeholder="Ej.: 80" aria-describedby="precio-help">
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="prev-btn">Anterior</button>
+
+                    <input type="submit" value="Enviar publicación" class="btn-form-enviar-publicacion">
+                </div>
             </fieldset>
         </form>
 

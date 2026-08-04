@@ -699,3 +699,134 @@ input#ubicacion {
 #boton-pausa:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
+
+
+
+/* Formulario de alta publicacion */
+
+.form-required-note {
+    width: 100%;
+    margin: 1rem 0;
+    color: #444;
+}
+
+.form-required-note small,
+.form-help {
+    display: block;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #555;
+}
+
+.paso-1 p.form-help,
+.paso-3 p.form-help {
+    width: 100%;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.paso-3 .titulo-datos-propietario {
+    display: block;
+}
+
+.paso-3 .descripcion-alojamiento {
+    display: block;
+    box-sizing: border-box;
+    width: min(100%, 52rem);
+    min-height: 8rem;
+    height: auto;
+    margin: 0.5rem 0 1.5rem;
+    padding: 0.75rem;
+    resize: vertical;
+}
+
+.precio-input-group {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: min(100%, 20rem);
+    margin: 0.5rem 0 1.5rem;
+    border: 0.1rem solid var(--color-verde-header);
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.precio-moneda {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    font-weight: 700;
+    background-color: #e9ecef;
+    border-right: 1px solid #bbb;
+}
+
+.paso-3 .precio-input-group input#precio {
+    width: 100%;
+    margin: 0;
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+}
+
+.paso-3 .precio-input-group input#precio:focus {
+    outline: 2px solid var(--color-verde-header);
+    outline-offset: -2px;
+}
+
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.form-navigation-end {
+    justify-content: flex-end;
+}
+
+.form-navigation .prev-btn,
+.form-navigation .next-btn {
+    display: inline-block;
+    width: auto;
+    min-width: 10rem;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.1rem;
+    border-radius: 6px;
+}
+
+.form-navigation .btn-form-enviar-publicacion {
+    display: inline-block;
+    width: auto;
+    min-width: 12rem;
+    height: auto;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    border: 0;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .form-navigation {
+        flex-direction: column;
+    }
+
+    .form-navigation .prev-btn,
+    .form-navigation .next-btn,
+    .form-navigation .btn-form-enviar-publicacion {
+        width: 100%;
+    }
+
+    .paso-3 .descripcion-alojamiento,
+    .precio-input-group {
+        width: 100%;
+    }
+}

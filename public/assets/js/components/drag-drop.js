@@ -2,6 +2,7 @@ class DragDrop {
     constructor() {
         this.dropArea = document.querySelector("#drop-area");
         this.previewContainer = document.querySelector(".preview-container");
+        this.previewStatus = document.querySelector("#preview-status");
         this.error = document.querySelector(".error-drop");
         this.allowedImageTypes = ["image/jpeg", "image/png"];
         this.maxFileSize = 1 * 1024 * 1024; // 1MB en bytes
@@ -12,6 +13,7 @@ class DragDrop {
 
     inicializar() {
         this.setupEventListeners();
+        this.updatePreviewStatus();
     }
 
     setupEventListeners() {
@@ -103,11 +105,36 @@ class DragDrop {
 
 
     updateInputFiles() {
-        let dataTransfer = new DataTransfer();
-        for (let file of this.filesList) {
+        const dataTransfer = new DataTransfer();
+
+        for (const file of this.filesList) {
             dataTransfer.items.add(file);
         }
-        this.inputFile.files = dataTransfer.files; // Actualizar el input con la lista de archivos
+
+        this.inputFile.files = dataTransfer.files;
+
+        /*Cada vez que cambia la lista de archivos tambien se actualiza el mensaje*/
+        this.updatePreviewStatus();
+    }
+
+    updatePreviewStatus() {
+        if (!this.previewStatus) {
+            return;
+        }
+
+        const cantidad = this.filesList.length;
+
+        if (cantidad === 0) {
+            this.previewStatus.textContent = "No hay imágenes seleccionadas.";
+            return;
+        }
+
+        if (cantidad === 1) {
+            this.previewStatus.textContent = "1 imagen seleccionada.";
+            return;
+        }
+
+        this.previewStatus.textContent = `${cantidad} imágenes seleccionadas.`;
     }
 
     async previewFiles(files) {
