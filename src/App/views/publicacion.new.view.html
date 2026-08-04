@@ -86,21 +86,16 @@
                     <small>Indicá la dirección de la propiedad. La provincia, el código postal y las coordenadas se completarán al seleccionar una ubicación del mapa.</small>
                 </p>
 
-                <div class="input-container">
+                <div class="generated-location-fields">
+                    <div class="input-container">
+                        <label for="provincia">Provincia (*)</label>
+                        <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" readonly required aria-required="true">
+                    </div>
 
-                    <label for="provincia">Provincia (*)</label>
-                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" readonly required aria-required="true">
-
-                    <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
-
-                </div>
-                
-                <div class="input-container">
-                    <label for="codigo_postal">Código postal (opcional)</label>
-
-                    <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" readonly>
-
-                    <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
+                    <div class="input-container">
+                        <label for="codigo_postal">Código postal (opcional)</label>
+                        <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" readonly>
+                    </div>
                 </div>
                 
                 <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" readonly>
