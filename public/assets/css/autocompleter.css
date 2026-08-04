@@ -117,6 +117,46 @@
     line-height: 1.3;
 }
 
+
+.busqueda-ubicacion-acciones {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 3rem;
+    width: 3rem;
+}
+
+.busqueda-ubicacion-acciones
+#buscarUbicacion {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 3rem;
+    height: 3rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.busqueda-ubicacion-acciones
+#buscarUbicacion svg {
+    display: block;
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.busqueda-ubicacion-acciones
+.loader {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 0.65rem);
+    margin: -18px 0 0;
+}
+
+
+
 @media (max-width: 700px) {
     .busqueda-ubicacion-controles {
         flex-wrap: wrap;
@@ -127,7 +167,12 @@
         width: 100%;
     }
 
+    .busqueda-ubicacion-acciones {
+        margin: 0 auto;
+    }
+
     .mensaje-busqueda-ubicacion {
         width: 100%;
     }
+
 }

@@ -60,3 +60,48 @@
 .error-message .close-button {
     flex-shrink: 0;
 }
+
+
+/* Campos con errores detectados por el formulario */
+
+.field-invalid {
+    border: 2px solid #b00020 !important;
+    outline: none !important;
+    box-shadow:
+        0 0 0 3px
+        rgba(176, 0, 32, 0.15)
+        !important;
+}
+
+textarea.field-invalid:focus,
+input.field-invalid:focus,
+select.field-invalid:focus {
+    border-color: #b00020 !important;
+    outline: none !important;
+    box-shadow:
+        0 0 0 3px
+        rgba(176, 0, 32, 0.2)
+        !important;
+}
+
+.field-invalid-group {
+    border-color: #b00020 !important;
+    box-shadow:
+        0 0 0 3px
+        rgba(176, 0, 32, 0.15);
+}
+
+#drop-area.field-invalid-group {
+    border-style: solid;
+}
+
+.error-message .close-button {
+    flex-shrink: 0;
+    padding: 0.15rem 0.45rem;
+    border: 0;
+    background: transparent;
+    color: #721c24;
+    font-size: 1.35rem;
+    font-weight: 700;
+    cursor: pointer;
+}
