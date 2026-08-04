@@ -21,6 +21,10 @@
 
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
+            <p class="form-required-note">
+                <small>Los campos marcados con (*) son obligatorios.</small>
+            </p>
+
             {% if errors is defined and errors is not empty %}
             <article>
                     <ul>
