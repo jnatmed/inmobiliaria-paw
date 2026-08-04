@@ -279,3 +279,22 @@
     color: #664d03;
     line-height: 1.4;
 }
+
+
+/* Texto segun el tipo de interaccion */
+
+/* Por defecto se muestra la instrucción para mouse */
+.image-upload-help-touch {
+    display: none;
+}
+
+/* En dispositivos cuyo puntero principal es táctil, se muestra la instrucción centrada en el selector de archivos */
+@media (hover: none) and (pointer: coarse) {
+    .image-upload-help-desktop {
+        display: none;
+    }
+
+    .image-upload-help-touch {
+        display: inline;
+    }
+}
