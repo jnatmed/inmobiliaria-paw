@@ -713,8 +713,8 @@ input#ubicacion {
 .form-required-note small,
 .form-help {
     display: block;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 1.05rem;
+    line-height: 1.55;
     color: #555;
 }
 
@@ -722,7 +722,8 @@ input#ubicacion {
 .paso-3 p.form-help {
     width: 100%;
     margin: 0.5rem 0 1rem;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
     color: #555;
 }
 

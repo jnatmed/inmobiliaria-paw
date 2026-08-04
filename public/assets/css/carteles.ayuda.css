@@ -1,37 +1,51 @@
+.generated-location-fields {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 16rem)
+        );
+    gap: 1.25rem;
+    width: 100%;
+    margin: 0.75rem 0 1.5rem;
+}
+
 .input-container {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 10px; /* Ajusta el espacio entre campos si es necesario */
-    width: 20%;
-
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
 }
 
-.input-form-publicacion.disabled{
-    width: 80%;
-    background-color: #f0f0f0; /* Color gris claro */
-    color: #999; /* Texto gris */
-    cursor: not-allowed; /* Esto indica que el campo no es editable */
+.input-container label {
+    display: block;
+    min-height: 2.6rem;
+    margin-bottom: 0.35rem;
+    line-height: 1.25;
 }
 
-.tooltip {
-    visibility: hidden;
-    width: 300px; /* Ajusta el ancho del tooltip según sea necesario */
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%; /* Posición por defecto */
-    left: 50%;
-    margin-left: -150px; /* Centrar el tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
+.input-container
+.input-form-publicacion.disabled {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0.65rem;
+    background-color: #f0f0f0;
+    color: #555;
+    cursor: not-allowed;
+    text-overflow: ellipsis;
 }
 
-.input-container:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-    bottom: 100%; /* Ajusta la posición del tooltip cuando se hace hover */
+@media (max-width: 600px) {
+
+    .generated-location-fields {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .input-container label {
+        min-height: auto;
+    }
 }
