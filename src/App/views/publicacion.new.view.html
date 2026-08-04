@@ -137,15 +137,21 @@
                 <div id="cartel-errores-paso-2" class="step-error-container" aria-live="polite"></div>
 
                 <article id="drop-area">
-                    <label for="drop-input" class="file-input-label">
+
+                    <p class="file-input-label">
                         Imágenes del alojamiento (*)
-                    </label>
+                    </p>
 
                     <small id="image-upload-help" class="form-help image-upload-help">
-                        Arrastrá una o varias imágenes hasta esta zona o utilizá “Examinar”. Se permiten archivos JPG, JPEG y PNG de hasta 1 MB cada uno.
+                        Arrastrá una o varias imágenes hasta esta zona o utilizá “Examinar imágenes”. Se permiten archivos JPG, JPEG y PNG de hasta 1 MB cada uno.
                     </small>
 
-                    <input type="file" name="imagenes[]" multiple id="drop-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required aria-describedby="image-upload-help preview-status">
+                    <input type="file" name="imagenes[]" multiple id="drop-input" class="file-input-visually-hidden" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required data-error-label="Imágenes del alojamiento" aria-describedby="image-upload-help preview-status">
+
+                    <label for="drop-input" class="file-select-button">
+                        Examinar imágenes
+                    </label>
+
                     <p class="error-drop"></p>
 
                     <p id="preview-status" class="preview-status" aria-live="polite">
