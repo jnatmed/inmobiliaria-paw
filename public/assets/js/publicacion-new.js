@@ -38,6 +38,7 @@ class publicacionNew {
         const ubicacionInput = document.querySelector('#ubicacion');
         const buscarButton = document.querySelector('#buscarUbicacion');
         const loading = document.querySelector('.loader');
+        const accionesBusqueda = document.querySelector('.busqueda-ubicacion-acciones');
         const resultadosContainer = document.querySelector('#resultados-ubicacion');
         const resultadosLista = document.querySelector('#lista-resultados-ubicacion');
         const mensajeBusqueda = document.querySelector('#mensaje-busqueda-ubicacion');
@@ -276,6 +277,7 @@ class publicacionNew {
           mostrarMensaje('Buscando ubicaciones...', 'informacion');
 
           loading.classList.add('activo');
+          accionesBusqueda.classList.add('cargando');
           buscarButton.disabled = true;
 
           try {
@@ -300,6 +302,7 @@ class publicacionNew {
           } finally {
 
             loading.classList.remove('activo');
+            accionesBusqueda.classList.remove('cargando');
             buscarButton.disabled = false;
 
           }

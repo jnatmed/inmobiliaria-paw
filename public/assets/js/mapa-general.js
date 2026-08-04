@@ -33,15 +33,37 @@ class MapaGeneral {
         
                     mapaLeaf.agregarPublicacionesAlMapa(publicaciones);
 
-                    document.querySelector('#buscarUbicacion').addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        const address = document.querySelector('#ubicacion').value;                      
+                    const buscarButton = document.querySelector('#buscarUbicacion');
+                    const loading = document.querySelector('.loader');
+                    const accionesBusqueda = document.querySelector('.busqueda-ubicacion-acciones');
 
-                        const loading = document.querySelector('.loader');
-                        loading.classList.add('activo');
-                        await mapaLeaf.buscar(address, false);
-                        loading.classList.remove('activo');
-                    });             
+                    buscarButton.addEventListener(
+                        'click',
+                        async event => {
+
+                            event.preventDefault();
+                            const address = document.querySelector('#ubicacion').value.trim();
+
+                            if (address === '' || buscarButton.disabled) {
+                                return;
+                            }
+
+                            loading.classList.add('activo');
+                            accionesBusqueda.classList.add('cargando');
+                            buscarButton.disabled = true;
+
+                            try {
+                                await mapaLeaf.buscar(address, false);
+                            } catch (error) {
+                                console.error('No se pudo buscar la ubicación:', error);
+
+                            } finally {
+                                loading.classList.remove('activo');
+                                accionesBusqueda.classList.remove('cargando');
+                                buscarButton.disabled = false;
+                            }
+                        }
+                    );             
 
                 })
                 .catch(error => {

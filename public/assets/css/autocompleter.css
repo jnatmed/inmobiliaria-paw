@@ -150,9 +150,21 @@
 .busqueda-ubicacion-acciones
 .loader {
     position: absolute;
+    box-sizing: border-box;
     top: 50%;
-    left: calc(100% + 0.65rem);
-    margin: -18px 0 0;
+    left: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: -0.75rem 0 0 -0.75rem;
+    padding: 0.25rem;
+    background: #ffffff;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.busqueda-ubicacion-acciones.cargando
+#buscarUbicacion svg {
+    visibility: hidden;
 }
 
 
