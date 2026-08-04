@@ -262,6 +262,25 @@
                 </small>
 
                 <textarea
+                    name="descripcion-alojamiento"
+                    id="descripcion-alojamiento"
+                    class="descripcion-alojamiento"
+                    placeholder="Ej.: Excelente ubicación, ambientes amplios y luminosos..."
+                    minlength="3"
+                    maxlength="5000"
+                    required
+                    aria-describedby="descripcion-help"
+                >{{ datos['descripcion-alojamiento']|default('') }}</textarea>
+
+                <label for="normas-alojamiento" class="titulo-datos-propietario">
+                    Normas del alojamiento (*)
+                </label>
+
+                <small id="normas-help" class="form-help">
+                    Separá cada norma con una coma. Ejemplo: No se aceptan mascotas, no se permite fumar, respetar el horario de descanso.
+                </small>
+
+                <textarea
                     name="normas-alojamiento"
                     id="normas-alojamiento"
                     class="descripcion-alojamiento"
@@ -272,22 +291,19 @@
                     aria-describedby="normas-help"
                 >{{ datos['normas-alojamiento']|default('') }}</textarea>
 
-                <label for="normas-alojamiento" class="titulo-datos-propietario">
-                    Normas del alojamiento (*)
-                </label>
-
-                <small id="normas-help" class="form-help">Separá cada norma con una coma. Ejemplo: No se aceptan mascotas, no se permite fumar, respetar el horario de descanso.</small>
-
-                <textarea name="normas-alojamiento" id="normas-alojamiento" class="descripcion-alojamiento" placeholder="Ej.: No se aceptan mascotas, no se permite fumar..." minlength="3" maxlength="5000" required aria-describedby="normas-help"></textarea>
-
                 <label for="precio" class="titulo-datos-propietario">
                     Precio por noche en USD (*)
                 </label>
 
-                <small id="precio-help" class="form-help">Ingresá el importe de una noche en dólares estadounidenses. Debe ser mayor que cero.</small>
+                <small id="precio-help" class="form-help">
+                    Ingresá el importe de una noche en dólares estadounidenses. Debe ser mayor que cero.
+                </small>
 
                 <div class="precio-input-group">
-                    <span class="precio-moneda" aria-hidden="true">USD</span>
+                    <span class="precio-moneda" aria-hidden="true">
+                        USD
+                    </span>
+
                     <input
                         type="text"
                         name="precio"
