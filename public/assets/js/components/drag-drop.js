@@ -105,6 +105,7 @@ class DragDrop {
 
 
     updateInputFiles() {
+
         const dataTransfer = new DataTransfer();
 
         for (const file of this.filesList) {
@@ -113,8 +114,11 @@ class DragDrop {
 
         this.inputFile.files = dataTransfer.files;
 
-        /*Cada vez que cambia la lista de archivos tambien se actualiza el mensaje*/
         this.updatePreviewStatus();
+
+        /*Se informa a la pagina que cambio la seleccion. Asi el pama puede actualizar su preview*/
+        this.notificarCambioImagenes();
+
     }
 
     updatePreviewStatus() {
@@ -135,6 +139,15 @@ class DragDrop {
         }
 
         this.previewStatus.textContent = `${cantidad} imágenes seleccionadas.`;
+    }
+
+    notificarCambioImagenes() {
+        document.dispatchEvent(
+            new CustomEvent(
+                "imagenes:actualizadas",
+                {detail: {archivos: [...this.filesList]}}
+            )
+        );
     }
 
     async previewFiles(files) {
