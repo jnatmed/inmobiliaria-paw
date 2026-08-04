@@ -591,7 +591,10 @@ class MapaLeaflet {
 
         const urlImagen = this.obtenerTextoSeguro(datos.urlImagen);
 
-
+        const cantidadImagenes = Math.max(
+            0,
+            Number.parseInt(datos.cantidadImagenes, 10) || 0
+        );
 
         const tarjeta = document.createElement('article');
 
@@ -635,6 +638,16 @@ class MapaLeaflet {
             imagen.loading = 'lazy';
 
             contenedorImagen.appendChild(imagen);
+
+            if (cantidadImagenes > 1) {
+
+                const contadorImagenes = document.createElement('span');
+
+                contadorImagenes.classList.add('mapa-preview-imagen-contador');
+                contadorImagenes.textContent = `Vista previa: imagen 1 de ${cantidadImagenes}`;
+                contenedorImagen.appendChild(contadorImagenes);
+
+            }
 
         } else {
 
@@ -691,10 +704,12 @@ class MapaLeaflet {
             return;
         }
 
+        const tieneImagen = this.obtenerTextoSeguro(datos.urlImagen) !== '';
+
         const tarjetaPopup = this.crearContenidoPreview({
             ...datos,
             modoAlta: true,
-            imagenPendiente: true
+            imagenPendiente: !tieneImagen
         });
 
         /*Si el marcador ya tiene un popup se reemplaza su contenido*/

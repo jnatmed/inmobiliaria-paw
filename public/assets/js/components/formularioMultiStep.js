@@ -1,230 +1,507 @@
 class FormularioMultistep {
+
     constructor() {
-        this.nextButtons = document.querySelectorAll('.next-btn');
-        this.prevButtons = document.querySelectorAll('.prev-btn');
-        this.fieldsets = document.querySelectorAll('fieldset');
-        this.currentStep = 0;
 
-        this.errorMessages = document.querySelectorAll('.error-message');
-        // this.closeButtons = document.querySelectorAll('.close-button');
+        this.form = document.querySelector('.form-publicacion-new');
 
-        if (this.errorMessages.length > 0) 
-        {
-            this.errorMessages.forEach(errorMessage => {
-                errorMessage.classList.add("visible");
-                // Verificar si hay un hijo con la clase 'close-button'
-                const closeButton = errorMessage.querySelector('.close-button');
-                
-                if (closeButton) {
-                    // Añadir el evento onclick al botón de cierre
-                    closeButton.onclick = () => {
-                        errorMessage.remove(); // Eliminar el elemento de error
-                    };
-                }
-            });
+        if (!this.form) {
+            return;
         }
 
-        // Seleccionar los elementos de error para cada paso
+        /*Se conserva required en el HTML, pero se desactiva la interfaz nativa para mostrar todos los errores de manera personalziada*/
+        this.form.noValidate = true;
+
+        this.nextButtons = this.form.querySelectorAll('.next-btn');
+
+        this.prevButtons = this.form.querySelectorAll('.prev-btn');
+
+        this.fieldsets = this.form.querySelectorAll('fieldset');
+
+        this.currentStep = 0;
+
         this.errorContainers = {
             0: document.querySelector('#cartel-errores-paso-1'),
             1: document.querySelector('#cartel-errores-paso-2'),
             2: document.querySelector('#cartel-errores-paso-3')
         };
 
-        this.nextButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                console.log('siguiente paso')
-                if (this.validateFields()) {
-                    this.nextStep();
-                } else {
-                    this.showError();
-                }
-            });
-
-        });
-
-        this.prevButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                this.prevStep();
-            });
-        });
-
-        // Añadir un event listener al formulario para el envío
-        const form = document.querySelector('.form-publicacion-new');
-        if (form) {
-            form.addEventListener('submit', (event) => {
-                if (!this.validateFields(true)) {
-                    event.preventDefault(); // Evitar el envío del formulario
-                    this.showError(); // Mostrar errores si hay alguno
-                } else {
-                    this.removeFormattingForSubmit(); // Desformatear números antes de enviar
-                }
-            });
-        }
-
-        // Aplicar el formateo de números en el input de precio
         this.precioInput = document.querySelector('#precio');
-        if (this.precioInput) {
-            this.precioInput.addEventListener('input', (event) => this.formatNumber(event));
-            this.precioInput.addEventListener('blur', (event) => this.formatOnBlur(event));
-            this.precioInput.addEventListener('focus', (event) => this.removeFormatting(event));
-        }
+
+        this.prepararErroresDelServidor();
+        this.prepararNavegacion();
+        this.prepararEnvio();
+        this.prepararLimpiezaDeCampos();
+    }
+
+    prepararErroresDelServidor() {
+
+        const mensajes = this.form.querySelectorAll('.error-message');
+
+        mensajes.forEach(
+            mensaje => {
+
+                mensaje.classList.add('visible');
+
+                const botonCerrar = mensaje.querySelector('.close-button');
+
+                if (botonCerrar) {
+                    botonCerrar.onclick = () => {
+                        mensaje.remove();
+                    };
+                }
+            }
+        );
+    }
+
+    prepararNavegacion() {
+        this.nextButtons.forEach(
+            boton => {
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        if (this.validateFields()) {
+                            this.nextStep();
+                        }
+                    }
+                );
+            }
+        );
+
+        this.prevButtons.forEach(
+            boton => {
+
+                boton.addEventListener(
+                    'click',
+                    () => {this.prevStep();}
+                );
+            }
+        );
+    }
+
+    prepararEnvio() {
+        this.form.addEventListener(
+            'submit',
+            event => {
+
+                if (!this.validateFields(true)) {
+                    event.preventDefault();
+                    return;
+                }
+
+                /*Se quitan los puntos de miles antes de enviar el precio al backend*/
+                this.removeFormattingForSubmit();
+            }
+        );
+    }
+
+    prepararLimpiezaDeCampos() {
+
+        const campos = this.form.querySelectorAll('input, textarea, select');
+
+        campos.forEach(
+            campo => {
+
+                const tipoEvento =
+                    campo.type === 'file' ||
+                    campo.tagName === 'SELECT'
+                        ? 'change'
+                        : 'input';
+
+                campo.addEventListener(
+                    tipoEvento,
+                    () => {
+                        this.limpiarMarcaCampo(campo);
+                    }
+                );
+            }
+        );
     }
 
     validateFields(isFinalValidation = false) {
-        let valid = true;
-        let firstInvalidInput = null;
-        const currentErrorContainer = this.errorContainers[this.currentStep];
+        const fieldsetActual = this.fieldsets[this.currentStep];
 
-        // Limpiar errores anteriores
-        console.log("limpiando datos")
-        currentErrorContainer.innerHTML = '';
-        currentErrorContainer.classList.remove('visible'); // Ocultar el contenedor de errores
+        const contenedorErrores = this.errorContainers[this.currentStep];
 
-        // Validar todos los campos requeridos en el paso actual
-        this.fieldsets[this.currentStep].querySelectorAll('input, input[required], textarea[required], select[required]').forEach((input) => {
-
-            console.log("para cada input del paso en curso hacer " + this.currentStep)
-
-            /*Nominatim puede no informar el codigo postal en algunas zonas, la ubicacion sigue siendo valida si tiene direccion, provincia y coordenadas*/
-            if (input.id === 'codigo_postal') {
-                    return;
-            }
-
-            const valor = input.value.trim();
-
-            const longitudMinima = Number(input.getAttribute('minlength')) || 0;
-
-            if (!valor || (input.type === 'number' && parseFloat(valor) <= 0)) {
-
-                valid = false;
-
-                console.log("input invalida " + input);
-
-                if (!firstInvalidInput) {
-                    firstInvalidInput = input;
-                }
-
-                const placeholder = input.placeholder || input.name;
-
-                this.mostrarError(`El campo "${placeholder}" está incompleto o tiene un valor no permitido.`, currentErrorContainer);
-
-                return;
-            }
-
-            if (
-                longitudMinima > 0 &&
-                valor.length < longitudMinima
-            ) {
-                valid = false;
-
-                if (!firstInvalidInput) {
-                    firstInvalidInput = input;
-                }
-
-                const nombreCampo =
-                    input.placeholder || input.name;
-
-                this.mostrarError(
-                    `El campo "${nombreCampo}" debe tener al menos ${longitudMinima} caracteres.`,
-                    currentErrorContainer
-                );
-}
-        });
-
-        // Validar el campo de precio en el último paso si es una validación final
-        if (isFinalValidation && this.currentStep === this.fieldsets.length - 1) {
-            const precioInput = document.querySelector('#precio');
-            if (precioInput && parseFloat(precioInput.value) <= 0) {
-                valid = false;
-                this.mostrarError(`El campo "Precio/Noche" debe ser mayor que cero.`, currentErrorContainer);
-            }
+        if (!fieldsetActual || !contenedorErrores) {
+            return false;
         }
 
-        if (!valid) {
-            this.showError();
-            if (firstInvalidInput) {
-                firstInvalidInput.focus(); // Enfocar el primer campo inválido
+        this.limpiarErroresPaso(fieldsetActual, contenedorErrores);
+
+        let formularioValido = true;
+        let primerCampoInvalido = null;
+
+        const registrarError = (
+            campo,
+            mensaje
+        ) => {
+            formularioValido = false;
+
+            if (!primerCampoInvalido) {
+                primerCampoInvalido =
+                    campo;
             }
-        }
 
-        return valid;
-    }
+            this.marcarCampoInvalido(campo);
 
-    mostrarError(message, currentErrorContainer) {
-
-        // let errorContainer = document.querySelector("#cartel-errores-paso-1");
-        
-        // console.log(errorContainer)
-        // creo un error item
-        let errorItem = document.createElement("p");
-        // agrego una clase al errorItem
-        errorItem.classList.add("error-message");
-        errorItem.classList.add("visible");
-
-        errorItem.innerHTML = message; // Asignamos el mensaje de error
-
-        // agrego el boton de cerrar, para sacar el mensaje una vez leido
-        let closeButton = document.createElement("span");
-        closeButton.classList.add("close-button");
-        closeButton.innerHTML = `X`
-
-        // asigno el evento para eliminar el errorItem
-        closeButton.onclick = () => {
-            errorItem.remove();
+            this.mostrarError(mensaje, contenedorErrores);
         };
 
-        // agrego el boton al errorItem
-        errorItem.appendChild(closeButton);
-        // agrego el errorItem al errorContainer
-        currentErrorContainer.appendChild(errorItem);
+        /*La ubicación se presenta al usuario como un solo dato*/
+        if (this.currentStep === 0) {
 
-        // errorContainer.style.display = "flex";
+            const ubicacionInput = document.querySelector('#ubicacion');
+
+            if (!this.ubicacionSeleccionadaEsValida()) {
+                registrarError(ubicacionInput, 'Seleccioná una ubicación válida desde las opciones del buscador.');
+            }
+        }
+
+        /*Campos de la ubicacion*/
+        const camposInternosUbicacion =
+            new Set([
+                'ubicacion',
+                'provincia',
+                'direccion',
+                'direccion_completa'
+            ]);
+
+        const camposRequeridos = fieldsetActual.querySelectorAll('[required]');
+
+        camposRequeridos.forEach(
+            campo => {
+
+                if (camposInternosUbicacion.has(campo.id)) {
+                    return;
+                }
+
+                const mensajeError = this.obtenerErrorCampo(campo);
+
+                if (mensajeError !== null) {
+                    registrarError(campo, mensajeError);
+                }
+            }
+        );
+
+        if (!formularioValido) {
+            contenedorErrores.classList.add('visible');
+
+            if (primerCampoInvalido) {
+                primerCampoInvalido.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                window.setTimeout(
+                    () => {
+                        primerCampoInvalido.focus({
+                            preventScroll: true
+                        });
+                    },
+                    250
+                );
+            }
+        }
+
+        return formularioValido;
     }
 
+    ubicacionSeleccionadaEsValida() {
+        const provincia = document.querySelector('#provincia');
 
+        const coordenadas = document.querySelector('#direccion');
 
-    formatNumber(event) {
-        let value = event.target.value.replace(/\./g, ''); // Eliminar puntos para formatear correctamente
-        value = value.replace(/[^\d,]/g, ''); // Mantener solo números y comas
+        const direccionCompleta = document.querySelector('#direccion_completa');
 
-        // Si hay una coma en la entrada, maneja la parte entera y decimal por separado
-        let parts = value.split(',');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Añadir puntos como separadores de miles
-        event.target.value = parts.join(',');
+        if (!provincia || !coordenadas || !direccionCompleta) {
+            return false;
+        }
+
+        if (provincia.value.trim() === '' || coordenadas.value.trim() === '' || direccionCompleta.value.trim() === '') {
+            return false;
+        }
+
+        try {
+            const datosCoordenadas = JSON.parse(coordenadas.value);
+
+            return (
+                datosCoordenadas && Number.isFinite(Number(datosCoordenadas.lat)) && Number.isFinite(Number(datosCoordenadas.lng))
+            );
+
+        } catch (error) {
+            return false;
+        }
     }
 
-    formatOnBlur(event) {
-        let value = event.target.value.replace(/\./g, '');
-        let parts = value.split(',');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        event.target.value = parts.join(',');
+    obtenerErrorCampo(campo) {
+        const nombreCampo = this.obtenerNombreCampo(campo);
+
+        if (campo.type === 'file') {
+
+            if (!campo.files || campo.files.length === 0) {
+                return (
+                    `Seleccioná al menos una imagen en ` +
+                    `"${nombreCampo}".`
+                );
+            }
+
+            return null;
+        }
+
+        const valor = String(campo.value ?? '').trim();
+
+        if (campo.id === 'precio') {
+
+            if (valor === '') {
+                return (
+                    'Completá el campo ' +
+                    '"Precio por noche en USD".'
+                );
+            }
+
+            const valorNormalizado = valor.replace(/\./g, '').replace(',', '.');
+
+            const numero = Number(valorNormalizado);
+
+            if (!Number.isFinite(numero) || numero <= 0) {
+                return (
+                    'El precio por noche en USD ' +
+                    'debe ser mayor que cero.'
+                );
+            }
+
+            return null;
+        }
+
+        if (valor === '') {
+            return (
+                `Completá el campo ` +
+                `"${nombreCampo}".`
+            );
+        }
+
+        if (campo.type === 'number') {
+            const numero = Number(valor);
+
+            const minimo =
+                campo.min !== ''
+                    ? Number(campo.min)
+                    : null;
+
+            if (!Number.isFinite(numero) || (minimo !== null && numero < minimo)) {
+                return (
+                    `El campo "${nombreCampo}" ` +
+                    `debe ser mayor o igual a ` +
+                    `${minimo ?? 1}.`
+                );
+            }
+        }
+
+        const longitudMinima = Number(campo.getAttribute('minlength')) || 0;
+
+        if (longitudMinima > 0 && valor.length < longitudMinima) {
+            return (
+                `El campo "${nombreCampo}" ` +
+                `debe tener al menos ` +
+                `${longitudMinima} caracteres.`
+            );
+        }
+
+        const longitudMaxima = Number(campo.getAttribute('maxlength')) || 0;
+
+        if (longitudMaxima > 0 && valor.length > longitudMaxima) {
+            return (
+                `El campo "${nombreCampo}" ` +
+                `no puede superar ` +
+                `${longitudMaxima} caracteres.`
+            );
+        }
+
+        return null;
     }
 
-    removeFormatting(event) {
-        let value = event.target.value;
-        event.target.value = value.replace(/\./g, ''); // Eliminar el formato para permitir edición
+    obtenerNombreCampo(campo) {
+
+        const nombrePersonalizado = campo.dataset.errorLabel;
+
+        if (nombrePersonalizado) {
+            return nombrePersonalizado;
+        }
+
+        if (campo.id) {
+            const etiqueta = this.form.querySelector(`label[for="${campo.id}"]`);
+
+            if (etiqueta) {
+                return etiqueta.textContent.replace(/\(\*\)/g, '').replace(/\s+/g, ' ').trim();
+            }
+        }
+
+        return (campo.placeholder || campo.name || 'Campo');
     }
 
-    removeFormattingForSubmit() {
-        let value = this.precioInput.value;
-        this.precioInput.value = value.replace(/\./g, '').replace(',', '.'); // Eliminar puntos y cambiar la coma por punto
+    marcarCampoInvalido(campo) {
+        if (!campo) {
+            return;
+        }
+
+        campo.classList.add('field-invalid');
+
+        campo.setAttribute('aria-invalid', 'true');
+
+        const grupoPrecio = campo.closest('.precio-input-group');
+
+        if (grupoPrecio) {
+            grupoPrecio.classList.add('field-invalid-group');
+        }
+
+        if (campo.type === 'file') {
+            const areaImagenes = campo.closest('#drop-area');
+
+            if (areaImagenes) {
+                areaImagenes.classList.add('field-invalid-group');
+            }
+        }
     }
 
-    showError() {
-        const currentErrorContainer = this.errorContainers[this.currentStep];
-        currentErrorContainer.classList.add('visible'); // Mostrar el contenedor de error
+    limpiarMarcaCampo(campo) {
+        if (!campo) {
+            return;
+        }
+
+        campo.classList.remove('field-invalid');
+
+        campo.removeAttribute('aria-invalid');
+
+        const grupoPrecio = campo.closest('.precio-input-group');
+
+        if (grupoPrecio) {
+            grupoPrecio.classList.remove('field-invalid-group');
+        }
+
+        if (campo.type === 'file') {
+            const areaImagenes = campo.closest('#drop-area');
+
+            if (areaImagenes) {
+                areaImagenes.classList.remove('field-invalid-group');
+            }
+        }
+    }
+
+    limpiarErroresPaso(fieldset, contenedorErrores) {
+        contenedorErrores.innerHTML = '';
+
+        contenedorErrores.classList.remove('visible');
+
+        fieldset
+            .querySelectorAll(
+                '.field-invalid'
+            )
+            .forEach(
+                campo => {
+                    campo.classList.remove('field-invalid');
+
+                    campo.removeAttribute('aria-invalid');
+                }
+            );
+
+        fieldset
+            .querySelectorAll(
+                '.field-invalid-group'
+            )
+            .forEach(
+                grupo => {
+                    grupo.classList.remove('field-invalid-group');
+                }
+            );
+    }
+
+    mostrarError(mensaje, contenedorErrores) {
+        const errorItem = document.createElement('p');
+
+        errorItem.classList.add('error-message', 'visible');
+
+        const texto = document.createElement('span');
+
+        texto.textContent = mensaje;
+
+        const botonCerrar = document.createElement('button');
+
+        botonCerrar.type = 'button';
+
+        botonCerrar.classList.add('close-button');
+
+        botonCerrar.setAttribute('aria-label', 'Cerrar mensaje de error');
+
+        botonCerrar.textContent = '×';
+
+        botonCerrar.addEventListener(
+            'click',
+            () => {
+
+                errorItem.remove();
+
+                if (contenedorErrores.querySelectorAll('.error-message').length === 0) {
+                    contenedorErrores.classList.remove('visible');
+                }
+            }
+        );
+
+        errorItem.appendChild(texto);
+        errorItem.appendChild(botonCerrar);
+
+        contenedorErrores.appendChild(errorItem);
+
     }
 
     nextStep() {
+        if (this.currentStep >= this.fieldsets.length - 1) {
+            return;
+        }
+
         this.fieldsets[this.currentStep].classList.add('hidden');
+
         this.currentStep++;
+
         this.fieldsets[this.currentStep].classList.remove('hidden');
+
+        this.notificarCambioPaso();
     }
 
     prevStep() {
+        if (this.currentStep <= 0) {
+            return;
+        }
+
         this.fieldsets[this.currentStep].classList.add('hidden');
+
         this.currentStep--;
+
         this.fieldsets[this.currentStep].classList.remove('hidden');
+
+        this.notificarCambioPaso();
+    }
+
+    notificarCambioPaso() {
+        document.dispatchEvent(
+            new CustomEvent(
+                'formulario:paso-cambiado',
+                {
+                    detail: {
+                        paso:
+                            this.currentStep + 1
+                    }
+                }
+            )
+        );
+    }
+
+    removeFormattingForSubmit() {
+        if (!this.precioInput) {
+            return;
+        }
+
+        this.precioInput.value = this.precioInput.value.replace(/\./g, '').replace(',', '.');
     }
 }
