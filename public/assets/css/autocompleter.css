@@ -176,3 +176,41 @@
     }
 
 }
+
+
+
+/* Buscador mapa general en mobile */
+
+@media (max-width: 700px) {
+    .mapa-view .input-busqueda {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .mapa-view
+    .busqueda-ubicacion-controles {
+        width: min(100%, 36rem);
+        margin: 0 auto;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .mapa-view
+    .busqueda-ubicacion-campo {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+    }
+
+    .mapa-view
+    .busqueda-ubicacion-acciones {
+        flex: 0 0 3rem;
+        margin: 0;
+    }
+
+    .mapa-view
+    .mensaje-busqueda-ubicacion {
+        width: min(100%, 36rem);
+    }
+}
