@@ -44,6 +44,28 @@ class MapaLeaflet {
         this.mapa.invalidateSize({pan: false});
     }
 
+    restaurarUbicacion(lat, lng, textoPopup = '') {
+        const latitud = Number(lat);
+        const longitud = Number(lng);
+
+        if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) {
+            return false;
+        }
+
+        const textoSeguro = this.obtenerTextoSeguro(textoPopup) || 'Ubicación seleccionada';
+
+        this.mapa.setView(
+            [latitud, longitud],
+            16
+        );
+
+        this.actualizarMarcadorActivo(latitud, longitud, textoSeguro);
+
+        this.actualizarCoordenadas(latitud, longitud);
+
+        return true;
+    }
+
     /*Busca varias coincidencias en Nominatim. Solamente obtiene resultados. No coloca un marcador*/
     async buscarResultados(address, limite = 5) {
 

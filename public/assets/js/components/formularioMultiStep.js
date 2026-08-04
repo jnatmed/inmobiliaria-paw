@@ -17,7 +17,7 @@ class FormularioMultistep {
 
         this.fieldsets = this.form.querySelectorAll('fieldset');
 
-        this.currentStep = 0;
+        this.currentStep = this.obtenerPasoInicial();
 
         this.errorContainers = {
             0: document.querySelector('#cartel-errores-paso-1'),
@@ -31,6 +31,31 @@ class FormularioMultistep {
         this.prepararNavegacion();
         this.prepararEnvio();
         this.prepararLimpiezaDeCampos();
+        this.mostrarPasoActual();
+    }
+
+    obtenerPasoInicial() {
+        const pasoSolicitado = Number.parseInt(this.form.dataset.initialStep, 10);
+
+        if (!Number.isInteger(pasoSolicitado)) {
+            return 0;
+        }
+
+        return Math.min(
+            Math.max(pasoSolicitado - 1, 0),
+            this.fieldsets.length - 1
+        );
+    }
+
+    mostrarPasoActual() {
+        this.fieldsets.forEach(
+            (fieldset, indice) => {
+                fieldset.classList.toggle(
+                    'hidden',
+                    indice !== this.currentStep
+                );
+            }
+        );
     }
 
     prepararErroresDelServidor() {

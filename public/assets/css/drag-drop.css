@@ -266,3 +266,16 @@
     outline: 3px solid #222;
     outline-offset: 3px;
 }
+
+
+.image-reselect-note {
+    box-sizing: border-box;
+    max-width: 45rem;
+    margin: 1rem auto 0;
+    padding: 0.75rem;
+    border: 1px solid #b58a00;
+    border-radius: 6px;
+    background-color: #fff3cd;
+    color: #664d03;
+    line-height: 1.4;
+}

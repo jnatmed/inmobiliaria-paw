@@ -1,9 +1,15 @@
+{% set datosMapa = datos|default({}) %}
+
 <section class="input-busqueda">
     <div class="busqueda-ubicacion-controles">
 
         <div class="busqueda-ubicacion-campo">
 
-            <input type="text" id="ubicacion" class="input-form-publicacion" placeholder="Ingrese su dirección" autocomplete="off" required>
+            <input type="text" name="ubicacion" id="ubicacion" class="input-form-publicacion" placeholder="Ingrese su dirección" autocomplete="off" required
+                value="{{ datosMapa['ubicacion']|default(
+                    datosMapa['direccion_completa']|default('')
+                ) }}"
+            >
 
             <div id="resultados-ubicacion" class="autocomplete-results-container" hidden>
                 <ul

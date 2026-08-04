@@ -583,6 +583,8 @@ class PublicacionController extends Controller
                 $this->usuario->chequearCsrf();
 
                 $errors = [];
+
+                $formData = $this->obtenerDatosFormularioAlta();
                 
                 $idUser = $this->usuario->getUserId();
 
@@ -754,16 +756,15 @@ class PublicacionController extends Controller
 
                     if ($publicacionObj['exito']) {
 
-                        // Verificar si $_FILES está vacío
-                        if (empty($_FILES['imagenes'])) {
-                            view('publicacion.new.view', array_merge(
-                                $this->menuAndSession,
+                        if (!$this->solicitudTieneImagenes()) {
+                            $this->renderizarAltaConError(
                                 [
                                     'errors' => ['imagenes' => 'Debe subir al menos una imagen.']
                                 ],
-                                $this->model->traerTipos()
-                            ));
-                            
+                                $formData,
+                                2
+                            );
+
                             return;
                         }
 
@@ -796,37 +797,47 @@ class PublicacionController extends Controller
 
                                 redirect('publicacion/ver?id_pub=' . $idPublicacionGenerado);
                             } else {
-                                view('publicacion.new.view', array_merge(
-                                    $this->menuAndSession,
-                                    ['errors' => $imagenesCollection->getErroresCollectionSubida()],
-                                    $this->model->traerTipos()
-                                ));
+                                $this->renderizarAltaConError(
+                                    ['imagen_errors' => $imagenesCollection->getErroresCollectionSubida()],
+                                    $formData,
+                                    2
+                                );
+
+                                return;
                             }
                         } else {
-                            view('publicacion.new.view', array_merge(
-                                $this->menuAndSession,
+                            $this->renderizarAltaConError(
                                 ['imagen_errors' => $imagenesCollection->getErroresCollection()],
-                                $this->model->traerTipos()
-                            ));
+                                $formData,
+                                2
+                            );
+
+                            return;
                         }
                     } else {
 
-                        $this->logger->error("Publicacion no generada ");
-                        // throw new PublicacionFailException("Publicacion no generada: $idPublicacionGenerado");
-                        view('publicacion.new.view', array_merge(
-                            $this->menuAndSession,
-                            ['errors' => $publicacionObj['errors']],
-                            $this->model->traerTipos()
-                        ));
+                        $erroresPublicacion = $publicacionObj['errores'] ?? ['publicacion' => 'No se pudo preparar la publicación.'];
+
+                        $this->logger->error('Publicación no generada.', ['cantidad_errores' => count($erroresPublicacion)]);
+
+                        $this->renderizarAltaConError(
+                            ['errors' => $erroresPublicacion],
+                            $formData,
+                            1
+                        );
+
+                        return;
                     }
                 } else {
-                    $this->logger->error("Error: ", [$errors]);
+                    $this->logger->warning('La publicación no superó la validación.', ['campos_con_error' => array_keys($errors)]);
 
-                    view('publicacion.new.view', array_merge(
-                        $this->menuAndSession,
+                    $this->renderizarAltaConError(
                         ['errors' => $errors],
-                        $this->model->traerTipos()
-                    ));
+                        $formData,
+                        $this->determinarPasoFormularioAlta($errors)
+                    );
+
+                    return;
                 }
             } else {
                 $datos = [
@@ -848,6 +859,115 @@ class PublicacionController extends Controller
                 'error_message' => "Error en el proceso: " . $e->getMessage()
             ]);
         }
+    }
+
+    private function obtenerDatosFormularioAlta(): array
+    {
+        /*Se recuperan solamente los campos permitidos. No se copia POST completo*/
+        $camposTexto = [
+            'nombre-alojamiento',
+            'tipo-alojamiento',
+            'capacidad-maxima',
+            'cant-banios',
+            'cantidad-dormitorios',
+            'ubicacion',
+            'provincia',
+            'codigo_postal',
+            'direccion',
+            'direccion_completa',
+            'descripcion-alojamiento',
+            'normas-alojamiento',
+            'precio'
+        ];
+
+        $datos = [];
+
+        foreach ($camposTexto as $campo) {
+            $valor = $this->request->post($campo, '');
+
+            $datos[$campo] = is_scalar($valor) ? (string) $valor : '';
+        }
+
+        /* Los checkbox se conservan como booleanos */
+        $datos['cochera'] = $this->request->post('cochera') !== null;
+
+        $datos['pileta'] = $this->request->post('pileta') !== null;
+
+        $datos['aire-acondicionado'] = $this->request->post('aire-acondicionado') !== null;
+
+        $datos['wifi'] = $this->request->post('wifi') !== null;
+
+        return $datos;
+    }
+
+    private function solicitudTieneImagenes(): bool
+    {
+        if (!isset($_FILES['imagenes']['name']) || !is_array($_FILES['imagenes']['name'])) {
+            return false;
+        }
+
+        foreach ($_FILES['imagenes']['name'] as $nombreImagen) {
+            if (trim((string) $nombreImagen) !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function determinarPasoFormularioAlta(array $errores): int {
+
+        $camposPaso1 = [
+            'nombre-alojamiento',
+            'tipo-alojamiento',
+            'capacidad-maxima',
+            'cant-banios',
+            'cantidad-dormitorios',
+            'provincia',
+            'codigo_postal',
+            'direccion',
+            'direccion_completa'
+        ];
+
+        foreach (array_keys($errores) as $campo) {
+            if (in_array($campo, $camposPaso1, true)) {
+                return 1;
+            }
+        }
+
+        $camposPaso3 = [
+            'descripcion-alojamiento',
+            'normas-alojamiento',
+            'precio'
+        ];
+
+        foreach (array_keys($errores) as $campo) {
+            if (in_array($campo, $camposPaso3, true)) {
+                return 3;
+            }
+        }
+
+        return 1;
+    }
+
+    private function renderizarAltaConError(array $datosError, array $formData, int $initialStep): void {
+        view(
+            'publicacion.new.view',
+            array_merge(
+                $this->menuAndSession,
+                [
+                    'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
+
+                    'form_data' => $formData,
+
+                    'initial_step' => $initialStep,
+
+                    'must_reselect_images' => true
+                ],
+                $this->model->traerTipos(),
+                $datosError
+            )
+        );
     }
 
     public function gestionarPublicaciones()

@@ -101,6 +101,49 @@ class publicacionNew {
             });
         };
 
+        const restaurarUbicacionFormulario =
+            () => {
+                const coordenadasGuardadas = direccionInput.value.trim();
+
+                const direccionGuardada = direccionCompletaInput.value.trim();
+
+                if (coordenadasGuardadas === '' || direccionGuardada === '') {
+                    return;
+                }
+
+                try {
+                    const coordenadas = JSON.parse(coordenadasGuardadas);
+
+                    const restaurada = mapaLeaf.restaurarUbicacion(coordenadas.lat, coordenadas.lng, direccionGuardada);
+
+                    if (!restaurada) {
+                        return;
+                    }
+
+                    if (ubicacionInput.value.trim() === '') {
+                        ubicacionInput.value = direccionGuardada;
+                    }
+
+                    actualizarPreviewAlta();
+
+                    mostrarMensaje(
+                        'Se conservaron la ubicación y los datos escritos después del error.',
+                        'informacion'
+                    );
+
+                    window.setTimeout(
+                        () => mapaLeaf.ajustarTamanio(),
+                        0
+                    );
+
+                } catch (error) {
+                    console.warn(
+                        'No se pudo restaurar la ubicación guardada:',
+                        error
+                    );
+                }
+            };
+
         /*Informa el estado de la ubicación seleccionada*/
         const informarEstadoSeleccion = estado => {
 
@@ -357,6 +400,8 @@ class publicacionNew {
                 }
             }
         );
+
+        restaurarUbicacionFormulario();
 
         /*Cierra la lista al hacer click fuera del buscador*/
         document.addEventListener('click', event => {
