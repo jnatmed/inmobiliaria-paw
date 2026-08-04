@@ -117,6 +117,21 @@ class FormularioMultistep {
                 );
             }
         );
+
+        document.addEventListener(
+            'imagenes:actualizadas',
+            event => {
+                const archivos = event.detail && Array.isArray(event.detail.archivos) ? event.detail.archivos : [];
+
+                if (archivos.length === 0) {
+                    return;
+                }
+
+                const inputImagenes = this.form.querySelector('#drop-input');
+
+                this.limpiarMarcaCampo(inputImagenes);
+            }
+        );
     }
 
     validateFields(isFinalValidation = false) {
@@ -146,7 +161,7 @@ class FormularioMultistep {
 
             this.marcarCampoInvalido(campo);
 
-            this.mostrarError(mensaje, contenedorErrores);
+            this.mostrarError(mensaje, contenedorErrores, campo);
         };
 
         /*La ubicación se presenta al usuario como un solo dato*/
@@ -387,6 +402,42 @@ class FormularioMultistep {
                 areaImagenes.classList.remove('field-invalid-group');
             }
         }
+
+        this.eliminarErrorDeCampo(campo);
+    }
+
+    eliminarErrorDeCampo(campo) {
+        if (!campo) {
+            return;
+        }
+
+        const identificador = campo.id || campo.name;
+
+        if (!identificador) {
+            return;
+        }
+
+        this.form
+            .querySelectorAll(
+                '.error-message[data-error-for]'
+            )
+            .forEach(
+                mensaje => {
+                    if (mensaje.dataset.errorFor === identificador) {
+                        mensaje.remove();
+                    }
+                }
+            );
+
+        Object.values(
+            this.errorContainers
+        ).forEach(
+            contenedor => {
+                if (contenedor && !contenedor.querySelector('.error-message')) {
+                    contenedor.classList.remove('visible');
+                }
+            }
+        );
     }
 
     limpiarErroresPaso(fieldset, contenedorErrores) {
@@ -417,10 +468,15 @@ class FormularioMultistep {
             );
     }
 
-    mostrarError(mensaje, contenedorErrores) {
+    mostrarError(mensaje, contenedorErrores, campo = null) {
         const errorItem = document.createElement('p');
 
         errorItem.classList.add('error-message', 'visible');
+
+        /*Se guarad el campo donde se origino el mensaje */
+        if (campo) {
+            errorItem.dataset.errorFor = campo.id || campo.name || '';
+        }
 
         const texto = document.createElement('span');
 
