@@ -81,15 +81,22 @@
                 <input type="number" name="cantidad-dormitorios" id="cantidad-dormitorios" class="input-form-publicacion" required min="1" oninvalid="setCustomValidity('')" oninput="setCustomValidity('')">
                 
                 <h3 class="titulo-datos-propietario">Ubicación del Alojamiento</h3>
-                <p>Indica la dirección de tu propiedad para que podamos determinar la ubicación en el mapa</p>
+
+                <p class="form-help">
+                    <small>Indicá la dirección de la propiedad. La provincia, el código postal y las coordenadas se completarán al seleccionar una ubicación del mapa.</small>
+                </p>
+
                 <div class="input-container">
-                    <label for="provincia">Provincia</label>
-                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" readonly>
+
+                    <label for="provincia">Provincia (*)</label>
+                    <input type="text" name="provincia" id="provincia" class="input-form-publicacion disabled" readonly required aria-required="true">
+
                     <span class="tooltip">Estos campos se llenarán automáticamente cuando ingreses la dirección en el mapa</span>
+
                 </div>
                 
                 <div class="input-container">
-                    <label for="codigo_postal">Codigo Postal</label>
+                    <label for="codigo_postal">Código postal (opcional)</label>
 
                     <input type="text" name="codigo_postal" id="codigo_postal" class="input-form-publicacion disabled" readonly>
 
@@ -99,7 +106,10 @@
                 <input type="text" name="direccion" id="direccion" class="input-form-publicacion" placeholder="Dirección" readonly>
                 <input type="text" name="direccion_completa" id="direccion_completa" class="input-form-publicacion" readonly hidden>
 
-                <p>Mueve el mapa hasta posicionar el puntero en el lugar adecuado</p>
+                <p class="form-help">
+                    <small>Buscá una dirección y, si fuera necesario, mové el marcador hasta la posición exacta de la propiedad.</small>
+                </p>
+
                 <label for="ubicacion">Ubicacion (*)</label>
                 {% include 'parts/mapa.view.html' %}
 
