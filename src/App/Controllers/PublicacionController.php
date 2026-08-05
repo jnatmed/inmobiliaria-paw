@@ -31,6 +31,9 @@ class PublicacionController extends Controller
 
     private const PUBLICACIONES_POR_PAGINA = 6;
 
+    private const ESTADO_PUBLICACION_PENDIENTE = 1;
+    private const ESTADO_PUBLICACION_ARCHIVADA = 4;
+
     public function __construct()
     {
         global $config, $log;
@@ -669,9 +672,12 @@ class PublicacionController extends Controller
                     'parts/lista-publicaciones.view',
                     $datos
                 );
-
                 return;
             }
+
+            $datos['resultadoGestionPublicacion'] = $this->request->getResultadoGuardado('resultadoGestionPublicacion');
+
+            $this->request->eliminarResultadoEnSesion('resultadoGestionPublicacion');
 
             view(
                 'publicaciones.list.view',
@@ -680,7 +686,9 @@ class PublicacionController extends Controller
                     $this->menuAndSession
                 )
             );
+
         } catch (Throwable $e) {
+
             $error_message = 'Error al obtener las publicaciones: ' . $e->getMessage();
 
             $this->logger->error($error_message);
@@ -694,6 +702,226 @@ class PublicacionController extends Controller
                     $this->menuAndSession
                 )
             );
+        }
+    }
+
+    private function detenerGestionPublicacion(int $statusCode, string $vista, string $mensaje, ?string $encabezado = null): void {
+        
+        http_response_code($statusCode);
+
+        $datos = ['error_message' => $mensaje];
+
+        if ($encabezado !== null) {
+            $datos['error_lead'] = $encabezado;
+        }
+
+        view(
+            $vista,
+            array_merge(
+                $datos,
+                $this->menuAndSession
+            )
+        );
+
+        exit;
+    }
+
+    private function obtenerPublicacionPropiaDesdePost(): array
+    {
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero(
+            $this->request->post('id_pub'),
+            'id_pub',
+            $errores,
+            1
+        );
+
+        if ($idPublicacion === null) {
+            $this->detenerGestionPublicacion(400, 'errors/bads-request.view', 'El identificador de la publicación no es válido.');
+        }
+
+        $publicacion = $this->model->getOne($idPublicacion);
+
+        if (!$publicacion) {
+            $this->detenerGestionPublicacion(404, 'errors/not-found.view', 'La publicación solicitada no existe.');
+        }
+
+        $usuarioActual = (int) $this->usuario->getUserId();
+        $duenioPublicacion = (int) $publicacion['id_usuario'];
+
+        if ($usuarioActual !== $duenioPublicacion) {
+            $this->logger->warning(
+                'Intento de administrar una publicación ajena.',
+                [
+                    'usuario_id' => $usuarioActual,
+                    'publicacion_id' => $idPublicacion
+                ]
+            );
+
+            $this->detenerGestionPublicacion(
+                403,
+                'errors/forbidden.view',
+                'No tenés permiso para administrar esta publicación.',
+                'Acceso denegado'
+            );
+        }
+
+        return $publicacion;
+    }
+
+    private function eliminarArchivosDePublicacion(array $imagenes, int $idPublicacion): void {
+
+        $directorioBase = realpath(Imagen::UPLOADDIRECTORY);
+
+        if ($directorioBase === false) {
+            $this->logger->error(
+                'No se encontró el directorio de imágenes al eliminar una publicación.',
+                ['publicacion_id' => $idPublicacion]
+            );
+
+            return;
+        }
+
+        foreach ($imagenes as $imagen) {
+            $pathGuardado = (string) ($imagen['path_imagen'] ?? '');
+
+            if ($pathGuardado === '' || basename($pathGuardado) === 'image-not-found.png') {
+                continue;
+            }
+
+            $rutaCandidata = $directorioBase . DIRECTORY_SEPARATOR . ltrim($pathGuardado, '/\\');
+
+            $rutaReal = realpath($rutaCandidata);
+
+            if ($rutaReal === false) {
+                $this->logger->warning(
+                    'La imagen asociada ya no existe en el disco.',
+                    [
+                        'publicacion_id' => $idPublicacion,
+                        'imagen' => basename($pathGuardado)
+                    ]
+                );
+                continue;
+            }
+
+            $prefijoPermitido = $directorioBase . DIRECTORY_SEPARATOR;
+
+            if (strpos($rutaReal, $prefijoPermitido) !== 0) {
+                $this->logger->warning(
+                    'Se rechazó un path de imagen fuera del directorio permitido.',
+                    [
+                        'publicacion_id' => $idPublicacion,
+                        'imagen' => basename($pathGuardado)
+                    ]
+                );
+
+                continue;
+            }
+
+            if (is_file($rutaReal) && !@unlink($rutaReal)) {
+                $this->logger->warning(
+                    'No se pudo eliminar un archivo de imagen del disco.',
+                    [
+                        'publicacion_id' => $idPublicacion,
+                        'imagen' => basename($pathGuardado)
+                    ]
+                );
+            }
+        }
+    }
+
+    public function administrarPublicacionPropia(): void
+    {
+        try {
+
+            //Los usuarios comunes pueden publicar y administrar lo que crearon
+            $this->usuario->chequearTiposPermitidos([1, 3]);
+
+            //Todas las operaciones que modifican datos y requieren POST se chequea el CSRF
+            $this->usuario->chequearCsrf();
+
+            $accion = $this->request->getSegments(1);
+
+            if (!in_array($accion, ['archivar', 'reactivar', 'eliminar'], true)) {
+                $this->detenerGestionPublicacion(400, 'errors/bads-request.view', 'La acción solicitada no es válida.');
+            }
+
+            $publicacion = $this->obtenerPublicacionPropiaDesdePost();
+
+            $idPublicacion = (int) $publicacion['id'];
+            $idUsuario = (int) $this->usuario->getUserId();
+            $estadoActual = (int) $publicacion['estado_id'];
+
+            if ($accion === 'archivar') {
+                if ($estadoActual === self::ESTADO_PUBLICACION_ARCHIVADA) {
+                    $this->detenerGestionPublicacion(400, 'errors/bads-request.view', 'La publicación ya está archivada.');
+                }
+
+                $this->model->cambiarEstadoPublicacionPropia($idPublicacion, $idUsuario, self::ESTADO_PUBLICACION_ARCHIVADA);
+
+                $mensaje = 'La propiedad fue archivada. Ya no aparece públicamente, ' . 'pero sus reservas y su historial se conservaron.';
+            } elseif ($accion === 'reactivar') {
+                if ($estadoActual !== self::ESTADO_PUBLICACION_ARCHIVADA) {
+                    $this->detenerGestionPublicacion(400, 'errors/bads-request.view', 'Solo se puede reactivar una publicación archivada.');
+                }
+
+                $this->model->cambiarEstadoPublicacionPropia($idPublicacion, $idUsuario, self::ESTADO_PUBLICACION_PENDIENTE);
+
+                $mensaje = 'La propiedad fue enviada nuevamente a moderación. Permanecerá pendiente hasta que un empleado la apruebe.';
+            } else {
+                if ($estadoActual !== self::ESTADO_PUBLICACION_ARCHIVADA) {
+                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'Antes de eliminar una propiedad, primero debe estar archivada.');
+                }
+
+                //Se bloquea ante cualquier reserva, incluso cancelada o rechazada
+                if ($this->model->tieneReservas($idPublicacion)) {
+                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'La propiedad tiene reservas asociadas y no puede eliminarse. Podés mantenerla archivada.');
+                }
+
+                if ($this->model->tieneCalificaciones($idPublicacion)) {
+                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'La propiedad tiene comentarios o calificaciones y no puede eliminarse. Podés mantenerla archivada.');
+                }
+
+                $imagenes = $publicacion['imagenes'] ?? [];
+
+                $this->model->eliminarPublicacionPropia($idPublicacion, $idUsuario);
+
+                //Primero se elimina la fila de la base. Después se limpian los archivos asi no quedan referencias de BD a imagenes inexistentes
+                $this->eliminarArchivosDePublicacion($imagenes, $idPublicacion);
+
+                $mensaje = 'La propiedad fue eliminada definitivamente.';
+            }
+
+            $this->logger->info(
+                'Administración de publicación propia completada.',
+                [
+                    'usuario_id' => $idUsuario,
+                    'publicacion_id' => $idPublicacion,
+                    'accion' => $accion
+                ]
+            );
+
+            $this->request->setResultadoEnSesion(
+                'resultadoGestionPublicacion',
+                [
+                    'exito' => true,
+                    'mensaje' => $mensaje
+                ]
+            );
+
+            redirect('mis_publicaciones');
+
+        } catch (Throwable $e) {
+            $this->logger->error(
+                'Error al administrar una publicación propia.',
+                [
+                    'usuario_id' => $this->usuario->getUserId(),
+                    'mensaje' => $e->getMessage()
+                ]
+            );
+
+            $this->detenerGestionPublicacion(500, 'errors/internal_error.view', 'No se pudo completar la operación sobre la propiedad.');
         }
     }
 

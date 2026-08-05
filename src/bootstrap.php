@@ -181,6 +181,10 @@ $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
 $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietario');
 
+$router->post('/mis_publicaciones/archivar', 'PublicacionController@administrarPublicacionPropia');
+$router->post('/mis_publicaciones/reactivar', 'PublicacionController@administrarPublicacionPropia');
+$router->post('/mis_publicaciones/eliminar', 'PublicacionController@administrarPublicacionPropia');
+
 $router->get('/publicaciones/list', 'PublicacionController@list');
 $router->get('/publicacion', 'PublicacionController@getImgPublicacion');
 $router->get('/publicacion/imagen_destacada', 'PublicacionController@getImgPublicacion');

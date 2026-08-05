@@ -69,6 +69,21 @@
     <div id="loader-publicaciones"></div>
 
     <main class="main-home">
+
+        {% if resultadoGestionPublicacion is defined
+            and resultadoGestionPublicacion is not null
+        %}
+            {% if resultadoGestionPublicacion.exito %}
+                <p class="msj_exito">
+                    {{ resultadoGestionPublicacion.mensaje }}
+                </p>
+            {% else %}
+                <p class="msj_error">
+                    {{ resultadoGestionPublicacion.mensaje }}
+                </p>
+            {% endif %}
+        {% endif %}
+
         <section class="container_publicaciones">
 
             <!-- FILTROS -->

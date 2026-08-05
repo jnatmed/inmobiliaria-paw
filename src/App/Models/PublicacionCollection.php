@@ -397,6 +397,56 @@ class PublicacionCollection extends Model
     }
 
 
+    public function cambiarEstadoPublicacionPropia(int $idPublicacion, int $idUsuario, int $nuevoEstado): void {
+
+        $estadosPermitidos = [1, 4];
+
+        if (!in_array($nuevoEstado, $estadosPermitidos, true)) {
+            throw new Exception('El estado indicado no es válido para esta acción.');
+        }
+
+        $this->queryBuilder->update(
+            $this->table,
+            ['estado_id' => $nuevoEstado],
+            [
+                'id' => $idPublicacion,
+                'id_usuario' => $idUsuario
+            ]
+        );
+    }
+
+    public function tieneReservas(int $idPublicacion): bool
+    {
+        $reservas = $this->queryBuilder->select(
+            'reservas_publicacion',
+            ['id_publicacion' => $idPublicacion]
+        );
+
+        return !empty($reservas);
+    }
+
+    public function tieneCalificaciones(int $idPublicacion): bool
+    {
+        $calificaciones = $this->queryBuilder->select(
+            'calificaciones',
+            ['id_publicacion' => $idPublicacion]
+        );
+
+        return !empty($calificaciones);
+    }
+
+    public function eliminarPublicacionPropia(int $idPublicacion, int $idUsuario): bool {
+        return $this->queryBuilder->deleteWhere(
+            $this->table,
+            [
+                'id' => $idPublicacion,
+                'id_usuario' => $idUsuario,
+                'estado_id' => 4
+            ]
+        );
+    }
+
+
     public function traerTipos()
     {
         try {
