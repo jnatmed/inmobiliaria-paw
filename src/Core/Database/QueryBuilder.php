@@ -486,7 +486,7 @@ class QueryBuilder
                     WHERE 1 = 1
                     {$whereSql}
 
-                    ORDER BY main.id DESC
+                    ORDER BY main.id ASC
 
                     LIMIT :limit
                     OFFSET :offset
@@ -505,7 +505,7 @@ class QueryBuilder
                         = tipo.id
 
                 ORDER BY
-                    main.id DESC,
+                    main.id ASC,
                     img.id_imagen ASC
             ";
 
