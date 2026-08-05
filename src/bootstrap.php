@@ -181,6 +181,9 @@ $router->post('/publicacion/new', 'PublicacionController@new');
 $router->get('/publicacion/ver', 'PublicacionController@verPublicacion');
 $router->get('/mis_publicaciones', 'PublicacionController@listaPublicacionesPropietario');
 
+$router->get('/mis_publicaciones/editar', 'PublicacionController@editarPublicacionPropia');
+$router->post('/mis_publicaciones/editar', 'PublicacionController@editarPublicacionPropia');
+
 $router->post('/mis_publicaciones/archivar', 'PublicacionController@administrarPublicacionPropia');
 $router->post('/mis_publicaciones/reactivar', 'PublicacionController@administrarPublicacionPropia');
 $router->post('/mis_publicaciones/eliminar', 'PublicacionController@administrarPublicacionPropia');

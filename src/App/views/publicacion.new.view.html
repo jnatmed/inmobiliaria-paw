@@ -17,12 +17,29 @@
 
     <main class="main-home">
 
-        <form action="/publicacion/new" method="post" class="form-publicacion-new" enctype="multipart/form-data" novalidate data-initial-step="{{ initial_step|default(1) }}">
+        <form
+            action="{{ form_action|default('/publicacion/new') }}"
+            method="post"
+            class="form-publicacion-new"
+            enctype="multipart/form-data"
+            novalidate
+            data-initial-step="{{ initial_step|default(1) }}"
+            data-existing-image-url="{{ imagen_principal_actual|default('') }}"
+            data-existing-image-count="{{ cantidad_imagenes_actuales|default(0) }}"
+        >
 
             {#form_data solamente existe cuando el servidor devuelve el formulario. En un GET nuevo se utiliza un objeto vacío#}
             {% set datos = form_data|default({}) %}
 
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            {% if modo_edicion|default(false) %}
+                <input type="hidden" name="id_pub" value="{{ id_publicacion }}">
+
+                <p class="form-help">
+                    Estás editando una propiedad existente. Si estaba publicada, rechazada o pendiente, los cambios deberán ser revisados nuevamente por un empleado. Si estaba archivada, continuará archivada.
+                </p>
+            {% endif %}
 
             <p class="form-required-note">
                 <small>Los campos marcados con (*) son obligatorios.</small>
@@ -190,50 +207,110 @@
             <fieldset class="paso-2 hidden">
 
                 <h2 class="titulo-form-publicacion">PASO 2 de 3</h2>
-                <p class="paso-titulo">Agregá fotos de tu alojamiento</p>
+
+                <p class="paso-titulo">
+                    {% if modo_edicion|default(false) %}
+                        Revisá las fotos actuales del alojamiento
+                    {% else %}
+                        Agregá fotos de tu alojamiento
+                    {% endif %}
+                </p>
+
                 <div id="cartel-errores-paso-2" class="step-error-container" aria-live="polite"></div>
 
-                <article id="drop-area">
+                {% if modo_edicion|default(false) %}
+                    <article id="imagenes-actuales">
 
-                    <p class="file-input-label">
-                        Imágenes del alojamiento (*)
-                    </p>
-
-                    <small id="image-upload-help" class="form-help image-upload-help">
-                        <span class="image-upload-help-desktop">
-                            Arrastrá una o varias imágenes hasta esta zona o utilizá “Examinar imágenes”.
-                        </span>
-
-                        <span class="image-upload-help-touch"> 
-                            Utilizá “Examinar imágenes” para elegir una o varias fotos del dispositivo.
-                        </span>
-
-                        <span>
-                            Se permiten archivos JPG, JPEG y PNG de hasta 1 MB cada uno.
-                        </span>
-                    </small>
-
-                    <input type="file" name="imagenes[]" multiple id="drop-input" class="file-input-visually-hidden" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required data-error-label="Imágenes del alojamiento" aria-describedby="image-upload-help preview-status">
-
-                    <label for="drop-input" class="file-select-button">
-                        Examinar imágenes
-                    </label>
-
-                    {% if must_reselect_images|default(false) %}
-                        <p class="image-reselect-note" role="status">
-                            Por seguridad del navegador, las imágenes no pueden recuperarse después de un error del servidor.
-                            Seleccionalas nuevamente antes de enviar.
+                        <p class="form-help">
+                            <small>
+                                Las imágenes actuales se conservarán sin cambios. En este bloque editamos los datos de la propiedad; no eliminamos ni reordenamos fotografías.
+                            </small>
                         </p>
-                    {% endif %}
 
-                    <p class="error-drop"></p>
+                        <p id="preview-status" class="preview-status">
+                            {{ cantidad_imagenes_actuales }}
 
-                    <p id="preview-status" class="preview-status" aria-live="polite">
-                        No hay imágenes seleccionadas.
-                    </p>
+                            {% if cantidad_imagenes_actuales == 1 %}
+                                imagen actual.
+                            {% else %}
+                                imágenes actuales.
+                            {% endif %}
+                        </p>
 
-                    <div class="preview-container" aria-label="Vista previa de imágenes seleccionadas"></div>
-                </article>
+                        <div class="preview-container" aria-label="Imágenes actuales de la propiedad">
+                            {% for imagen in imagenes_actuales %}
+                                <div class="image-container">
+
+                                    <img
+                                        src="/publicacion?id_pub={{ id_publicacion }}&id_img={{ imagen.id_imagen }}"
+                                        alt="Imagen actual {{ loop.index }} de la propiedad"
+                                    >
+
+                                    <p class="info">
+                                        {{ imagen.nombre_imagen|default(
+                                            'Imagen actual'
+                                        ) }}
+                                    </p>
+
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </article>
+                {% else %}
+                    <article id="drop-area">
+
+                        <p class="file-input-label">
+                            Imágenes del alojamiento (*)
+                        </p>
+
+                        <small id="image-upload-help" class="form-help image-upload-help">
+                            <span class="image-upload-help-desktop">
+                                Arrastrá una o varias imágenes hasta esta zona o utilizá “Examinar imágenes”.
+                            </span>
+
+                            <span class="image-upload-help-touch">
+                                Utilizá “Examinar imágenes” para elegir una o varias fotos del dispositivo.
+                            </span>
+
+                            <span>
+                                Se permiten archivos JPG, JPEG y PNG de hasta 1 MB cada uno.
+                            </span>
+                        </small>
+
+                        <input
+                            type="file"
+                            name="imagenes[]"
+                            multiple
+                            id="drop-input"
+                            class="file-input-visually-hidden"
+                            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                            required
+                            data-error-label="Imágenes del alojamiento"
+                            aria-describedby="image-upload-help preview-status"
+                        >
+
+                        <label for="drop-input" class="file-select-button">
+                            Examinar imágenes
+                        </label>
+
+                        {% if must_reselect_images|default(false) %}
+                            <p class="image-reselect-note" role="status">
+                                Por seguridad del navegador, las imágenes no pueden recuperarse después de un error del servidor.
+                                Seleccionalas nuevamente antes de enviar.
+                            </p>
+                        {% endif %}
+
+                        <p class="error-drop"></p>
+
+                        <p id="preview-status" class="preview-status" aria-live="polite">
+                            No hay imágenes seleccionadas.
+                        </p>
+
+                        <div class="preview-container" aria-label="Vista previa de imágenes seleccionadas"></div>
+
+                    </article>
+                {% endif %}
 
                 <div class="form-navigation">
                     <button type="button" class="prev-btn">Anterior</button>
@@ -320,7 +397,7 @@
                 <div class="form-navigation">
                     <button type="button" class="prev-btn">Anterior</button>
 
-                    <input type="submit" value="Enviar publicación" class="btn-form-enviar-publicacion">
+                    <input type="submit" value="{{ texto_boton_envio|default('Enviar publicación') }}" class="btn-form-enviar-publicacion">
                 </div>
             </fieldset>
         </form>

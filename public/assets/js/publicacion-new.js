@@ -30,11 +30,22 @@ class publicacionNew {
         promiseDragDrop,
         promiseMapaLeafLet
       ]).then(function () {
+
         new FormularioMultistep();
         new FormatterNumberInputs('#precio');
-        new DragDrop();
+
+        if (document.querySelector('#drop-input')) {
+          new DragDrop();
+        }
+
+        const formulario = document.querySelector('.form-publicacion-new');
+
+        const imagenExistenteUrl = formulario?.dataset.existingImageUrl || '';
+
+        const cantidadImagenesExistentes = Number(formulario?.dataset.existingImageCount || 0);
 
         const mapaLeaf = new MapaLeaflet();
+    
         const ubicacionInput = document.querySelector('#ubicacion');
         const buscarButton = document.querySelector('#buscarUbicacion');
         const loading = document.querySelector('.loader');
@@ -48,9 +59,10 @@ class publicacionNew {
         const direccionInput = document.querySelector('#direccion');
         const direccionCompletaInput = document.querySelector('#direccion_completa');
 
-        //URL temporal usada para mostrar la primera imagen seleccionada dentro de la preview del popup del mapa
-        let urlImagenPreviewAlta = '';
-        let cantidadImagenesPreviewAlta = 0;
+        let urlImagenPreviewAlta = imagenExistenteUrl;
+        let cantidadImagenesPreviewAlta = cantidadImagenesExistentes;
+
+        let urlImagenPreviewEsTemporal = false;
 
         /*Vacía y oculta la lista de resultados*/
         const limpiarResultados = () => {
@@ -364,16 +376,21 @@ class publicacionNew {
                   ? event.detail.archivos
                   : [];
 
-          /*Se libera la URL temporal anterior*/
-          if (urlImagenPreviewAlta !== '') {
+          if (urlImagenPreviewEsTemporal && urlImagenPreviewAlta !== '') {
             URL.revokeObjectURL(urlImagenPreviewAlta);
-            urlImagenPreviewAlta = '';
           }
 
-          cantidadImagenesPreviewAlta = archivos.length;
+          urlImagenPreviewAlta = imagenExistenteUrl;
+          cantidadImagenesPreviewAlta = cantidadImagenesExistentes;
+
+          urlImagenPreviewEsTemporal = false;
 
           if (archivos.length > 0) {
             urlImagenPreviewAlta = URL.createObjectURL(archivos[0]);
+
+            cantidadImagenesPreviewAlta = archivos.length;
+
+            urlImagenPreviewEsTemporal = true;
           }
 
           actualizarPreviewAlta();
@@ -384,9 +401,9 @@ class publicacionNew {
         window.addEventListener(
             'beforeunload',
             () => {
-                if (urlImagenPreviewAlta !== '') {
-                    URL.revokeObjectURL(urlImagenPreviewAlta);
-                }
+              if (urlImagenPreviewEsTemporal && urlImagenPreviewAlta !== '') {
+                URL.revokeObjectURL(urlImagenPreviewAlta);
+              }
             }
         );
 

@@ -415,6 +415,45 @@ class PublicacionCollection extends Model
         );
     }
 
+    public function actualizarPublicacionPropia(int $idPublicacion, int $idUsuario, array $datos): void {
+
+        $columnasPermitidas = [
+            'provincia',
+            'codigo_postal',
+            'direccion',
+            'latitud',
+            'longitud',
+            'precio',
+            'nombre_alojamiento',
+            'tipo_alojamiento_id',
+            'capacidad_maxima',
+            'cant_banios',
+            'cantidad_dormitorios',
+            'cochera',
+            'pileta',
+            'aire_acondicionado',
+            'wifi',
+            'normas_alojamiento',
+            'descripcion_alojamiento',
+            'estado_id'
+        ];
+
+        $datosPermitidos = array_intersect_key($datos, array_flip($columnasPermitidas));
+
+        if (count($datosPermitidos) !== count($columnasPermitidas)) {
+            throw new Exception('Faltan datos válidos para actualizar la publicación.');
+        }
+
+        $this->queryBuilder->update(
+            $this->table,
+            $datosPermitidos,
+            [
+                'id' => $idPublicacion,
+                'id_usuario' => $idUsuario
+            ]
+        );
+    }
+
     public function tieneReservas(int $idPublicacion): bool
     {
         $reservas = $this->queryBuilder->select(

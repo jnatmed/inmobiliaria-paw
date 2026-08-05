@@ -1111,11 +1111,125 @@ class PublicacionController extends Controller
         }
     }
 
-    public function new()
-    {
+    private function obtenerPublicacionPropiaDesdeValor($valorId): array{
+
+        $errores = [];
+
+        $idPublicacion = $this->verificador->entero($valorId, 'id_pub', $errores, 1);
+
+        if ($idPublicacion === null) {
+            $this->detenerGestionPublicacion(400, 'errors/bads-request.view', 'El identificador de la publicación no es válido.');
+        }
+
+        $publicacion = $this->model->getOne($idPublicacion);
+
+        if (!$publicacion) {
+            $this->detenerGestionPublicacion(404, 'errors/not-found.view', 'La publicación solicitada no existe.');
+        }
+
+        $usuarioActual = (int) $this->usuario->getUserId();
+
+        if ($usuarioActual !== (int) $publicacion['id_usuario']) {
+            $this->logger->warning(
+                'Intento de editar una publicación ajena.',
+                [
+                    'usuario_id' => $usuarioActual,
+                    'publicacion_id' => $idPublicacion
+                ]
+            );
+
+            $this->detenerGestionPublicacion(403, 'errors/forbidden.view', 'No tenés permiso para editar esta publicación.', 'Acceso denegado');
+
+        }
+
+        return $publicacion;
+    }
+
+    private function transformarPublicacionEnDatosFormulario(array $publicacion): array {
+
+        $coordenadas = '';
+
+        if (is_numeric($publicacion['latitud'] ?? null) && is_numeric($publicacion['longitud'] ?? null)) {
+            $coordenadas = json_encode([
+                'lat' => (float) $publicacion['latitud'],
+                'lng' => (float) $publicacion['longitud']
+            ]);
+        }
+
+        return [
+            'nombre-alojamiento' => (string) ($publicacion['nombre_alojamiento'] ?? ''),
+            'tipo-alojamiento' => (string) ($publicacion['tipo_alojamiento_id'] ?? ''),
+            'capacidad-maxima' => (string) ($publicacion['capacidad_maxima'] ?? ''),
+            'cant-banios' => (string) ($publicacion['cant_banios'] ?? ''),
+            'cantidad-dormitorios' => (string) ($publicacion['cantidad_dormitorios'] ?? ''),
+            'ubicacion' => (string) ($publicacion['direccion'] ?? ''),
+            'provincia' => (string) ($publicacion['provincia'] ?? ''),
+            'codigo_postal' => (string) ($publicacion['codigo_postal'] ?? ''),
+            'direccion' => $coordenadas,
+            'direccion_completa' => (string) ($publicacion['direccion'] ?? ''),
+            'descripcion-alojamiento' => (string) ($publicacion['descripcion_alojamiento'] ?? ''),
+            'normas-alojamiento' => (string) ($publicacion['normas_alojamiento'] ?? ''),
+            'precio' => (string) ($publicacion['precio'] ?? ''),
+            'cochera' => (bool) ($publicacion['cochera'] ?? false),
+            'pileta' => (bool) ($publicacion['pileta'] ?? false),
+            'aire-acondicionado' => (bool) ($publicacion['aire_acondicionado'] ?? false),
+            'wifi' => (bool) ($publicacion['wifi'] ?? false)
+        ];
+    }
+
+    private function obtenerDatosVistaEdicion(array $publicacion): array {
+
+        $imagenes = $publicacion['imagenes'] ?? [];
+        $imagenPrincipalUrl = '';
+
+        if (!empty($imagenes)) {
+            $imagenPrincipalUrl =
+                '/publicacion?id_pub='
+                . (int) $publicacion['id']
+                . '&id_img='
+                . (int) $imagenes[0]['id_imagen'];
+        }
+
+        return [
+            'titulo' => 'PAWPERTIES | EDITAR PUBLICACIÓN',
+            'modo_edicion' => true,
+            'form_action' => '/mis_publicaciones/editar',
+            'id_publicacion' => (int) $publicacion['id'],
+            'imagenes_actuales' => $imagenes,
+            'imagen_principal_actual' => $imagenPrincipalUrl,
+            'cantidad_imagenes_actuales' => count($imagenes),
+            'texto_boton_envio' => 'Guardar cambios'
+        ];
+    }
+
+    public function editarPublicacionPropia(): void{
+
+        $this->procesarFormularioPublicacion(true);
+
+    }
+
+    public function new(): void{
+
+        $this->procesarFormularioPublicacion(false);
+
+    }
+
+    //Publicacion nueva el modoEdicion es false y para editar una publicacion el modo es true
+    private function procesarFormularioPublicacion(bool $modoEdicion): void {
+
         try {
 
             $this->usuario->chequearTiposPermitidos([1, 3]);
+
+            $publicacionOriginal = null;
+
+            if ($modoEdicion) {
+                $valorId = $this->request->method() === 'POST'
+                    ? $this->request->post('id_pub')
+                    : $this->request->query('id_pub');
+
+                $publicacionOriginal = $this->obtenerPublicacionPropiaDesdeValor($valorId);
+            }
 
             if ($this->request->method() == 'POST') {
 
@@ -1287,19 +1401,57 @@ class PublicacionController extends Controller
                         'normas_alojamiento' => $normasAlojamiento,
                         'descripcion_alojamiento' => $descripcionAlojamiento,
                         'id_usuario' => $idUser,
-                        'estado_id' => 1
+
+                        'estado_id' =>
+                            $modoEdicion
+                            && (int) $publicacionOriginal['estado_id']
+                                === self::ESTADO_PUBLICACION_ARCHIVADA
+                                ? self::ESTADO_PUBLICACION_ARCHIVADA
+                                : self::ESTADO_PUBLICACION_PENDIENTE
                     ];
+
                     // setear el objeto Publicacion
                     $ObjPublicacion = new Publicacion($publicacion, $this->logger);
                     $publicacionObj = $ObjPublicacion->getEstadoConstructor();
 
                     if ($publicacionObj['exito']) {
 
+                        if ($modoEdicion) {
+
+                            $idPublicacion = (int) $publicacionOriginal['id'];
+
+                            $this->model->actualizarPublicacionPropia($idPublicacion, (int) $idUser, $ObjPublicacion->getAll());
+
+                            $permaneceArchivada = (int) $publicacionOriginal['estado_id'] === self::ESTADO_PUBLICACION_ARCHIVADA;
+
+                            $mensaje = $permaneceArchivada
+                                ? 'Los cambios fueron guardados. La propiedad continúa archivada y no aparece públicamente.'
+                                : 'Los cambios fueron guardados. La propiedad quedó pendiente para que un empleado vuelva a revisarla.';
+
+                            $this->request->setResultadoEnSesion(
+                                'resultadoGestionPublicacion',
+                                [
+                                    'exito' => true,
+                                    'mensaje' => $mensaje
+                                ]
+                            );
+
+                            $this->logger->info(
+                                'Publicación propia editada.',
+                                [
+                                    'usuario_id' => (int) $idUser,
+                                    'publicacion_id' => $idPublicacion,
+                                    'estado_resultante' => $ObjPublicacion->getEstadoId()
+                                ]
+                            );
+
+                            redirect('mis_publicaciones');
+                            return;
+                        }
+
                         if (!$this->solicitudTieneImagenes()) {
                             $this->renderizarAltaConError(
-                                [
-                                    'errors' => ['imagenes' => 'Debe subir al menos una imagen.']
-                                ],
+                                ['errors' => ['imagenes' => 'Debe subir al menos una imagen.']],
                                 $formData,
                                 2
                             );
@@ -1362,7 +1514,8 @@ class PublicacionController extends Controller
                         $this->renderizarAltaConError(
                             ['errors' => $erroresPublicacion],
                             $formData,
-                            1
+                            1,
+                            $modoEdicion ? $publicacionOriginal : null
                         );
 
                         return;
@@ -1373,30 +1526,47 @@ class PublicacionController extends Controller
                     $this->renderizarAltaConError(
                         ['errors' => $errors],
                         $formData,
-                        $this->determinarPasoFormularioAlta($errors)
+                        $this->determinarPasoFormularioAlta($errors),
+                        $modoEdicion ? $publicacionOriginal : null
                     );
 
                     return;
                 }
             } else {
-                $datos = [
-                    'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
-                ];
+                $datos = $modoEdicion
+                    ? array_merge(
+                        $this->obtenerDatosVistaEdicion($publicacionOriginal),
+                        ['form_data' => $this->transformarPublicacionEnDatosFormulario($publicacionOriginal)]
+                    ) : ['titulo' => 'PAWPERTIES | NUEVA PUBLICACION'];
 
-                view('publicacion.new.view', array_merge(
-                    $this->menuAndSession,
-                    $datos,
-                    $this->model->traerTipos()
-                ));
+                view(
+                    'publicacion.new.view',
+                    array_merge(
+                        $this->menuAndSession,
+                        $datos,
+                        $this->model->traerTipos()
+                    )
+                );
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
 
-            // Manejar la excepción
-            $this->logger->error("Error en el proceso: " . $e->getMessage());
+            $this->logger->error(
+                'Error al procesar el formulario de publicación.',
+                [
+                    'usuario_id' => $this->usuario->getUserId(),
+                    'mensaje' => $e->getMessage()
+                ]
+            );
 
-            view('errors/internal_error.view', [
-                'error_message' => "Error en el proceso: " . $e->getMessage()
-            ]);
+            http_response_code(500);
+
+            view(
+                'errors/internal_error.view',
+                array_merge(
+                    ['error_message' => 'No se pudo completar la operación sobre la publicación.'],
+                    $this->menuAndSession
+                )
+            );
         }
     }
 
@@ -1489,20 +1659,28 @@ class PublicacionController extends Controller
         return 1;
     }
 
-    private function renderizarAltaConError(array $datosError, array $formData, int $initialStep): void {
+    private function renderizarAltaConError(array $datosError, array $formData, int $initialStep, ?array $publicacionOriginal = null): void {
+
+        $datosVista = [
+            'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
+            'form_data' => $formData,
+            'initial_step' => $initialStep,
+            'must_reselect_images' => true
+        ];
+
+        if ($publicacionOriginal !== null) {
+            $datosVista = array_merge(
+                $datosVista,
+                $this->obtenerDatosVistaEdicion($publicacionOriginal),
+                ['must_reselect_images' => false]
+            );
+        }
+
         view(
             'publicacion.new.view',
             array_merge(
                 $this->menuAndSession,
-                [
-                    'titulo' => 'PAWPERTIES | NUEVA PUBLICACION',
-
-                    'form_data' => $formData,
-
-                    'initial_step' => $initialStep,
-
-                    'must_reselect_images' => true
-                ],
+                $datosVista,
                 $this->model->traerTipos(),
                 $datosError
             )
