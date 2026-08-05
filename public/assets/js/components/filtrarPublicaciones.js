@@ -146,6 +146,8 @@ class filtrarPublicaciones {
 
             this.reiniciarCarruseles();
 
+            this.llevarAlInicioDelListado();
+
         } catch (error) {
             
             if (error.name === 'AbortError') {
@@ -242,6 +244,18 @@ class filtrarPublicaciones {
         ).forEach((publicacion) => {
             new CarrouselPausa(publicacion);
         });
+    }
+
+    llevarAlInicioDelListado() {
+
+        const tituloListado = document.querySelector('.h2-titulo-publicaciones');
+
+        if (!tituloListado) {
+            return;
+        }
+
+        tituloListado.scrollIntoView({behavior: 'smooth', block: 'start'});
+
     }
 
     mostrarCarga(estaCargando) {
