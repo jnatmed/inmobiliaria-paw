@@ -55,6 +55,20 @@ class filtrarPublicaciones {
             }
         );
 
+        this.listado.addEventListener(
+            'submit',
+            (evento) => {
+                const formulario = evento.target.closest('form[data-confirm-message]');
+                if (!formulario) {
+                    return;
+                }
+                const mensaje = formulario.dataset.confirmMessage;
+                if (mensaje && !window.confirm(mensaje)) {
+                    evento.preventDefault();
+                }
+            }
+        );
+
         
         window.addEventListener(
             'popstate',

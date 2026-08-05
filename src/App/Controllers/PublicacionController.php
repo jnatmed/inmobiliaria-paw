@@ -294,7 +294,8 @@ class PublicacionController extends Controller
                 'urlPaginaSiguiente' => $urlPaginaSiguiente,
                 'id_usuario' => $this->menuAndSession['id_usuario'] ?? null,
                 'titulo' => 'PAWPERTIES | PROPIEDADES',
-                'subtitulo' => 'Propiedades en Alquiler'
+                'subtitulo' => 'Propiedades en Alquiler',
+                'esListadoPropietario' => false
             ];
 
             if ($this->request->isAjaxRequest()) {
@@ -664,7 +665,8 @@ class PublicacionController extends Controller
                 'urlPaginaAnterior' => $urlPaginaAnterior,
                 'urlPaginaSiguiente' => $urlPaginaSiguiente,
                 'titulo' => 'PAWPERTIES | MIS PROPIEDADES',
-                'subtitulo' => 'Mis Propiedades'
+                'subtitulo' => 'Mis Propiedades',
+                'esListadoPropietario' => true
             ];
 
             if ($this->request->isAjaxRequest()) {

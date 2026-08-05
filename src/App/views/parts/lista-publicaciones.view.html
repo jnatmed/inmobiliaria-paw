@@ -1,3 +1,7 @@
+{% set esListadoPropietario =
+    esListadoPropietario|default(false)
+%}
+
 {% set hayFiltros =
     zona
     or precio
@@ -111,9 +115,57 @@
 
 
             <section class="info_publicacion">
-                {% if publicacion.id_usuario == id_usuario %}
-                    <p><i class="fa-solid fa-house"></i> Esta Publicacion es tuya </p>
+                {% if esListadoPropietario %}
+                    <section class="gestion-propiedad-cabecera">
+
+                        <p class="marca-propiedad-propia">
+                            <i class="fa-solid fa-house"></i>
+                            Tu propiedad
+                        </p>
+
+                        {% if publicacion.estado_id == 1 %}
+
+                            <span class="estado-propiedad estado-propiedad--pendiente">
+                                Pendiente
+                            </span>
+
+                        {% elseif publicacion.estado_id == 2 %}
+
+                            <span class="estado-propiedad estado-propiedad--aceptada">
+                                Aceptada
+                            </span>
+
+                        {% elseif publicacion.estado_id == 3 %}
+
+                            <span class="estado-propiedad estado-propiedad--rechazada">
+                                Rechazada
+                            </span>
+
+                        {% elseif publicacion.estado_id == 4 %}
+
+                            <span class="estado-propiedad estado-propiedad--archivada">
+                                Archivada
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado-propiedad">
+                                Estado desconocido
+                            </span>
+
+                        {% endif %}
+
+                    </section>
+
+                {% elseif publicacion.id_usuario == id_usuario %}
+
+                    <p class="marca-propiedad-propia">
+                        <i class="fa-solid fa-house"></i>
+                        Esta publicación es tuya
+                    </p>
+
                 {% endif %}
+
                 <h3 class="publicacion-precio">USD {{ publicacion.precio|number_format(0, ',', '.') }}/noche</h3>
                 <h3 class="publicacion-titulo" itemprop="name">{{ publicacion.nombre_alojamiento|e }}</h3>
                 <p class="publicacion-datos descripcion" itemprop="description">{{
@@ -169,14 +221,111 @@
                     </span>
                     {% endif %}
                 </p>
-                <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas" itemprop="url">Reservar ></a>
-                <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{ publicacion.telefono|e }}"
-                    target="_blank">
-                    <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp" itemprop="contactPoint">
-                </a>
-                <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
-                    <img src="/assets/imgs/svg/email_green.png" alt="Email" itemprop="email">
-                </a>
+                {% if esListadoPropietario %}
+
+                    <section class="acciones-propiedad-propia" aria-label="Acciones para {{ publicacion.nombre_alojamiento|e }}">
+
+                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="accion-propiedad accion-propiedad--ver"itemprop="url">
+                            Ver detalle
+                        </a>
+
+                        <a href="/mis_publicaciones/editar?id_pub={{publicacion.id}}" class="accion-propiedad accion-propiedad--editar">
+                            Editar
+                        </a>
+
+                        {% if publicacion.estado_id == 4 %}
+
+                            <form
+                                action="/mis_publicaciones/reactivar"
+                                method="post"
+                                class="form-accion-propiedad"
+                                data-confirm-message="
+                                    La propiedad volverá a estado pendiente
+                                    y deberá ser aprobada nuevamente por un
+                                    empleado. ¿Querés reactivarla?
+                                "
+                            >
+
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                <button type="submit" class="accion-propiedad accion-propiedad--reactivar">
+                                    Reactivar
+                                </button>
+
+                            </form>
+
+                            <form
+                                action="/mis_publicaciones/eliminar"
+                                method="post"
+                                class="form-accion-propiedad"
+                                data-confirm-message="
+                                    Esta acción elimina definitivamente la
+                                    propiedad si no tiene reservas ni
+                                    calificaciones. No se puede deshacer.
+                                    ¿Querés continuar?
+                                "
+                            >
+
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                <button type="submit" class="accion-propiedad accion-propiedad--eliminar">
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                            <small class="nota-eliminacion-propiedad">
+                                Solo podrá eliminarse si no tiene reservas
+                                ni calificaciones.
+                            </small>
+
+                        {% else %}
+
+                            <form
+                                action="/mis_publicaciones/archivar"
+                                method="post"
+                                class="form-accion-propiedad"
+                                data-confirm-message="
+                                    La propiedad dejará de aparecer
+                                    públicamente. Las reservas existentes
+                                    se conservarán y deberán seguir
+                                    gestionándose. ¿Querés archivarla?
+                                "
+                            >
+
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                <button type="submit" class=" accion-propiedad accion-propiedad--archivar">
+                                    Archivar
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </section>
+
+                {% else %}
+
+                    <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="ver-mas" itemprop="url">
+                        Reservar &gt;
+                    </a>
+
+                    <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{publicacion.telefono|e}}" target="_blank">
+                        <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp" itemprop="contactPoint">
+                    </a>
+
+                    <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
+                        <img src="/assets/imgs/svg/email_green.png" alt="Email" itemprop="email">
+                    </a>
+
+                {% endif %}
             </section>
         </nav>
     </li>

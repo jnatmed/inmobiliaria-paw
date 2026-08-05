@@ -967,3 +967,153 @@ input#ubicacion {
         order: -1;
     }
 }
+
+/* Administración de propiedades propias */
+
+.gestion-propiedad-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0.5rem 1rem 0.75rem 0;
+}
+
+.marca-propiedad-propia {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.estado-propiedad {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid #6c757d;
+    border-radius: 999px;
+    background-color: #f1f3f5;
+    color: #343a40;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.estado-propiedad--pendiente {
+    border-color: #d39e00;
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.estado-propiedad--aceptada {
+    border-color: #198754;
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.estado-propiedad--rechazada {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.estado-propiedad--archivada {
+    border-color: #6c757d;
+    background-color: #e9ecef;
+    color: #343a40;
+}
+
+.acciones-propiedad-propia {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 2rem 1rem 2rem 0;
+}
+
+.form-accion-propiedad {
+    margin: 0;
+}
+
+.accion-propiedad {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.65rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+.accion-propiedad:hover,
+.accion-propiedad:focus-visible {
+    filter: brightness(0.93);
+    transform: translateY(-1px);
+}
+
+.accion-propiedad--ver {
+    border-color: var(--color-verde-header);
+    background-color: white;
+    color: var(--color-verde-header);
+}
+
+.accion-propiedad--editar {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.accion-propiedad--archivar {
+    background-color: #6c757d;
+    color: white;
+}
+
+.accion-propiedad--reactivar {
+    background-color: #198754;
+    color: white;
+}
+
+.accion-propiedad--eliminar {
+    background-color: #b02a37;
+    color: white;
+}
+
+.nota-eliminacion-propiedad {
+    flex-basis: 100%;
+    color: #5c636a;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+
+    .gestion-propiedad-cabecera {
+        align-items: flex-start;
+        margin-right: 1rem;
+    }
+
+    .acciones-propiedad-propia {
+        flex-direction: column;
+        align-items: stretch;
+        margin-right: 1rem;
+    }
+
+    .form-accion-propiedad {
+        width: 100%;
+    }
+
+    .accion-propiedad,
+    .form-accion-propiedad
+        .accion-propiedad {
+        width: 100%;
+    }
+}
