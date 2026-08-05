@@ -154,6 +154,63 @@ class PublicacionController extends Controller
         return $pagina === false ? 1 : (int) $pagina;
     }
 
+    private function construirUrlListado($rutaListado, $filtros, $pagina) {
+
+        $parametros = [];
+
+        if ($filtros['zona'] !== null) {
+            $parametros['zona'] = $filtros['zona'];
+        }
+
+        if ($filtros['precio'] !== null) {
+            $parametros['precio'] = $filtros['precio'];
+        }
+
+        if (!empty($filtros['tipos'])) {
+            $parametros['tipo'] = $filtros['tipos'];
+        }
+
+        if (!empty($filtros['instalaciones'])) {
+            $parametros['instalaciones'] = $filtros['instalaciones'];
+        }
+
+        /*En la primera pagina no es necesario agregar pagina=1 a la URL*/
+        if ($pagina > 1) {
+            $parametros['pagina'] = $pagina;
+        }
+
+        $queryString = http_build_query($parametros, '', '&', PHP_QUERY_RFC3986);
+
+        return $rutaListado . ($queryString !== '' ? '?' . $queryString : '');
+    }
+
+    private function paginaNecesitaNormalizacion($paginaActual) {
+
+        $paginaRecibida = $this->request->query('pagina');
+
+        if ($paginaRecibida === null) {
+            return false;
+        }
+
+        /*Descarta casos como pagina[]=2*/
+        if (is_array($paginaRecibida)) {
+            return true;
+        }
+
+        $paginaValidada = filter_var(
+            $paginaRecibida,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+
+        if ($paginaValidada === false) {
+            return true;
+        }
+
+        /*Devuelve true para pagina=999 cuando la última pagina real es, por ejemplo, 2*/
+        return (int) $paginaValidada !== (int) $paginaActual;
+    }
+
     public function list(){
 
         try {
