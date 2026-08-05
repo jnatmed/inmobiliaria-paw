@@ -15,11 +15,11 @@
             <div class="error-404-bg"></div>
 
             <p class="h1">
-                Error 400
+                Error {{ error_status|default(400) }}
             </p>
 
             <p class="error-lead">
-                La solicitud no es válida.
+                {{ error_lead|default('La solicitud no es válida.') }}
             </p>
 
             {% if error_message is defined %}
