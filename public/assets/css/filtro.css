@@ -7,6 +7,13 @@
     height: fit-content;
 }
 
+.filtro-desktop {
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    justify-self: start;
+}
+
 .filtro {
     display: flex;
     flex-direction: column;
