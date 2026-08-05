@@ -67,6 +67,7 @@ class filtrarPublicaciones {
     }
 
     construirUrlFormulario(formulario) {
+        
 
         const url = new URL(formulario.action, window.location.origin);
         const parametros = new URLSearchParams(new FormData(formulario));
