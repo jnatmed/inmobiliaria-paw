@@ -709,7 +709,10 @@ class PublicacionController extends Controller
         
         http_response_code($statusCode);
 
-        $datos = ['error_message' => $mensaje];
+        $datos = [
+            'error_message' => $mensaje,
+            'error_status' => $statusCode
+        ];
 
         if ($encabezado !== null) {
             $datos['error_lead'] = $encabezado;
@@ -870,17 +873,44 @@ class PublicacionController extends Controller
 
                 $mensaje = 'La propiedad fue enviada nuevamente a moderación. Permanecerá pendiente hasta que un empleado la apruebe.';
             } else {
+
                 if ($estadoActual !== self::ESTADO_PUBLICACION_ARCHIVADA) {
-                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'Antes de eliminar una propiedad, primero debe estar archivada.');
+                    $this->detenerGestionPublicacion(
+                        409, 
+                        'errors/bads-request.view', 
+                        'Antes de eliminar una propiedad, primero debe estar archivada.', 
+                        'La operación no puede completarse'
+                    );
                 }
 
-                //Se bloquea ante cualquier reserva, incluso cancelada o rechazada
-                if ($this->model->tieneReservas($idPublicacion)) {
-                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'La propiedad tiene reservas asociadas y no puede eliminarse. Podés mantenerla archivada.');
+                $tieneReservas = $this->model->tieneReservas($idPublicacion);
+                $tieneCalificaciones = $this->model->tieneCalificaciones($idPublicacion);
+
+                if ($tieneReservas && $tieneCalificaciones) {
+                    $this->detenerGestionPublicacion(
+                        409,
+                        'errors/bads-request.view',
+                        'La propiedad tiene reservas y también comentarios o calificaciones asociados. No puede eliminarse, pero podés mantenerla archivada.',
+                        'La operación no puede completarse'
+                    );
                 }
 
-                if ($this->model->tieneCalificaciones($idPublicacion)) {
-                    $this->detenerGestionPublicacion(409, 'errors/bads-request.view', 'La propiedad tiene comentarios o calificaciones y no puede eliminarse. Podés mantenerla archivada.');
+                if ($tieneReservas) {
+                    $this->detenerGestionPublicacion(
+                        409,
+                        'errors/bads-request.view',
+                        'La propiedad tiene reservas asociadas y no puede eliminarse. Podés mantenerla archivada.',
+                        'La operación no puede completarse'
+                    );
+                }
+
+                if ($tieneCalificaciones) {
+                    $this->detenerGestionPublicacion(
+                        409,
+                        'errors/bads-request.view',
+                        'La propiedad tiene comentarios o calificaciones y no puede eliminarse. Podés mantenerla archivada.',
+                        'La operación no puede completarse'
+                    );
                 }
 
                 $imagenes = $publicacion['imagenes'] ?? [];

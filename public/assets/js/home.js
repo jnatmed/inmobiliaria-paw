@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Cookier.init('.form-busqueda-propiedad', ['zona', 'tipo']);
 
-      new CarrouselHome('.home-carousel-container');
+    if (document.querySelector('.home-carousel-container')) {
+        new CarrouselHome('.home-carousel-container');
+    }
 
       const btn_close = document.querySelector('.close-btn');
       if (btn_close) {
