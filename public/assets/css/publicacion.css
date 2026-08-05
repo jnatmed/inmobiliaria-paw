@@ -859,3 +859,113 @@ input#ubicacion {
         width: 100%;
     }
 }
+
+/*Filtros y paginación de los listados*/
+
+.estado-listado {
+    min-height: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.estado-listado--error {
+    padding: 1rem;
+    border: 2px solid #b42318;
+    border-radius: 8px;
+    background-color: #fff1f0;
+    color: #7a271a;
+    font-weight: bold;
+}
+
+.publicaciones-list[aria-busy="true"] {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.resumen-listado {
+    margin-bottom: 1.5rem;
+}
+
+.contador-resultados {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.filtros-aplicados {
+    padding: 1rem;
+    border: 1px solid var(--color-verde-header);
+    border-radius: 8px;
+    background-color: #f7f9f4;
+}
+
+.filtros-aplicados-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+}
+
+.filtros-aplicados-lista li {
+    padding: 0.45rem 0.7rem;
+    border-radius: 999px;
+    background-color: #e5eadb;
+}
+
+.limpiar-filtros-link {
+    display: inline-block;
+    color: var(--color-verde-header);
+    font-weight: bold;
+}
+
+.no-resultados .limpiar-filtros-link {
+    display: block;
+    width: fit-content;
+    margin: 1rem auto 0;
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.paginacion-enlace,
+.paginacion-estado {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.paginacion-enlace {
+    border: 2px solid var(--color-verde-header);
+    background-color: var(--color-verde-header);
+    color: white;
+    text-decoration: none;
+}
+
+.paginacion-enlace:hover {
+    background-color: #303030;
+    border-color: #303030;
+}
+
+.paginacion-deshabilitada {
+    border-color: #b8b8b8;
+    background-color: #e8e8e8;
+    color: #666;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .paginacion {
+        flex-wrap: wrap;
+    }
+
+    .paginacion-estado {
+        width: 100%;
+        text-align: center;
+        order: -1;
+    }
+}

@@ -75,7 +75,7 @@
             <!-- DESKTOP -->
             <aside class="filtro-container filtro-desktop">
                 <h2>Filtros</h2>
-                <form id="formFiltros" method="GET" class="form-filtros">
+                <form id="formFiltros" method="GET" action="{{ rutaListado }}" class="form-filtros">
                     {% include 'parts/search-filters.view.html' %}
                 </form>
             </aside>
@@ -85,7 +85,7 @@
                 <summary>Filtros</summary>
                 <aside class="filtro-container">
                     <!-- <h2>Filtros</h2> -->
-                    <form id="formFiltrosMobile" method="GET" class="form-filtros">
+                    <form id="formFiltrosMobile" method="GET" action="{{ rutaListado }}" class="form-filtros">
                         {% include 'parts/search-filters.view.html' %}
                     </form>
                 </aside>
@@ -93,8 +93,15 @@
 
             <!-- PUBLICACIONES -->
             <section>
-                <h2 class="h2-titulo-publicaciones">{{ subtitulo }}</h2>
-                <section class="publicaciones-list">{% include 'parts/lista-publicaciones.view.html' %}</section>
+                <h2 class="h2-titulo-publicaciones">
+                    {{ subtitulo }}
+                </h2>
+
+                <div id="estado-listado" class="estado-listado" role="status" aria-live="polite"></div>
+
+                <section class="publicaciones-list" aria-busy="false">
+                    {% include 'parts/lista-publicaciones.view.html' %}
+                </section>
             </section>
         </section>
     </main>

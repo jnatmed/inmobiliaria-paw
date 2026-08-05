@@ -214,14 +214,13 @@ class PublicacionController extends Controller
     public function list(){
 
         try {
-            
+
             $filtros = $this->obtenerFiltrosListado();
 
             $paginaSolicitada = $this->obtenerPaginaSolicitada();
 
             $porPagina = self::PUBLICACIONES_POR_PAGINA;
 
-            /*Primero se cuentan cuantas propiedades cumplen los filtros*/
             $cantidadResultadosFiltrados = $this->model
                 ->getCantidadPublicacionesFiltradas(
                     $filtros['zona'],
@@ -236,8 +235,16 @@ class PublicacionController extends Controller
                 (int) ceil($cantidadResultadosFiltrados / $porPagina)
             );
 
-            /*Si alguien solicita una pagina que no existe se utiliza la ultima pag existente*/
             $paginaActual = min($paginaSolicitada, $totalPaginas);
+
+            $rutaListado = '/publicaciones/list';
+
+            $urlListadoActual = $this->construirUrlListado($rutaListado, $filtros, $paginaActual);
+
+            /*Corrige páginas inválidas o inexistentes*/
+            if ($this->paginaNecesitaNormalizacion($paginaActual)) {
+                redirect($urlListadoActual);
+            }
 
             $offset = ($paginaActual - 1) * $porPagina;
 
@@ -256,12 +263,20 @@ class PublicacionController extends Controller
 
             $mayorPrecio = $this->model->getPublicacionMayorPrecio();
 
-            $datos = [
+            $resultadoTipos = $this->model->traerTipos();
 
+            $tiposAlojamiento = $resultadoTipos['tipos_alojamiento'] ?? [];
+
+            $urlPaginaAnterior = $paginaActual > 1 ? $this->construirUrlListado($rutaListado, $filtros, $paginaActual - 1) : null;
+
+            $urlPaginaSiguiente = $paginaActual < $totalPaginas ? $this->construirUrlListado($rutaListado, $filtros, $paginaActual + 1) : null;
+
+            $datos = [
                 'zona' => $filtros['zona'],
                 'tipos' => $filtros['tipos'],
                 'precio' => $filtros['precio'],
                 'instalaciones' => $filtros['instalaciones'],
+                'tipos_alojamiento' => $tiposAlojamiento,
                 'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
                 'cantidadMostrada' => count($publicaciones),
@@ -270,12 +285,13 @@ class PublicacionController extends Controller
                 'paginaActual' => $paginaActual,
                 'totalPaginas' => $totalPaginas,
                 'porPagina' => $porPagina,
-                'rutaListado' => '/publicaciones/list',
-
+                'rutaListado' => $rutaListado,
+                'urlListadoActual' => $urlListadoActual,
+                'urlPaginaAnterior' => $urlPaginaAnterior,
+                'urlPaginaSiguiente' => $urlPaginaSiguiente,
                 'id_usuario' => $this->menuAndSession['id_usuario'] ?? null,
                 'titulo' => 'PAWPERTIES | PROPIEDADES',
                 'subtitulo' => 'Propiedades en Alquiler'
-
             ];
 
             if ($this->request->isAjaxRequest()) {
@@ -291,13 +307,10 @@ class PublicacionController extends Controller
                 'publicaciones.list.view',
                 array_merge(
                     $datos,
-                    $this->menuAndSession,
-                    $this->model->traerTipos()
+                    $this->menuAndSession
                 )
             );
-
         } catch (Throwable $e) {
-
             $error_message = 'Error al obtener las publicaciones: ' . $e->getMessage();
 
             $this->logger->error($error_message);
@@ -307,7 +320,7 @@ class PublicacionController extends Controller
             view(
                 'errors/internal_error.view',
                 array_merge(
-                    ['error_message' => 'No se pudo cargar el listado de propiedades.'],
+                    ['error_message'  => 'No se pudo cargar el listado de propiedades.'],
                     $this->menuAndSession
                 )
             );
@@ -594,6 +607,14 @@ class PublicacionController extends Controller
 
             $paginaActual = min($paginaSolicitada, $totalPaginas);
 
+            $rutaListado = '/mis_publicaciones';
+
+            $urlListadoActual = $this->construirUrlListado($rutaListado, $filtros, $paginaActual);
+
+            if ($this->paginaNecesitaNormalizacion($paginaActual)) {
+                redirect($urlListadoActual);
+            }
+
             $offset = ($paginaActual - 1) * $porPagina;
 
             $publicaciones = $this->model
@@ -607,11 +628,17 @@ class PublicacionController extends Controller
                     $offset
                 );
 
-            /*Cuenta el total de propiedades de este usuario, no las propiedades de toda la plataforma*/
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales($idUser);
 
-            /*Se Obtiene el precio máximo de las propiedades del usuario*/
             $mayorPrecio = $this->model->getPublicacionMayorPrecio($idUser);
+
+            $resultadoTipos = $this->model->traerTipos();
+
+            $tiposAlojamiento = $resultadoTipos['tipos_alojamiento'] ?? [];
+
+            $urlPaginaAnterior = $paginaActual > 1 ? $this->construirUrlListado($rutaListado, $filtros, $paginaActual - 1) : null;
+
+            $urlPaginaSiguiente = $paginaActual < $totalPaginas ? $this->construirUrlListado($rutaListado, $filtros, $paginaActual + 1) : null;
 
             $datos = [
                 'idUser' => $idUser,
@@ -620,6 +647,7 @@ class PublicacionController extends Controller
                 'tipos' => $filtros['tipos'],
                 'precio' => $filtros['precio'],
                 'instalaciones' => $filtros['instalaciones'],
+                'tipos_alojamiento' => $tiposAlojamiento,
                 'mayorPrecio' => $mayorPrecio,
                 'publicaciones' => $publicaciones,
                 'cantidadMostrada' => count($publicaciones),
@@ -628,8 +656,10 @@ class PublicacionController extends Controller
                 'paginaActual' => $paginaActual,
                 'totalPaginas' => $totalPaginas,
                 'porPagina' => $porPagina,
-
-                'rutaListado' => '/mis_publicaciones',
+                'rutaListado' => $rutaListado,
+                'urlListadoActual' => $urlListadoActual,
+                'urlPaginaAnterior' => $urlPaginaAnterior,
+                'urlPaginaSiguiente' => $urlPaginaSiguiente,
                 'titulo' => 'PAWPERTIES | MIS PROPIEDADES',
                 'subtitulo' => 'Mis Propiedades'
             ];
@@ -647,12 +677,10 @@ class PublicacionController extends Controller
                 'publicaciones.list.view',
                 array_merge(
                     $datos,
-                    $this->menuAndSession,
-                    $this->model->traerTipos()
+                    $this->menuAndSession
                 )
             );
         } catch (Throwable $e) {
-
             $error_message = 'Error al obtener las publicaciones: ' . $e->getMessage();
 
             $this->logger->error($error_message);

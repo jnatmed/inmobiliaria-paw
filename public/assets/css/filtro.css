@@ -29,7 +29,7 @@
     margin: 15px;
 }
 
-#precio-valor {
+.precio-valor {
     font-size: 20px;
     margin: 0 auto;
     font-weight: bold;

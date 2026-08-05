@@ -1,36 +1,55 @@
 class SliderPrecio {
+
     constructor() {
-        this.sliders = document.querySelectorAll('#precio');
-        this.valores = document.querySelectorAll('#precio-valor');
-        this.forms = document.querySelectorAll('form');
 
-        //Hay mas de un form por ende hay que asignar un listener a cada uno
+        this.sliders = document.querySelectorAll('.filtro-precio');
 
-        this.sliders.forEach((slider, i) => {
-            slider.addEventListener('input', () => {
-                // Si el valor del slider es 0, mostrar solo "-"
-                if (slider.value == 0) {
-                    this.valores[i].innerText = "-";
-                } else {
-                    // Mostrar el valor actualizado del slider
-                    this.valores[i].innerText = `$0 - $${this.formatearPrecio(slider.value)}`;
+        this.formularios = document.querySelectorAll('.form-filtros');
+
+        this.sliders.forEach((slider) => {
+            slider.addEventListener(
+                'input',
+                () => {
+                    this.actualizarTexto(slider);
                 }
-            });
+            );
         });
 
-        this.forms.forEach(form => {
-            form.addEventListener('reset', () => {
-                setTimeout(() => {
-                    this.sliders.forEach((slider, i) => {
-                        if (slider.value == 0) {
-                            this.valores[i].innerText = "-";
-                        } else {
-                            this.valores[i].innerText = `$0 - $${this.formatearPrecio(slider.value)}`;
-                        }
-                    });
-                }, 0);
-            });
-        });
+        this.formularios.forEach(
+            (formulario) => {
+                formulario.addEventListener(
+                    'reset',
+                    () => {
+                        setTimeout(() => {
+                            const slider = formulario.querySelector('.filtro-precio');
+
+                            if (slider) {
+                                this.actualizarTexto(slider);
+                            }
+                        }, 0);
+                    }
+                );
+            }
+        );
+    }
+
+    actualizarTexto(slider) {
+
+        const formulario = slider.closest('form');
+
+        const valor = formulario ? formulario.querySelector('.precio-valor') : null;
+
+        if (!valor) {
+            return;
+        }
+
+        valor.textContent
+            = Number(slider.value) === 0
+            ? '-'
+            : 'USD 0 - USD '
+                + this.formatearPrecio(
+                    slider.value
+                );
     }
 
     formatearPrecio(valor) {

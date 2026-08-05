@@ -1,11 +1,98 @@
-<!-- Muestra los filtros que se aplican en la búsqueda -->
-<!-- {% if zona or tipo or precio or instalaciones %}
-    <p class="applied-filters">Filtros: {{ zona }} {{ tipo }} {{ precio }} {{ instalaciones|join(' ') }}</p>
-{% endif %} -->
+{% set hayFiltros =
+    zona
+    or precio
+    or tipos is not empty
+    or instalaciones is not empty
+%}
 
-<!-- Muestra la lista de publicaciones -->
-<ul>
-    <p>{{ publicaciones|length }} de {{ cantidadTotalPublicaciones }}</p>
+<section class="resumen-listado">
+    <p class="contador-resultados">
+        {% if cantidadResultadosFiltrados == 0 %}
+            0 resultados
+
+        {% elseif
+            cantidadResultadosFiltrados
+            == cantidadTotalPublicaciones
+        %}
+            Mostrando
+            {{ cantidadMostrada }}
+            de
+            {{ cantidadTotalPublicaciones }}
+            propiedades
+
+        {% else %}
+            Mostrando
+            {{ cantidadMostrada }}
+            de
+            {{ cantidadResultadosFiltrados }}
+            resultados filtrados
+            ·
+            {{ cantidadTotalPublicaciones }}
+            propiedades en total
+        {% endif %}
+    </p>
+
+    {% if hayFiltros %}
+        <section class="filtros-aplicados" aria-label="Filtros aplicados">
+            <strong>Filtros aplicados:</strong>
+
+            <ul class="filtros-aplicados-lista">
+                {% if zona %}
+                    <li>
+                        Búsqueda: {{ zona }}
+                    </li>
+                {% endif %}
+
+                {% if precio %}
+                    <li>
+                        Precio máximo:
+                        USD
+                        {{ precio|number_format(0, ',', '.') }}
+                    </li>
+                {% endif %}
+
+                {% for tipoAlojamiento
+                    in tipos_alojamiento
+                %}
+                    {% if tipoAlojamiento.id in tipos %}
+                        <li>
+                            Tipo:
+                            {{
+                                tipoAlojamiento
+                                    .descripcion_tipo
+                                    |capitalize
+                            }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% for instalacion in instalaciones %}
+                    {% if instalacion == 'cochera' %}
+                        <li>Cochera</li>
+
+                    {% elseif instalacion == 'pileta' %}
+                        <li>Pileta</li>
+
+                    {% elseif
+                        instalacion
+                        == 'aire_acondicionado'
+                    %}
+                        <li>Aire acondicionado</li>
+
+                    {% elseif instalacion == 'wifi' %}
+                        <li>Wi-Fi</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <a href="{{ rutaListado }}" class="limpiar-filtros-link" data-listado-link>
+                Quitar filtros
+            </a>
+        </section>
+    {% endif %}
+</section>
+
+<ul class="publicaciones-items">
     {% for publicacion in publicaciones %}
     {% if publicacion is not null %}
     <li class="publicacion-item" itemscope itemtype="https://schema.org/LodgingBusiness">
@@ -97,10 +184,61 @@
     {% endfor %}
 </ul>
 
-
 {% if publicaciones is empty %}
-<section class="no-resultados">
-    <h2>No se encontraron resultados</h2>
-    <p>Intenta ajustar los filtros!</p>
-</section>
+    <section class="no-resultados">
+        <h2>No se encontraron resultados</h2>
+
+        {% if hayFiltros %}
+            <p>No hay propiedades que coincidan con los filtros aplicados.</p>
+
+            <a href="{{ rutaListado }}" class="limpiar-filtros-link" data-listado-link>
+                Quitar filtros
+            </a>
+        {% else %}
+            <p>Todavía no hay propiedades para mostrar.</p>
+        {% endif %}
+    </section>
+{% endif %}
+
+{% if totalPaginas > 1 %}
+    <nav class="paginacion" aria-label="Paginación de propiedades">
+        {% if urlPaginaAnterior %}
+            <a href="{{ urlPaginaAnterior }}" class="paginacion-enlace" data-listado-link>
+                &larr; Anterior
+            </a>
+        {% else %}
+            <span
+                class="
+                    paginacion-enlace
+                    paginacion-deshabilitada
+                "
+                aria-disabled="true"
+            >
+                &larr; Anterior
+            </span>
+        {% endif %}
+
+        <span class="paginacion-estado">
+            Página
+            {{ paginaActual }}
+            de
+            {{ totalPaginas }}
+        </span>
+
+        {% if urlPaginaSiguiente %}
+            <a href="{{ urlPaginaSiguiente }}" class="paginacion-enlace" data-listado-link>
+                Siguiente &rarr;
+            </a>
+        {% else %}
+            <span
+                class="
+                    paginacion-enlace
+                    paginacion-deshabilitada
+                "
+                aria-disabled="true"
+            >
+                Siguiente &rarr;
+            </span>
+        {% endif %}
+    </nav>
 {% endif %}
