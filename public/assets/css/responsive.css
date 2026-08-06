@@ -224,93 +224,99 @@ header {
     }
 }
 
-/*Home*/
+/* Home */
 
 .home .main-home {
     padding:
-        clamp(1rem, 2.5vw, 2.5rem)
-        clamp(1rem, 4vw, 4rem)
+        clamp(1rem, 2vw, 2rem)
+        clamp(1rem, 3vw, 3rem)
         0;
 }
 
 .home .seccion-portada {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(22rem, 38%);
-    grid-template-areas:
-        "titulo imagen"
-        "subtitulo imagen"
-        "publicar imagen"
-        "busqueda imagen";
-    align-items: center;
-    gap: 1.5rem 2.5rem;
+    position: relative;
+    display: block;
+    min-height: 0;
+    isolation: isolate;
 }
 
 .home .video-background {
-    grid-area: imagen;
-    position: static;
-    z-index: auto;
-    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 0;
+    display: block;
+    width: 38%;
     height: 100%;
-    min-height: 34rem;
+    min-height: 0;
     object-fit: cover;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.home .h1-titulo-empresa,
+.home .h2-titulo,
+.home .enlace-publicar,
+.home .form-busqueda-propiedad {
+    position: relative;
+    z-index: 1;
 }
 
 .home .h1-titulo-empresa {
-    grid-area: titulo;
     display: flex;
     align-items: center;
     gap: clamp(0.75rem, 2vw, 1.5rem);
+    width: 60%;
     min-width: 0;
-    margin: 0;
+    margin: 0 0 1.5rem;
     padding: 0;
-    font-size: clamp(3.5rem, 5.5vw, 6rem);
+    color: var(--color-verde-header);
+    font-size: clamp(3.5rem, 5vw, 6rem);
+    font-weight: 900;
     line-height: 1;
 }
 
 .home .h1-titulo-empresa::before {
     position: static;
     flex: 0 0 auto;
-    width: clamp(6rem, 10vw, 11rem);
-    height: clamp(5rem, 8vw, 9rem);
+    width: clamp(6rem, 9vw, 10rem);
+    height: clamp(5rem, 7vw, 8rem);
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
     z-index: auto;
 }
 
 .home .h2-titulo {
-    grid-area: subtitulo;
-    width: auto;
-    margin: 0;
-    font-size: clamp(2.25rem, 3.6vw, 4rem);
+    display: block;
+    width: 60%;
+    margin: 0 0 1.5rem;
+    font-size: clamp(2.5rem, 3.5vw, 4rem);
     line-height: 1.15;
 }
 
 .home .enlace-publicar {
-    grid-area: publicar;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+    width: 60%;
     min-height: 44px;
     max-width: 100%;
-    margin: 0;
+    margin: 0 0 1.5rem;
     padding: 0.8rem 1.5rem;
     font-size: 1.5rem;
 }
 
 .home .form-busqueda-propiedad {
-    grid-area: busqueda;
     display: grid;
     grid-template-columns:
         minmax(0, 1fr)
-        minmax(13rem, 0.55fr)
+        minmax(13rem, 0.7fr)
         auto;
     align-items: center;
     gap: 1rem;
-    width: 100%;
-    max-width: 64rem;
+    width: 60%;
+    max-width: none;
     height: auto;
     min-height: 0;
     margin: 0;
@@ -338,7 +344,9 @@ header {
 
 .home .seccion-que-es-pawperties {
     display: grid;
-    grid-template-columns: minmax(15rem, 0.4fr) minmax(0, 1fr);
+    grid-template-columns:
+        minmax(15rem, 0.4fr)
+        minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 5rem);
     margin: clamp(4rem, 7vw, 7rem) 0 2rem;
     padding: 0 0 clamp(3rem, 5vw, 5rem);
@@ -349,6 +357,9 @@ header {
     margin: 0;
     font-size: clamp(3rem, 5vw, 5rem);
     line-height: 1.05;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
 }
 
 .home .article-descripcion {
@@ -368,29 +379,61 @@ header {
     font-weight: 800;
 }
 
+/*Formato tablet*/
+
 @media (max-width: 900px) {
     .home .seccion-portada {
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-areas:
-            "imagen"
-            "titulo"
-            "subtitulo"
-            "publicar"
-            "busqueda";
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
     .home .video-background {
+        position: static;
+        order: 0;
+        z-index: auto;
         width: 100%;
         height: auto;
-        min-height: 0;
         max-height: 30rem;
         aspect-ratio: 16 / 8;
+        object-fit: cover;
+        border-radius: 14px;
+    }
+
+    .home .h1-titulo-empresa,
+    .home .h2-titulo,
+    .home .enlace-publicar,
+    .home .form-busqueda-propiedad {
+        width: 100%;
     }
 
     .home .h1-titulo-empresa {
-        padding-top: 0;
+        order: 1;
+        margin-bottom: 0;
+    }
+
+    .home .h2-titulo {
+        order: 2;
+        margin-bottom: 0;
+    }
+
+    .home .enlace-publicar {
+        order: 3;
+        margin-bottom: 0;
+    }
+
+    .home .form-busqueda-propiedad {
+        order: 4;
+    }
+
+    .home .seccion-que-es-pawperties {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        margin-top: 4rem;
     }
 }
+
+/*Formato celular*/
 
 @media (max-width: 700px) {
     .home .main-home {
@@ -405,11 +448,39 @@ header {
     .home .form-busqueda-propiedad .btn-form-busqueda {
         width: 100%;
     }
+}
 
-    .home .seccion-que-es-pawperties {
+/*Footer en celular*/
+
+@media (max-width: 600px) {
+    footer {
+        height: auto;
+    }
+
+    .footer_secciones {
+        display: grid;
         grid-template-columns: minmax(0, 1fr);
-        gap: 1.5rem;
-        margin-top: 4rem;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .footer_secciones nav {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    .footer_secciones nav li {
+        margin: 0.75rem 0;
+        text-align: center;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+    }
+
+    .footer_redes {
+        min-height: 4rem;
+        height: auto;
+        padding: 0.75rem 1rem;
     }
 }
 
@@ -434,7 +505,19 @@ header {
     }
 
     .home .enlace-publicar {
-        width: 100%;
         font-size: 1.3rem;
+    }
+
+    .home .titulo-imagenes-detail {
+        width: 100%;
+        max-width: 100%;
+        margin: 1.5rem 0;
+        padding: 1rem 0.25rem;
+        font-size: 1.5rem;
+        line-height: 1.4;
+        letter-spacing: 0.25rem;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
     }
 }
