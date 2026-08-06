@@ -26,17 +26,31 @@
             {% endif %}
 
             <form method="GET" action="/publicaciones/list" class="form-busqueda-propiedad">
-                <label for="zona" class="label-form">Zona</label>
-                <input type="text" class="input-form-busqueda" placeholder="Buscar por palabra clave..." id="zona"
-                    name="zona">
-                <label for="tipo" class="label-form">Tipo</label>
-                <select type="text" class="input-form-busqueda" id="tipo" placeholder="Tipo" name="tipo">
-                    <option selected value="">Tipo Alojamiento...</option>
+                <label for="zona" class="label-form">
+                    Zona o palabra clave
+                </label>
+
+                <input type="text" class="input-form-busqueda" placeholder="Buscar por palabra clave..." id="zona" name="zona">
+
+                <label for="tipo" class="label-form">
+                    Tipo de alojamiento
+                </label>
+
+                <select class="input-form-busqueda" id="tipo" name="tipo">
+                    <option selected value="">
+                        Tipo de alojamiento...
+                    </option>
+
                     {% for tipo in tipos_alojamiento %}
-                    <option value="{{ tipo.id }}">{{ tipo.descripcion_tipo|capitalize }}</option>
+                        <option value="{{ tipo.id }}">
+                            {{ tipo.descripcion_tipo|capitalize }}
+                        </option>
                     {% endfor %}
                 </select>
-                <input type="submit" value="Buscar" class="btn-form-busqueda">
+
+                <button type="submit" class="btn-form-busqueda">
+                    Buscar
+                </button>
             </form>
         </section>
 
