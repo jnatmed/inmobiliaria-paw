@@ -674,6 +674,7 @@ input#ubicacion {
     position: relative;
     min-width: 0;
     overflow: hidden;
+    align-self: start;
 }
 
 .publicacion-carrousel .destacados {

@@ -16,8 +16,9 @@
 }
 
 .home-carousel-wrapper {
-    display: flex; /* Alinea las imágenes horizontalmente */
-    transition: transform 0.5s ease; /* Transición suave al mover las imágenes */
+    display: flex;
+    align-self: flex-start;
+    transition: transform 0.5s ease;
 }
 
 .home-carousel-image {
