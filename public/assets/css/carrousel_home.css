@@ -3,66 +3,124 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; 
+    width: 100%;
+    min-width: 0;
 }
 
 .home-carousel-slider {
     display: flex;
-    flex-direction: column; /* El título está encima del slider */
-    overflow: hidden; 
-    align-items: center;
-    width: 60%; /* Asegúrate de que este ancho sea el que deseas */
+    flex-direction: column;
+    align-items: stretch;
+    width: 60%;
     max-width: 921.578px;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .home-carousel-wrapper {
     display: flex;
     align-self: flex-start;
+    align-items: stretch;
     transition: transform 0.5s ease;
 }
 
-.home-carousel-image {
-    width: 100%; /* Cada imagen ocupa el 100% del ancho del contenedor */
-    height: 90%; 
-    object-fit: cover; /* Cubre el contenedor sin distorsionar la imagen */
-}
-
 .home-carousel-figure {
-    position: relative; /* Permite posicionar el epígrafe relativo a la imagen */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: auto;
+    margin: 0;
 }
 
-figcaption {
-    text-align: center; /* Centra el epígrafe */
-    margin-top: 10px; /* Espacio entre la imagen y el epígrafe */
+.home-carousel-figure > a,
+.home-carousel-figure picture {
+    display: block;
+    width: 100%;
+}
+
+.home-carousel-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.home-carousel-figure figcaption {
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    text-align: center;
     font-size: 1.5rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
 }
 
 .puntos {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    margin: 1.75rem 0 0.75rem;
+    padding: 0;
+    list-style: none;
     text-align: center;
-    margin-top: 10px;
 }
 
 .punto {
-    display: inline-block;
+    display: block;
     width: 10px;
     height: 10px;
+    margin: 0;
+    padding: 0;
     border-radius: 50%;
-    background: gray;
-    margin: 0 5px;
+    background-color: gray;
     cursor: pointer;
 }
 
 .punto.activo {
-    background: black; /* Color del punto activo */
+    background-color: black;
 }
-    
 
 .titulo-imagenes-detail {
-    text-align: center;
-    letter-spacing: 1rem;
-    text-transform: uppercase;
-    padding: 1rem;
+    max-width: 100%;
     margin: 2rem;
+    padding: 1rem;
     border-bottom: 30px solid var(--color-amarillo);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1rem;
     font-size: 24px;
+}
+
+@media (max-width: 700px) {
+    .home-carousel-slider {
+        width: calc(100% + 2rem);
+        max-width: none;
+        margin-inline: -1rem;
+    }
+
+    .home-carousel-figure figcaption {
+        margin-top: 1rem;
+        padding-inline: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .puntos {
+        margin-top: 2rem;
+        padding-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-carousel-image {
+        aspect-ratio: 4 / 3;
+    }
+
+    .home-carousel-figure figcaption {
+        font-size: 1.2rem;
+    }
 }
