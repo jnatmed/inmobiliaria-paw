@@ -38,20 +38,13 @@ class ReservasCollection extends Model
         return $this->queryBuilder->getReservasByUsuario($id_usuario);
     }
 
-    public function getSolicitudesDeReserva($id_usuario)
-    {
+    public function getSolicitudesDeReserva($id_usuario){
         try {
-            $params = ['id_usuario_reserva' => $id_usuario];
-            $result = $this->queryBuilder->select('reservas_publicacion', $params);
+            $result = $this->queryBuilder->getSolicitudesDeReservaPorUsuario((int) $id_usuario);
 
-            if (!empty($result)) {
-                return $result;
-            } else {
-                return [];
-            }
+            return is_array($result) ? $result : [];
         } catch (Exception $e) {
-
-            return false;
+            return [];
         }
     }
 

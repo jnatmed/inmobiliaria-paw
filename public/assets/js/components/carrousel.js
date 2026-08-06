@@ -68,6 +68,8 @@ class Carrousel {
 
         this._eventos = new AbortController();
 
+        this._prefiereMovimientoReducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         if (!this._slider || this._cantidadImagenes === 0) {
             this.ocultarControlesSinContenido();
             return;
@@ -89,7 +91,7 @@ class Carrousel {
             this.addTouchEvents();
         }
 
-        if (this._opciones.autoplay) {
+        if (this._opciones.autoplay && !this._prefiereMovimientoReducido) {
             this.startCarrousel();
         } else {
             this.stopCarrousel();
@@ -265,9 +267,29 @@ class Carrousel {
 
         this._puntos.forEach(
             (punto, indice) => {
+
+                punto.setAttribute('role', 'button');
+
+                punto.setAttribute('tabindex', '0');
+
+                punto.setAttribute('aria-label', `Mostrar imagen ${indice + 1} de ${this._cantidadImagenes}`);
+
+                const seleccionarImagen = () => {this.moverSlider(indice);};
+
                 punto.addEventListener(
                     'click',
-                    () => this.moverSlider(indice),
+                    seleccionarImagen,
+                    {signal: this._eventos.signal}
+                );
+
+                punto.addEventListener(
+                    'keydown',
+                    (evento) => {
+                        if (evento.key === 'Enter' || evento.key === ' ') {
+                            evento.preventDefault();
+                            seleccionarImagen();
+                        }
+                    },
                     {signal: this._eventos.signal}
                 );
             }
@@ -281,7 +303,11 @@ class Carrousel {
 
         puntos.forEach(
             (punto, indice) => {
-                punto.classList.toggle('activo', indice === indiceActivo);
+                const estaActivo = indice === indiceActivo;
+
+                punto.classList.toggle('activo', estaActivo);
+
+                punto.setAttribute('aria-current', estaActivo ? 'true' : 'false');
             }
         );
     }

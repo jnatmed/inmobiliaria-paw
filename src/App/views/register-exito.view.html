@@ -10,15 +10,17 @@
     <main class="login_form_container">
 
         <section class="login_form_header">
-            <a href="/">
-                <h1 class="icono-header-pawperties">PawPerties</h1>
+            <a href="/" aria-label="Ir al inicio de Pawperties">
+                <span class="icono-header-pawperties" aria-hidden="true">
+                    PawPerties
+                </span>
             </a>
             <h1 class="login_title">¡ÉXITO!</h1>
         </section>
 
         <section class="login_form">
             <form action="/iniciar-sesion" method="get">
-                <label>{{ exito }}</label>
+                <p class="msj_exito" role="status"> {{ exito }} </p>
 
                 <input type="submit" value="INICIAR SESIÓN">
             </form>

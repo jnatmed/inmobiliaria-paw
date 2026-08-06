@@ -57,12 +57,28 @@
     margin-bottom: 20px;
 }
 
-.input-form, input[type="phone"], textarea {
-    width: 97%;
+.form-contacto-publicaciom form {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.form-contacto-publicaciom .input-form,
+.form-contacto-publicaciom textarea {
+    width: 100%;
+    min-width: 0;
     padding: 10px;
     margin-bottom: 10px;
+    border: 1px solid #cccccc;
     border-radius: 5px;
-    border: 1px solid #ccc;
+}
+
+.form-contacto-publicaciom .input-form {
+    min-height: 44px;
+}
+
+.form-contacto-publicaciom textarea {
+    min-height: 9rem;
+    resize: vertical;
 }
 
 .btn-contactar {
@@ -406,3 +422,45 @@ estilo para los detalles de la propiedad
     font-weight: bold; 
   }
   
+
+
+.form-contacto-publicaciom .btn-contactar {
+    min-height: 44px;
+}
+
+.form-contacto-publicaciom input:focus-visible,
+.form-contacto-publicaciom textarea:focus-visible,
+.form-contacto-publicaciom .btn-contactar:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+.details-depto__descripcion,
+.details-depto__normas,
+.comentario-body {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .details-depto,
+    .details-depto__info,
+    .form-contacto-publicaciom,
+    .container-reserva,
+    .ubicacion-publicacion {
+        padding: 1rem;
+    }
+
+    .details-depto__comodidades-item {
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .details-depto__comodidades-item
+    .comodidades-item__valor {
+        text-align: right;
+    }
+
+    .mapid {
+        height: 240px;
+    }
+}

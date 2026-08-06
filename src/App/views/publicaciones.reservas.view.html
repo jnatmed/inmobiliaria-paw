@@ -11,14 +11,17 @@
 
     <main>
         <section class="container-general-reservas">
+
             <section class="reservas-container">
                 <details class="detalles-reservas">
-                    <summary class="reservas-titulo">Lista de Reservas Publicadas</summary>
-                    <p>Solicitudes a propiedades que publicaste, de las cuales solicitaron reserva.</p>
-                    <table class="reservas-tabla">
+                    <summary class="reservas-titulo"> Lista de Reservas Publicadas </summary>
+
+                    <p> Solicitudes a propiedades que publicaste, de las cuales solicitaron reserva. </p>
+
+                    <table class="reservas-tabla" aria-label="Reservas solicitadas para propiedades publicadas">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Reserva #</th>
                                 <th>Alojamiento</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
@@ -27,40 +30,66 @@
                                 <th>Acción</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {% for reserva in reservas %}
                                 <tr>
-                                    <td>{{ reserva.id_reserva | e }}</td>
-                                    <td><a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">{{ reserva.nombre_alojamiento }}</a></td>
-                                    <td>{{ reserva.desde | e }}</td>
-                                    <td>{{ reserva.hasta | e }}</td>
-                                    <td>{{ reserva.estado_reserva | e }}</td>
-                                    <td>{{ reserva.nota | e }}</td>
-                                    <td>
-                                        {% if reserva.estado_reserva == 'pendiente' %}
+                                    <td data-label="Reserva #">
+                                        {{ reserva.id_reserva | e }}
+                                    </td>
 
-                                            <form action="/mis_publicaciones/reserva/aceptar" method="POST" class="form-accion-inline">
+                                    <td data-label="Alojamiento">
+                                        <a href="/publicacion/ver?id_pub={{ reserva.id_pub }}">
+                                            {{ reserva.nombre_alojamiento }}
+                                        </a>
+                                    </td>
 
-                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <td data-label="Desde">
+                                        {{ reserva.desde | e }}
+                                    </td>
 
-                                                <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+                                    <td data-label="Hasta">
+                                        {{ reserva.hasta | e }}
+                                    </td>
 
-                                                <button type="submit" class="reservas-accion"> Aceptar </button>
-                                                
-                                            </form>
+                                    <td data-label="Estado">
+                                        {{ reserva.estado_reserva | e }}
+                                    </td>
 
-                                            <form action="/mis_publicaciones/reserva/rechazar" method="POST" class="form-accion-inline">
+                                    <td data-label="Nota">
+                                        {{ reserva.nota | e }}
+                                    </td>
 
-                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <td data-label="Acción">
+                                        <div class="reservas-acciones-grupo">
 
-                                                <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+                                            {% if reserva.estado_reserva == 'pendiente' %}
 
-                                                <button type="submit" class="reservas-accion"> Rechazar </button>
-                                            </form>
+                                                <form action="/mis_publicaciones/reserva/aceptar" method="POST" class="form-accion-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                                    <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+                                                    <button type="submit" class="reservas-accion reservas-accion--aceptar">
+                                                        Aceptar
+                                                    </button>
+                                                </form>
 
-                                        {% endif %}
+                                                <form action="/mis_publicaciones/reserva/rechazar" method="POST" class="form-accion-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
-                                        <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_pub }}"> Ver </a>
+                                                    <input type="hidden" name="id_reserva" value="{{ reserva.id_reserva }}">
+
+                                                    <button type="submit" class="reservas-accion reservas-accion--rechazar">
+                                                        Rechazar
+                                                    </button>
+                                                </form>
+
+                                            {% endif %}
+
+                                            <a class="reservas-accion reservas-accion--ver" href="/publicacion/ver?id_pub={{ reserva.id_pub }}">
+                                                Ver
+                                            </a>
+
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -68,16 +97,18 @@
                     </table>
                 </details>
             </section>
-    
+
             <section class="reservas-container">
                 <details class="detalles-reservas">
-                    <summary class="reservas-titulo">Lista de Reservas Solicitadas</summary>
-                    <p>Solicitudes de reserva que tu realizaste.</p>
-                    <table class="reservas-tabla">
+                    <summary class="reservas-titulo"> Lista de Reservas Solicitadas </summary>
+
+                    <p> Solicitudes de reserva que vos realizaste. </p>
+
+                    <table class="reservas-tabla" aria-label="Reservas solicitadas por el usuario">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Id Alojamiento</th>
+                                <th>Reserva #</th>
+                                <th>Alojamiento</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
                                 <th>Estado</th>
@@ -85,30 +116,59 @@
                                 <th>Acción</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {% for reserva in reservasSolicitadasPorUserSesion %}
                                 {% if reserva.id_usuario_reserva == idUserSesion %}
                                     <tr>
-                                        <td>{{ reserva.id_publicacion | e }}</td>
-                                        <td><a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">{{ reserva.id_publicacion }}</a></td>
-                                        <td>{{ reserva.fecha_inicio | e }}</td>
-                                        <td>{{ reserva.fecha_fin | e }}</td>
-                                        <td>{{ reserva.estado_reserva | e }}</td>
-                                        <td>{{ reserva.notas | e }}</td>
-                                        <td>
-                                            {% if reserva.estado_reserva in ['pendiente', 'confirmada'] %}
+                                        <td data-label="Reserva #">
+                                            {{ reserva.id | e }}
+                                        </td>
 
-                                                <form action="/mis_publicaciones/reserva/cancelar" method="POST" class="form-accion-inline">
+                                        <td data-label="Alojamiento">
+                                            <a href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">
+                                                {{ reserva.nombre_alojamiento }}
+                                            </a>
+                                        </td>
 
-                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                                    
-                                                    <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                                    <button type="submit" class="reservas-accion"> Cancelar </button>
-                                                </form>
+                                        <td data-label="Desde">
+                                            {{ reserva.fecha_inicio | e }}
+                                        </td>
 
-                                            {% endif %}
+                                        <td data-label="Hasta">
+                                            {{ reserva.fecha_fin | e }}
+                                        </td>
 
-                                            <a class="reservas-accion" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}"> Ver </a>
+                                        <td data-label="Estado">
+                                            {{ reserva.estado_reserva | e }}
+                                        </td>
+
+                                        <td data-label="Nota">
+                                            {{ reserva.notas | e }}
+                                        </td>
+
+                                        <td data-label="Acción">
+                                            <div class="reservas-acciones-grupo">
+
+                                                {% if reserva.estado_reserva in ['pendiente', 'confirmada'] %}
+
+                                                    <form action="/mis_publicaciones/reserva/cancelar" method="POST" class="form-accion-inline">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                                        <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+
+                                                        <button type="submit" class="reservas-accion reservas-accion--cancelar">
+                                                            Cancelar
+                                                        </button>
+                                                    </form>
+
+                                                {% endif %}
+
+                                                <a class="reservas-accion reservas-accion--ver" href="/publicacion/ver?id_pub={{ reserva.id_publicacion }}">
+                                                    Ver
+                                                </a>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -117,8 +177,8 @@
                     </table>
                 </details>
             </section>
-        </section>
 
+        </section>
     </main>
 
     {% include 'parts/footer.view.html' %}

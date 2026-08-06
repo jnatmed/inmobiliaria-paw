@@ -746,6 +746,39 @@ class QueryBuilder
         }
     }
 
+    public function getSolicitudesDeReservaPorUsuario(int $idUsuario){
+        try {
+            $query = "
+                SELECT
+                    reserva.*,
+                    publicacion.nombre_alojamiento
+                FROM
+                    reservas_publicacion reserva
+                INNER JOIN
+                    publicaciones publicacion
+                    ON publicacion.id = reserva.id_publicacion
+                WHERE
+                    reserva.id_usuario_reserva = :id_usuario
+                ORDER BY
+                    reserva.id DESC
+            ";
+
+            $statement = $this->pdo->prepare($query);
+
+            $statement->bindValue(':id_usuario', $idUsuario, PDO::PARAM_INT);
+
+            $statement->execute();
+
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+
+            $this->logger->error('Error en getSolicitudesDeReservaPorUsuario: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
     public function getReservaConDatos(int $idReserva): ?array{
         
         $sql = "

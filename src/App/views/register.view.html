@@ -10,8 +10,10 @@
     <main class="login_form_container">
 
         <section class="login_form_header">
-            <a href="/">
-                <h1 class="icono-header-pawperties">PawPerties</h1>
+            <a href="/" aria-label="Ir al inicio de Pawperties">
+                <span class="icono-header-pawperties" aria-hidden="true">
+                    PawPerties
+                </span>
             </a>
             <h1 class="login_title">REGISTRAR USUARIO</h1>
         </section>
@@ -22,27 +24,27 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                 <label for="email">Email (*)</label>
-                <input required type="email" name="email" id="email" value="{{ valores.email|default('') }}" placeholder="Ingrese su correo electrónico">
+                <input required type="email" name="email" id="email" autocomplete="email" value="{{ valores.email|default('') }}" placeholder="Ingrese su correo electrónico">
 
                 <label for="nombre">Nombre (*)</label>
-                <input required type="text" name="nombre" id="nombre" value="{{ valores.nombre|default('') }}" placeholder="Ingrese su nombre">
+                <input required type="text" name="nombre" id="nombre" autocomplete="given-name" value="{{ valores.nombre|default('') }}" placeholder="Ingrese su nombre">
 
                 <label for="apellido">Apellido (*)</label>
-                <input required type="text" name="apellido" id="apellido" value="{{ valores.apellido|default('') }}" placeholder="Ingrese su apellido">
+                <input required type="text"  name="apellido" id="apellido" autocomplete="family-name" value="{{ valores.apellido|default('') }}" placeholder="Ingrese su apellido">
 
                 <label for="contrasenia">Contraseña (*)</label>
-                <input required type="password" name="contrasenia" id="contrasenia" placeholder="Ingrese su contraseña">
+                <input required type="password" name="contrasenia" id="contrasenia" autocomplete="new-password" placeholder="Ingrese su contraseña">
 
                 <label for="contrasenia-check">Ingrese nuevamente su contraseña (*)</label>
-                <input required type="password" name="contrasenia-check" id="contrasenia-check" placeholder="Ingrese su contraseña">
+                <input required type="password" name="contrasenia-check" id="contrasenia-check" autocomplete="new-password" placeholder="Ingrese su contraseña">
 
                 <label for="telefono">Número de teléfono (*)</label>
-                <input required type="tel" name="telefono" id="telefono" value="{{ valores.telefono|default('') }}" placeholder="Ingrese su número de teléfono">
+                <input required type="tel" name="telefono" id="telefono" autocomplete="tel" value="{{ valores.telefono|default('') }}" placeholder="Ingrese su número de teléfono">
 
                 <input type="submit" value="REGISTRARSE">
 
                 {% if error is defined %}
-                    <p class="error-registro">{{ error|escape }}</p>
+                    <p class="error-registro" role="alert">{{ error|escape }}</p>
                 {% endif %}
             </form>
 

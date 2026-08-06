@@ -1027,3 +1027,29 @@ body.home > footer {
     width: 100%;
     height: 100%;
 }
+
+
+
+
+
+.login_form_header > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.punto:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

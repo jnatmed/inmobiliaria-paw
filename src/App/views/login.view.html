@@ -22,10 +22,10 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                 <label for="email">Email</label>
-                <input required type="email" name="email" id="email" placeholder="Ingrese su correo electrónico">
+                <input required type="email" name="email" id="email" autocomplete="email" placeholder="Ingrese su correo electrónico">
                 
                 <label for="contrasenia">Contraseña</label>
-                <input required type="password" name="contrasenia" id="contrasenia" placeholder="Ingrese su contraseña">
+                <input required type="password" name="contrasenia" id="contrasenia" autocomplete="current-password" placeholder="Ingrese su contraseña">
                 
                 <input type="submit" value="INICIAR SESION">
             </form>
@@ -37,14 +37,14 @@
             <a href="/recuperar-contrasenia">¿Olvidaste tu contraseña?</a>
 
             {% if resultado is defined and resultado.error is not empty %}
-                <p class="error-registro">{{ resultado.error|e }}</p>
+                <p class="error-registro" role="alert">{{ resultado.error|e }}</p>
             {% endif %}
 
             {% if exito is defined %}
                 {% if exito %}
-                    <p class="msj_exito">{{ mensaje }}</p>
+                    <p class="msj_exito" role="status" aria-live="polite">{{ mensaje }}</p>
                 {% else %}
-                    <p class="msj_error">{{ mensaje }}</p>
+                    <p class="msj_error" role="alert">{{ mensaje }}</p>
                 {% endif %}
             {% endif %}
             

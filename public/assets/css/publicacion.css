@@ -225,7 +225,9 @@ input#ubicacion {
 .publicacion-datos {
     margin-bottom: 6px;
     font-size: 15px;
-    overflow: auto;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 

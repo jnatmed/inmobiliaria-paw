@@ -11,10 +11,12 @@
 
     <main>
         <section class="publicaciones-container">
-            <h1 class="publicaciones-titulo">Lista de Publicaciones</h1>
+            <h1 class="publicaciones-titulo" id="titulo-gestion-publicaciones">
+                Lista de Publicaciones
+            </h1>
 
             <div class="publicaciones-tabla-scroll">
-                <table class="publicaciones-tabla">
+                <table class="publicaciones-tabla" aria-labelledby="titulo-gestion-publicaciones">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -31,29 +33,29 @@
                         {% if publicaciones is not empty %}
                             {% for publicacion in publicaciones %}
                                 <tr>
-                                    <td>
+                                    <td data-label="ID">
                                         {{ publicacion.id | e }}
                                     </td>
 
-                                    <td>
+                                    <td data-label="Alojamiento">
                                         <a class="publicaciones-nombre" href="/publicacion/ver?id_pub={{ publicacion.id }}">
                                             {{ publicacion.nombre_alojamiento | e }}
                                         </a>
                                     </td>
 
-                                    <td>
+                                    <td data-label="Provincia">
                                         {{ publicacion.provincia | e }}
                                     </td>
 
-                                    <td class="publicaciones-numero">
+                                    <td class="publicaciones-numero" data-label="Precio">
                                         {{ publicacion.precio | e }}
                                     </td>
 
-                                    <td class="publicaciones-numero">
+                                    <td class="publicaciones-numero" data-label="Capacidad">
                                         {{ publicacion.capacidad_maxima | e }}
                                     </td>
 
-                                    <td class="publicaciones-estado-celda">
+                                    <td class="publicaciones-estado-celda" data-label="Estado">
                                         {% if publicacion.estado == 'pendiente-de-aceptacion' %}
                                             <span class="publicaciones-estado publicaciones-estado--pendiente">
                                                 Pendiente
@@ -76,7 +78,7 @@
                                         {% endif %}
                                     </td>
 
-                                    <td class="publicaciones-acciones-celda">
+                                    <td class="publicaciones-acciones-celda" data-label="Acciones">
                                         <div class="publicaciones-acciones-grupo">
                                             <form action="/publicaciones/gestionar/aceptar" method="POST" class="form-accion-inline">
 
@@ -110,7 +112,7 @@
                             {% endfor %}
 
                         {% else %}
-                            <tr>
+                            <tr class="publicaciones-fila-vacia">
                                 <td colspan="7" class="no-result">
                                     No hay resultados para mostrar.
                                 </td>
