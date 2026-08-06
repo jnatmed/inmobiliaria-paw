@@ -1,23 +1,29 @@
-<header> <!--block-->
-    <button class="menu-toggle">☰</button>
-    <a href="/"><h1 class="icono-header-pawperties">PawPerties</h1></a>
-    <nav class="nav-index">
+<header>
+    <button type="button" class="menu-toggle" aria-label="Abrir menú principal" aria-controls="nav-principal" aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+    </button>
+
+    <a href="/" class="enlace-logo-header" aria-label="Ir al inicio de Pawperties">
+        <span class="icono-header-pawperties" aria-hidden="true"> PawPerties </span>
+    </a>
+
+    <nav class="nav-index" id="nav-principal" aria-label="Navegación principal">
         <ul class="lista-nav-main">
             {% for item in menu %}
-            <li>
-                <a class="anchor-item-main" href="{{ item.href }}">{{ item.name }}</a>
-            </li>
+                <li>
+                    <a class="anchor-item-main" href="{{ item.href }}"> {{ item.name }} </a>
+                </li>
             {% endfor %}
         </ul>
     </nav>
-    <nav class="nav-sesion">
+
+    <nav class="nav-sesion" aria-label="Opciones de sesión">
         <ul class="lista-opciones-sesion">
             <li class="item-opcion-sesion">
                 {% if isUserLoggedIn %}
                     {% include 'parts/button-logout.html' %}
                 {% else %}
-                    <a class="anchor-item-sesion" href="/iniciar-sesion">LOGIN</a>
-                    <!-- <img src="/assets/imgs/svg/alt-de-inicio-de-sesion.svg" alt="icono-salida" class="icono-salida"> -->
+                    <a class="anchor-item-sesion" href="/iniciar-sesion"> LOGIN </a>
                 {% endif %}
             </li>
         </ul>
