@@ -658,3 +658,372 @@ header {
         height: 6rem;
     }
 }
+
+
+/*Filtrado y lista de publicaciones*/
+
+.filtro-container {
+    width: 100%;
+    max-width: 22rem;
+    margin-inline: auto;
+    padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.filtro-group {
+    min-width: 0;
+}
+
+.filtro-group input[type="text"],
+.filtro-group select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin-inline: 0;
+}
+
+.filtro-group input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    margin: 1rem 0;
+}
+
+.filtro-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 36px;
+    line-height: 1.4;
+}
+
+.filtro-group input[type="checkbox"] {
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.form-filtros button {
+    width: auto;
+    min-width: 8rem;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+}
+
+.filtro-mobile {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 1.5rem;
+}
+
+.filtro-mobile summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--color-verde-header);
+    border-radius: 8px;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.filtro-mobile[open] summary {
+    margin-bottom: 1rem;
+}
+
+.container_publicaciones > section {
+    min-width: 0;
+}
+
+.h2-titulo-publicaciones {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 1200px) {
+    .filtro-mobile .filtro-container {
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .botones-conteiner {
+        flex-direction: column;
+    }
+
+    .form-filtros button {
+        width: 100%;
+    }
+
+    .h2-titulo-publicaciones {
+        padding: 0.75rem 1rem;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+        line-height: 1.2;
+        letter-spacing: 0.05rem;
+    }
+
+    .publicacion-precio {
+        font-size: clamp(1.8rem, 9vw, 2.5rem);
+        overflow-wrap: anywhere;
+    }
+
+    .info_publicacion {
+        min-width: 0;
+        padding: 1rem;
+    }
+}
+
+
+/*Mensajes notificadores cartelitos*/
+
+.msj_exito,
+.msj_error {
+    width: min(100%, 48rem);
+    max-width: 100%;
+    margin: 1rem auto;
+    line-height: 1.5;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.error-registro {
+    max-width: 100%;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/*Perfil*/
+
+body.home .profile-main {
+    align-items: stretch;
+    gap: 2rem;
+    width: min(100%, 75rem);
+    margin-inline: auto;
+}
+
+body.home .profile-aside {
+    flex: 0 0 250px;
+    width: 250px;
+    max-height: none;
+}
+
+body.home .profile-section {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+}
+
+body.home .profile-section form {
+    display: grid;
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+    align-items: center;
+    gap: 0.75rem;
+    width: min(100%, 48rem);
+    margin-inline: auto;
+}
+
+body.home #cambiar-mail {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.65rem;
+}
+
+body.home #actualizar-mail {
+    width: auto;
+    min-width: 8rem;
+    min-height: 44px;
+    padding-inline: 1rem;
+}
+
+body.home .profile-section .msj_exito,
+body.home .profile-section .msj_error {
+    align-self: center;
+}
+
+@media (max-width: 700px) {
+    body.home .profile-main {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+
+    body.home .profile-aside,
+    body.home .profile-section {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 0;
+    }
+
+    body.home .profile-aside {
+        flex-basis: auto;
+    }
+
+    body.home .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    body.home .profile-section form {
+        grid-template-columns: minmax(0, 1fr);
+        text-align: left;
+    }
+
+    body.home #actualizar-mail {
+        width: 100%;
+    }
+}
+
+/*Loggeo, regsitro y recuperacion de contra*/
+
+.login_bg {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 1rem;
+}
+
+.login_form_container {
+    width: min(100%, 500px);
+    max-width: 100%;
+    margin: 0;
+    padding: clamp(1.25rem, 6vw, 2.5rem);
+}
+
+.login_form_header {
+    max-width: 100%;
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    text-align: center;
+}
+
+.login_form_header .icono-header-pawperties {
+    display: block;
+    width: clamp(6rem, 25vw, 10rem);
+    height: clamp(5rem, 22vw, 9rem);
+    margin-bottom: 1rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.login_form form input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+}
+
+.login_form a {
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.login_form form input:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+
+/*Ajustar el footer al final de las paginas*/
+
+body.home {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+body.home > header,
+body.home > footer {
+    flex: 0 0 auto;
+}
+
+body.home > main {
+    flex: 1 0 auto;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+body.home > footer {
+    margin-top: auto;
+}
+
+/*Flechita para filtros del mobile*/
+
+.filtro-mobile summary {
+    position: relative;
+    padding-right: 3rem;
+    padding-left: 3rem;
+    list-style: none;
+}
+
+.filtro-mobile summary::-webkit-details-marker {
+    display: none;
+}
+
+.filtro-mobile summary::after {
+    content: "▾";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    font-size: 1.4em;
+    line-height: 1;
+    transform: translateY(-50%);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+}
+
+.filtro-mobile[open] summary::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/*Botones de login y salir del mismo tamaño*/
+
+.nav-sesion .lista-opciones-sesion {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-sesion .item-opcion-sesion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 114px;
+    min-width: 114px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.nav-sesion .anchor-item-sesion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0 1rem;
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+}
+
+.nav-sesion .form-logout,
+.nav-sesion .fundo__geral {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-sesion .elemento__botao_saida {
+    width: 100%;
+    height: 100%;
+}
