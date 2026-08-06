@@ -279,6 +279,9 @@ table.greenTable tfoot .links a {
 #calendarTable td[data-date] {
     height: 2.75rem;
     min-height: 44px;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
     user-select: none;
     touch-action: manipulation;
 }
@@ -429,7 +432,19 @@ table.greenTable tfoot .links a {
         font-size: 0.95rem;
     }
 
-    .btn-form {
-        width: auto;
+    .form-reserva .btn-form {
+        width: calc(100% - 1rem);
+        min-width: 0;
+        margin: 0.5rem;
+        padding: 0.9rem 0.75rem;
+        line-height: 1.25;
+        text-align: center;
+        white-space: normal;
+        overflow: visible;
+    }
+
+    .form-reserva input.btn-form {
+        appearance: none;
+        -webkit-appearance: none;
     }
 }

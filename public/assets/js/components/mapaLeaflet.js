@@ -772,7 +772,9 @@ class MapaLeaflet {
 
             this.mapa.setView([lat, lon], 18);
 
-            L.marker([lat, lon], {draggable: true}).addTo(this.mapa).bindPopup(textoDireccion || 'Dirección no disponible').openPopup();
+            const textoPopup = textoDireccion || 'Dirección no disponible';
+
+            L.marker([lat, lon], {draggable: true}).addTo(this.mapa).bindPopup(textoPopup, {minWidth: 170, maxWidth: 200, className: 'popup-direccion-detalle'}).openPopup();
 
         } catch (error) {
 

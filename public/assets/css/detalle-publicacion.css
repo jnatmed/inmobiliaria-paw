@@ -386,25 +386,43 @@ estilo para los detalles de la propiedad
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
   }
   
-  /* Diseño para pantallas grandes (más de 780px) */
-  @media (min-width: 780px) {
+/*Desde 781px se muestran formulario y calendario en paralelo, pero el calendario recibe más espacio*/
+@media (min-width: 781px) {
     .container-reserva {
-      grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-      align-items: flex-end;
-    }
-
-    .container-reserva.sin-formulario {
-        grid-template-columns: 1fr; /* Una columna cuando no hay formulario */
-    }
-
-    .calendarContainer {
+        grid-template-columns:
+            minmax(15rem, 0.7fr)
+            minmax(22rem, 1.3fr);
         align-items: center;
     }
 
-    #calendarTable {
-        width: 50%;
+    /*Cuando no existe formulario, el calendario conserva una única columna centrada*/
+    .container-reserva.sin-formulario {
+        grid-template-columns: minmax(0, 1fr);
     }
-  }
+
+    .calendarContainer {
+        width: 100%;
+        min-width: 0;
+        align-items: center;
+        overflow-x: visible;
+    }
+
+    .container-reserva:not(.sin-formulario)
+    #calendarTable {
+        width: 100%;
+    }
+
+    .container-reserva.sin-formulario
+    #calendarTable {
+        width: min(100%, 36rem);
+    }
+
+    .container-reserva:not(.sin-formulario)
+    .form-reserva {
+        width: 100%;
+        max-width: 20rem;
+    }
+}
 
 
   .details-depto__titulo {
@@ -460,7 +478,23 @@ estilo para los detalles de la propiedad
         text-align: right;
     }
 
-    .mapid {
+    .ubicacion-publicacion #mapid {
+        width: 100%;
         height: 240px;
+    }
+
+    .popup-direccion-detalle
+    .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+    }
+
+    .popup-direccion-detalle
+    .leaflet-popup-content {
+        margin: 0.65rem 0.8rem;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: normal;
     }
 }

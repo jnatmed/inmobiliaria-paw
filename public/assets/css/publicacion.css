@@ -1272,3 +1272,16 @@ input#ubicacion {
         width: 100%;
     }
 }
+
+
+@media (max-width: 600px) {
+    .publicacion-item .ver-mas {
+        display: inline-flex;
+        width: auto;
+        min-width: 7.5rem;
+        max-width: 100%;
+        padding: 0.75rem 1rem;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
+}

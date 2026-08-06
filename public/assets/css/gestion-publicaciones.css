@@ -164,14 +164,14 @@
     justify-content: center;
     align-items: center;
     min-width: 4.3rem;
-    min-height: 2rem;
+    min-height: 44px;
     margin: 0;
-    padding: 0.35rem 0.55rem;
+    padding: 0.55rem 0.7rem;
     box-sizing: border-box;
-    border: 1px solid #007bff;
+    border: 1px solid #b8b8b8;
     border-radius: 5px;
-    background-color: transparent;
-    color: #007bff;
+    background-color: #f2f2f2;
+    color: #333333;
     font: inherit;
     line-height: 1;
     text-decoration: none;
@@ -183,33 +183,44 @@
 }
 
 /* Boton aceptar */
+.publicaciones-accion--aceptar {
+    border-color: #5f8f63;
+    color: #35653a;
+}
+
 .publicaciones-accion--aceptar:hover,
 .publicaciones-accion--aceptar:focus-visible {
-    border-color: #2e7d32;
-    background-color: #2e7d32;
+    border-color: #4f7f54;
+    background-color: #4f7f54;
     color: #ffffff;
 }
 
 /* Boton rechazar */
+.publicaciones-accion--rechazar {
+    border-color: #b85c5c;
+    color: #8b3030;
+}
+
 .publicaciones-accion--rechazar:hover,
 .publicaciones-accion--rechazar:focus-visible {
-    border-color: #c62828;
-    background-color: #c62828;
+    border-color: #a34c4c;
+    background-color: #a34c4c;
     color: #ffffff;
 }
 
 /* Boton ver */
+.publicaciones-accion--ver {
+    border-color: #3478b8;
+    color: #245f96;
+}
+
 .publicaciones-accion--ver:hover,
 .publicaciones-accion--ver:focus-visible {
-    border-color: #0069d9;
-    background-color: #0069d9;
+    border-color: #28679f;
+    background-color: #28679f;
     color: #ffffff;
 }
 
-.publicaciones-accion:focus-visible {
-    outline: 2px solid #222222;
-    outline-offset: 2px;
-}
 
 .no-result {
     padding: 1.25rem;
@@ -234,7 +245,7 @@
     padding: 0.55rem 0.7rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .publicaciones-container {
         width: calc(100% - 2rem);
         margin: 1rem;

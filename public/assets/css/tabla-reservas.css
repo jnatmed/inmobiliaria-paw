@@ -73,6 +73,11 @@
     overflow-wrap: anywhere;
 }
 
+.reservas-tabla td[data-label="Desde"],
+.reservas-tabla td[data-label="Hasta"] {
+    white-space: nowrap;
+}
+
 .reservas-tabla td a:not(.reservas-accion) {
     color: #405126;
     font-weight: 600;
@@ -104,7 +109,7 @@
     padding: 0.55rem 0.8rem;
     border: 1px solid #526337;
     border-radius: 5px;
-    background-color: #ffffff;
+    background-color: #f2f2f2;
     color: #46572d;
     font: inherit;
     font-weight: 600;
@@ -173,7 +178,7 @@
 
 /*Reservas celular*/
 
-@media (max-width: 730px) {
+@media (max-width: 900px) {
     .container-general-reservas {
         padding: 1rem;
     }
