@@ -1,0 +1,440 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    max-width: 100%;
+}
+
+body {
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+img,
+picture,
+video,
+canvas {
+    max-width: 100%;
+}
+
+img,
+video {
+    height: auto;
+}
+
+fieldset,
+form,
+main,
+section,
+article,
+nav {
+    min-width: 0;
+}
+
+button,
+input,
+select,
+textarea {
+    max-width: 100%;
+    font: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+/*Oculta visualmente el label, pero conserva su lectura accesible*/
+.label-form {
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*Header y menu principal*/
+
+header {
+    min-height: 5rem;
+    height: auto;
+    padding: 0.5rem clamp(1rem, 3vw, 3rem);
+    gap: 1rem;
+}
+
+.enlace-logo-header {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.icono-header-pawperties {
+    display: block;
+    width: 60px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-index {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.lista-nav-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.lista-nav-main li {
+    display: block;
+}
+
+.anchor-item-main,
+.anchor-item-sesion {
+    line-height: 1.25;
+}
+
+.nav-sesion {
+    flex: 0 0 auto;
+}
+
+.lista-opciones-sesion li {
+    min-height: 3.5rem;
+    height: auto;
+}
+
+.menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 8px;
+    line-height: 1;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(37, 32, 38, 0.25);
+}
+
+@media (max-width: 1200px) {
+    header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        justify-self: start;
+    }
+
+    .enlace-logo-header {
+        justify-self: center;
+    }
+
+    .nav-sesion {
+        justify-self: end;
+    }
+
+    .nav-index {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-0.75rem);
+        background-color: #333;
+        border-radius: 0 0 8px 8px;
+        transition:
+            opacity 0.2s ease,
+            transform 0.2s ease,
+            max-height 0.25s ease;
+    }
+
+    .nav-index.active {
+        max-height: min(70vh, 36rem);
+        overflow-y: auto;
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .lista-nav-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+        padding: 0.75rem;
+    }
+
+    .nav-index .anchor-item-main {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0.9rem 1rem;
+        text-align: center;
+        border-radius: 6px;
+    }
+
+    .nav-index .anchor-item-main:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        min-height: 4.75rem;
+        padding: 0.4rem 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .icono-header-pawperties {
+        width: 48px;
+        height: 40px;
+    }
+
+    .anchor-item-sesion {
+        margin: 0;
+        padding: 0.5rem;
+        font-size: 1.05rem;
+    }
+}
+
+/*Home*/
+
+.home .main-home {
+    padding:
+        clamp(1rem, 2.5vw, 2.5rem)
+        clamp(1rem, 4vw, 4rem)
+        0;
+}
+
+.home .seccion-portada {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 38%);
+    grid-template-areas:
+        "titulo imagen"
+        "subtitulo imagen"
+        "publicar imagen"
+        "busqueda imagen";
+    align-items: center;
+    gap: 1.5rem 2.5rem;
+}
+
+.home .video-background {
+    grid-area: imagen;
+    position: static;
+    z-index: auto;
+    width: 100%;
+    height: 100%;
+    min-height: 34rem;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.home .h1-titulo-empresa {
+    grid-area: titulo;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(3.5rem, 5.5vw, 6rem);
+    line-height: 1;
+}
+
+.home .h1-titulo-empresa::before {
+    position: static;
+    flex: 0 0 auto;
+    width: clamp(6rem, 10vw, 11rem);
+    height: clamp(5rem, 8vw, 9rem);
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: auto;
+}
+
+.home .h2-titulo {
+    grid-area: subtitulo;
+    width: auto;
+    margin: 0;
+    font-size: clamp(2.25rem, 3.6vw, 4rem);
+    line-height: 1.15;
+}
+
+.home .enlace-publicar {
+    grid-area: publicar;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 44px;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.5rem;
+}
+
+.home .form-busqueda-propiedad {
+    grid-area: busqueda;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(13rem, 0.55fr)
+        auto;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 64rem;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 1.25rem;
+}
+
+.home .form-busqueda-propiedad .input-form-busqueda {
+    width: 100%;
+    min-width: 0;
+    height: 4rem;
+    margin: 0;
+}
+
+.home .form-busqueda-propiedad select.input-form-busqueda {
+    height: 4rem;
+}
+
+.home .form-busqueda-propiedad .btn-form-busqueda {
+    width: auto;
+    min-width: 10rem;
+    min-height: 4rem;
+    height: 4rem;
+    padding: 0 1.5rem;
+}
+
+.home .seccion-que-es-pawperties {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.4fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    margin: clamp(4rem, 7vw, 7rem) 0 2rem;
+    padding: 0 0 clamp(3rem, 5vw, 5rem);
+}
+
+.home .h2-que-es-pawperties {
+    width: auto;
+    margin: 0;
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 1.05;
+}
+
+.home .article-descripcion {
+    width: auto;
+    max-width: 70rem;
+    font-size: 1.25rem;
+    line-height: 1.65;
+}
+
+.home .title-descripcion,
+.home .descripcion-pawperties {
+    margin-left: 0;
+}
+
+.home .title-descripcion {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+@media (max-width: 900px) {
+    .home .seccion-portada {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "imagen"
+            "titulo"
+            "subtitulo"
+            "publicar"
+            "busqueda";
+    }
+
+    .home .video-background {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        max-height: 30rem;
+        aspect-ratio: 16 / 8;
+    }
+
+    .home .h1-titulo-empresa {
+        padding-top: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .home .main-home {
+        padding-inline: 1rem;
+    }
+
+    .home .form-busqueda-propiedad {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 1rem;
+    }
+
+    .home .form-busqueda-propiedad .btn-form-busqueda {
+        width: 100%;
+    }
+
+    .home .seccion-que-es-pawperties {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        margin-top: 4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .home .video-background {
+        aspect-ratio: 4 / 3;
+        border-radius: 12px;
+    }
+
+    .home .h1-titulo-empresa {
+        gap: 0.75rem;
+        font-size: clamp(2.75rem, 12vw, 3.5rem);
+    }
+
+    .home .h1-titulo-empresa::before {
+        width: 4.75rem;
+        height: 4rem;
+    }
+
+    .home .h2-titulo {
+        font-size: 2.25rem;
+    }
+
+    .home .enlace-publicar {
+        width: 100%;
+        font-size: 1.3rem;
+    }
+}
