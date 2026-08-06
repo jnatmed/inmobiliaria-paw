@@ -73,37 +73,53 @@
             </p>
         </section>
 
-        <!-- imagenes del publicaciones destacadas-->
+        <!-- Imágenes de las publicaciones destacadas -->
         {% if publicaciones_destacadas is not empty %}
-        <!-- Mostrar publicaciones destacadas -->
-            <section class="home-carousel-container">
-                <h2 class="titulo-imagenes-detail">Publicaciones Destacadas</h2>
-                
+            <section
+                class="home-carousel-container"
+                data-carrousel
+                data-carrousel-autoplay="true"
+                data-carrousel-pause-button="false"
+                data-carrousel-transition="slide"
+                data-carrousel-show-dots="true"
+                data-carrousel-touch="false"
+                data-carrousel-fullscreen="false"
+                data-carrousel-horizontal="true"
+                data-carrousel-interval="3000"
+            >
+                <h2 class="titulo-imagenes-detail">
+                    Publicaciones Destacadas
+                </h2>
+
                 <article class="home-carousel-slider">
-                    <div class="home-carousel-wrapper">
+                    <div class="home-carousel-wrapper" data-carrousel-slider>
+
                         {% for publicacion in publicaciones_destacadas %}
-                        <figure class="home-carousel-figure">
-                            <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
-                                <picture>
-                                    <source srcset="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}&format=webp" type="image/webp">
-                                    <img class="home-carousel-image carousel-img" 
-                                        src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" 
-                                </picture>
-                            </a>
-                            <figcaption>{{ publicacion.comentario|capitalize }}</figcaption>
-                        </figure>
+                            <figure class="home-carousel-figure" data-carrousel-item>
+                                <a href="publicacion/ver?id_pub={{ publicacion.id_publicacion }}">
+                                    <picture>
+                                        <source srcset="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}&format=webp" type="image/webp">
+
+                                        <img class="home-carousel-image carousel-img" src="/publicacion/imagen_destacada?id_pub={{ publicacion.id_publicacion }}" alt="Imagen de una publicación destacada">
+                                    </picture>
+                                </a>
+
+                                <figcaption>
+                                    {{ publicacion.comentario|capitalize }}
+                                </figcaption>
+                            </figure>
                         {% endfor %}
                     </div>
-                    
-                    <ul class="puntos">
-                        {% for i in range(0, publicaciones_destacadas | length -1 ) %}
-                        <li class="punto {% if i == 0 %}activo{% endif %}"></li>
-                        {% endfor %}
-                    </ul>
+
+                    {% if publicaciones_destacadas|length > 1 %}
+                        <ul class="puntos" data-carrousel-puntos>
+                            {% for i in range(0, publicaciones_destacadas|length - 1) %}
+                                <li class="punto {% if i == 0 %}activo{% endif %}" data-carrousel-punto></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </article>
             </section>
-        
-
         {% endif %}
         
 

@@ -99,19 +99,49 @@
 <ul class="publicaciones-items">
     {% for publicacion in publicaciones %}
     {% if publicacion is not null %}
-    <li class="publicacion-item" itemscope itemtype="https://schema.org/LodgingBusiness">
+    <li
+        class="publicacion-item"
+        itemscope
+        itemtype="https://schema.org/LodgingBusiness"
+        data-carrousel
+        data-carrousel-autoplay="false"
+        data-carrousel-pause-button="true"
+        data-carrousel-transition="fade"
+        data-carrousel-show-dots="false"
+        data-carrousel-touch="false"
+        data-carrousel-fullscreen="false"
+        data-carrousel-horizontal="true"
+        data-carrousel-interval="3000"
+    >
         <nav class="nav-destacados">
 
-            <ul class="destacados">
-                {% for imagen in publicacion.imagenes %}
-                <li class="destacado-item">
-                    <img class="destacado-img"
-                        src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                        alt="{{ imagen.nombre_imagen }}" itemprop="photo">
-                </li>
-                {% endfor %}
-                <button id="boton-pausa"></button>
+            <ul class="destacados" data-carrousel-slider>
+                {% if publicacion.imagenes is not empty %}
+                    {% for imagen in publicacion.imagenes %}
+                        <li class="destacado-item" data-carrousel-item>
+                            <img
+                                class="destacado-img"
+                                src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
+                                alt="{{ imagen.nombre_imagen }}"
+                                itemprop="photo"
+                            >
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="destacado-item" data-carrousel-item>
+                        <img
+                            class="destacado-img"
+                            src="/publicacion?id_pub={{ publicacion.id }}"
+                            alt="Imagen no disponible para esta propiedad"
+                            itemprop="photo"
+                        >
+                    </li>
+                {% endif %}
             </ul>
+
+            <button type="button" class="boton-pausa" data-carrousel-pausa aria-label="Reproducir carrusel de imágenes">
+                &#9658;
+            </button>
 
 
             <section class="info_publicacion">

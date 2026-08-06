@@ -1,23 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-  const promiseCarrouselHome = PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrouselHome.js');
-  const promiseCookier = PAW.cargarScriptPromise("Cookier", "/assets/js/components/cookier.js")
 
-  Promise.all([promiseCookier, promiseCarrouselHome]).then(function() {
+    PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrousel.js').then(() => {
+      Carrousel.inicializarTodos(document);
+    }).catch((error) => {
+      console.error('No se pudo cargar el carrusel del home:', error);
+    });
 
-    Cookier.init('.form-busqueda-propiedad', ['zona', 'tipo']);
+    PAW.cargarScriptPromise('Cookier', '/assets/js/components/cookier.js')
+        .then(() => {
 
-    if (document.querySelector('.home-carousel-container')) {
-        new CarrouselHome('.home-carousel-container');
-    }
+            const formularioBusqueda = document.querySelector('.form-busqueda-propiedad');
 
-      const btn_close = document.querySelector('.close-btn');
-      if (btn_close) {
-        btn_close.addEventListener('click', function(e) {
-          document.querySelector('.overlay').style.display = 'none';
+            if (formularioBusqueda) {
+                Cookier.init(
+                    '.form-busqueda-propiedad',
+                    ['zona', 'tipo']
+                );
+            }
+        })
+        .catch((error) => {
+            console.error('No se pudo cargar el manejo de cookies:', error);
         });
-      }
 
-  })
+    const botonCerrar = document.querySelector('.close-btn');
 
-})
+    const overlay = document.querySelector('.overlay');
+
+    if (botonCerrar && overlay) {
+        botonCerrar.addEventListener(
+            'click',
+            () => {
+                overlay.style.display = 'none';
+            }
+        );
+    }
+});

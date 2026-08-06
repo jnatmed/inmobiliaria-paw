@@ -670,7 +670,7 @@ input#ubicacion {
 
 }
 
-#boton-pausa {
+.boton-pausa {
     background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
     color: white;
     border: none;
@@ -688,13 +688,13 @@ input#ubicacion {
     right: 10px;
 }
 
-#boton-pausa svg {
+.boton-pausa svg {
     fill: white; 
     width: 24px;
     height: 24px;
 }
 
-#boton-pausa:hover {
+.boton-pausa:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
 

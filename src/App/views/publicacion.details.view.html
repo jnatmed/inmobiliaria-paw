@@ -35,29 +35,63 @@
                     {% endif %}
                 </article>
             </div>
-        {% endif %}     
-        <!-- imagenes del departamento en alquiler-->
-        <section class="container-imagenes-publicacion">
-            <h2 class="titulo-imagenes-detail">{{ publicacion.nombre_alojamiento | capitalize }}</h2>
-            <article class="slider">
-                {% for imagen in publicacion.imagenes %}
-                <img class="carousel-img" 
-                     src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}" 
-                     alt="{{ imagen.nombre_imagen }}">
-                {% endfor %}
-            </article>
-            <ul class="puntos">
-                {% for i in range(0, publicacion.imagenes | length - 1) %}
-                <li class="punto {% if i == 0 %}activo{% endif %}"></li>
-                {% endfor %}
-            </ul>
-        </section>
+        {% endif %}   
 
-        <!-- Modal para imagen a pantalla completa -->
-        <article id="fullscreenModal" class="fullscreen-modal">
-            <span class="close">&times;</span>
-            <img class="modal-content" id="fullscreenImage">
-        </article>
+        <!-- Imágenes del departamento en alquiler -->
+        <section
+            class="container-imagenes-publicacion"
+            data-carrousel
+            data-carrousel-autoplay="true"
+            data-carrousel-pause-button="false"
+            data-carrousel-transition="slide"
+            data-carrousel-show-dots="true"
+            data-carrousel-touch="true"
+            data-carrousel-fullscreen="true"
+            data-carrousel-horizontal="true"
+            data-carrousel-interval="3000"
+        >
+            <h2 class="titulo-imagenes-detail">
+                {{ publicacion.nombre_alojamiento|capitalize }}
+            </h2>
+
+            <article class="slider" data-carrousel-slider>
+                {% if publicacion.imagenes is not empty %}
+                    {% for imagen in publicacion.imagenes %}
+                        <img
+                            class="carousel-img"
+                            data-carrousel-item
+                            src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
+                            alt="{{ imagen.nombre_imagen }}"
+                        >
+                    {% endfor %}
+                {% else %}
+                    <img
+                        class="carousel-img"
+                        data-carrousel-item
+                        src="/publicacion?id_pub={{ publicacion.id }}"
+                        alt="Imagen no disponible para esta propiedad"
+                    >
+                {% endif %}
+            </article>
+
+            {% if publicacion.imagenes|length > 1 %}
+                <ul class="puntos" data-carrousel-puntos>
+                    {% for i in range(0, publicacion.imagenes|length - 1) %}
+                        <li class="punto {% if i == 0 %}activo{% endif %}" data-carrousel-punto></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Modal propio de esta instancia -->
+            <article class="fullscreen-modal" data-carrousel-modal>
+                <span class="close" data-carrousel-modal-cerrar>
+                    &times;
+                </span>
+
+                <img class="modal-content" data-carrousel-modal-imagen alt="">
+
+            </article>
+        </section>
 
         <section class="details-depto">
             <!-- 1) detalles de la publicacion -->
