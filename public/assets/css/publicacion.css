@@ -670,8 +670,18 @@ input#ubicacion {
 
 }
 
+.publicacion-carrousel {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.publicacion-carrousel .destacados {
+    width: 100%;
+}
+
 .boton-pausa {
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
     border-radius: 50%;
@@ -686,6 +696,7 @@ input#ubicacion {
     position: absolute;
     bottom: 10px;
     right: 10px;
+    z-index: 2;
 }
 
 .boton-pausa svg {

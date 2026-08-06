@@ -1,30 +1,33 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
 
-	const promiseFiltro = PAW.cargarScriptPromise(
-		"filtrarPublicaciones",
-		"/assets/js/components/filtrarPublicaciones.js"
-	);
+    'DOMContentLoaded',
+    () => {
 
-	const promiseSliderPrecio = PAW.cargarScriptPromise(
-		"SliderPrecio",
-		"/assets/js/components/sliderPrecio.js"
-	);
+        const loader = document.getElementById('loader-publicaciones');
 
-	const promiseCarrouselPausa = PAW.cargarScriptPromise(
-		"CarrouselPausa",
-		"/assets/js/components/carrousel-pausa.js"
-	);
-
-	Promise.all([promiseFiltro, promiseSliderPrecio, promiseCarrouselPausa])
-		.then(function () {
-			document.querySelectorAll('.publicacion-item').forEach(publicacion => {
-				new CarrouselPausa(publicacion);
-			});
-			new SliderPrecio();
-			new filtrarPublicaciones();
-			document.getElementById("loader-publicaciones").style.display = "none";
-		})
-		.catch(function (error) {
-			console.error("Error loading one or more scripts:", error);
+        PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrousel.js').then(() => {
+			Carrousel.inicializarTodos(document);
+        }).catch((error) => {
+			console.error('No se pudieron cargar los carruseles del listado:', error);
 		});
-});
+
+        PAW.cargarScriptPromise('SliderPrecio', '/assets/js/components/sliderPrecio.js').then(() => {
+			new SliderPrecio();
+		}).catch((error) => {
+			console.error('No se pudo cargar el selector de precio:', error);
+		});
+
+        PAW.cargarScriptPromise('filtrarPublicaciones', '/assets/js/components/filtrarPublicaciones.js')
+            .then(() => {
+                new filtrarPublicaciones();
+            })
+            .catch((error) => {
+                console.error('No se pudieron cargar los filtros del listado:', error);
+            })
+            .finally(() => {
+                if (loader) {
+                    loader.style.display = 'none';
+                }
+            });
+    }
+);

@@ -1,47 +1,58 @@
 class publicacionDetails {
+
     constructor() {
-  
-      document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener(
+            'DOMContentLoaded',
+            () => {
 
-        const promiseMapaLeafLet = PAW.cargarScriptPromise('MapaLeaflet', '/assets/js/components/mapaLeaflet.js');
-        const promiseCarrousel = PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrousel.js');
+                PAW.cargarScriptPromise('Carrousel', '/assets/js/components/carrousel.js').then(() => {
+                  Carrousel.inicializarTodos(document);
+                }).catch((error) => {
+                  console.error('No se pudo cargar el carrusel del detalle:', error);
+                });
 
-        Promise.all([promiseMapaLeafLet, promiseCarrousel]).then(function() {
+                PAW.cargarScriptPromise('MapaLeaflet', '/assets/js/components/mapaLeaflet.js')
+                    .then(() => {
 
+                        const latitudElement = document.querySelector('#latitud');
 
-            const carousel = new Carrousel('.container-imagenes-publicacion');
+                        const longitudElement = document.querySelector('#longitud');
 
+                        if (!latitudElement || !longitudElement) {
+                            return;
+                        }
 
-            const latitudElement = document.querySelector('#latitud');
-            const longitudElement = document.querySelector('#longitud');
+                        const latitud = latitudElement.value;
 
-            const latitud = latitudElement.value;
-            const longitud = longitudElement.value;
-        
-            if(latitud && longitud) {
+                        const longitud = longitudElement.value;
 
-                let mapaLeaft = new MapaLeaflet()
-                mapaLeaft.buscarPorLatitudyLongitud(latitud, longitud);
+                        if (latitud && longitud) {
+                            const mapaLeaflet = new MapaLeaflet();
 
-            }else{
-                console.error('Valores de latitud o longitud en nulo')
+                            mapaLeaflet.buscarPorLatitudyLongitud(latitud, longitud);
+                        } else {
+                            console.error('Valores de latitud o longitud en nulo');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('No se pudo cargar el mapa del detalle:', error);
+                    });
+
+                const botonCerrar = document.querySelector('.close-btn');
+
+                const overlay = document.querySelector('.overlay');
+
+                if (botonCerrar && overlay) {
+                    botonCerrar.addEventListener(
+                        'click',
+                        () => {
+                            overlay.style.display = 'none';
+                        }
+                    );
+                }
             }
-
-        })
-
-        const btn_close = document.querySelector('.close-btn');
-        const overlay = document.querySelector('.overlay');
-
-        if (btn_close && overlay) {
-
-          btn_close.addEventListener('click', function() {
-            overlay.style.display = 'none';
-          });
-
-        }
-        
-      })
+        );
     }
 }
 
-const appPublicacion = new publicacionDetails()
+const appPublicacion = new publicacionDetails();

@@ -229,7 +229,11 @@ class filtrarPublicaciones {
                 throw new Error('El servidor devolvió una respuesta vacía');
             }
 
-            /*Solo se reemplaza el listado si la respuesta fue correcta*/
+            /*Antes de reemplazar el html se detienen los intervalos de los carruseles viejos*/
+            if (typeof Carrousel === 'function') {
+                Carrousel.destruirTodos(this.listado);
+            }
+
             this.listado.innerHTML = html;
 
             const urlFinal = new URL(respuesta.url || url, window.location.origin);
@@ -336,16 +340,10 @@ class filtrarPublicaciones {
     }
 
     reiniciarCarruseles() {
-
-        if (typeof CarrouselPausa !== 'function') {
+        if (typeof Carrousel !== 'function') {
             return;
         }
-
-        document.querySelectorAll(
-            '.publicacion-item'
-        ).forEach((publicacion) => {
-            new CarrouselPausa(publicacion);
-        });
+        Carrousel.inicializarTodos(this.listado);
     }
 
     llevarAlInicioDelListado() {

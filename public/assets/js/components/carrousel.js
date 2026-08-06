@@ -135,7 +135,6 @@ class Carrousel {
             this._contenedorPuntos.hidden = true;
         }
 
-        /*Si hay una cola imagen no mostrar el boton de reproduccion*/
         if (this._cantidadImagenes <= 1 && this.playButton) {
             this.playButton.hidden = true;
         }
@@ -156,17 +155,26 @@ class Carrousel {
 
         if (this._opciones.horizontal) {
             this._slider.style.width = `${porcentajeSlider}%`;
+            this._slider.style.height = '';
         } else {
             this._slider.style.height = `${porcentajeSlider}%`;
+
+            this._slider.style.width = '';
         }
 
         this._imagenes.forEach((imagen) => {
-            imagen.style.flex = `0 0 ${porcentajeImagen}%`;
+
+            imagen.style.flex = '0 0 auto';
+            imagen.style.boxSizing = 'border-box';
 
             if (this._opciones.horizontal) {
                 imagen.style.width = `${porcentajeImagen}%`;
+
+                imagen.style.height = '';
             } else {
                 imagen.style.height = `${porcentajeImagen}%`;
+
+                imagen.style.width = '';
             }
         });
 

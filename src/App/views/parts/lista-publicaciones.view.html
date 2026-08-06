@@ -114,34 +114,37 @@
         data-carrousel-interval="3000"
     >
         <nav class="nav-destacados">
-
-            <ul class="destacados" data-carrousel-slider>
-                {% if publicacion.imagenes is not empty %}
-                    {% for imagen in publicacion.imagenes %}
+            <div class="publicacion-carrousel">
+                <ul class="destacados" data-carrousel-slider>
+                    {% if publicacion.imagenes is not empty %}
+                        {% for imagen in publicacion.imagenes %}
+                            <li class="destacado-item" data-carrousel-item>
+                                <img
+                                    class="destacado-img"
+                                    src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
+                                    alt="{{ imagen.nombre_imagen }}"
+                                    itemprop="photo"
+                                >
+                            </li>
+                        {% endfor %}
+                    {% else %}
                         <li class="destacado-item" data-carrousel-item>
                             <img
                                 class="destacado-img"
-                                src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                                alt="{{ imagen.nombre_imagen }}"
+                                src="/publicacion?id_pub={{ publicacion.id }}"
+                                alt="Imagen no disponible para esta propiedad"
                                 itemprop="photo"
                             >
                         </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="destacado-item" data-carrousel-item>
-                        <img
-                            class="destacado-img"
-                            src="/publicacion?id_pub={{ publicacion.id }}"
-                            alt="Imagen no disponible para esta propiedad"
-                            itemprop="photo"
-                        >
-                    </li>
-                {% endif %}
-            </ul>
 
-            <button type="button" class="boton-pausa" data-carrousel-pausa aria-label="Reproducir carrusel de imágenes">
-                &#9658;
-            </button>
+                    {% endif %}
+                </ul>
+
+                <button type="button" class="boton-pausa" data-carrousel-pausa aria-label="Reproducir carrusel de imágenes">
+                    &#9658;
+                </button>
+
+            </div>
 
 
             <section class="info_publicacion">
