@@ -1,38 +1,52 @@
 class filtrarPublicaciones {
     constructor() {
+
         this.formularios = document.querySelectorAll('.form-filtros');
-
         this.listado = document.querySelector('.publicaciones-list');
-
         this.estadoListado = document.getElementById('estado-listado');
 
         this.loader = document.getElementById('loader-publicaciones');
 
         this.solicitudActual = null;
+        this.dialogoConfirmacion = document.getElementById('dialog-confirmar-gestion');
+        this.mensajeConfirmacion = document.getElementById('mensaje-confirmacion-propiedad');
+
+        this.botonConfirmar = this.dialogoConfirmacion?.querySelector('[data-dialog-confirmar]');
+
+        this.botonCancelar = this.dialogoConfirmacion?.querySelector('[data-dialog-cancelar]');
+
+        this.formularioPendiente = null;
+        this.botonOrigenConfirmacion = null;
 
         if (!this.listado || this.formularios.length === 0) {
             return;
         }
 
-        this.formularios.forEach((formulario) => {
-            formulario.addEventListener(
-                'submit',
-                (evento) => {
-                    evento.preventDefault();
-                    const url = this.construirUrlFormulario(formulario);
-                    this.cargarListado(url, true);
-                }
-            );
+        this.formularios.forEach(
+            (formulario) => {
+                formulario.addEventListener(
+                    'submit',
+                    (evento) => {
+                        evento.preventDefault();
 
-            formulario.addEventListener(
-                'reset',
-                (evento) => {
-                    evento.preventDefault();
-                    const url = new URL(formulario.action, window.location.origin);
-                    this.cargarListado(url.toString(), true);
-                }
-            );
-        });
+                        const url = this.construirUrlFormulario(formulario);
+
+                        this.cargarListado(url, true);
+                    }
+                );
+
+                formulario.addEventListener(
+                    'reset',
+                    (evento) => {
+                        evento.preventDefault();
+
+                        const url = new URL(formulario.action, window.location.origin);
+
+                        this.cargarListado(url.toString(), true);
+                    }
+                );
+            }
+        );
 
         this.listado.addEventListener(
             'click',
@@ -59,17 +73,76 @@ class filtrarPublicaciones {
             'submit',
             (evento) => {
                 const formulario = evento.target.closest('form[data-confirm-message]');
-                if (!formulario) {
+
+                if (!formulario || !this.dialogoConfirmacion) {
                     return;
                 }
-                const mensaje = formulario.dataset.confirmMessage;
-                if (mensaje && !window.confirm(mensaje)) {
-                    evento.preventDefault();
+
+                evento.preventDefault();
+
+                const mensaje = (formulario.dataset.confirmMessage || '').replace(/\s+/g, ' ').trim();
+
+                this.formularioPendiente = formulario;
+
+                this.botonOrigenConfirmacion = evento.submitter || null;
+
+                this.mensajeConfirmacion.textContent = mensaje;
+
+                const textoAccion = evento.submitter?.textContent.trim() || 'Confirmar';
+
+                const esEliminacion = formulario.action.endsWith('/mis_publicaciones/eliminar');
+
+                this.botonConfirmar.textContent = textoAccion;
+
+                this.botonConfirmar.classList.toggle('dialogo-confirmacion-aceptar--peligro', esEliminacion);
+
+                this.dialogoConfirmacion.showModal();
+
+                this.botonCancelar?.focus();
+            }
+        );
+
+        this.botonCancelar?.addEventListener(
+            'click',
+            () => this.cerrarDialogoConfirmacion()
+        );
+
+        this.botonConfirmar?.addEventListener(
+            'click',
+            () => {
+                if (!this.formularioPendiente) {
+                    return;
+                }
+
+                const formulario = this.formularioPendiente;
+
+                this.formularioPendiente = null;
+                this.botonOrigenConfirmacion = null;
+
+                this.dialogoConfirmacion.close();
+
+                HTMLFormElement.prototype.submit.call(formulario);
+            }
+        );
+
+        this.dialogoConfirmacion?.addEventListener(
+            'cancel',
+            (evento) => {
+                evento.preventDefault();
+
+                this.cerrarDialogoConfirmacion();
+            }
+        );
+
+        this.dialogoConfirmacion?.addEventListener(
+            'click',
+            (evento) => {
+                if (evento.target === this.dialogoConfirmacion) {
+                    this.cerrarDialogoConfirmacion();
                 }
             }
         );
 
-        
         window.addEventListener(
             'popstate',
             () => {
@@ -78,6 +151,21 @@ class filtrarPublicaciones {
         );
 
         this.sincronizarFormularios(new URL(window.location.href).searchParams);
+    }
+
+    cerrarDialogoConfirmacion() {
+        if (!this.dialogoConfirmacion?.open) {
+            return;
+        }
+
+        const botonParaRecuperarFoco = this.botonOrigenConfirmacion;
+
+        this.formularioPendiente = null;
+        this.botonOrigenConfirmacion = null;
+
+        this.dialogoConfirmacion.close();
+
+        botonParaRecuperarFoco?.focus();
     }
 
     construirUrlFormulario(formulario) {

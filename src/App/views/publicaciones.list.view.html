@@ -121,6 +121,38 @@
         </section>
     </main>
 
+    {% if esListadoPropietario|default(false) %}
+        <dialog
+            id="dialog-confirmar-gestion"
+            class="dialogo-confirmacion-propiedad"
+            aria-labelledby="titulo-confirmacion-propiedad"
+            aria-describedby="mensaje-confirmacion-propiedad"
+        >
+            <section class="dialogo-confirmacion-contenido">
+
+                <h2 id="titulo-confirmacion-propiedad">
+                    Confirmar acción
+                </h2>
+
+                <p id="mensaje-confirmacion-propiedad"></p>
+
+                <div class="dialogo-confirmacion-acciones">
+
+                    <button type="button" class="dialogo-confirmacion-cancelar" data-dialog-cancelar>
+                        Cancelar
+                    </button>
+
+                    <button type="button" class="dialogo-confirmacion-aceptar" data-dialog-confirmar>
+                        Confirmar
+                    </button>
+
+                </div>
+
+            </section>
+        </dialog>
+    {% endif %}
+
+
     {% include 'parts/footer.view.html' %}
 </body>
 

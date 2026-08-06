@@ -836,6 +836,41 @@ class PublicacionController extends Controller
         }
     }
 
+    private function obtenerRetornoGestionPublicacion(): string{
+
+        $retornoRecibido = $this->request->post('return_to');
+
+        if (!is_string($retornoRecibido) || preg_match('/[\r\n]/', $retornoRecibido) || preg_match('/[\r\n]/', rawurldecode($retornoRecibido))) {
+            return 'mis_publicaciones';
+        }
+
+        $partes = parse_url($retornoRecibido);
+
+        if ($partes === false || isset($partes['scheme']) || isset($partes['host'])) {
+            return 'mis_publicaciones';
+        }
+
+        $path = '/'
+            . ltrim(
+                (string) (
+                    $partes['path'] ?? ''
+                ),
+                '/'
+            );
+
+        if ($path !== '/mis_publicaciones') {
+            return 'mis_publicaciones';
+        }
+
+        $query =
+            isset($partes['query'])
+            && $partes['query'] !== ''
+                ? '?' . $partes['query']
+                : '';
+
+        return 'mis_publicaciones' . $query;
+    }
+
     public function administrarPublicacionPropia(): void
     {
         try {
@@ -942,7 +977,7 @@ class PublicacionController extends Controller
                 ]
             );
 
-            redirect('mis_publicaciones');
+            redirect($this->obtenerRetornoGestionPublicacion());
 
         } catch (Throwable $e) {
             $this->logger->error(

@@ -250,6 +250,8 @@
 
                                 <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
 
+                                <input type="hidden" name="return_to" value="{{ urlListadoActual }}">
+
                                 <button type="submit" class="accion-propiedad accion-propiedad--reactivar">
                                     Reactivar
                                 </button>
@@ -271,6 +273,8 @@
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                                 <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                <input type="hidden" name="return_to" value="{{ urlListadoActual }}">
 
                                 <button type="submit" class="accion-propiedad accion-propiedad--eliminar">
                                     Eliminar
@@ -300,6 +304,8 @@
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                                 <input type="hidden" name="id_pub" value="{{ publicacion.id }}">
+
+                                <input type="hidden" name="return_to" value="{{ urlListadoActual }}">
 
                                 <button type="submit" class=" accion-propiedad accion-propiedad--archivar">
                                     Archivar

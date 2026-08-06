@@ -1117,3 +1117,90 @@ input#ubicacion {
         width: 100%;
     }
 }
+
+/* Confirmacion visual para administrar propiedades */
+
+.dialogo-confirmacion-propiedad {
+    width: min(92vw, 520px);
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    box-shadow:
+        0 18px 55px
+        rgba(0, 0, 0, 0.35);
+    color: #252525;
+}
+
+.dialogo-confirmacion-propiedad::backdrop {
+    background-color:
+        rgba(0, 0, 0, 0.62);
+}
+
+.dialogo-confirmacion-contenido {
+    padding: 1.5rem;
+    background-color: white;
+}
+
+.dialogo-confirmacion-contenido h2 {
+    margin: 0 0 1rem;
+    color: var(--color-verde-header);
+    font-size: 1.45rem;
+}
+
+.dialogo-confirmacion-contenido p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.dialogo-confirmacion-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.dialogo-confirmacion-cancelar,
+.dialogo-confirmacion-aceptar {
+    min-width: 110px;
+    padding: 0.7rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.dialogo-confirmacion-cancelar {
+    border-color: #6c757d;
+    background-color: white;
+    color: #495057;
+}
+
+.dialogo-confirmacion-aceptar {
+    background-color:
+        var(--color-verde-header);
+    color: white;
+}
+
+.dialogo-confirmacion-aceptar--peligro {
+    background-color: #b02a37;
+}
+
+.dialogo-confirmacion-cancelar:hover,
+.dialogo-confirmacion-cancelar:focus-visible,
+.dialogo-confirmacion-aceptar:hover,
+.dialogo-confirmacion-aceptar:focus-visible {
+    filter: brightness(0.92);
+}
+
+@media (max-width: 500px) {
+
+    .dialogo-confirmacion-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .dialogo-confirmacion-cancelar,
+    .dialogo-confirmacion-aceptar {
+        width: 100%;
+    }
+}
