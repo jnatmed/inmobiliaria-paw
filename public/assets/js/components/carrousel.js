@@ -140,6 +140,7 @@ class Carrousel {
         }
 
         if (this._opciones.transition === 'fade') {
+            this.prepararFondos();
             this.moverSlider(0);
             return;
         }
@@ -179,6 +180,29 @@ class Carrousel {
         });
 
         this.moverSlider(0);
+    }
+
+    prepararFondos() {
+
+        this._imagenes.forEach((elemento) => {
+
+            const imagen = elemento.matches('img') ? elemento : elemento.querySelector('img');
+
+            if (!imagen) {
+                return;
+            }
+
+            const urlImagen = imagen.currentSrc || imagen.src;
+
+            if (!urlImagen) {
+                return;
+            }
+
+            elemento.style.setProperty(
+                '--carrousel-fondo',
+                `url(${JSON.stringify(urlImagen)})`
+            );
+        });
     }
 
     startCarrousel() {
