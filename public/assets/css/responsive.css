@@ -521,3 +521,140 @@ header {
         hyphens: none;
     }
 }
+
+/*Formulario de contacto del Home*/
+
+.home .seccion-contactanos {
+    width: 100%;
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+.home .titulo-contactanos {
+    width: min(100%, 62.5rem);
+    margin: 2rem auto;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.home .titulo-contactanos p {
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+
+.home .form-contactanos {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(14rem, 18rem);
+    align-items: stretch;
+    gap: 2rem;
+    width: min(100%, 62.5rem);
+    max-width: none;
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+.home .form_campos,
+.home .form_info {
+    width: 100%;
+    min-width: 0;
+}
+
+.home .form_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: 0;
+    text-align: center;
+}
+
+.home .enlace-logo-contacto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home .icono-header-pawperties-grande {
+    display: block;
+    width: 9rem;
+    height: 8rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.home .form-group {
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+}
+
+.home .form-contactanos input[type="text"],
+.home .form-contactanos input[type="tel"],
+.home .form-contactanos input[type="email"],
+.home .form-contactanos textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.home .form-contactanos input[type="text"],
+.home .form-contactanos input[type="tel"],
+.home .form-contactanos input[type="email"] {
+    min-height: 44px;
+}
+
+.home .form-contactanos textarea {
+    min-height: 10rem;
+}
+
+.home .form-contactanos input[type="submit"] {
+    min-height: 44px;
+    margin-top: 1.5rem;
+}
+
+.home .form-contactanos input:focus-visible,
+.home .form-contactanos textarea:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .home .seccion-contactanos {
+        padding-inline: 0;
+    }
+
+    .home .titulo-contactanos {
+        margin-block: 1.5rem;
+        border-radius: 10px 30px 30px 30px;
+    }
+
+    .home .form-contactanos {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    .home .form-group {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "label-nombre"
+            "input-nombre"
+            "label-apellido"
+            "input-apellido";
+    }
+
+    .home .form_info {
+        padding-top: 1.5rem;
+        border-top: 1px solid #d4d4d4;
+    }
+
+    .home .icono-header-pawperties-grande {
+        width: 7rem;
+        height: 6rem;
+    }
+}
