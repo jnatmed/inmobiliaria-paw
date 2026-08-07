@@ -4,12 +4,6 @@ namespace Paw\App\Utils;
 
 class Verificador
 {
-    /**
-     * entrada: formulario de campos 
-     * salida: - booleano (campos vacios o no)
-     *         - descripcion
-     *         - array con los nombres de los campos vacios 
-     */
     public function verificarCamposVacios(Array $datos, Array $required){   
         
         $camposVacios = [];
@@ -75,11 +69,6 @@ class Verificador
             return null;
         }
 
-        /*Un atacante podria enviar, por ejemplo:
-        *nombre[]=Matias
-        *
-        *En ese caso PHP recibiria un array y no un texto
-        */
         if (!is_string($valor)){
             $this->agregarError($errores, $campo, "El campo {$campo} debe ser texto");
             return null;
