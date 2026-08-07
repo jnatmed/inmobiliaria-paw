@@ -1,54 +1,260 @@
-# GUIA DE INSTALACION
+# GUÍA DE INSTALACIÓN
 
-## 1) INSTALACION DE MYSQL
+## 1. Requisitos
 
-* Descargar e Instalar MySQL del siguiente [link](https://dev.mysql.com/downloads/file/?id=526407).
-* Copiar las variables de ambiente del archivo `.env.example` a un nuevo archivo llamado `.env`.
-  * `.env`
-* Crear la base de datos `mvc-pawperties`.
+Para ejecutar el proyecto se necesita:
 
-## 2) INSTALACION DE COMPOSER
+- PHP 8.1 o superior.
+- MySQL.
+- Composer.
+- Git.
+- Un navegador web moderno.
 
-* Para sistemas Windows:
-  * Descargar el instalador del siguiente [enlace](https://getcomposer.org/Composer-Setup.exe).
-  
-## 3) INSTALACION DE PHP
+### Extensiones de PHP necesarias
 
-* Descargar PHP desde el siguiente [link](https://windows.php.net/downloads/releases/php-8.3.6-nts-Win32-vs16-x64.zip).
-  * Descomprimir el archivo zip y cambiar el nombre a `php`.
-  * Mover la carpeta a `c:\\php`.
-  * Agregar dicha ruta a las variables de entorno.
-    
-### 3.1) CONFIGURACION DEL ARCHIVO `php.ini`
+En el archivo `php.ini` deben estar habilitadas al menos:
 
-* Descomentar las siguientes líneas en `php.ini`:
-  * `extension=fileinfo`.
-  * `extension=pdo_mysql`.
-* Aumentar tamaño de `upload_max_filesize` a 10M:
-  * `upload_max_filesize = 10M`.
-    
-## 4) INSTALACION DE PHINX
+```ini
+extension=fileinfo
+extension=pdo_mysql
+```
 
-* `composer require robmorgan/phinx`
-Luego ejecutar `phinx` desde `vendor/bin/phinx`
-* `vendor/bin/phinx migration`
-* Ejecutar las migrations: `vendor/bin/phinx migrate -e development`.
-* Ejecutar los seeder: `vendor/bin/phinx seed:run`.
+Para permitir la carga de imágenes del proyecto se recomienda:
 
-## 5) Instalacion y Ejecucion del Proyecto
+```ini
+upload_max_filesize = 10M
+post_max_size = 12M
+```
 
-* Clonar el Proyecto: `git clone https://https://github.com/jnatmed/inmobiliaria-paw.git`.
-* `cd inmobiliaria-paw`.
-* `composer install`.
-* `cp .env.example .env` # Editar el .env con los valores deseados.
-* Ejecutar migrations: `phinx migrate -e development`.
-* Crear la carpeta `public/uploads/` para el guardado de las imágenes.
-* Ejecutar `php -S localhost:8080 -t public/`.
+Después de modificar `php.ini`, reiniciar la terminal o el servidor PHP si corresponde.
 
-## 6) Instalacion de Ngrok
+---
 
-* Para presentar el sistema, se puede usar *ngrok*. Para su instalación es necesario tener `chocolatey` incorporado en el sistema, el cual se puede instalar siguiendo los pasos del [link de la página](https://chocolatey.org/install).
+## 2. Clonar el proyecto
 
-* Instalar ngrok desde el siguiente [link](https://ngrok.com/download).
-  * Iniciar sesión en la página para obtener la llave.
-* Para su uso, ejecutar el siguiente comando: `ngrok http 8080`.
+```bash
+git clone https://github.com/jnatmed/inmobiliaria-paw.git
+cd inmobiliaria-paw
+```
+
+---
+
+## 3. Instalar las dependencias
+
+Ejecutar:
+
+```bash
+composer install
+```
+
+Composer instalará las dependencias necesarias para el proyecto, entre ellas:
+
+- Twig.
+- Phinx.
+- Monolog.
+- PHPMailer.
+- Dotenv.
+- Whoops.
+
+No es necesario ejecutar `composer require` para instalar Phinx por separado, ya que forma parte de las dependencias del proyecto.
+
+---
+
+## 4. Configurar las variables de entorno
+
+Copiar el archivo:
+
+```text
+.env.example
+```
+
+como:
+
+```text
+.env
+```
+
+En Linux o macOS puede utilizarse:
+
+```bash
+cp .env.example .env
+```
+
+En Windows también puede copiarse manualmente desde el explorador de archivos.
+
+Luego editar `.env` con la configuración local de MySQL.
+
+Ejemplo:
+
+```env
+DB_ADAPTER=mysql
+DB_HOSTNAME=localhost
+DB_DBNAME=mvc-pawperties
+DB_USERNAME=root
+DB_PASSWORD=
+DB_PORT=3306
+DB_CHARSET=utf8
+```
+
+Las credenciales de correo solamente son necesarias para probar las funcionalidades que envían emails, como la recuperación de contraseña.
+
+---
+
+## 5. Crear la base de datos
+
+Crear en MySQL una base de datos llamada:
+
+```text
+mvc-pawperties
+```
+
+Si se utiliza otro nombre, modificar en `.env`:
+
+```env
+DB_DBNAME=
+```
+
+para que coincida con la base creada.
+
+---
+
+## 6. Ejecutar las migrations
+
+Desde la raíz del proyecto ejecutar:
+
+```bash
+vendor/bin/phinx migrate -e development
+```
+
+En Windows, dependiendo de la terminal utilizada, también puede ejecutarse:
+
+```bash
+vendor\bin\phinx migrate -e development
+```
+
+Las migrations crean y actualizan las tablas necesarias para la aplicación.
+
+---
+
+## 7. Cargar los datos de prueba
+
+Ejecutar:
+
+```bash
+vendor/bin/phinx seed:run -e development
+```
+
+En Windows también puede utilizarse:
+
+```bash
+vendor\bin\phinx seed:run -e development
+```
+
+Los seeders generan usuarios, publicaciones y otros datos necesarios para realizar pruebas del sistema.
+
+### Usuarios principales de prueba
+
+#### Usuario común
+
+```text
+Email: usuario1@example.com
+Contraseña: password1
+```
+
+#### Empleado
+
+```text
+Email: usuario2@example.com
+Contraseña: password2
+```
+
+#### Segundo usuario común
+
+```text
+Email: usuario3@example.com
+Contraseña: password3
+```
+
+Estos usuarios permiten probar los diferentes flujos de publicación, moderación y reservas.
+
+---
+
+## 8. Carpeta de imágenes
+
+Verificar que exista la carpeta:
+
+```text
+uploads/
+```
+
+Si no existe, crearla.
+
+Esta carpeta se utiliza para almacenar las imágenes cargadas por los usuarios.
+
+La carpeta está excluida del repositorio Git mediante `.gitignore`, por lo que las imágenes subidas durante las pruebas no se versionan.
+
+---
+
+## 9. Ejecutar el proyecto
+
+Desde la raíz del proyecto ejecutar:
+
+```bash
+php -S localhost:8080 -t public/
+```
+
+Luego abrir en el navegador:
+
+```text
+http://localhost:8080/
+```
+
+---
+
+## 10. Entorno de ejecución
+
+Durante el desarrollo puede utilizarse:
+
+```env
+APP_ENV=development
+```
+
+En un entorno publicado debería utilizarse:
+
+```env
+APP_ENV=production
+```
+
+De esta manera se evita mostrar información técnica detallada sobre errores a los usuarios finales.
+
+---
+
+## 11. Roles del sistema
+
+El proyecto contempla tres tipos de usuario en la base de datos:
+
+```text
+1 = Propietario
+2 = Empleado
+3 = Inquilino
+```
+
+En el flujo actual de la aplicación, los usuarios comunes pueden realizar acciones relacionadas con publicaciones y reservas según los permisos implementados.
+
+El empleado tiene acceso a las funciones de moderación de publicaciones.
+
+Los usuarios incluidos en los datos de prueba permiten comprobar los principales flujos del sistema.
+
+---
+
+## 12. Opcional: ngrok
+
+Si se necesita acceder temporalmente al servidor local desde Internet puede utilizarse ngrok.
+
+Con el proyecto ejecutándose en el puerto `8080`:
+
+```bash
+ngrok http 8080
+```
+
+Ngrok no es necesario para ejecutar normalmente el proyecto.
