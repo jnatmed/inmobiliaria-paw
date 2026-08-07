@@ -367,11 +367,15 @@ class ReservasController extends Controller
 
     public function reservarAlojamiento(){
 
+        //Cheuqeos basicos
+
         $this->usuario->chequearTiposPermitidos([1, 3]);
 
         $this->usuario->chequearCsrf();
 
         $errores = [];
+
+        //Validar campos
 
         $idPublicacion = $this->verificador->entero(
             $this->request->post('id_publicacion'),
@@ -399,6 +403,8 @@ class ReservasController extends Controller
         if ($desde !== null && $desde < date('Y-m-d')){
             $errores['fecha_desde'] = 'No se puede reservar una fecha pasada.';
         }
+
+        //Chequear que exista publicacion
 
         //Si el ID no es un entero valido no existe una publicacion a la cual volver
         if ($idPublicacion === null){
@@ -475,6 +481,8 @@ class ReservasController extends Controller
 
         $propietario = (int) $publicacion['id_usuario'];
 
+        //Verificar que el usuario que hace la reserva no sea el propietario
+
         //Regla de autorizacion del servidor
         if ($usuarioActual === $propietario){
             $this->logger->warning(
@@ -528,6 +536,8 @@ class ReservasController extends Controller
 
             return;
         }
+
+        //Hacer la reserva
 
         $alojamientoReservado = $this->model->reservarAlojamiento($objReserva);
 
