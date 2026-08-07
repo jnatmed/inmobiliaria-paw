@@ -1214,7 +1214,7 @@ class PublicacionController extends Controller
                 $this->model->cambiarEstadoPublicacionPropia($idPublicacion, $idUsuario, self::ESTADO_PUBLICACION_PENDIENTE);
 
                 $mensaje = 'La propiedad fue enviada nuevamente a moderación. Permanecerá pendiente hasta que un empleado la apruebe.';
-            } else {
+            } else { //Si la accion es eliminar
 
                 if ($estadoActual !== self::ESTADO_PUBLICACION_ARCHIVADA) {
                     $this->detenerGestionPublicacion(
