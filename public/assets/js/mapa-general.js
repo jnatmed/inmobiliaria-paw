@@ -36,13 +36,18 @@ class MapaGeneral {
                     const buscarButton = document.querySelector('#buscarUbicacion');
                     const loading = document.querySelector('.loader');
                     const accionesBusqueda = document.querySelector('.busqueda-ubicacion-acciones');
+                    const ubicacionInput = document.querySelector('#ubicacion');
+
+                    if (!buscarButton || !loading || !accionesBusqueda || !ubicacionInput) {
+                        return;
+                    }
 
                     buscarButton.addEventListener(
                         'click',
                         async event => {
 
                             event.preventDefault();
-                            const address = document.querySelector('#ubicacion').value.trim();
+                            const address = ubicacionInput.value.trim();
 
                             if (address === '' || buscarButton.disabled) {
                                 return;

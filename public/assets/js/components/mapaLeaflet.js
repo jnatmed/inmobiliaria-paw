@@ -116,7 +116,6 @@ class MapaLeaflet {
             const resultados = await this.buscarResultados(address, 1);
 
             if (resultados.length === 0) {
-                console.log('No se encontraron resultados para la dirección especificada.');
                 return [];
             }
 

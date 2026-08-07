@@ -418,6 +418,13 @@ estilo para los detalles de la propiedad
     }
 
     .container-reserva:not(.sin-formulario)
+    .container-form {
+        width: 100%;
+        margin: 0;
+        align-items: center;
+    }
+
+    .container-reserva:not(.sin-formulario)
     .form-reserva {
         width: 100%;
         max-width: 20rem;
