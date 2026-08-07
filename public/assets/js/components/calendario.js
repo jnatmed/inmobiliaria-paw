@@ -442,6 +442,7 @@ class Calendario {
 
         }
 
+        //Comrpobar rango no ocupado por otras reservas
         const error = this.getRangeError(this.startDate, selectedDate);
 
         if (error) {
