@@ -2,6 +2,12 @@
     esListadoPropietario|default(false)
 %}
 
+{% if not esListadoPropietario and jsonLdListado is defined and jsonLdListado is not empty %}
+<script id="jsonld-listado" type="application/ld+json"> {{ jsonLdListado|raw }} </script>
+{% endif %}
+
+<span hidden data-listado-seo data-titulo="{{ titulo }}" data-descripcion="{{ metaDescripcion }}" data-canonical="{{ canonicalUrl }}" data-robots="{{ metaRobots }}"></span>
+
 {% set hayFiltros =
     zona
     or precio
@@ -101,8 +107,6 @@
     {% if publicacion is not null %}
     <li
         class="publicacion-item"
-        itemscope
-        itemtype="https://schema.org/LodgingBusiness"
         data-carrousel
         data-carrousel-autoplay="false"
         data-carrousel-pause-button="true"
@@ -113,7 +117,17 @@
         data-carrousel-horizontal="true"
         data-carrousel-interval="3000"
     >
-        <nav class="nav-destacados">
+        <article
+            class="nav-destacados"
+            {% if not esListadoPropietario %}
+                itemscope
+                itemtype="https://schema.org/LodgingBusiness"
+                itemid="
+                    {{- baseUrl -}}
+                    /publicacion/ver?id_pub= {{- publicacion.id -}}
+                "
+            {% endif %}
+        >
             <div class="publicacion-carrousel">
                 <ul class="destacados" data-carrousel-slider>
                     {% if publicacion.imagenes is not empty %}
@@ -122,8 +136,10 @@
                                 <img
                                     class="destacado-img"
                                     src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                                    alt="{{ imagen.nombre_imagen }}"
-                                    itemprop="photo"
+                                    alt="Imagen {{ loop.index }} de {{ publicacion.nombre_alojamiento }}"
+                                    {% if not esListadoPropietario %}
+                                        itemprop="image"
+                                    {% endif %}
                                 >
                             </li>
                         {% endfor %}
@@ -132,8 +148,10 @@
                             <img
                                 class="destacado-img"
                                 src="/publicacion?id_pub={{ publicacion.id }}"
-                                alt="Imagen no disponible para esta propiedad"
-                                itemprop="photo"
+                                alt="Imagen no disponible para {{ publicacion.nombre_alojamiento }}"
+                                {% if not esListadoPropietario %}
+                                    itemprop="image"
+                                {% endif %}
                             >
                         </li>
 
@@ -199,26 +217,91 @@
 
                 {% endif %}
 
-                <h3 class="publicacion-precio">USD {{ publicacion.precio|number_format(0, ',', '.') }}/noche</h3>
-                <h3 class="publicacion-titulo" itemprop="name">{{ publicacion.nombre_alojamiento|e }}</h3>
-                <p class="publicacion-datos descripcion" itemprop="description">{{
-                    publicacion.descripcion_alojamiento|nl2br|e }}
+                <h3 class="publicacion-precio"
+                    {% if not esListadoPropietario %}
+                        itemprop="makesOffer"
+                        itemscope
+                        itemtype="https://schema.org/Offer"
+                    {% endif %}
+                >
+                    {% if not esListadoPropietario %}
+                        <meta itemprop="price" content="{{ publicacion.precio }}">
+                        <meta itemprop="priceCurrency" content="USD">
+                    {% endif %}
+
+                    USD {{
+                        publicacion.precio
+                            |number_format(0, ',', '.')
+                    }}/noche
+                </h3>
+
+                <h3 class="publicacion-titulo"
+                    {% if not esListadoPropietario %}
+                        itemprop="name"
+                    {% endif %}
+                >
+                    {{ publicacion.nombre_alojamiento|e }}
+                </h3>
+
+                <p class="publicacion-datos descripcion"
+                    {% if not esListadoPropietario %}
+                        itemprop="description"
+                    {% endif %}
+                >
+                    {{
+                        publicacion.descripcion_alojamiento
+                            |nl2br
+                            |e
+                    }}
                 </p>
-                <p class="publicacion-datos mobile-hidden">Dirección: <span itemprop="address">{{
-                        publicacion.direccion|e }}</span>
+
+                <p class="publicacion-datos mobile-hidden">
+                    Dirección:
+                    {% if not esListadoPropietario %}
+                        <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                            <span itemprop="streetAddress">
+                                {{ publicacion.direccion|e }}
+                            </span>
+                            {% if publicacion.provincia is not empty %}
+                                <meta itemprop="addressRegion" content="{{- publicacion.provincia -}}">
+                            {% endif %}
+
+                            {% if publicacion.codigo_postal is not empty %}
+                                <meta itemprop="postalCode" content="{{- publicacion.codigo_postal -}}">
+                            {% endif %}
+
+                            <meta itemprop="addressCountry" content="AR">
+                        </span>
+                    {% else %}
+                        <span>{{ publicacion.direccion|e }}</span>
+                    {% endif %}
                 </p>
-                <p class="publicacion-datos mobile-hidden">Capacidad: <span itemprop="occupancy">{{
-                        publicacion.capacidad_maxima|e
-                        }} Adultos</span></p>
-                <p class="publicacion-datos mobile-hidden">Tipo: <span itemprop="category">{{
-                        publicacion.descripcion_tipo|capitalize
-                        }}</span></p>
+
+                <p class="publicacion-datos mobile-hidden">
+                    Capacidad:
+                    {{ publicacion.capacidad_maxima|e }}
+                    Adultos
+                </p>
+
+                <p class="publicacion-datos mobile-hidden">
+                    Tipo:
+                    <span
+                        {% if not esListadoPropietario %}
+                            itemprop="category"
+                        {% endif %}
+                    >
+                        {{
+                            publicacion.descripcion_tipo
+                                |capitalize
+                        }}
+                    </span>
+                </p>
                 <p class="publicacion-datos mobile-hidden">Baños: {{ publicacion.cant_banios|e }}</p>
                 <p class="publicacion-datos mobile-hidden">Dormitorios: {{ publicacion.cantidad_dormitorios|e }}</p>
                 <p class="publicacion-datos mobile-hidden">Normas: {{ publicacion.normas_alojamiento|nl2br|e }}</p>
                 <p class="publicacion-datos">
                     {% if publicacion.cochera %}
-                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                    <span class="instalacion mobile-hidden">
                         <i class="fas fa-car comodidades-item__icon"></i>
                         Cochera
                     </span>
@@ -227,7 +310,7 @@
                     </span>
                     {% endif %}
                     {% if publicacion.pileta %}
-                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                    <span class="instalacion mobile-hidden">
                         <i class="fas fa-swimming-pool comodidades-item__icon"></i>
                         Pileta
                     </span>
@@ -236,7 +319,7 @@
                     </span>
                     {%endif %}
                     {% if publicacion.aire_acondicionado %}
-                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                    <span class="instalacion mobile-hidden">
                         <i class="fas fa-temperature-high comodidades-item__icon"></i>
                         Aire Acondicionado
                     </span>
@@ -245,7 +328,7 @@
                     </span>
                     {% endif %}
                     {% if publicacion.wifi %}
-                    <span class="instalacion mobile-hidden" itemprop="amenityFeature">
+                    <span class="instalacion mobile-hidden">
                         <i class="fas fa-wifi comodidades-item__icon"></i>
                         Wi-Fi
                     </span>
@@ -258,7 +341,7 @@
 
                     <section class="acciones-propiedad-propia" aria-label="Acciones para {{ publicacion.nombre_alojamiento|e }}">
 
-                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="accion-propiedad accion-propiedad--ver"itemprop="url">
+                        <a href="/publicacion/ver?id_pub={{ publicacion.id }}" class="accion-propiedad accion-propiedad--ver">
                             Ver detalle
                         </a>
 
@@ -357,16 +440,16 @@
                     </a>
 
                     <a class="whatsapp-link" href="https://web.whatsapp.com/send?phone={{publicacion.telefono|e}}" target="_blank">
-                        <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp" itemprop="contactPoint">
+                        <img src="/assets/imgs/svg/whatsapp-icon.png" alt="WhatsApp">
                     </a>
 
                     <a class="contact-link email-link" href="mailto:{{ publicacion.email|e }}" target="_blank">
-                        <img src="/assets/imgs/svg/email_green.png" alt="Email" itemprop="email">
+                        <img src="/assets/imgs/svg/email_green.png" alt="Email">
                     </a>
 
                 {% endif %}
             </section>
-        </nav>
+        </article>
     </li>
     {% endif %}
     {% endfor %}

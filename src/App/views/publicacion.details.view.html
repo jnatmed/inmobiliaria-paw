@@ -50,9 +50,9 @@
             data-carrousel-horizontal="true"
             data-carrousel-interval="3000"
         >
-            <h2 class="titulo-imagenes-detail">
+            <h1 class="titulo-imagenes-detail">
                 {{ publicacion.nombre_alojamiento|capitalize }}
-            </h2>
+            </h1>
 
             <article class="slider" data-carrousel-slider>
                 {% if publicacion.imagenes is not empty %}
@@ -61,7 +61,7 @@
                             class="carousel-img"
                             data-carrousel-item
                             src="/publicacion?id_pub={{ publicacion.id }}&id_img={{ imagen.id_imagen }}"
-                            alt="{{ imagen.nombre_imagen }}"
+                            alt="Imagen {{ loop.index }} de {{ publicacion.nombre_alojamiento }}"
                         >
                     {% endfor %}
                 {% else %}
@@ -96,10 +96,10 @@
         <section class="details-depto">
             <!-- 1) detalles de la publicacion -->
             <article class="details-depto__info">
-                <h3 class="details-depto__titulo">
+                <h2 class="details-depto__titulo">
                     <span class="titulo-estatico">Detalles de la Propiedad</span>
                     <span class="titulo-dinamico">{{ publicacion.nombre_alojamiento }}</span>
-                </h3>
+                </h2>
                 <p class="details-depto__descripcion">
                     {{ publicacion.descripcion_alojamiento }}
                 </p>
@@ -116,7 +116,7 @@
                 </ul>
                 <hr>
                 <article class="details-depto__comodidades">
-                    <h4 class="details-depto__comodidades-titulo">Comodidades:</h4>
+                    <h3 class="details-depto__comodidades-titulo"> Comodidades: </h3>
                     <ul class="details-depto__comodidades-lista">
                         <li class="details-depto__comodidades-item">
                             <i class="fas fa-bath comodidades-item__icon"></i>

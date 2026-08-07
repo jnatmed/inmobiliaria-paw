@@ -639,43 +639,53 @@ class QueryBuilder
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getOneWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $id)
-    {
+    public function getOneWithImages($mainTable, $imageTable, $mainTableKey, $foreignKey, $id) {
+
         try {
             $query = "
-                SELECT 
-                    main.*, 
-                    img.id_imagen, 
-                    img.path_imagen, 
+                SELECT
+                    main.*,
+                    img.id_imagen,
+                    img.path_imagen,
                     img.nombre_imagen,
                     usr.nombre AS nombre,
                     usr.apellido AS apellido,
                     usr.email AS email,
-                    usr.telefono AS telefono
-                FROM 
-                    {$mainTable} main
-                LEFT JOIN 
-                    {$imageTable} img
-                ON 
-                    main.{$mainTableKey} = img.{$foreignKey}
-                LEFT JOIN
-                    usuarios usr
-                ON
-                    main.id_usuario = usr.id
-                WHERE 
-                    main.{$mainTableKey} = :id
+                    usr.telefono AS telefono,
+                    tipo.descripcion_tipo
+
+                FROM {$mainTable} main
+
+                LEFT JOIN {$imageTable} img
+                    ON main.{$mainTableKey} = img.{$foreignKey}
+
+                LEFT JOIN usuarios usr
+                    ON main.id_usuario = usr.id
+
+                LEFT JOIN tipos_alojamiento tipo
+                    ON main.tipo_alojamiento_id = tipo.id
+
+                WHERE main.{$mainTableKey} = :id
+
+                ORDER BY img.id_imagen ASC
             ";
 
             $statement = $this->pdo->prepare($query);
-            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $statement->bindValue(':id', (int) $id, PDO::PARAM_INT);
+
             $statement->execute();
+
             return $statement->fetchAll(PDO::FETCH_ASSOC);
+
         } catch (PDOException $e) {
-            // Logging the error
-            $this->logger->error("Error in getOneWithImages: " . $e->getMessage());
+            $this->logger->error('Error in getOneWithImages: ' . $e->getMessage());
+
             return false;
         }
     }
+
+
     public function getAllWithImagesByUser($mainTable, $imageTable, $mainTableKey, $foreignKey, $idUser)
     {
         try {

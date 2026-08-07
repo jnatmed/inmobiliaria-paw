@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /mis_publicaciones
+Disallow: /publicaciones/gestionar
+Disallow: /usuario/mi_perfil
+Disallow: /publicacion/new
+Disallow: /reservas
+Disallow: /iniciar-sesion
+Disallow: /recuperar-contrasenia

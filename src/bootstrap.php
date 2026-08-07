@@ -161,6 +161,52 @@ if ($esDesarrollo) {
 
  require __DIR__.'/Core/TwigFilters.php';
 
+ /**
+ * 7.2) Datos estructurados globales del sitio
+ *Se generan en PHP para que Twig solamente los muestre
+ *De esta forma se evita construir JSON manualmente dentro de las plantillas
+ */
+$baseUrl = rtrim($request->host(), '/');
+
+$jsonLdFlags = JSON_UNESCAPED_UNICODE
+    | JSON_UNESCAPED_SLASHES
+    | JSON_HEX_TAG
+    | JSON_HEX_AMP
+    | JSON_HEX_APOS
+    | JSON_HEX_QUOT
+    | JSON_INVALID_UTF8_SUBSTITUTE;
+
+$jsonLdOrganizacion = json_encode(
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        '@id' => $baseUrl . '/#organization',
+        'name' => 'Pawperties',
+        'url' => $baseUrl . '/',
+        'logo' => $baseUrl . '/assets/imgs/svg/logo-inmobiliaria.svg'
+    ],
+    $jsonLdFlags
+);
+
+$jsonLdSitioWeb = json_encode(
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        '@id' => $baseUrl . '/#website',
+        'name' => 'Pawperties',
+        'url' => $baseUrl . '/',
+        'inLanguage' => 'es-AR',
+        'publisher' => ['@id' => $baseUrl . '/#organization']
+    ],
+    $jsonLdFlags
+);
+
+$twig->addGlobal('urlActualAbsoluta', $request->fullUrl());
+
+$twig->addGlobal('jsonLdOrganizacion', $jsonLdOrganizacion ?: '{}');
+
+$twig->addGlobal('jsonLdSitioWeb', $jsonLdSitioWeb ?: '{}');
+
 
 /**
  * 8) ROUTER

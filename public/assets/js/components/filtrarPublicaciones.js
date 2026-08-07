@@ -151,6 +151,42 @@ class filtrarPublicaciones {
         );
 
         this.sincronizarFormularios(new URL(window.location.href).searchParams);
+
+        this.actualizarSeo();
+    }
+
+    actualizarSeo() {
+
+        const datosSeo = this.listado.querySelector('[data-listado-seo]');
+
+        if (!datosSeo) {
+            return;
+        }
+        /*Actualiza el titulo de la pestanio*/
+        if (datosSeo.dataset.titulo) {
+            document.title = datosSeo.dataset.titulo;
+        }
+
+        /*Actualiza la meta description*/
+        const metaDescripcion = document.querySelector('meta[name="description"]');
+
+        if (metaDescripcion && datosSeo.dataset.descripcion) {
+            metaDescripcion.content = datosSeo.dataset.descripcion;
+        }
+
+        /*Actualiza la url para que coincida con filtros y paginacion*/
+        const canonical = document.querySelector('link[rel="canonical"]');
+
+        if (canonical && datosSeo.dataset.canonical) {
+            canonical.href = datosSeo.dataset.canonical;
+        }
+
+        /*Mantiene el valor robots que corresponde en el listado de propiedades*/
+        const metaRobots = document.querySelector('meta[name="robots"]');
+
+        if (metaRobots && datosSeo.dataset.robots) {
+            metaRobots.content = datosSeo.dataset.robots;
+        }
     }
 
     cerrarDialogoConfirmacion() {
@@ -235,6 +271,8 @@ class filtrarPublicaciones {
             }
 
             this.listado.innerHTML = html;
+
+            this.actualizarSeo();
 
             const urlFinal = new URL(respuesta.url || url, window.location.origin);
 

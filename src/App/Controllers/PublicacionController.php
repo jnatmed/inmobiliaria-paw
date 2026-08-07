@@ -214,6 +214,275 @@ class PublicacionController extends Controller
         return (int) $paginaValidada !== (int) $paginaActual;
     }
 
+    private function construirMetaDescripcionPublicacion(array $publicacion): string {
+
+        $nombre = trim((string) ($publicacion['nombre_alojamiento'] ?? 'Alojamiento'));
+
+        $localidad = trim((string) ($publicacion['localidad'] ?? ''));
+
+        $provincia = trim((string) ($publicacion['provincia'] ?? ''));
+
+        $ubicaciones = array_values(array_unique(array_filter([$localidad, $provincia])));
+
+        $ubicacion = !empty($ubicaciones) ? implode(', ', $ubicaciones) : 'Argentina';
+
+        $capacidad = max(1, (int) ($publicacion['capacidad_maxima'] ?? 1));
+
+        $precio = max(0, (int) ($publicacion['precio'] ?? 0));
+
+        return $nombre . ' en ' . $ubicacion . '. Capacidad para ' . $capacidad . ' personas. USD ' . $precio . ' por noche.';
+    }
+
+    private function construirJsonLdPublicacion(array $publicacion, string $urlPublicacion): string {
+
+        $idPublicacion = (int) $publicacion['id'];
+
+        $baseUrl = rtrim($this->request->host(), '/');
+
+        $imagenes = [];
+
+        foreach ($publicacion['imagenes'] ?? [] as $imagen) {
+            if (!isset($imagen['id_imagen'])) {
+                continue;
+            }
+
+            $imagenes[] = $baseUrl . '/publicacion?id_pub=' . $idPublicacion . '&id_img=' . (int) $imagen['id_imagen'];
+        }
+
+        if (empty($imagenes)) {
+            $imagenes[] = $baseUrl . '/publicacion?id_pub=' . $idPublicacion;
+        }
+
+        /*Direccion de la propiedad*/
+        $direccion = [
+            '@type' => 'PostalAddress',
+            'streetAddress' => trim((string) ($publicacion['direccion'] ?? '')),
+            'addressCountry' => 'AR'
+        ];
+
+        $localidad = trim((string) ($publicacion['localidad'] ?? ''));
+
+        $provincia = trim((string) ($publicacion['provincia'] ?? ''));
+
+        $codigoPostal = trim((string) ($publicacion['codigo_postal'] ?? ''));
+
+        if ($localidad !== '') {
+            $direccion['addressLocality'] = $localidad;
+        }
+
+        if ($provincia !== '') {
+            $direccion['addressRegion'] = $provincia;
+        }
+
+        if ($codigoPostal !== '') {
+            $direccion['postalCode'] = $codigoPostal;
+        }
+
+        /*Se agregan las comodidades que tiene la propiedad*/
+        $comodidades = [];
+
+        $comodidadesDisponibles = [
+            'cochera' => 'Cochera',
+            'pileta' => 'Pileta',
+            'aire_acondicionado' => 'Aire acondicionado',
+            'wifi' => 'Wi-Fi'
+        ];
+
+        foreach ($comodidadesDisponibles as $campo => $nombreComodidad) {
+            if (!empty($publicacion[$campo])) {
+                $comodidades[] = [
+                    '@type' => 'LocationFeatureSpecification',
+                    'name' => $nombreComodidad,
+                    'value' => true
+                ];
+            }
+        }
+
+        /*Objeto principal de la propiedad*/
+        $datosEstructurados = [
+            '@context' => 'https://schema.org',
+            '@type' => 'LodgingBusiness',
+            '@id' => $urlPublicacion . '#alojamiento',
+
+            'name' => trim((string) ($publicacion['nombre_alojamiento'] ?? 'Alojamiento')),
+            'description' => trim((string) ($publicacion['descripcion_alojamiento'] ?? '')),
+
+            'url' => $urlPublicacion,
+            'image' => $imagenes,
+            'address' => $direccion,
+
+            'priceRange' => 'USD ' . (int) ($publicacion['precio'] ?? 0) . ' por noche',
+
+            'makesOffer' => [
+                '@type' => 'Offer',
+                'price' => (string) ((int) ($publicacion['precio'] ?? 0)),
+                'priceCurrency' => 'USD',
+                'url' => $urlPublicacion
+            ],
+
+            'additionalProperty' => [
+                [
+                    '@type' => 'PropertyValue',
+                    'name' => 'Capacidad máxima',
+                    'value' => (int) ($publicacion['capacidad_maxima'] ?? 0),
+                    'unitText' => 'personas'
+                ],
+                [
+                    '@type' => 'PropertyValue',
+                    'name' => 'Dormitorios',
+                    'value' => (int) ($publicacion['cantidad_dormitorios'] ?? 0)
+                ],
+                [
+                    '@type' => 'PropertyValue',
+                    'name' => 'Baños',
+                    'value' => (int) ($publicacion['cant_banios'] ?? 0)
+                ]
+            ]
+        ];
+
+        $tipoAlojamiento = trim((string) ($publicacion['descripcion_tipo'] ?? ''));
+
+        if ($tipoAlojamiento !== '') {
+            $datosEstructurados['category'] = $tipoAlojamiento;
+        }
+
+        if (!empty($comodidades)) {
+            $datosEstructurados['amenityFeature'] = $comodidades;
+        }
+
+        /*Coordenadas*/
+        if (is_numeric($publicacion['latitud'] ?? null) && is_numeric($publicacion['longitud'] ?? null)) {
+            $datosEstructurados['geo'] = [
+                '@type' => 'GeoCoordinates',
+                'latitude' => (float) ($publicacion['latitud']),
+                'longitude' => (float) ($publicacion['longitud'])
+            ];
+        }
+
+        /*Propietario de la publicacion*/
+        $nombrePropietario = trim((string) ($publicacion['nombre'] ?? '') . ' ' . (string) ($publicacion['apellido'] ?? ''));
+
+        if ($nombrePropietario !== '') {
+            $datosEstructurados['owner'] = [
+                '@type' => 'Person',
+                'name' => $nombrePropietario
+            ];
+        }
+
+        
+        $jsonLdFlags = JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_HEX_TAG
+            | JSON_HEX_AMP
+            | JSON_HEX_APOS
+            | JSON_HEX_QUOT
+            | JSON_INVALID_UTF8_SUBSTITUTE;
+
+        $jsonLd = json_encode($datosEstructurados, $jsonLdFlags);
+
+        return $jsonLd !== false ? $jsonLd : '{}';
+    }
+
+    private function construirJsonLdListado(array $publicaciones, string $urlListado): string {
+
+        $baseUrl = rtrim($this->request->host(), '/');
+
+        $elementos = [];
+
+        foreach (array_values($publicaciones) as $publicacion) {
+
+            if (!is_array($publicacion) || !isset($publicacion['id'])) {
+                continue;
+            }
+
+            $idPublicacion = (int) $publicacion['id'];
+
+            $urlPublicacion = $baseUrl . '/publicacion/ver?id_pub=' . $idPublicacion;
+
+            /*Dirección de la publicacion*/
+
+            $direccion = [
+                '@type' => 'PostalAddress',
+                'streetAddress' => trim((string) ($publicacion['direccion'] ?? '')),
+                'addressCountry' => 'AR'
+            ];
+
+            $provincia = trim((string) ($publicacion['provincia'] ?? ''));
+
+            $codigoPostal = trim((string) ($publicacion['codigo_postal'] ?? ''));
+
+            if ($provincia !== '') {
+                $direccion['addressRegion'] = $provincia;
+            }
+
+            if ($codigoPostal !== '') {
+                $direccion['postalCode'] = $codigoPostal;
+            }
+
+            /*Informacion de una propiedad dentro del listado*/
+            $alojamiento = [
+                '@type' => 'LodgingBusiness',
+                '@id' => $urlPublicacion . '#alojamiento',
+                'name' => trim((string) ($publicacion['nombre_alojamiento'] ?? 'Alojamiento')),
+                'description' => trim((string) ($publicacion['descripcion_alojamiento']?? '')),
+                'url' => $urlPublicacion,
+                'address' => $direccion,
+                'priceRange' => 'USD ' . (int) ($publicacion['precio'] ?? 0) . ' por noche',
+                'makesOffer' => [
+                    '@type' => 'Offer',
+                    'price' => (string) ((int) ($publicacion['precio'] ?? 0)),
+                    'priceCurrency' => 'USD',
+                    'url' => $urlPublicacion
+                ]
+            ];
+
+            $tipoAlojamiento = trim((string) ($publicacion['descripcion_tipo'] ?? ''));
+
+            if ($tipoAlojamiento !== '') {
+                $alojamiento['category'] = $tipoAlojamiento;
+            }
+
+            /*En el listado se informa la primera imagen del carrousel*/
+            $primeraImagen = $publicacion['imagenes'][0] ['id_imagen'] ?? null;
+
+            if ($primeraImagen !== null) {
+                $alojamiento['image'] = $baseUrl . '/publicacion?id_pub=' . $idPublicacion . '&id_img=' . (int) $primeraImagen;
+            } else {
+                $alojamiento['image'] = $baseUrl . '/publicacion?id_pub=' . $idPublicacion;
+            }
+            
+            $elementos[] = [
+                '@type' => 'ListItem',
+                'position' => count($elementos) + 1,
+                'url' => $urlPublicacion,
+                'item' => $alojamiento
+            ];
+        }
+
+        $datosEstructurados = [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            '@id' => $urlListado . '#listado-propiedades',
+            'name' => 'Propiedades en alquiler',
+            'url' => $urlListado,
+            'numberOfItems' => count($elementos),
+            'itemListElement' => $elementos
+        ];
+
+        $jsonLdFlags =
+            JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_HEX_TAG
+            | JSON_HEX_AMP
+            | JSON_HEX_APOS
+            | JSON_HEX_QUOT
+            | JSON_INVALID_UTF8_SUBSTITUTE;
+
+        $jsonLd = json_encode($datosEstructurados, $jsonLdFlags);
+
+        return $jsonLd !== false ? $jsonLd : '{}';
+    }
+
     public function list(){
 
         try {
@@ -244,7 +513,24 @@ class PublicacionController extends Controller
 
             $urlListadoActual = $this->construirUrlListado($rutaListado, $filtros, $paginaActual);
 
-            /*Corrige páginas inválidas o inexistentes*/
+        $baseUrl = rtrim($this->request->host(), '/');
+
+        $urlListadoAbsoluta = $baseUrl . $urlListadoActual;
+
+        /*El titulo cambia cuando existe una busqueda por zona*/
+        $tituloListado = $filtros['zona'] !== null ? 'Propiedades en ' . $filtros['zona'] . ' | Pawperties' : 'Propiedades en alquiler | Pawperties';
+
+        /*Las paginas 2, 3, etc tienen un titulo identificable*/
+        if ($paginaActual > 1) {
+            $tituloListado .= ' - Página ' . $paginaActual;
+        }
+
+        $metaDescripcionListado =
+            $filtros['zona'] !== null
+            ? 'Explorá alojamientos temporarios en ' . $filtros['zona'] . ' y filtrá por tipo, precio y comodidades.'
+            : 'Explorá alojamientos temporarios disponibles en Pawperties y filtrá por ubicación, tipo, precio y comodidades.';
+
+            /*Corrige paginas invalidas o inexistentes*/
             if ($this->paginaNecesitaNormalizacion($paginaActual)) {
                 redirect($urlListadoActual);
             }
@@ -261,6 +547,8 @@ class PublicacionController extends Controller
                     $porPagina,
                     $offset
                 );
+
+            $jsonLdListado = !empty($publicaciones) ? $this->construirJsonLdListado($publicaciones, $urlListadoAbsoluta) : null;
 
             $cantidadTotalPublicaciones = $this->model->getPublicacionesTotales();
 
@@ -293,7 +581,12 @@ class PublicacionController extends Controller
                 'urlPaginaAnterior' => $urlPaginaAnterior,
                 'urlPaginaSiguiente' => $urlPaginaSiguiente,
                 'id_usuario' => $this->menuAndSession['id_usuario'] ?? null,
-                'titulo' => 'PAWPERTIES | PROPIEDADES',
+                'baseUrl' => $baseUrl,
+                'titulo' => $tituloListado,
+                'metaDescripcion' => $metaDescripcionListado,
+                'canonicalUrl' => $urlListadoAbsoluta,
+                'metaRobots' => 'index, follow',
+                'jsonLdListado' => $jsonLdListado,
                 'subtitulo' => 'Propiedades en Alquiler',
                 'esListadoPropietario' => false
             ];
@@ -412,10 +705,7 @@ class PublicacionController extends Controller
 
         $comentarios = $this->model->getComentarios($idPublicacion);
 
-        $periodosJson = json_encode(
-            $reservas,
-            JSON_UNESCAPED_SLASHES
-        );
+        $periodosJson = json_encode($reservas, JSON_UNESCAPED_SLASHES);
 
         //Recuperar los mensajes temporales antes de eliminarlos de la sesión
         
@@ -425,12 +715,24 @@ class PublicacionController extends Controller
 
         $resultadoContacto = $this->request->getResultadoGuardado('resultadoContacto');
 
+        $urlPublicacion = rtrim($this->request->host(), '/') . '/publicacion/ver?id_pub=' . $idPublicacion;
+
+        $metaDescripcion =$this->construirMetaDescripcionPublicacion($publicacion);
+
+        /*Solo las publicaciones aceptadas reciben el JSON-LD publico*/
+        $jsonLdPagina = $estaAceptada ? $this->construirJsonLdPublicacion($publicacion, $urlPublicacion): null;
+
         $datos = [
             'publicacion' => $publicacion,
             'idUserSesion' => $this->usuario->getUserId(),
             'periodos_json' => $periodosJson,
             'reservas' => $reservas,
-            'titulo' => 'PAWPERTIES | PROPIEDAD',
+            'titulo' => trim((string) $publicacion['nombre_alojamiento']) . ' | Pawperties',
+            'metaDescripcion' => $metaDescripcion,
+            'canonicalUrl' => $urlPublicacion,
+            'metaRobots' => $estaAceptada ? 'index, follow' : 'noindex, nofollow',
+            'jsonLdPagina' => $jsonLdPagina,
+            'urlPublicacion' => $urlPublicacion,
             'comentarios' => $comentarios,
             'resultadoReserva' => $resultadoReserva,
             'resultadoComentario' => $resultadoComentario,
@@ -664,7 +966,10 @@ class PublicacionController extends Controller
                 'urlListadoActual' => $urlListadoActual,
                 'urlPaginaAnterior' => $urlPaginaAnterior,
                 'urlPaginaSiguiente' => $urlPaginaSiguiente,
-                'titulo' => 'PAWPERTIES | MIS PROPIEDADES',
+                'titulo' => 'Mis propiedades | Pawperties',
+                'metaDescripcion' => 'Administrá tus publicaciones de Pawperties.',
+                'canonicalUrl' => rtrim($this->request->host(), '/') . $urlListadoActual,
+                'metaRobots' => 'noindex, nofollow',
                 'subtitulo' => 'Mis Propiedades',
                 'esListadoPropietario' => true
             ];
